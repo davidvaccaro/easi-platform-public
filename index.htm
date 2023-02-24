@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DICOM.JS Samples</title>
+
+    <!-- JQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- DICOM.JS Javascript Files -->
+    <script src="js/dicomConstants.js"></script>
+    <script src="js/dicomConfiguration.js"></script>
+    <script src="js/dicomUtilities.js"></script>
+    <script src="js/dicomException.js"></script>
+
+    <script src="js/dicomTransferSyntax.js"></script>
+    <script src="js/dicomValueRepresentation.js"></script>
+    <script src="js/dicomTag.js"></script>
+
+    <script src="js/dicomPart.js"></script>
+    <script src="js/dicomData.js"></script>
+    <script src="js/dicomDataElement.js"></script>
+    <script src="js/dicomAttribute.js"></script>
+    <script src="js/dicomAttributeSequence.js"></script>
+    <script src="js/dicomAttributeSet.js"></script>
+    <script src="js/dicomDataSet.js"></script>
+    <script src="js/dicomMetaSet.js"></script>
+
+    <script src="js/dicomPreamble.js"></script>
+    <script src="js/dicomPrefix.js"></script>
+
+    <script src="js/dicomEmitter.js"></script>
+    <script src="js/dicomParser.js"></script>
+    <script src="js/dicomReader.js"></script>
+</head>
+
+<body>
+    <h1>DICOM.JS Samples</h1>
+    <div>
+        <div><input type="file" id="dicomFile" name="dicomFile" /></div>
+    </div>
+    <div>
+    </div>
+
+    <script>
+        $(function () {
+
+            $('#dicomFile').on('change', function () {
+
+                // Create an object URL from the selected file
+                var url = URL.createObjectURL(this.files[0]);
+
+                // Parse the DICOM file
+                (new DicomReader(new DicomParser(new DicomEmitter()), function () { })).read(url);
+
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>
