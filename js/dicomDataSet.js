@@ -26,7 +26,7 @@ class DicomDataSet extends DicomAttributeSet {
      */
     constructor() {
 
-        // Construct the base class
+        // Call the super constructor
         super();
 
     }

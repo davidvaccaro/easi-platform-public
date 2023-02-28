@@ -51,9 +51,9 @@ class DicomUtilities {
     static bytesToUnsignedInteger(bytes) {
         var dv = new DataView(bytes.buffer);
         if (bytes.length == 2)
-            return dv.getInt16(bytes.byteOffset, runtimeIsLittleEndian);
+            return dv.getUint16(bytes.byteOffset, runtimeIsLittleEndian);
         else if (bytes.length == 4)
-            return dv.getInt32(bytes.byteOffset, runtimeIsLittleEndian);
+            return dv.getUint32(bytes.byteOffset, runtimeIsLittleEndian);
         return undefined;
     }
 
@@ -84,6 +84,15 @@ class DicomUtilities {
             bytes[i + 1] = holder;
         }
 
+    }
+
+    /**
+     * Performs a "deep" compy of the specified array.
+     * @param {*} arr The specified array.
+     * @returns The "deep" copy of the specified array.
+     */
+    static deepCopyArray(arr) {
+        return JSON.parse(JSON.stringify(arr));
     }
 
     constructor() {

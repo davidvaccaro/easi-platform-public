@@ -21,33 +21,100 @@
 
 class DicomEmitter {
 
-    emit(part) {
+    startPart(part) {
 
-        if (part instanceof DicomPreamble)
-            this.onPreamble(part);
+        if (part == null) {
+            this.startInstance();
+        }
+        else if (part instanceof DicomPreamble)
+            this.startPreamble(part);
         else if (part instanceof DicomPrefix)
-            this.onPrefix(part);
+            this.startPrefix(part);
+        else if (part instanceof DicomAttributeSequence)
+            this.startAttributeSequence(part);
+        else if (part instanceof DicomAttribute)
+            this.startAttribute(part);
         else if (part instanceof DicomMetaSet)
-            this.onMetaSet(part);
+            this.startMetaSet(part);
         else if (part instanceof DicomDataSet)
-            this.onDataSet(part);
+            this.startDataSet(part);
 
     }
 
-    onPreamble(preamble) {
-        var x = 10;
+    endPart(part) {
+
+        if (part == null) {
+            this.endInstance();
+        }
+        else if (part instanceof DicomPreamble)
+            this.endPreamble(part);
+        else if (part instanceof DicomPrefix)
+            this.endPrefix(part);
+        else if (part instanceof DicomAttributeSequence)
+            this.endAttributeSequence(part);
+        else if (part instanceof DicomAttribute)
+            this.endAttribute(part);
+        else if (part instanceof DicomMetaSet)
+            this.endMetaSet(part);
+        else if (part instanceof DicomDataSet)
+            this.endDataSet(part);
+
     }
 
-    onPrefix(prefix) {
-        var y = 10;
+    startInstance() {
+        var stop = 1;
     }
 
-    onMetaSet(meta) {
-        var z = 10;
+    startPreamble(preamble) {
+        var stop = 1;
     }
 
-    onDataSet(data) {
-        var a = 10;
+    startPrefix(prefix) {
+        var stop = 1;
+    }
+
+    startAttribute(attribute) {
+        var stop = 1;
+    }
+
+    startAttributeSequence(attribute) {
+        var stop = 1;
+    }
+
+    startMetaSet(meta) {
+        var stop = 1;
+    }
+
+    startDataSet(data) {
+        var stop = 1;
+    }
+
+    endPreamble(preamble) {
+        var stop = 1;
+    }
+
+    endPrefix(prefix) {
+        var stop = 1;
+    }
+
+    endAttribute(attribute) {
+        var stop = 1;
+    }
+
+    endAttributeSequence(attribute) {
+        var stop = 1;
+    }
+
+    endMetaSet(meta) {
+        var stop = 1;
+    }
+
+    endDataSet(data) {
+        var stop = 1;
+    }
+
+    endInstance() {
+        var stop = 1;
     }
 
     constructor() {

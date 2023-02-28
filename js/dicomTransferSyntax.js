@@ -36,14 +36,7 @@ class DicomTransferSyntax {
     static find(id) {
 
         // Lookup the transfer-syntax
-        var transferSyntax = syntax_type_lookup[id];
-
-        // Validate the transfer-syntax
-        if ((transferSyntax == undefined) || (transferSyntax == null))
-            return undefined;
-
-        // Return the transfer-syntax POJO
-        return transferSyntax;
+        return transfer_syntax_lookup[id];
 
     };
 
@@ -568,6 +561,9 @@ var TransferSyntax = {
 };
 
 var transfer_syntax_lookup = {
+
+    // Special Transfer Syntaxes
+    '0': TransferSyntax.NONE,
 
     // Uncompressed DICOM Transfer Syntaxes
     '1.2.840.10008.1.2': TransferSyntax.ImplicitVRLittleEndian,

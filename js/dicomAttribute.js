@@ -31,10 +31,25 @@ class DicomAttribute extends DicomDataElement {
 
         // Switch the VR type
         switch (this.tag.VR) {
+            
+            // UL: Handle converting the RAW data to a "unsigned long" value
             case ValueRepresentations.UL:
                 return (new DataView(data.buffer)).getUint32(data.byteOffset, runtimeIsLittleEndian);
                 break;
-        
+
+            // AE, SH, UI: Handle converting the RAW data to a "unique identifier" value
+            case ValueRepresentations.AE:
+            case ValueRepresentations.SH:
+            case ValueRepresentations.UI:
+                return new TextDecoder().decode(data).trim();
+                break;                
+
+            // OB: Handle converting the RAW data to a "other byte" value
+            case ValueRepresentations.OB:
+                // Return the raw data
+                return data;
+                break;
+
             default:
                 // Return the raw data
                 return data;
@@ -50,7 +65,13 @@ class DicomAttribute extends DicomDataElement {
      * Construct a new DICOM attribute instance from a tag and data
      */
     constructor(tag, valueLength, data, transferSyntax) {
-        super(tag, valueLength, data, transferSyntax);
+
+        // Call the super constructor
+        super(data, transferSyntax, valueLength);
+
+        // Set the properties
+        this.tag = tag;
+
     }
 
 };

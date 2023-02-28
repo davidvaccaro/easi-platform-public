@@ -36,15 +36,28 @@ class DicomDataElement extends DicomData {
     }
 
     /**
+     * Determine the bytes remaining to complete this data element.
+     */
+    get bytesRemaining() {
+
+        // If the data-element is complete, return 0
+        if (this.isComplete == true)
+            return 0;
+
+        // Return the difference between the stated length and the current length
+        return (this.valueLength - this.length());
+
+    }
+
+    /**
      * Construct a new DICOM data-element instance from a tag, tag details and data
      */
-    constructor(tag, valueLength, data, transferSyntax) {
+    constructor(data, transferSyntax, valueLength) {
 
-        // Construct the super
+        // Call the super constructor
         super(data, transferSyntax);
 
         // Set the properties
-        this.tag = tag;
         this.valueLength = valueLength;
 
     }

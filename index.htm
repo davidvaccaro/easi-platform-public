@@ -16,8 +16,8 @@
     <script src="js/dicomTransferSyntax.js"></script>
     <script src="js/dicomValueRepresentation.js"></script>
     <script src="js/dicomTag.js"></script>
+    <script src="js/dicomSOPClass.js"></script>
 
-    <script src="js/dicomPart.js"></script>
     <script src="js/dicomData.js"></script>
     <script src="js/dicomDataElement.js"></script>
     <script src="js/dicomAttribute.js"></script>
@@ -44,6 +44,14 @@
 
     <script>
         $(function () {
+
+            // Set the top-level exception handler
+            window.onerror = function (message, source, lineno, columnno, error) {
+
+                // The exception is handled, don't show to the user.
+                return true;
+
+            }            
 
             $('#dicomFile').on('change', function () {
 

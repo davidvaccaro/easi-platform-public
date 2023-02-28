@@ -19,10 +19,10 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomAttributeSet extends DicomPart {
+class DicomAttributeSet {
 
     /**
-     * Find an attribute within the immediate sequence by tag.
+     * Find an attribute within the immediate sequence by tag identifier.
      * @param {*} tag The DICOM tag to search by.
      * @returns The attribute if found or undefined otherwise.
      */
@@ -54,15 +54,45 @@ class DicomAttributeSet extends DicomPart {
     }
 
     /**
+     * Get the attribute value for a specified DICOM tag identifier.
+     * @returns The the attribute value.
+     */
+    value(tag, defaultValue = null) {
+
+        // Find the attribute by the DICOM tag
+        var attribute = this.find(tag);
+
+        // Return 0-length if NOT present
+        if (attribute == null)
+            return defaultValue;
+
+        // Return the attribute value
+        return attribute.value;
+
+    }
+
+    /**
+     * Gets the "complete" status.
+     */
+    get isComplete() {
+        return this.complete;
+    }
+
+    /**
+     * Sets the "complete" status.
+     */
+    set isComplete(complete) {
+        this.complete = complete;
+    }
+
+    /**
      * Construct a new DICOM tag set instance
      */
-    constructor(type) {
-
-        // Call the super
-        super(type);
+    constructor() {
 
         // Init the attributes collection
         this.attributes = [];
+        this.complete = false;
 
     }
 

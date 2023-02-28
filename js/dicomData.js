@@ -155,6 +155,23 @@ class DicomData {
     }
 
     /**
+     * Determins if the data is only filled with zeros.
+     * @returns TRU of the data is zero-space, FALSE otherwise.
+     */
+    get isZeroSpace() {
+
+        // First check the state
+        if ((this.data == undefined) || (this.data == null))
+            return true;
+
+        // Check is every byte is 0
+        return this.data.every(function (v) {
+            return v === 0;
+        });
+
+    }
+
+    /**
      * Construct the new DICOM data buffer.
      */
     constructor(raw = null, transferSyntax = TransferSyntax.NONE) {

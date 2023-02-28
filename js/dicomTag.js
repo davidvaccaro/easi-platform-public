@@ -4724,7 +4724,6 @@ var Tags = {
 	InitialCineRunState: Tag['00180042'],
 	SliceThickness: Tag['00180050'],
 	Kvp: Tag['00180060'],
-	00180061: Tag['00180061'],
 	CountsAccumulated: Tag['00180070'],
 	AcquisitionTerminationCondition: Tag['00180071'],
 	EffectiveDuration: Tag['00180072'],
@@ -5302,7 +5301,6 @@ var Tags = {
 	CenterOfCircularExposureControlSensingRegion: Tag['00189440'],
 	RadiusOfCircularExposureControlSensingRegion: Tag['00189441'],
 	VerticesOfThePolygonalExposureControlSensingRegion: Tag['00189442'],
-	00189445: Tag['00189445'],
 	ColumnAngulation: Tag['00189447'],
 	BeamAngle: Tag['00189449'],
 	FrameDetectorParametersSequence: Tag['00189451'],
@@ -5815,7 +5813,6 @@ var Tags = {
 	Columns: Tag['00280011'],
 	Planes: Tag['00280012'],
 	UltrasoundColorDataPresent: Tag['00280014'],
-	00280020: Tag['00280020'],
 	PixelSpacing: Tag['00280030'],
 	ZoomFactor: Tag['00280031'],
 	ZoomCenter: Tag['00280032'],
@@ -8295,6 +8292,7 @@ var Tags = {
 	VariableCoefficientsSddn: Tag['7F000040'],
 	DigitalSignaturesSequence: Tag['FFFAFFFA'],
 	DataSetTrailingPadding: Tag['FFFCFFFC'],
+	
 	Item: Tag['FFFEE000'],
 	ItemDelimitationItem: Tag['FFFEE00D'],
 	SequenceDelimitationItem: Tag['FFFEE0DD']

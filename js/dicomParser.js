@@ -30,6 +30,22 @@
 //   - PixelData
 //
 
+var DicomPartType = {
+    Preamble: 'Preamble',
+    Prefix: 'Prefix',
+    MetaSet: 'MetaSet',
+    DataSet: 'DataSet'
+};
+
+// Populate the part specification (Part-10)
+var DicomPart10Specification = [ 
+    DicomPartType.DataSet,
+    DicomPartType.MetaSet, 
+    DicomPartType.Prefix, 
+    DicomPartType.Preamble 
+];
+
+
 class DicomParser {
 
     /**
@@ -37,17 +53,23 @@ class DicomParser {
      */
     reset() {
 
+        // Reset the part sequence
+        this.partSequence = DicomUtilities.deepCopyArray(this.partSpecification);
+
         // Init the part consumed
         this.totalBytesConsumed = 0;
 
         // Set the current part to "preamble"
-        this.partType = DicomPartType.Preamble;
+        this.partType = null;
 
         // Set the current part bytes start
         this.partStart = 0;
 
         // Set the current part
         this.part = null;
+
+        // The "last" part that was parsed
+        this.lastPart = null;
 
         // Init the current data-element
         this.dataElement = null;
@@ -60,82 +82,47 @@ class DicomParser {
     /**
      * Parse the specified chunk of DICOM data.
      * @param {*} chunk The specified chunk of DICOM data.
-     * @returns null if the chunk has been completely parsed.
+     * @returns TRUE if a DICOM is fully parsed, FALSE otherwise.
      */
-    parse(chunk) {
+    parse(chunk, isDone = false) {
 
-        // Check the params
-        if ((chunk == null) || (chunk.length <= 0))
-            return null;
+        // Init the complete state
+        var complete = false;
 
-        // Append the new chunck
-        this.data.append(chunk);
+        // Append the new chunk of data
+        if ((chunk != null) && (chunk.length > 0)) {
+
+            // Append the new chunck
+            this.data.append(chunk);
+
+        }
 
         // Parse the current data based on the current part
+
+        // Parse the start of the instance
+        if (this.partType == null) {
+
+            // Start the instance
+            this.emitter.startPart(null);
+
+            // Pop the first part
+            this.partType = this.partSequence.pop();
+
+        }
 
         // Parse the "preamble" Table 7.1-1. DICOM File Meta Information / File Preamble
         if (this.partType == DicomPartType.Preamble) {
 
-            /*
-             *  NOTE: DICOM Parser implementations should make NO assumption about the preamble content, 
-             *  syntax or encoding.  Simply read the first 128 bytes without regard for endian-ness 
-             *  or other considerations. 
-             *
-             *  The DicomData buffer will currently have a Transfer Syntax of "NONE"
-            */
-
-            // If there is enough data to fully read the "preamble"
-            if (this.data.length() >= DicomConstants.PreambleLength) {
-
-                // Set the part start
-                this.partStart = this.totalBytesConsumed;
-
-                // Create and emit the "preamble" part
-                this.emitter.emit(new DicomPreamble(this.data.consume(DicomConstants.PreambleLength)));
-
-                // Increment the total-bytes-consumed
-                this.totalBytesConsumed += DicomConstants.PreambleLength;
-
-                // Init the current part
-                this.part = null;
-
-                // Set the next part
-                this.partType = DicomPartType.Prefix;
-
-            }
+            // Parse the next DICOM Preamble
+            this.parseNextPreamble();
 
         }
 
         // Parse the "prefix" Table 7.1-1. DICOM File Meta Information / DICOM Prefix
         if (this.partType == DicomPartType.Prefix) {
 
-            /*
-             *  NOTE: DICOM Parser implementations should make NO assumption about the preamble content, 
-             *  syntax or encoding.  Simply read the first 128 bytes without regard for endian-ness 
-             *  or other considerations. 
-             *
-             *  The DicomData buffer will currently have a Transfer Syntax of "NONE"
-            */
-
-            // If there is enough data to fully read the "prefix"
-            if (this.data.length() >= DicomConstants.PrefixLength) {
-
-                // Set the part start
-                this.partStart = this.totalBytesConsumed;
-
-                // Create and emit the "prefix" part
-                this.emitter.emit(new DicomPrefix(this.data.consume(DicomConstants.PrefixLength)));
-
-                // Increment the total-bytes-consumed
-                this.totalBytesConsumed += DicomConstants.PrefixLength;
-
-                // Init the current part
-                this.part = null;
-
-                // Set the next part
-                this.partType = DicomPartType.MetaSet;
-
-            }
+            // Parse the next DICOM Prefix
+            this.parseNextPrefix();
 
         }
 
@@ -143,34 +130,171 @@ class DicomParser {
         if (this.partType == DicomPartType.MetaSet) {
             
             // Parse more meta-set
-            var isComplete = this.parseNextMetaSet();
-
-            // Set the "complete" state
-            this.part.isComplete = isComplete;
-            
-            // Emit the current part (with the current state)
-            this.emitter.emit(this.part);
-
-            // If the next meta-set part is completely read, setup the next part
-            if (isComplete == true) {
-
-                // Init the current part
-                this.part = null;
-
-                // Set the next part
-                this.partType = DicomPartType.DataSet;
-
-            }
+            this.parseNextMetaSet();
 
         }
 
         // Parse the remaining DICOM data elements
         if (this.partType == DicomPartType.DataSet) {
 
-            // TODO
-            var xxxxx = 100;
+            // Parse more data-set
+            complete = this.parseNextDataSet(isDone);
+            
+        }
+
+        // If the instance is complete, end the instance
+        if (complete == true) {
+
+            // Start the instance
+            this.emitter.endPart(null);
+
+            // Reset the state
+            this.reset();
 
         }
+
+        // Indicate that the current DICOM is NOT fully parsed
+        return complete;
+
+    }
+
+    /**
+     * Parse the next DICOM Preamble from the next chunk of data.
+     * @returns TRUE if a preamble is fully parsed, FALSE otherwise.
+     */
+    parseNextPreamble() {
+
+        /*
+            *  NOTE: DICOM Parser implementations should make NO assumption about the preamble content, 
+            *  syntax or encoding.  Simply read the first 128 bytes without regard for endian-ness 
+            *  or other considerations. 
+            *
+            *  The DicomData buffer will currently have a Transfer Syntax of "NONE"
+        */
+
+        // If there is data to process
+        if (this.data.length() > 0) {
+
+            // Determine the next chunk (either remaining for this element OR all remining bytes in the buffer)
+            var remaining = Math.min((this.part == null) ? DicomConstants.PreambleLength : this.part.bytesRemaining, this.data.length());
+
+            // If the part has yet to be created
+            if (this.part == null) {
+
+                // Set the part start
+                this.partStart = this.totalBytesConsumed;
+
+                // Create the part
+                this.part = new DicomPreamble(this.data.consume(remaining));
+
+                // Emit the "start"
+                this.emitter.startPart(this.part);
+
+            }
+            else {
+
+                // Append to the part
+                this.part.append(this.data.consume(remaining));
+
+            }
+
+            // Increment the total-bytes-consumed
+            this.totalBytesConsumed += remaining;
+
+            // If the part is complete
+            if (this.part.isComplete == true) {
+
+                // Emit the "end"
+                this.emitter.endPart(this.part);
+
+                // Save the "last" part
+                this.lastPart = this.part;
+
+                // Init the current part
+                this.part = null;
+
+                // Set the next part
+                this.partType = this.partSequence.pop();
+
+                // Indicate complete
+                return true;
+
+            }
+            
+        }
+        
+        // Indicate still reading preamble
+        return false;
+
+    }
+
+    /**
+     * Parse the next DICOM Prefix from the next chunk of data.
+     * @returns TRUE if a prefix is fully parsed, FALSE otherwise.
+     */
+    parseNextPrefix() {
+
+        /*
+            *  NOTE: DICOM Parser implementations should make NO assumption about the preamble content, 
+            *  syntax or encoding.  Simply read the first 128 bytes without regard for endian-ness 
+            *  or other considerations. 
+            *
+            *  The DicomData buffer will currently have a Transfer Syntax of "NONE"
+        */
+
+        // If there is data to process
+        if (this.data.length() > 0) {
+
+            // Determine the next chunk (either remaining for this element OR all remining bytes in the buffer)
+            var remaining = Math.min((this.part == null) ? DicomConstants.PrefixLength : this.part.bytesRemaining, this.data.length());
+
+            // If the part has yet to be created
+            if (this.part == null) {
+
+                // Set the part start
+                this.partStart = this.totalBytesConsumed;
+
+                // Create the part
+                this.part = new DicomPrefix(this.data.consume(remaining));
+
+                // Emit the "start"
+                this.emitter.startPart(this.part);
+
+            }
+            else {
+
+                // Append to the part
+                this.part.append(this.data.consume(remaining));
+
+            }
+
+            // Increment the total-bytes-consumed
+            this.totalBytesConsumed += remaining;
+
+            // If the part is complete
+            if (this.part.isComplete == true) {
+
+                // Emit the "end"
+                this.emitter.endPart(this.part);
+
+                // Save the "last" part
+                this.lastPart = this.part;
+
+                // Init the current part
+                this.part = null;
+
+                // Set the next part
+                this.partType = this.partSequence.pop();
+
+                // Indicate complete
+                return true;
+
+            }
+            
+        }
+
+        // Indicate still reading prefix
+        return false;
 
     }
 
@@ -201,6 +325,9 @@ class DicomParser {
             // If the meta-set has yet to be created, create it
             this.part = new DicomMetaSet();
 
+            // Emit the "start" of the meta-set part
+            this.emitter.startPart(this.part);
+
         }
 
         // Read the next data-element elements until the part is complete
@@ -230,6 +357,21 @@ class DicomParser {
                 // If the meta-set is complete, emit it
                 if ((this.totalBytesConsumed - this.partStart) == this.part.groupLength) {
 
+                    // Set the "complete" state
+                    this.part.isComplete = true;
+
+                    // Emit the "end" of the meta-set part
+                    this.emitter.endPart(this.part);
+    
+                    // Save the "last" part
+                    this.lastPart = this.part;
+
+                    // Init the current part
+                    this.part = null;
+
+                    // Set the next part
+                    this.partType = this.partSequence.pop();
+
                     // Indicate successful compleation of meta-set
                     return true;
 
@@ -240,6 +382,69 @@ class DicomParser {
         }
 
         // Indicate still reading meta-set
+        return false;
+
+    }
+
+    /**
+     * Parse the next DICOM DataSet from the next chunk of data.
+     * @returns TRUE if a data-set is fully parsed, FALSE otherwise.
+     */
+    parseNextDataSet(isDone) {
+
+        /*
+        *  Each File shall contain a single Data Set representing a single SOP Instance related to a single SOP Class (and corresponding IOD).
+        *  https://dicom.nema.org/medical/dicom/current/output/html/part10.html#chapter_7
+        */
+
+        // If the meta-set has yet to be created, create it
+        if (this.part == null) {
+
+            // Set the part start
+            this.partStart = this.totalBytesConsumed;
+
+            // Set the current DicomData buffer transfer syntax
+            this.data.convert(this.lastPart.transferSyntaxUID);
+
+            // If the meta-set has yet to be created, create it
+            this.part = new DicomDataSet();
+
+            // Emit the "start" of the data-set part
+            this.emitter.startPart(this.part);
+
+        }
+
+        // Read the next data-element elements until the part is complete
+        while (this.parseNextDataElement() > 0) {
+
+            // If the current data-element is complete
+            if (this.dataElement.isComplete == true) {
+
+                // Add the data element to the meta-set
+                this.part.add(this.dataElement);
+
+                // Clear the current data-elemen
+                this.dataElement = null;
+
+                // Set the "complete" state
+                this.part.isComplete = ((this.data.isEmpty == true) && (isDone == true));
+
+                // If the part is complete
+                if (this.part.isComplete == true) {
+
+                    // Emit the current part (with the current state)
+                    this.emitter.endPart(this.part);
+
+                    // Indicate that the current DICOM is fully parsed
+                    return true;
+
+                }
+
+            }
+
+        }
+
+        // Indicate still reading data-set
         return false;
 
     }
@@ -428,7 +633,9 @@ class DicomParser {
             }
 
             // Create the attribute
-            this.dataElement = new DicomAttribute(tag, valueLength, null, this.data.transferSyntax);
+            this.dataElement = (valueRepresentation == ValueRepresentations.SQ) 
+                ? new DicomAttributeSequence(tag, valueLength, null, this.data.transferSyntax) 
+                : new DicomAttribute(tag, valueLength, null, this.data.transferSyntax);
 
             // Consume the data-element element data
             this.data.consume(bytesPeeked);
@@ -436,24 +643,49 @@ class DicomParser {
             // Increment the bytes consumed
             bytesConsumed += bytesPeeked;
 
+            // Emit the "start"
+            this.emitter.startPart(this.dataElement);
+
         }
 
         // Handle "undefined-length" versus "explicit length"
         if (this.dataElement.valueLength == DicomConstants.UndefinedLength) {
 
-            // TODO - Let's implement this
+            // Handle SQ versus the Others or the Unknowns
+            if (valueRepresentation == ValueRepresentations.SQ) {
+
+                // Continue appending data to the current element until the sequence is complete (i.e. all SequenceDelimitationItem are matched)
+
+
+            }
+            else {
+
+                // Continue appending data to the current element until the ... TODO
+
+            }
 
         }
         else {
 
-            // Determine if the whole value is currently present in the buffer
-            if (this.data.length() >= this.dataElement.valueLength) {
+            // Determine if there are more bytes to process
+            if (this.data.length() > 0) {
+
+                // Determine the next chunk (either remaining for this element OR all remining bytes in the buffer)
+                var remaining = Math.min(this.dataElement.bytesRemaining, this.data.length());
 
                 // Append the data-element data 
-                this.dataElement.append(this.data.consume(this.dataElement.valueLength));
+                this.dataElement.append(this.data.consume(remaining));
 
                 // Increment the bytes consumed
-                bytesConsumed += this.dataElement.valueLength;
+                bytesConsumed += remaining;
+
+                // If the current data-element is complete,
+                if (this.dataElement.isComplete == true) {
+
+                    // Emit the "end" of the data-element
+                    this.emitter.endPart(this.dataElement);
+
+                }
 
             }
 
@@ -471,8 +703,19 @@ class DicomParser {
      * Constructos a new DICOM Parser with the associated DICOM Emitter.
      * @param {*} dicomEmitter The emitter used to emit parsed elements of the DICOM data.
      */
-    constructor(dicomEmitter) {
+    constructor(dicomEmitter, partSpecification) {
 
+        // Set the part specification
+        this.partSpecification = partSpecification;
+
+        // Set the default part specification (if needed)
+        if (this.partSpecification == null) {
+
+            // Set the default part specification (Part-10)
+            this.partSpecification = DicomPart10Specification;
+
+        }
+        
         // Set the emitter
         this.emitter = dicomEmitter;
 

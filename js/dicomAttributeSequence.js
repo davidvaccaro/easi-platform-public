@@ -24,10 +24,10 @@ class DicomAttributeSequence extends DicomAttribute {
     /**
      * Construct an "empty" new DICOM attribute sequence instance from a tag
      */
-    constructor(tag) {
+    constructor(tag, valueLength, data, transferSyntax) {
 
-        // Construct the base class
-        super(tag);
+        // Call the super constructor
+        super(tag, valueLength, data, transferSyntax);
 
         // Set this instance to have the attribute set behavior
         Object.assign(this, new DicomAttributeSet());

@@ -22,36 +22,108 @@
 class DicomMetaSet extends DicomAttributeSet {
 
     /**
-     * Gets the meta-set Group Length.
+     * Gets the File Meta Information Group Length.
      * @returns The length value.
      */
     get groupLength() {
-
-        // Find the File Meta Information Group Length attribute
-        var attribute = this.find(Tags.FileMetaInformationGroupLength);
-
-        // Return 0-length if NOT present
-        if (attribute == undefined)
-            return 0;
-
-        return attribute.value;
-
+        return this.value(Tags.FileMetaInformationGroupLength, 0);
     }
 
     /**
-     * Determine if the meta-set Group Length is valid.
+     * Get the File Meta Information Version.
+     * @returns The File Meta Information Version value.
      */
-    get hasGroupLength() {
-        return ((groupLength() == 0) ? true : false);
+    get version() {
+        return this.value(Tags.FileMetaInformationVersion);
     }
 
+    /**
+     * Get the Media Storage SOP Class UID.
+     * @returns The Media Storage SOP Class UID value.
+     */
+    get mediaStorageSOPClassUID() {
+        return DicomSOPClass.find(this.value(Tags.MediaStorageSopClassUid, SOPClasses.NONE.ID));
+    }
+
+    /**
+     * Get the Media Storage SOP Instance UID.
+     * @returns The Media Storage SOP Instance UID value.
+     */
+    get mediaStorageSOPInstanceUID() {
+        return this.value(Tags.MediaStorageSopInstanceUid);
+    }
+
+    /**
+     * Get the Transfer Syntax UID.
+     * @returns The Transfer Syntax UID value.
+     */
+    get transferSyntaxUID() {
+        return DicomTransferSyntax.find(this.value(Tags.TransferSyntaxUid, TransferSyntax.NONE.ID));
+    }
+
+    /**
+     * Get the Implementation Class UID.
+     * @returns The Implementation Class UID value.
+     */
+    get implementationSOPInstanceUID() {
+        return this.value(Tags.ImplementationClassUid);
+    }
+
+    /**
+     * Get the Implementation Version Name.
+     * @returns The Implementation Version Name value.
+     */
+    get implementationVersionName() {
+        return this.value(Tags.ImplementationVersionName);
+    }
+
+    /**
+     * Get the Source Application Entity Title.
+     * @returns The Source Application Entity Title value.
+     */
+    get sourceApplicationEntityTitle() {
+        return this.value(Tags.SourceApplicationEntityTitle);
+    }
+
+    /**
+     * Get the Sending Application Entity Title.
+     * @returns The Sending Application Entity Title value.
+     */
+    get sendingApplicationEntityTitle() {
+        return this.value(Tags.SendingApplicationEntityTitle);
+    }
+
+    /**
+     * Get the Receiving Application Entity Title.
+     * @returns The Receiving Application Entity Title value.
+     */
+    get receivingApplicationEntityTitle() {
+        return this.value(Tags.ReceivingApplicationEntityTitle);
+    }
+
+    /**
+     * Get the Private Information Creator UID.
+     * @returns The Private Information Creator UID value.
+     */
+    get privateInformationCreatorUid() {
+        return this.value(Tags.PrivateInformationCreatorUid);
+    }
+
+    /**
+     * Get the Private Information.
+     * @returns The Private Information value.
+     */
+    get privateInformation() {
+        return this.value(Tags.PrivateInformation);
+    }
+    
     /**
      * Construct an "empty" new DICOM meta-set
      */
     constructor() {
 
-        // Construct the base class
-        super(DicomPartType.MetaSet);
+        // Call the super constructor
+        super();
 
     }
 

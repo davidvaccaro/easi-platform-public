@@ -46,7 +46,13 @@ class DicomReader {
 
                             // Break if there is no more data
                             if (done) {
+
+                                // Finalize the current parse
+                                that.parser.parse(value, done);
+
+                                // Break the stream looop
                                 break;
+
                             }
 
                             // Parse the DICOM

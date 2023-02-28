@@ -20,24 +20,17 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomPrefix extends DicomPart {
+class DicomPrefix extends DicomDataElement {
 
     /**
      * Constructs a DICOM Part-10 File Meta Information "Prefix" from a specified raw data buffer.
      * @param {*} byteData The specified raw data buffer.
      */
-    constructor(byteData) {
+    constructor(data) {
 
-        // Validate the byte data
-        if ((byteData == undefined) || (byteData == null) || (byteData.length != DicomConstants.PrefixLength))
-            throw new DicomException("Invalid Prefix!", DicomErrorCodes.InvalidPart);
-
-        // Call the super indicating that the part is complete
-        super(DicomPartType.Prefix, true);
-
-        // Set the preamble data
-        this.data = byteData;
+        // Call the super constructor
+        super(data, TransferSyntax.NONE, DicomConstants.PrefixLength);
 
     }
 
-}
+};
