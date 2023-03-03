@@ -31,7 +31,7 @@ class DicomEmitter {
         else if (part instanceof DicomPrefix)
             this.startPrefix(part);
         else if (part instanceof DicomAttributeSequence)
-            this.startAttributeSequence(part);
+            this.startAttributeSequence(part);            
         else if (part instanceof DicomAttribute)
             this.startAttribute(part);
         else if (part instanceof DicomMetaSet)

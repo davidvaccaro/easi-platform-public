@@ -95,6 +95,29 @@ class DicomUtilities {
         return JSON.parse(JSON.stringify(arr));
     }
 
+    /**
+     * Determins if the specified buffer contains the DICOM "Sequence Delimiter"
+     * @param {*} buffer The specified buffer.
+     * @returns TRUE if the buffer contains the DICOM "Sequence Delimiter", FALSE otherwise.
+     */
+    static isEndSequence(buffer) {
+
+        // Parse the "Group"
+        var group = DicomUtilities.bytesToUnsignedInteger(buffer.subarray(0, 2))
+
+        if (group != Tags.SequenceDelimitationItem.Group)
+            return false;
+
+        // Parse the "Element"
+        var element = DicomUtilities.bytesToUnsignedInteger(buffer.subarray(2, 4))
+
+        if (element != Tags.SequenceDelimitationItem.Element)
+            return false;
+    
+        return true;
+
+    }
+
     constructor() {
     }
 

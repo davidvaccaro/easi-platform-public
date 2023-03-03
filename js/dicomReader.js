@@ -64,6 +64,8 @@ class DicomReader {
                         controller.close();
                         reader.releaseLock();
 
+                        alert('done');
+                        
                     }
                 });
 

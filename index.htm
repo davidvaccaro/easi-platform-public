@@ -19,6 +19,7 @@
     <script src="js/dicomSOPClass.js"></script>
 
     <script src="js/dicomData.js"></script>
+    <script src="js/dicomItem.js"></script>
     <script src="js/dicomDataElement.js"></script>
     <script src="js/dicomAttribute.js"></script>
     <script src="js/dicomAttributeSequence.js"></script>
@@ -59,7 +60,13 @@
                 var url = URL.createObjectURL(this.files[0]);
 
                 // Parse the DICOM file
-                (new DicomReader(new DicomParser(new DicomEmitter()), function () { })).read(url);
+                (new DicomReader(
+                    new DicomParser(new DicomEmitter()), 
+                    function (error) { 
+
+                        var xxx = 100;
+
+                    })).read(url);                
 
             });
 

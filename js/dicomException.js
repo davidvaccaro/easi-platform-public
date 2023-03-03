@@ -22,11 +22,13 @@
 var DicomErrorCodes = {
     GeneralError: 'GeneralError',
     InvalidParameter: 'InvalidParameter',
+    NotImplemented: 'NotImplemented',
     InvalidPart: 'InvalidPart',
     InvalidValueRepresentation: 'InvalidValueRepresentation',
     InvalidTag: 'InvalidTag',
     UnknownTagAndValueRepresentation: 'UnknownTagAndValueRepresentation',
     InvalidDataElement: 'InvalidDataElement',
+    InvalidSequence: 'InvalidSequence',
     DuplicateAttribute: 'DuplicateAttribute',
     InvalidMetaSet: 'InvalidMetaSet'
 };

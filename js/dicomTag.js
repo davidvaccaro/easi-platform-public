@@ -35,9 +35,9 @@ class DicomTag {
 			('0000' + DicomUtilities.bytesToUnsignedInteger(group).toString(16)).substr(-4)
 			+
 			('0000' + DicomUtilities.bytesToUnsignedInteger(element).toString(16)).substr(-4)
-		);
+		).toUpperCase();
 	}
-
+	
 	/**
 	 * Find the DicomTag instance for the specified tag identifier (e.g. 00020000 = (0002, 0000)).
 	 */
@@ -46,14 +46,77 @@ class DicomTag {
 		// Loopup the tag
 		var tag = Tag[id];
 
+		// Check for private
+		if (tag == null) {
+
+			// Parse the group key
+			var groupKey = id.substr(0, 4);
+
+			// Parse the element key
+			var elementKey = id.substr(4, 4);
+
+			// Parse the group
+			var group = parseInt(groupKey, 16);
+
+			// Parse the group
+			var element = parseInt(elementKey, 16);
+
+			// Handle "Private Creator" Tag
+			if (DicomTag.isPrivateCreatorIDTag(group, element)) {
+				tag = new DicomTag({ 
+					ID: id, 
+					Tag: '(' + groupKey + ', ' + elementKey + ')', 
+					Group: group, 
+					Element: element, 
+					VR: ValueRepresentations.LO, 
+					Name: 'Private Creator ID', 
+					IsRetired: false,
+					IsPrivate: true 
+				});
+			}
+			else if (DicomTag.isPrivateTag(group, element)) {
+				tag = new DicomTag({ 
+					ID: id, 
+					Tag: '(' + groupKey + ', ' + elementKey + ')', 
+					Group: group, 
+					Element: element, 
+					VR: null, 
+					Name: 'Private Tag', 
+					IsRetired: false,
+					IsPrivate: true
+				});
+			}
+
+		}
+
 		// Validate the tag
-		if ((tag == undefined) || (tag == null))
-			return undefined;
+		if (tag == null)
+			return null;
 
 		// Return the tag POJO
 		return tag;
 
 	};
+
+	/**
+	 * Determine if the specified group and element identify a DICOM Private Creator 
+	 * @param {*} group The specified DICOM Group Number.
+	 * @param {*} element The specified DICOM Element Number.
+	 * https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html
+	 */
+	static isPrivateCreatorIDTag(group, element) {
+		return ((element >= 16) && (element <= 255));
+	}
+
+	/**
+	 * Determine if the specified group and element identify a DICOM Private Creator 
+	 * @param {*} group The specified DICOM Group Number.
+	 * @param {*} element The specified DICOM Element Number.
+	 * https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html
+	 */
+	static isPrivateTag(group, element) {
+		return ((element >= 4096) && (element <= 4351));
+	}
 
 	/**
 	 * Construct a new DicomTag from the specified data.
@@ -8290,7 +8353,9 @@ var Tags = {
 	VariableCoefficientsSdvn: Tag['7F000020'],
 	VariableCoefficientsSdhn: Tag['7F000030'],
 	VariableCoefficientsSddn: Tag['7F000040'],
+	
 	DigitalSignaturesSequence: Tag['FFFAFFFA'],
+	
 	DataSetTrailingPadding: Tag['FFFCFFFC'],
 	
 	Item: Tag['FFFEE000'],

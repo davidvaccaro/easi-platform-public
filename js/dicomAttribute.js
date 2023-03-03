@@ -41,7 +41,10 @@ class DicomAttribute extends DicomDataElement {
             case ValueRepresentations.AE:
             case ValueRepresentations.SH:
             case ValueRepresentations.UI:
-                return new TextDecoder().decode(data).trim();
+
+                // Decode the string value, remove NULL chars and TRIM 
+                return (new TextDecoder().decode(data)).replace(/\0/g, '').trim();
+                
                 break;                
 
             // OB: Handle converting the RAW data to a "other byte" value

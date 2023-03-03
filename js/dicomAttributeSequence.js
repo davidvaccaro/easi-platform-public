@@ -22,6 +22,56 @@
 class DicomAttributeSequence extends DicomAttribute {
 
     /**
+     * Find an attribute within the immediate sequence by tag identifier.
+     * @param {*} tag The DICOM tag to search by.
+     * @returns The attribute if found or undefined otherwise.
+     */
+    find(tag) {
+        return this.attributes.find(attribute => attribute.tag.ID == tag.ID);
+    }
+
+    /**
+     * Determine if an attribute exists within the immediate sequence by tag.
+     * @param {*} tag True if an attribute exists, False otherwise.
+     */
+    has(tag) {
+        return (this.find(tag) != null);
+    }
+
+    /**
+     * Adds a new attribute to the sequence of attributes.
+     * @param {*} attribute The attribute to add.
+     */
+    add(attribute) {
+
+        // If the sequence already has the tag, fail with exception
+        if (this.has(attribute.tag))
+            throw new DicomException("Duplicate Attribute!", DicomErrorCodes.DuplicateAttribute);
+
+        // Add the attribute to the collection
+        this.attributes.push(attribute);
+
+    }
+
+    /**
+     * Get the attribute value for a specified DICOM tag identifier.
+     * @returns The the attribute value.
+     */
+    value(tag, defaultValue = null) {
+
+        // Find the attribute by the DICOM tag
+        var attribute = this.find(tag);
+
+        // Return 0-length if NOT present
+        if (attribute == null)
+            return defaultValue;
+
+        // Return the attribute value
+        return attribute.value;
+
+    }
+
+    /**
      * Construct an "empty" new DICOM attribute sequence instance from a tag
      */
     constructor(tag, valueLength, data, transferSyntax) {
@@ -29,8 +79,8 @@ class DicomAttributeSequence extends DicomAttribute {
         // Call the super constructor
         super(tag, valueLength, data, transferSyntax);
 
-        // Set this instance to have the attribute set behavior
-        Object.assign(this, new DicomAttributeSet());
+        // Init the attributes collection
+        this.attributes = [];
 
     }
 

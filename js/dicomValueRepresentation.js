@@ -383,6 +383,7 @@ var value_representation_lookup = {
     'DT': ValueRepresentations.DT,
     'FL': ValueRepresentations.FL,
     'FD': ValueRepresentations.FD,
+    'IS': ValueRepresentations.IS,
     'LO': ValueRepresentations.LO,
     'LT': ValueRepresentations.LT,
     'OB': ValueRepresentations.OB,
