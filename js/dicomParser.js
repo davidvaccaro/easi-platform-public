@@ -279,7 +279,7 @@ class DicomParser {
                     group: group,
                     element: element,
                     tag: tag,
-                    valueRepresentation: tag.valueRepresentation
+                    valueRepresentation: tag.VR
                 };
 
             }
@@ -289,23 +289,23 @@ class DicomParser {
                 throw new DicomException("Invalid Value Length!", DicomErrorCodes.InvalidDataElement);
 
             // Validate the value length based on value-representation
-            if ((valueRepresentation.IsFixed == true) && (valueRepresentation.Length != valueLength) && (Configuration.Strict == true))
+            if ((result.valueRepresentation.IsFixed == true) && (result.valueRepresentation.Length != valueLength) && (Configuration.Strict == true))
                 throw new DicomException("Invalid Value Length! Value does NOT match VR fixed length.", DicomErrorCodes.InvalidDataElement);
 
             // Validate the use of undefined-length value length
             // VRs of SV, UC, UR, UV and UT may not have an Undefined Length, i.e., a Value Length of FFFFFFFFH.
-            if ((valueLength == DicomConstants.UndefinedLength) && (valueRepresentation.IsExplicit == true)
+            if ((valueLength == DicomConstants.UndefinedLength) && (result.valueRepresentation.IsExplicit == true)
                 &&
                 (
-                    (valueRepresentation == ValueRepresentations.SV)
+                    (result.valueRepresentation == ValueRepresentations.SV)
                     ||
-                    (valueRepresentation == ValueRepresentations.UC)
+                    (result.valueRepresentation == ValueRepresentations.UC)
                     ||
-                    (valueRepresentation == ValueRepresentations.UR)
+                    (result.valueRepresentation == ValueRepresentations.UR)
                     ||
-                    (valueRepresentation == ValueRepresentations.UV)
+                    (result.valueRepresentation == ValueRepresentations.UV)
                     ||
-                    (valueRepresentation == ValueRepresentations.UT)
+                    (result.valueRepresentation == ValueRepresentations.UT)
                 )
                 && (Configuration.Strict == true)
             ) {
