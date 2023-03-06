@@ -26,6 +26,8 @@ class DicomReader {
         // Establish that
         var that = this;
 
+        try {
+
         // Fetch the DICOM file
         fetch(url)
             .then(response => response.body)
@@ -70,7 +72,18 @@ class DicomReader {
                 });
 
             })
-            .catch(that.error);
+            .catch(
+                err => {
+                    console.log(err);
+                    that.error(err);
+                    respondError(res, err);
+                  }                
+            );
+
+        }
+        catch (error) {
+            var xxx = 100;
+        }
 
     }
 

@@ -38,7 +38,15 @@
 <body>
     <h1>DICOM.JS Samples</h1>
     <div>
-        <div><input type="file" id="dicomFile" name="dicomFile" /></div>
+        <div>
+            <select id="specification">
+                <option value="0" selected>Part-10</option>
+                <option value="1">DataSet</option>
+            </select>
+        </div>
+        <div>
+            <input type="file" id="dicomFile" name="dicomFile" />
+        </div>
     </div>
     <div>
     </div>
@@ -48,6 +56,9 @@
 
             // Set the top-level exception handler
             window.onerror = function (message, source, lineno, columnno, error) {
+
+                // Alert the error message
+                alert(message);
 
                 // The exception is handled, don't show to the user.
                 return true;
@@ -61,7 +72,7 @@
 
                 // Parse the DICOM file
                 (new DicomReader(
-                    new DicomParser(new DicomEmitter()), 
+                    new DicomParser(new DicomEmitter(), $('#specification').val() == "0" ? DicomPart10Specification : DicomDataSetSpecification), 
                     function (error) { 
 
                         var xxx = 100;

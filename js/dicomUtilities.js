@@ -84,6 +84,8 @@ class DicomUtilities {
             bytes[i + 1] = holder;
         }
 
+        return bytes;
+        
     }
 
     /**

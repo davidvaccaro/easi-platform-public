@@ -90,8 +90,10 @@ class DicomTag {
 		}
 
 		// Validate the tag
-		if (tag == null)
+		if (tag == null) {
+			console.log("Failed to find tag: " + id);
 			return null;
+		}
 
 		// Return the tag POJO
 		return tag;
@@ -640,6 +642,7 @@ var Tag = {
 	'0014511D': new DicomTag({ ID: '0014511D', Tag: '(0014, 511D)', Group: 20, Element: 20765, VR: ValueRepresentations.DS, Name: 'Wedge Chamfer Height', IsRetired: false }),
 	'0014511E': new DicomTag({ ID: '0014511E', Tag: '(0014, 511E)', Group: 20, Element: 20766, VR: ValueRepresentations.CS, Name: 'Wedge Curve', IsRetired: false }),
 	'0014511F': new DicomTag({ ID: '0014511F', Tag: '(0014, 511F)', Group: 20, Element: 20767, VR: ValueRepresentations.DS, Name: 'Radius Along the Wedge', IsRetired: false }),
+	'00180000': new DicomTag({ ID: '00180000', Tag: '(0018, 0000)', Group: 24, Element: 0, VR: ValueRepresentations.UL, Name: 'Acquisition Group Length (Retired)', IsRetired: true }),		
 	'00180010': new DicomTag({ ID: '00180010', Tag: '(0018, 0010)', Group: 24, Element: 16, VR: ValueRepresentations.LO, Name: 'Contrast/Bolus Agent', IsRetired: false }),
 	'00180012': new DicomTag({ ID: '00180012', Tag: '(0018, 0012)', Group: 24, Element: 18, VR: ValueRepresentations.SQ, Name: 'Contrast/Bolus Agent Sequence', IsRetired: false }),
 	'00180013': new DicomTag({ ID: '00180013', Tag: '(0018, 0013)', Group: 24, Element: 19, VR: ValueRepresentations.FL, Name: 'Contrast/Bolus T1 Relaxivity', IsRetired: false }),
@@ -2578,6 +2581,7 @@ var Tag = {
 	'00520038': new DicomTag({ ID: '00520038', Tag: '(0052, 0038)', Group: 82, Element: 56, VR: ValueRepresentations.US, Name: 'Number of Padded A-lines', IsRetired: false }),
 	'00520039': new DicomTag({ ID: '00520039', Tag: '(0052, 0039)', Group: 82, Element: 57, VR: ValueRepresentations.CS, Name: 'Interpolation Type', IsRetired: false }),
 	'0052003A': new DicomTag({ ID: '0052003A', Tag: '(0052, 003A)', Group: 82, Element: 58, VR: ValueRepresentations.CS, Name: 'Refractive Index Applied', IsRetired: false }),
+	'00540000': new DicomTag({ ID: '00540000', Tag: '(0054, 0000)', Group: 84, Element: 0, VR: ValueRepresentations.UL, Name: 'Generic Group Length (Retired)', IsRetired: true }),	
 	'00540010': new DicomTag({ ID: '00540010', Tag: '(0054, 0010)', Group: 84, Element: 16, VR: ValueRepresentations.US, Name: 'Energy Window Vector', IsRetired: false }),
 	'00540011': new DicomTag({ ID: '00540011', Tag: '(0054, 0011)', Group: 84, Element: 17, VR: ValueRepresentations.US, Name: 'Number of Energy Windows', IsRetired: false }),
 	'00540012': new DicomTag({ ID: '00540012', Tag: '(0054, 0012)', Group: 84, Element: 18, VR: ValueRepresentations.SQ, Name: 'Energy Window Information Sequence', IsRetired: false }),
@@ -4763,6 +4767,7 @@ var Tags = {
 	WedgeChamferHeight: Tag['0014511D'],
 	WedgeCurve: Tag['0014511E'],
 	RadiusAlongTheWedge: Tag['0014511F'],
+	AcquisitionGroupLength: Tag['00180000'],
 	ContrastBolusAgent: Tag['00180010'],
 	ContrastBolusAgentSequence: Tag['00180012'],
 	ContrastBolusT1Relaxivity: Tag['00180013'],
@@ -6698,6 +6703,7 @@ var Tags = {
 	NumberOfPaddedALines: Tag['00520038'],
 	InterpolationType: Tag['00520039'],
 	RefractiveIndexApplied: Tag['0052003A'],
+	GenericGroupLength: Tag['00540000'],
 	EnergyWindowVector: Tag['00540010'],
 	NumberOfEnergyWindows: Tag['00540011'],
 	EnergyWindowInformationSequence: Tag['00540012'],

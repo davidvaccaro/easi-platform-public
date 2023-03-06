@@ -45,6 +45,10 @@ var DicomPart10Specification = [
     DicomPartType.Preamble 
 ];
 
+// Populate the part specification (Part-5)
+var DicomDataSetSpecification = [ 
+    DicomPartType.DataSet
+];
 
 class DicomParser {
 
@@ -90,176 +94,37 @@ class DicomParser {
 
         var result = null;
 
-        // Peek the next data-element "group"
-        var group = this.data.peek(bytesPeeked, DicomConstants.GroupLength);
+        try {
 
-        if ((group == null) || (group.length != DicomConstants.GroupLength))
-            return false;
+            // Peek the next data-element "group"
+            var group = this.data.peek(bytesPeeked, DicomConstants.GroupLength);
 
-        // Increment the bytes peeked
-        bytesPeeked += DicomConstants.GroupLength;
-
-        // Peek the next data-element "element"
-        var element = this.data.peek(bytesPeeked, DicomConstants.ElementLength);
-
-        if ((element == null) || (element.length != DicomConstants.ElementLength))
-            return false;
-
-        // Increment the bytes peeked
-        bytesPeeked += DicomConstants.ElementLength;
-
-        // Establish the DICOM data-element tag identifier
-        var identifier = DicomTag.identifier(group, element);
-
-        // Establish the DICOM Tag
-        var tag = DicomTag.find(identifier);
-
-        // If the tag is a sequence control tag, 
-        if ((tag == Tags.Item) || (tag == Tags.ItemDelimitationItem) || (tag == Tags.SequenceDelimitationItem)) {
-
-            // Initialize the value-length
-            var valueLength = null;
-
-            // Peek the next 4-byte value length
-            var length = this.data.peek(bytesPeeked, DicomConstants.ValueLength32);
-
-            if ((length == null) || (length.length != DicomConstants.ValueLength32))
+            if ((group == null) || (group.length != DicomConstants.GroupLength))
                 return false;
 
             // Increment the bytes peeked
-            bytesPeeked += DicomConstants.ValueLength32;
+            bytesPeeked += DicomConstants.GroupLength;
 
-            // Convert the bytes to a the value-length
-            valueLength = DicomUtilities.bytesToUnsignedInteger(length);
+            // Peek the next data-element "element"
+            var element = this.data.peek(bytesPeeked, DicomConstants.ElementLength);
 
-            // Construct the "sequence control" tag details 
-            result = {
-                bytesPeeked: bytesPeeked,
-                group: group,
-                element: element,
-                tag: tag,
-                valueRepresentation: tag.valueRepresentation,
-                valueLength: valueLength
-            };
-    
-        }
-        else {
+            if ((element == null) || (element.length != DicomConstants.ElementLength))
+                return false;
 
-            // Initialize the value-length
-            var valueLength = null;
+            // Increment the bytes peeked
+            bytesPeeked += DicomConstants.ElementLength;
 
-            // Handle "Explicit" versus "Implicit" data-element processing
-            // Explicit: 
-            //  - With VR of AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, PN, SH, SL, SS, ST, TM, UI, UL and US:  
-            //      https://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_7.html#table_7.1-2
-            //  - Otherwise: 
-            //      https://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_7.html#table_7.1-1
-            // Implicit:
-            //  - https://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_7.html#table_7.1-3
-            if (this.data.transferSyntax.IsExplicit == true) {
+            // Establish the DICOM data-element tag identifier
+            var identifier = DicomTag.identifier(group, element);
 
-                // Peek the next data-element "value-representation"
-                var vr = this.data.peek(bytesPeeked, DicomConstants.ValueRepresentationLength);
+            // Establish the DICOM Tag
+            var tag = DicomTag.find(identifier);
 
-                if ((vr == null) || (vr.length != DicomConstants.ValueRepresentationLength))
-                    return false;
+            // If the tag is a sequence control tag, 
+            if ((tag == Tags.Item) || (tag == Tags.ItemDelimitationItem) || (tag == Tags.SequenceDelimitationItem)) {
 
-                // Increment the bytes peeked
-                bytesPeeked += DicomConstants.ValueRepresentationLength;
-
-                // Establish the VR reference from the "vr" data read
-                var valueRepresentation = DicomValueRepresentation.find(DicomUtilities.bytesToString(vr));
-
-                // If BOTH the tag and the value-representation are unknown, process exception
-                if ((tag == null) && (valueRepresentation == null))
-                    throw new DicomException("Unknown Tag and Value Representation!", DicomErrorCodes.UnknownTagAndValueRepresentation);
-
-                // If the tag is found but the VR does NOT agree, process exception
-                if ((tag != null) && (valueRepresentation != null) && (tag.VR != valueRepresentation) && (Configuration.Strict == true))
-                    throw new DicomException("Value Representation Read and Runtime Tag do NOT Agree!", DicomErrorCodes.InvalidDataElement);
-
-                // Establish the value representation to use to parse the value
-                if (valueRepresentation == null)
-                    valueRepresentation = tag.VR;
-
-                // Establish the tag value representation (for Private Tags)
-                if ((tag.VR == null) && (tag.IsPrivate == true))
-                    tag.VR = valueRepresentation;
-
-                // If there is NO value-representation, process exception
-                if (valueRepresentation == null)
-                    throw new DicomException("Invalid Value Representation!", DicomErrorCodes.InvalidValueRepresentation);
-
-                // Handle the VRs with "reserved" bytes
-                if ((valueRepresentation == ValueRepresentations.OB)
-                    ||
-                    (valueRepresentation == ValueRepresentations.OD)
-                    ||
-                    (valueRepresentation == ValueRepresentations.OF)
-                    ||
-                    (valueRepresentation == ValueRepresentations.OL)
-                    ||
-                    (valueRepresentation == ValueRepresentations.OW)
-                    ||
-                    (valueRepresentation == ValueRepresentations.SQ)
-                    ||
-                    (valueRepresentation == ValueRepresentations.UC)
-                    ||
-                    (valueRepresentation == ValueRepresentations.UR)
-                    ||
-                    (valueRepresentation == ValueRepresentations.UT)
-                    ||
-                    (valueRepresentation == ValueRepresentations.UN)) {
-
-                    // Peek the next reserved 2-bytes
-                    var reserved = this.data.peek(bytesPeeked, DicomConstants.ReservedLength);
-
-                    if ((reserved == null) || (reserved.length != DicomConstants.ReservedLength))
-                        return false;
-
-                    // Increment the bytes peeked
-                    bytesPeeked += DicomConstants.ReservedLength;
-
-                    // Peek the next 4-byte value length
-                    var length = this.data.peek(bytesPeeked, DicomConstants.ValueLength32);
-
-                    if ((length == null) || (length.length != DicomConstants.ValueLength32))
-                        return false;
-
-                    // Increment the bytes peeked
-                    bytesPeeked += DicomConstants.ValueLength32;
-
-                    // Convert the bytes to a the value-length
-                    valueLength = DicomUtilities.bytesToUnsignedInteger(length);
-
-                }
-                else {
-
-                    // Peek the next 2-byte value length
-                    var length = this.data.peek(bytesPeeked, DicomConstants.ValueLength16);
-
-                    if ((length == null) || (length.length != DicomConstants.ValueLength16))
-                        return false;
-
-                    // Increment the bytes peeked
-                    bytesPeeked += DicomConstants.ValueLength16;
-
-                    // Convert the bytes to a the value-length
-                    valueLength = DicomUtilities.bytesToUnsignedInteger(length);
-
-                }
-
-                // Construct the "explicit" tag details 
-                result = {
-                    bytesPeeked: bytesPeeked,
-                    group: group,
-                    element: element,
-                    tag: tag,
-                    valueRepresentation: valueRepresentation
-                };
-
-            }
-            else {
+                // Initialize the value-length
+                var valueLength = null;
 
                 // Peek the next 4-byte value length
                 var length = this.data.peek(bytesPeeked, DicomConstants.ValueLength32);
@@ -273,47 +138,196 @@ class DicomParser {
                 // Convert the bytes to a the value-length
                 valueLength = DicomUtilities.bytesToUnsignedInteger(length);
 
-                // Construct the "implicit" tag details 
+                // Construct the "sequence control" tag details 
                 result = {
                     bytesPeeked: bytesPeeked,
                     group: group,
                     element: element,
                     tag: tag,
-                    valueRepresentation: tag.VR
+                    valueRepresentation: tag.valueRepresentation,
+                    valueLength: valueLength
                 };
+        
+            }
+            else {
+
+                // Initialize the value-length
+                var valueLength = null;
+
+                // Handle "Explicit" versus "Implicit" data-element processing
+                // Explicit: 
+                //  - With VR of AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, PN, SH, SL, SS, ST, TM, UI, UL and US:  
+                //      https://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_7.html#table_7.1-2
+                //  - Otherwise: 
+                //      https://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_7.html#table_7.1-1
+                // Implicit:
+                //  - https://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_7.html#table_7.1-3
+                if (this.data.transferSyntax.IsExplicit == true) {
+
+                    // Peek the next data-element "value-representation"
+                    var vr = this.data.peek(bytesPeeked, DicomConstants.ValueRepresentationLength);
+
+                    if ((vr == null) || (vr.length != DicomConstants.ValueRepresentationLength))
+                        return false;
+
+                    // Increment the bytes peeked
+                    bytesPeeked += DicomConstants.ValueRepresentationLength;
+
+                    // Establish the VR reference from the "vr" data read
+                    var valueRepresentation = DicomValueRepresentation.find(DicomUtilities.bytesToString(vr));
+
+                    // If BOTH the tag and the value-representation are unknown, process exception
+                    if ((tag == null) && (valueRepresentation == null))
+                        throw new DicomException("Unknown Tag and Value Representation!", DicomErrorCodes.UnknownTagAndValueRepresentation);
+
+                    // If the tag is found but the VR does NOT agree, process exception
+                    if ((tag != null) && (valueRepresentation != null) && (tag.VR != valueRepresentation) && (Configuration.Strict == true))
+                        throw new DicomException("Value Representation Read and Runtime Tag do NOT Agree!", DicomErrorCodes.InvalidDataElement);
+
+                    // Establish the value representation to use to parse the value
+                    if (valueRepresentation == null)
+                        valueRepresentation = tag.VR;
+
+                    // Establish the tag value representation (for Private Tags)
+                    if ((tag.VR == null) && (tag.IsPrivate == true))
+                        tag.VR = valueRepresentation;
+
+                    // If there is NO value-representation, process exception
+                    if (valueRepresentation == null)
+                        throw new DicomException("Invalid Value Representation!", DicomErrorCodes.InvalidValueRepresentation);
+
+                    // Handle the VRs with "reserved" bytes
+                    if ((valueRepresentation == ValueRepresentations.OB)
+                        ||
+                        (valueRepresentation == ValueRepresentations.OD)
+                        ||
+                        (valueRepresentation == ValueRepresentations.OF)
+                        ||
+                        (valueRepresentation == ValueRepresentations.OL)
+                        ||
+                        (valueRepresentation == ValueRepresentations.OW)
+                        ||
+                        (valueRepresentation == ValueRepresentations.SQ)
+                        ||
+                        (valueRepresentation == ValueRepresentations.UC)
+                        ||
+                        (valueRepresentation == ValueRepresentations.UR)
+                        ||
+                        (valueRepresentation == ValueRepresentations.UT)
+                        ||
+                        (valueRepresentation == ValueRepresentations.UN)) {
+
+                        // Peek the next reserved 2-bytes
+                        var reserved = this.data.peek(bytesPeeked, DicomConstants.ReservedLength);
+
+                        if ((reserved == null) || (reserved.length != DicomConstants.ReservedLength))
+                            return false;
+
+                        // Increment the bytes peeked
+                        bytesPeeked += DicomConstants.ReservedLength;
+
+                        // Peek the next 4-byte value length
+                        var length = this.data.peek(bytesPeeked, DicomConstants.ValueLength32);
+
+                        if ((length == null) || (length.length != DicomConstants.ValueLength32))
+                            return false;
+
+                        // Increment the bytes peeked
+                        bytesPeeked += DicomConstants.ValueLength32;
+
+                        // Convert the bytes to a the value-length
+                        valueLength = DicomUtilities.bytesToUnsignedInteger(length);
+
+                    }
+                    else {
+
+                        // Peek the next 2-byte value length
+                        var length = this.data.peek(bytesPeeked, DicomConstants.ValueLength16);
+
+                        if ((length == null) || (length.length != DicomConstants.ValueLength16))
+                            return false;
+
+                        // Increment the bytes peeked
+                        bytesPeeked += DicomConstants.ValueLength16;
+
+                        // Convert the bytes to a the value-length
+                        valueLength = DicomUtilities.bytesToUnsignedInteger(length);
+
+                    }
+
+                    // Construct the "explicit" tag details 
+                    result = {
+                        bytesPeeked: bytesPeeked,
+                        group: group,
+                        element: element,
+                        tag: tag,
+                        valueRepresentation: valueRepresentation
+                    };
+
+                }
+                else {
+
+                    // Peek the next 4-byte value length
+                    var length = this.data.peek(bytesPeeked, DicomConstants.ValueLength32);
+
+                    if ((length == null) || (length.length != DicomConstants.ValueLength32))
+                        return false;
+
+                    // Increment the bytes peeked
+                    bytesPeeked += DicomConstants.ValueLength32;
+
+                    // Convert the bytes to a the value-length
+                    valueLength = DicomUtilities.bytesToUnsignedInteger(length);
+
+                    // Construct the "implicit" tag details 
+                    result = {
+                        bytesPeeked: bytesPeeked,
+                        group: group,
+                        element: element,
+                        tag: tag,
+                        valueRepresentation: tag.VR
+                    };
+
+                }
+
+                // There MUST be a valid value-length at this point so validate the value-length
+                if (valueLength == null)
+                    throw new DicomException("Invalid Value Length!", DicomErrorCodes.InvalidDataElement);
+
+                // Validate the value length based on value-representation
+                if ((result.valueRepresentation.IsFixed == true) && (result.valueRepresentation.Length != valueLength) && (Configuration.Strict == true))
+                    throw new DicomException("Invalid Value Length! Value does NOT match VR fixed length.", DicomErrorCodes.InvalidDataElement);
+
+                // Validate the use of undefined-length value length
+                // VRs of SV, UC, UR, UV and UT may not have an Undefined Length, i.e., a Value Length of FFFFFFFFH.
+                if ((valueLength == DicomConstants.UndefinedLength) && (result.valueRepresentation.IsExplicit == true)
+                    &&
+                    (
+                        (result.valueRepresentation == ValueRepresentations.SV)
+                        ||
+                        (result.valueRepresentation == ValueRepresentations.UC)
+                        ||
+                        (result.valueRepresentation == ValueRepresentations.UR)
+                        ||
+                        (result.valueRepresentation == ValueRepresentations.UV)
+                        ||
+                        (result.valueRepresentation == ValueRepresentations.UT)
+                    )
+                    && (Configuration.Strict == true)
+                ) {
+                    throw new DicomException("Invalid Value Length! UC, UR or UT MUST be Explicit! See: 7.1.2 Data Element Structure with Explicit VR", DicomErrorCodes.InvalidDataElement);
+                }
+
+                // Set the result length
+                result.valueLength = valueLength;
 
             }
 
-            // There MUST be a valid value-length at this point so validate the value-length
-            if (valueLength == null)
-                throw new DicomException("Invalid Value Length!", DicomErrorCodes.InvalidDataElement);
+        }
+        catch (error) {
 
-            // Validate the value length based on value-representation
-            if ((result.valueRepresentation.IsFixed == true) && (result.valueRepresentation.Length != valueLength) && (Configuration.Strict == true))
-                throw new DicomException("Invalid Value Length! Value does NOT match VR fixed length.", DicomErrorCodes.InvalidDataElement);
-
-            // Validate the use of undefined-length value length
-            // VRs of SV, UC, UR, UV and UT may not have an Undefined Length, i.e., a Value Length of FFFFFFFFH.
-            if ((valueLength == DicomConstants.UndefinedLength) && (result.valueRepresentation.IsExplicit == true)
-                &&
-                (
-                    (result.valueRepresentation == ValueRepresentations.SV)
-                    ||
-                    (result.valueRepresentation == ValueRepresentations.UC)
-                    ||
-                    (result.valueRepresentation == ValueRepresentations.UR)
-                    ||
-                    (result.valueRepresentation == ValueRepresentations.UV)
-                    ||
-                    (result.valueRepresentation == ValueRepresentations.UT)
-                )
-                && (Configuration.Strict == true)
-            ) {
-                throw new DicomException("Invalid Value Length! UC, UR or UT MUST be Explicit! See: 7.1.2 Data Element Structure with Explicit VR", DicomErrorCodes.InvalidDataElement);
-            }
-
-            // Set the result length
-            result.valueLength = valueLength;
+            // TODO - Handle exception properly
+            console.log(error);
 
         }
 
@@ -375,67 +389,77 @@ class DicomParser {
         // Init the complete state
         var complete = false;
 
-        // Append the new chunk of data
-        if ((chunk != null) && (chunk.length > 0)) {
+        try {
 
-            // Append the new chunck
-            this.data.append(chunk);
+            // Append the new chunk of data
+            if ((chunk != null) && (chunk.length > 0)) {
+
+                // Append the new chunck
+                this.data.append(chunk);
+
+            }
+
+            // Parse the current data based on the current part
+
+            // Parse the start of the instance
+            if (this.partType == null) {
+
+                // Start the instance
+                this.emitter.startPart(null);
+
+                // Pop the first part
+                this.partType = this.partSequence.pop();
+
+            }
+
+            // Parse the "preamble" Table 7.1-1. DICOM File Meta Information / File Preamble
+            if (this.partType == DicomPartType.Preamble) {
+
+                // Parse the next DICOM Preamble
+                this.parseNextPreamble();
+
+            }
+
+            // Parse the "prefix" Table 7.1-1. DICOM File Meta Information / DICOM Prefix
+            if (this.partType == DicomPartType.Prefix) {
+
+                // Parse the next DICOM Prefix
+                this.parseNextPrefix();
+
+            }
+
+            // Parse the Table 7.1-1. DICOM File Meta Information / File Meta Information Group Length (0002,0000) to the end of this section
+            if (this.partType == DicomPartType.MetaSet) {
+                
+                // Parse more meta-set
+                this.parseNextMetaSet(isDone);
+
+            }
+
+            // Parse the remaining DICOM data elements
+            if (this.partType == DicomPartType.DataSet) {
+
+                // Parse more data-set
+                complete = this.parseNextDataSet(isDone);
+                
+            }
+
+            // If the instance is complete, end the instance
+            if (complete == true) {
+
+                // Start the instance
+                this.emitter.endPart(null);
+
+                // Reset the state
+                this.reset();
+
+            }
 
         }
+        catch (error) {
 
-        // Parse the current data based on the current part
-
-        // Parse the start of the instance
-        if (this.partType == null) {
-
-            // Start the instance
-            this.emitter.startPart(null);
-
-            // Pop the first part
-            this.partType = this.partSequence.pop();
-
-        }
-
-        // Parse the "preamble" Table 7.1-1. DICOM File Meta Information / File Preamble
-        if (this.partType == DicomPartType.Preamble) {
-
-            // Parse the next DICOM Preamble
-            this.parseNextPreamble();
-
-        }
-
-        // Parse the "prefix" Table 7.1-1. DICOM File Meta Information / DICOM Prefix
-        if (this.partType == DicomPartType.Prefix) {
-
-            // Parse the next DICOM Prefix
-            this.parseNextPrefix();
-
-        }
-
-        // Parse the Table 7.1-1. DICOM File Meta Information / File Meta Information Group Length (0002,0000) to the end of this section
-        if (this.partType == DicomPartType.MetaSet) {
-            
-            // Parse more meta-set
-            this.parseNextMetaSet(isDone);
-
-        }
-
-        // Parse the remaining DICOM data elements
-        if (this.partType == DicomPartType.DataSet) {
-
-            // Parse more data-set
-            complete = this.parseNextDataSet(isDone);
-            
-        }
-
-        // If the instance is complete, end the instance
-        if (complete == true) {
-
-            // Start the instance
-            this.emitter.endPart(null);
-
-            // Reset the state
-            this.reset();
+            // TODO - Handle exception properly
+            console.log(error);
 
         }
 
@@ -690,7 +714,9 @@ class DicomParser {
             this.partStart = this.totalBytesConsumed;
 
             // Set the current DicomData buffer transfer syntax
-            this.data.convert(this.lastPart.transferSyntaxUID);
+            if (this.lastPart != null) {
+                this.data.convert(this.lastPart.transferSyntaxUID);
+            }
 
             // If the meta-set has yet to be created, create it
             this.part = new DicomDataSet();

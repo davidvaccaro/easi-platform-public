@@ -62,7 +62,7 @@ class DicomData {
             return;
 
         // If there currently is data in the buffer and the new transfer-syntax endian-ness does NOT agree, flip the bytes
-        if ((this.size > 0)
+        if ((this.length() > 0)
             && (newTransferSyntax != TransferSyntax.NONE)
             && (this.transferSyntax != TransferSyntax.NONE)
             && (this.transferSyntax.IsLittleEndian != newTransferSyntax.IsLittleEndian)) {
