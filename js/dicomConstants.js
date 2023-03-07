@@ -29,6 +29,10 @@ class DicomConstants {
     // https://dicom.nema.org/medical/dicom/current/output/html/part10.html#chapter_7
     static get PrefixLength() { return 4; }
 
+    // The standard DICOM prefix value
+    // https://dicom.nema.org/medical/dicom/current/output/html/part10.html#chapter_7
+    static get PrefixValue() { return 'DICM'; }
+
     // The standard length of the DICOM Data Element "Group"
     // https://dicom.nema.org/medical/dicom/current/output/html/part05.html#sect_7.1.1
     static get GroupLength() { return 2; }

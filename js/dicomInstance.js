@@ -1,7 +1,7 @@
 //
-// dicomEmitter.js - 1.0.0
+// dicomInstance.js - 1.0.0
 //
-// DICOM Emitter Class 
+// DICOM Instance Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,57 +19,66 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomEmitter {
+class DicomInstance {
 
-    reset() {
+    /**
+     * Gets the DICOM Preamble.
+     * @returns The preamble value.
+     */
+    get preamble() {
+        return this._preamble;
     }
 
-    startInstance() {
+    /**
+     * Sets the DICOM Preamble.
+     */
+    set preamble(preamble) {
+        this._preamble = preamble;
     }
 
-    startPreamble(preamble) {
+    /**
+     * Gets the DICOM Prefix.
+     * @returns The prefix value.
+     */
+    get prefix() {
+        return this._prefix;
     }
 
-    startPrefix(prefix) {
+    /**
+     * Sets the DICOM Prefix.
+     */
+    set prefix(prefix) {
+        this._prefix = prefix;
     }
 
-    startAttribute(attribute) {
+    /**
+     * Gets the DICOM MetaSet.
+     * @returns The meta-set value.
+     */
+    get metaSet() {
+        return this._metaSet;
     }
 
-    startSequence(sequence) {
+    /**
+     * Sets the DICOM MetaSet.
+     */
+    set metaSet(metaSet) {
+        this._metaSet = metaSet;
     }
 
-    appendAttribute(attribute) {
+    /**
+     * Gets the DICOM DataSet.
+     * @returns The data-set value.
+     */
+    get dataSet() {
+        return this._dataset;
     }
 
-    appendSequence(sequence) {
-    }
-
-    startMetaSet() {
-    }
-
-    startDataSet() {
-    }
-
-    endPreamble(preamble) {
-    }
-
-    endPrefix(prefix) {
-    }
-
-    endAttribute(attribute) {
-    }
-
-    endSequence(sequence) {
-    }
-
-    endMetaSet() {
-    }
-
-    endDataSet() {
-    }
-
-    endInstance() {
+    /**
+     * Sets the DICOM DataSet.
+     */
+    set dataSet(dataSet) {
+        this._dataset = dataSet;
     }
 
     constructor() {

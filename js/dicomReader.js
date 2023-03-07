@@ -65,8 +65,6 @@ class DicomReader {
                         // Close the stream
                         controller.close();
                         reader.releaseLock();
-
-                        alert('done');
                         
                     }
                 });

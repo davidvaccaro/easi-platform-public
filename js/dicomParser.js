@@ -30,6 +30,8 @@
 //   - PixelData
 //
 
+var DicomDefaultAppendFrequency = 1000;
+
 var DicomPartType = {
     Preamble: 'Preamble',
     Prefix: 'Prefix',
@@ -57,23 +59,33 @@ class DicomParser {
      */
     reset() {
 
+        // Indicate if the prefix was processed
+        this.processedPrefix = false;
+        this.detectedPrefix = false;
+
         // Reset the part sequence
         this.partSequence = DicomUtilities.deepCopyArray(this.partSpecification);
+
+        // The default meta-set part length
+        this.metaSetGroupLength = 0;
+
+        // The default data-set transfer-syntax
+        this.dataSetTransferSyntax = TransferSyntax.NONE;
 
         // Init the part consumed
         this.totalBytesConsumed = 0;
 
-        // Set the current part to "preamble"
-        this.partType = null;
+        // Set the part "start" flag
+        this.partStarted = false;
 
         // Set the current part bytes start
         this.partStart = 0;
 
+        // Set the current part to "preamble"
+        this.partType = null;
+
         // Set the current part
         this.part = null;
-
-        // The "last" part that was parsed
-        this.lastPart = null;
 
         // Init the current data-element
         this.dataElement = null;
@@ -83,6 +95,11 @@ class DicomParser {
 
         // Create the new DICOM data buffer
         this.data = new DicomData();
+
+        // Reset the emitter
+        if (this.emitter.reset != null) {
+            this.emitter.reset();
+        }
 
     }
 
@@ -401,11 +418,51 @@ class DicomParser {
 
             // Parse the current data based on the current part
 
-            // Parse the start of the instance
-            if (this.partType == null) {
+            // First, attempt to detech the prefix
+            if ((this.processedPrefix == false) && (this.partType == null)) {
 
-                // Start the instance
-                this.emitter.startPart(null);
+                // If there is data to process
+                if (this.data.length() >= (DicomConstants.PreambleLength + DicomConstants.PrefixLength)) {
+
+                    // Peek the first chunk of data that encompasses the preamble and prefix
+
+                    // Peek the prefix
+                    var prefix = DicomUtilities.bytesToString(this.data.peek(DicomConstants.PreambleLength, DicomConstants.PrefixLength));
+
+                    // If the standard DICOM prefix was detcted
+                    this.detectedPrefix = (prefix == DicomConstants.PrefixValue);
+
+                    // Set the flag indicating that the prefix was processed
+                    this.processedPrefix = true;
+
+                    // If the prefix is NOT detected, assume that the data is JUST a dataset
+                    if (this.detectedPrefix == true) {
+
+                        // Set the "Part-10" specification
+                        this.partSpecification = DicomPart10Specification;
+
+                    }
+                    else {
+
+                        // Set the "data-set" ONLY specification
+                        this.partSpecification = DicomDataSetSpecification;
+
+                    }
+
+                    // Update the sequence
+                    this.partSequence = DicomUtilities.deepCopyArray(this.partSpecification);
+
+                }
+
+            }
+
+            // Parse the start of the instance
+            if ((this.processedPrefix == true) && (this.partType == null)) {
+
+                // Start the "instance"
+                if (this.emitter.startInstance != null) {
+                    this.emitter.startInstance();
+                }
 
                 // Pop the first part
                 this.partType = this.partSequence.pop();
@@ -447,8 +504,10 @@ class DicomParser {
             // If the instance is complete, end the instance
             if (complete == true) {
 
-                // Start the instance
-                this.emitter.endPart(null);
+                // End the "instance"
+                if (this.emitter.endInstance != null) {
+                    this.emitter.endInstance();
+                }
 
                 // Reset the state
                 this.reset();
@@ -489,7 +548,10 @@ class DicomParser {
             var remaining = Math.min((this.part == null) ? DicomConstants.PreambleLength : this.part.bytesRemaining, this.data.length());
 
             // If the part has yet to be created
-            if (this.part == null) {
+            if ((this.partStarted == false) && (this.part == null)) {
+
+                // Indicate that the current part is "started"
+                this.partStarted = true;
 
                 // Set the part start
                 this.partStart = this.totalBytesConsumed;
@@ -497,8 +559,10 @@ class DicomParser {
                 // Create the part
                 this.part = new DicomPreamble(this.data.consume(remaining));
 
-                // Emit the "start"
-                this.emitter.startPart(this.part);
+                // Start the "preamble"
+                if (this.emitter.startPreamble != null) {
+                    this.emitter.startPreamble(this.part);
+                }
 
             }
             else {
@@ -514,12 +578,14 @@ class DicomParser {
             // If the part is complete
             if (this.part.isComplete == true) {
 
-                // Emit the "end"
-                this.emitter.endPart(this.part);
+                // End the "preamble"
+                if (this.emitter.endPreamble != null) {
+                    this.emitter.endPreamble(this.part);
+                }
 
-                // Save the "last" part
-                this.lastPart = this.part;
-
+                // Clear the part "started"
+                this.partStarted = false;
+                
                 // Init the current part
                 this.part = null;
 
@@ -559,7 +625,10 @@ class DicomParser {
             var remaining = Math.min((this.part == null) ? DicomConstants.PrefixLength : this.part.bytesRemaining, this.data.length());
 
             // If the part has yet to be created
-            if (this.part == null) {
+            if ((this.partStarted == false) && (this.part == null)) {
+
+                // Indicate that the current part is "started"
+                this.partStarted = true;
 
                 // Set the part start
                 this.partStart = this.totalBytesConsumed;
@@ -567,8 +636,10 @@ class DicomParser {
                 // Create the part
                 this.part = new DicomPrefix(this.data.consume(remaining));
 
-                // Emit the "start"
-                this.emitter.startPart(this.part);
+                // Start the "prefix"
+                if (this.emitter.startPrefix != null) {
+                    this.emitter.startPrefix(this.part);
+                }
 
             }
             else {
@@ -584,11 +655,13 @@ class DicomParser {
             // If the part is complete
             if (this.part.isComplete == true) {
 
-                // Emit the "end"
-                this.emitter.endPart(this.part);
+                // End the "prefix"
+                if (this.emitter.endPrefix != null) {
+                    this.emitter.endPrefix(this.part);
+                }
 
-                // Save the "last" part
-                this.lastPart = this.part;
+                // Clear the part "started"
+                this.partStarted = false;
 
                 // Init the current part
                 this.part = null;
@@ -624,7 +697,10 @@ class DicomParser {
         */
 
         // If the meta-set has yet to be created, create it
-        if (this.part == null) {
+        if (this.partStarted == false) {
+
+            // Indicate that the current part is "started"
+            this.partStarted = true;
 
             // Set the part start
             this.partStart = this.totalBytesConsumed;
@@ -632,11 +708,10 @@ class DicomParser {
             // Set the current DicomData buffer transfer syntax
             this.data.convert(TransferSyntax.ExplicitVRLittleEndian);
 
-            // If the meta-set has yet to be created, create it
-            this.part = new DicomMetaSet();
-
-            // Emit the "start" of the meta-set part
-            this.emitter.startPart(this.part);
+            // Start the meta-set
+            if (this.emitter.startMetaSet != null) {
+                this.emitter.startMetaSet();
+            }
 
         }
 
@@ -647,34 +722,37 @@ class DicomParser {
             if ((this.dataElement != null) && (this.dataElement.isComplete == true)) {
 
                 // The first data-element of this section MUST be the Group-Length
-                if (this.dataElement.tag.ID == Tags.FileMetaInformationGroupLength.ID) {
-
-                    // Validate that the Group-Length attribute is the FIRST data-element in the meta-set
-                    if (this.part.attributes.length > 0)
-                        throw new DicomException("Group-Length is NOT the First Data-Element in the Meta-Set!", DicomErrorCodes.InvalidMetaSet);
+                if (this.dataElement.tag == Tags.FileMetaInformationGroupLength) {
 
                     // Skip the Group-Length for the part-start
                     this.partStart = this.totalBytesConsumed;
 
+                    // Save the meta-set part length
+                    this.metaSetGroupLength = this.dataElement.value;
+
                 }
 
-                // Add the data element to the meta-set
-                this.part.add(this.dataElement);
+                // If this is the transfer syntax of the dataset
+                if (this.dataElement.tag == Tags.TransferSyntaxUid) {
+
+                    // Capture the current data-set transfer syntax
+                    this.dataSetTransferSyntax = DicomTransferSyntax.find(this.dataElement.value);
+
+                }
 
                 // Clear the current data-elemen
                 this.dataElement = null;
 
                 // If the meta-set is complete, emit it
-                if ((this.totalBytesConsumed - this.partStart) == this.part.groupLength) {
+                if ((this.totalBytesConsumed - this.partStart) == this.metaSetGroupLength) {
 
-                    // Set the "complete" state
-                    this.part.isComplete = true;
-
-                    // Emit the "end" of the meta-set part
-                    this.emitter.endPart(this.part);
+                    // End the meta-set
+                    if (this.emitter.endMetaSet != null) {
+                        this.emitter.endMetaSet();
+                    }
     
-                    // Save the "last" part
-                    this.lastPart = this.part;
+                    // Clear the part "started"
+                    this.partStarted = false;
 
                     // Init the current part
                     this.part = null;
@@ -708,21 +786,21 @@ class DicomParser {
         */
 
         // If the meta-set has yet to be created, create it
-        if (this.part == null) {
+        if (this.partStarted == false) {
+
+            // Indicate that the current part is "started"
+            this.partStarted = true;
 
             // Set the part start
             this.partStart = this.totalBytesConsumed;
 
             // Set the current DicomData buffer transfer syntax
-            if (this.lastPart != null) {
-                this.data.convert(this.lastPart.transferSyntaxUID);
+            this.data.convert(this.dataSetTransferSyntax);
+
+            // Start the data-set
+            if (this.emitter.startDataSet != null) {
+                this.emitter.startDataSet();
             }
-
-            // If the meta-set has yet to be created, create it
-            this.part = new DicomDataSet();
-
-            // Emit the "start" of the data-set part
-            this.emitter.startPart(this.part);
 
         }
 
@@ -740,9 +818,6 @@ class DicomParser {
 
                     // Peek the item from the sequence stack
                     var item = this.peekItem();
-
-                    // Add the data element to the sequence
-                    sequence.element.add(this.dataElement);
 
                     // Clear the current data-elemen
                     this.dataElement = null;
@@ -797,11 +872,10 @@ class DicomParser {
                                 // Pop the current sequence
                                 this.dataElements.pop();
 
-                                // Add the sequence to the data-set
-                                this.part.add(sequence.element);
-
-                                // Emit the current part (with the current state)
-                                this.emitter.endPart(sequence.element);
+                                // End the current sequence
+                                if (this.emitter.endSequence != null) {
+                                    this.emitter.endSequence(sequence.element);
+                                }
 
                             }
                             else {
@@ -818,20 +892,19 @@ class DicomParser {
                 }
                 else {
 
-                    // Add the data element to the data-set
-                    this.part.add(this.dataElement);
-
                     // Clear the current data-elemen
                     this.dataElement = null;
 
-                    // Set the "complete" state
-                    this.part.isComplete = ((this.data.isEmpty == true) && (isDone == true));
-
                     // If the part is complete
-                    if (this.part.isComplete == true) {
+                    if (((this.data.isEmpty == true) && (isDone == true)) == true) {
 
-                        // Emit the current part (with the current state)
-                        this.emitter.endPart(this.part);
+                        // End the data-set
+                        if (this.emitter.endDataSet != null) {
+                            this.emitter.endDataSet();
+                        }
+
+                        // Indicate that the part is NOT started
+                        this.partStarted = false;
 
                         // Indicate that the current DICOM is fully parsed
                         return true;
@@ -850,17 +923,25 @@ class DicomParser {
             // Complete the data element
             this.dataElement.isComplete = true;
 
-            // Add the data element to the data-set
-            this.part.add(this.dataElement);
+            // End the attribute or sequence
+            if (this.dataElement instanceof DicomAttributeSequence) {
+                if (this.emitter.endSequence != null) {
+                    this.emitter.endSequence(this.dataElement);
+                }
+            }
+            else {
+                if (this.emitter.endAttribute != null) {
+                    this.emitter.endAttribute(this.dataElement);
+                }
+            }
 
             // Clear the current data-elemen
             this.dataElement = null;
 
-            // Set the "complete" state
-            this.part.isComplete = true;
-
-            // Emit the current part (with the current state)
-            this.emitter.endPart(this.part);
+            // End the data-set
+            if (this.emitter.endDataSet != null) {
+                this.emitter.endDataSet();
+            }
 
             // Indicate that the current DICOM is fully parsed
             return true;
@@ -901,8 +982,17 @@ class DicomParser {
                 ? new DicomAttributeSequence(details.tag, details.valueLength, null, this.data.transferSyntax) 
                 : new DicomAttribute(details.tag, details.valueLength, null, this.data.transferSyntax);
 
-            // Emit the "start"
-            this.emitter.startPart(this.dataElement);
+            // Start the attribute or sequence
+            if (this.dataElement instanceof DicomAttributeSequence) {
+                if (this.emitter.startSequence != null) {
+                    this.emitter.startSequence(this.dataElement);
+                }
+            }
+            else {
+                if (this.emitter.startAttribute != null) {
+                    this.emitter.startAttribute(this.dataElement);
+                }
+            }
 
         }
 
@@ -962,25 +1052,30 @@ class DicomParser {
                     var buf = this.data.peek(0, bufferLength);
 
                     // If the whole buffer could NOT be read, indicate MORE data is needed
-                    if ((buf == null) || (buf.length != bufferLength)) {
+                    if ((buf == null) || (buf.length < bufferLength)) {
 
                         // If there is NO MORE data, complete the tag
                         if (isDone == true) {
 
-                            // Append the remaining bytes to the data-element
-                            this.dataElement.append(buf);
+                            // If there is a buffer
+                            if ((buf != null) && (buf.length > 0)) {
 
-                            // Consume the final bytes
-                            this.data.consume(buf.length);
+                                // Append the remaining bytes to the data-element
+                                this.dataElement.append(buf);
 
-                            // Record bytes consumed
-                            bytesConsumed += bufferLength;                            
+                                // Consume the final bytes
+                                this.data.consume(buf.length);
+
+                                // Record bytes consumed
+                                bytesConsumed += buf.length;
+                            
+                            }
 
                         }
 
                         // Increment the total bytes consumed
                         this.totalBytesConsumed += bytesConsumed;
-
+                        
                         // Indicate MORE data is needed
                         return false;
 
@@ -991,6 +1086,9 @@ class DicomParser {
 
                     // Record bytes consumed
                     bytesConsumed += bufferLength;
+
+                    // Increment the total bytes consumed
+                    this.totalBytesConsumed += bytesConsumed;
 
                     // If we have reached the end of the data-element value
                     if (DicomUtilities.isEndSequence(buf) == true) {
@@ -1005,6 +1103,20 @@ class DicomParser {
 
                     // Append the buffer
                     this.dataElement.append(buf);
+
+                    // Append the attribute or sequence
+                    if ((this.dataElement.length() % this.appendFrequency) == 0) {
+                        if (this.dataElement instanceof DicomAttributeSequence) {
+                            if (this.emitter.appendSequence != null) {
+                                this.emitter.appendSequence(this.dataElement);
+                            }
+                        }
+                        else {
+                            if (this.emitter.appendAttribute != null) {
+                                this.emitter.appendAttribute(this.dataElement);
+                            }
+                        }
+                    }
 
                 }
 
@@ -1026,8 +1138,32 @@ class DicomParser {
                     // If the current data-element is complete,
                     if (this.dataElement.isComplete == true) {
 
-                        // Emit the "end" of the data-element
-                        this.emitter.endPart(this.dataElement);
+                        // End the attribute or sequence
+                        if (this.dataElement instanceof DicomAttributeSequence) {
+                            if (this.emitter.endSequence != null) {
+                                this.emitter.endSequence(this.dataElement);
+                            }
+                        }
+                        else {
+                            if (this.emitter.endAttribute != null) {
+                                this.emitter.endAttribute(this.dataElement);
+                            }
+                        }
+
+                    }
+                    else {
+
+                        // Append the attribute or sequence
+                        if (this.dataElement instanceof DicomAttributeSequence) {
+                            if (this.emitter.appendSequence != null) {
+                                this.emitter.appendSequence(this.dataElement);
+                            }
+                        }
+                        else {
+                            if (this.emitter.appendAttribute != null) {
+                                this.emitter.appendAttribute(this.dataElement);
+                            }
+                        }
 
                     }
 
@@ -1049,22 +1185,25 @@ class DicomParser {
      * Constructos a new DICOM Parser with the associated DICOM Emitter.
      * @param {*} dicomEmitter The emitter used to emit parsed elements of the DICOM data.
      */
-    constructor(dicomEmitter, partSpecification) {
+    constructor(dicomEmitter, appendFrequency) {
 
-        // Set the part specification
-        this.partSpecification = partSpecification;
-
-        // Set the default part specification (if needed)
-        if (this.partSpecification == null) {
-
-            // Set the default part specification (Part-10)
-            this.partSpecification = DicomPart10Specification;
-
-        }
-        
         // Set the emitter
         this.emitter = dicomEmitter;
 
+        // Set the default part specification (Part-10)
+        this.partSpecification = DicomPart10Specification;
+
+        // Set the append frequency
+        this.appendFrequency = appendFrequency;
+
+        // Set the default append frequency if needed
+        if (this.appendFrequency == null) {
+
+            // Set the default append frequency
+            this.appendFrequency = DicomDefaultAppendFrequency;
+
+        }
+        
         // Reset the current state
         this.reset();
 

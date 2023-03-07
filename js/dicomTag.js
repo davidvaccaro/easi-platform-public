@@ -86,6 +86,18 @@ class DicomTag {
 					IsPrivate: true
 				});
 			}
+			else if (element == 0) {
+				tag = new DicomTag({ 
+					ID: id, 
+					Tag: '(' + groupKey + ', ' + elementKey + ')', 
+					Group: group, 
+					Element: element, 
+					VR: ValueRepresentations.UL, 
+					Name: 'Group Length (Retired)', 
+					IsRetired: true,
+					IsPrivate: false
+				});
+			}
 
 		}
 

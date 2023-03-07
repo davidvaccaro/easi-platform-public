@@ -7,7 +7,7 @@
     <!-- JQuery -->
     <script src="js/jquery.js"></script>
 
-    <!-- DICOM.JS Javascript Files -->
+    <!-- Javascript Files -->
     <script src="js/dicomConstants.js"></script>
     <script src="js/dicomConfiguration.js"></script>
     <script src="js/dicomUtilities.js"></script>
@@ -24,26 +24,26 @@
     <script src="js/dicomAttribute.js"></script>
     <script src="js/dicomAttributeSequence.js"></script>
     <script src="js/dicomAttributeSet.js"></script>
+    <script src="js/dicomPreamble.js"></script>
+    <script src="js/dicomPrefix.js"></script>
     <script src="js/dicomDataSet.js"></script>
     <script src="js/dicomMetaSet.js"></script>
 
-    <script src="js/dicomPreamble.js"></script>
-    <script src="js/dicomPrefix.js"></script>
+    <script src="js/dicomInstance.js"></script>
 
     <script src="js/dicomEmitter.js"></script>
+    <script src="js/dicomInstanceEmitter.js"></script>
     <script src="js/dicomParser.js"></script>
     <script src="js/dicomReader.js"></script>
+
+    <!-- Javascript Test Files -->
+    <script src="js/test/dicomPerformanceEmitter.js"></script>
+
 </head>
 
 <body>
     <h1>DICOM.JS Samples</h1>
     <div>
-        <div>
-            <select id="specification">
-                <option value="0" selected>Part-10</option>
-                <option value="1">DataSet</option>
-            </select>
-        </div>
         <div>
             <input type="file" id="dicomFile" name="dicomFile" />
         </div>
@@ -67,12 +67,15 @@
 
             $('#dicomFile').on('change', function () {
 
+                // Cleare the console
+                console.clear();
+
                 // Create an object URL from the selected file
                 var url = URL.createObjectURL(this.files[0]);
 
                 // Parse the DICOM file
                 (new DicomReader(
-                    new DicomParser(new DicomEmitter(), $('#specification').val() == "0" ? DicomPart10Specification : DicomDataSetSpecification), 
+                    new DicomParser(new DicomInstanceEmitter()), 
                     function (error) { 
 
                         var xxx = 100;
