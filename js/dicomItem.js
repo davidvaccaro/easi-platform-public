@@ -20,13 +20,16 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomItem {
+class DicomItem extends DicomAttributeSet {
 
     /**
-     * Constructs a DICOM Part-10 File Meta Information "Preamble" from a specified raw data buffer.
-     * @param {*} data The specified raw data buffer.
+     * Constructs a DICOM Part-10 Sequence Item.
+     * @param {*} valueLength The length of the item.
      */
     constructor(valueLength) {
+
+        // Call the super constructor
+        super();
 
         // Set the properties
         this.valueLength = valueLength;

@@ -45,8 +45,10 @@ class DicomAttributeSet {
     add(attribute) {
 
         // If the sequence already has the tag, fail with exception
-        if (this.has(attribute.tag))
-            throw new DicomException("Duplicate Attribute!", DicomErrorCodes.DuplicateAttribute);
+        if (this.has(attribute.tag)) {
+            var yyy = 100;
+            //throw new DicomException("Duplicate Attribute!", DicomErrorCodes.DuplicateAttribute);
+        }
 
         // Add the attribute to the collection
         this.attributes.push(attribute);

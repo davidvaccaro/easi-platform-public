@@ -406,119 +406,109 @@ class DicomParser {
         // Init the complete state
         var complete = false;
 
-        try {
+        // Append the new chunk of data
+        if ((chunk != null) && (chunk.length > 0)) {
 
-            // Append the new chunk of data
-            if ((chunk != null) && (chunk.length > 0)) {
+            // Append the new chunck
+            this.data.append(chunk);
 
-                // Append the new chunck
-                this.data.append(chunk);
+        }
 
-            }
+        // Parse the current data based on the current part
 
-            // Parse the current data based on the current part
+        // First, attempt to detech the prefix
+        if ((this.processedPrefix == false) && (this.partType == null)) {
 
-            // First, attempt to detech the prefix
-            if ((this.processedPrefix == false) && (this.partType == null)) {
+            // If there is data to process
+            if (this.data.length() >= (DicomConstants.PreambleLength + DicomConstants.PrefixLength)) {
 
-                // If there is data to process
-                if (this.data.length() >= (DicomConstants.PreambleLength + DicomConstants.PrefixLength)) {
+                // Peek the first chunk of data that encompasses the preamble and prefix
 
-                    // Peek the first chunk of data that encompasses the preamble and prefix
+                // Peek the prefix
+                var prefix = DicomUtilities.bytesToString(this.data.peek(DicomConstants.PreambleLength, DicomConstants.PrefixLength));
 
-                    // Peek the prefix
-                    var prefix = DicomUtilities.bytesToString(this.data.peek(DicomConstants.PreambleLength, DicomConstants.PrefixLength));
+                // If the standard DICOM prefix was detcted
+                this.detectedPrefix = (prefix == DicomConstants.PrefixValue);
 
-                    // If the standard DICOM prefix was detcted
-                    this.detectedPrefix = (prefix == DicomConstants.PrefixValue);
+                // Set the flag indicating that the prefix was processed
+                this.processedPrefix = true;
 
-                    // Set the flag indicating that the prefix was processed
-                    this.processedPrefix = true;
+                // If the prefix is NOT detected, assume that the data is JUST a dataset
+                if (this.detectedPrefix == true) {
 
-                    // If the prefix is NOT detected, assume that the data is JUST a dataset
-                    if (this.detectedPrefix == true) {
+                    // Set the "Part-10" specification
+                    this.partSpecification = DicomPart10Specification;
 
-                        // Set the "Part-10" specification
-                        this.partSpecification = DicomPart10Specification;
+                }
+                else {
 
-                    }
-                    else {
-
-                        // Set the "data-set" ONLY specification
-                        this.partSpecification = DicomDataSetSpecification;
-
-                    }
-
-                    // Update the sequence
-                    this.partSequence = DicomUtilities.deepCopyArray(this.partSpecification);
+                    // Set the "data-set" ONLY specification
+                    this.partSpecification = DicomDataSetSpecification;
 
                 }
 
-            }
-
-            // Parse the start of the instance
-            if ((this.processedPrefix == true) && (this.partType == null)) {
-
-                // Start the "instance"
-                if (this.emitter.startInstance != null) {
-                    this.emitter.startInstance();
-                }
-
-                // Pop the first part
-                this.partType = this.partSequence.pop();
-
-            }
-
-            // Parse the "preamble" Table 7.1-1. DICOM File Meta Information / File Preamble
-            if (this.partType == DicomPartType.Preamble) {
-
-                // Parse the next DICOM Preamble
-                this.parseNextPreamble();
-
-            }
-
-            // Parse the "prefix" Table 7.1-1. DICOM File Meta Information / DICOM Prefix
-            if (this.partType == DicomPartType.Prefix) {
-
-                // Parse the next DICOM Prefix
-                this.parseNextPrefix();
-
-            }
-
-            // Parse the Table 7.1-1. DICOM File Meta Information / File Meta Information Group Length (0002,0000) to the end of this section
-            if (this.partType == DicomPartType.MetaSet) {
-                
-                // Parse more meta-set
-                this.parseNextMetaSet(isDone);
-
-            }
-
-            // Parse the remaining DICOM data elements
-            if (this.partType == DicomPartType.DataSet) {
-
-                // Parse more data-set
-                complete = this.parseNextDataSet(isDone);
-                
-            }
-
-            // If the instance is complete, end the instance
-            if (complete == true) {
-
-                // End the "instance"
-                if (this.emitter.endInstance != null) {
-                    this.emitter.endInstance();
-                }
-
-                // Reset the state
-                this.reset();
+                // Update the sequence
+                this.partSequence = DicomUtilities.deepCopyArray(this.partSpecification);
 
             }
 
         }
-        catch (error) {
 
-            // TODO - Handle exception properly
-            console.log(error);
+        // Parse the start of the instance
+        if ((this.processedPrefix == true) && (this.partType == null)) {
+
+            // Start the "instance"
+            if (this.emitter.startInstance != null) {
+                this.emitter.startInstance();
+            }
+
+            // Pop the first part
+            this.partType = this.partSequence.pop();
+
+        }
+
+        // Parse the "preamble" Table 7.1-1. DICOM File Meta Information / File Preamble
+        if (this.partType == DicomPartType.Preamble) {
+
+            // Parse the next DICOM Preamble
+            this.parseNextPreamble();
+
+        }
+
+        // Parse the "prefix" Table 7.1-1. DICOM File Meta Information / DICOM Prefix
+        if (this.partType == DicomPartType.Prefix) {
+
+            // Parse the next DICOM Prefix
+            this.parseNextPrefix();
+
+        }
+
+        // Parse the Table 7.1-1. DICOM File Meta Information / File Meta Information Group Length (0002,0000) to the end of this section
+        if (this.partType == DicomPartType.MetaSet) {
+            
+            // Parse more meta-set
+            this.parseNextMetaSet(isDone);
+
+        }
+
+        // Parse the remaining DICOM data elements
+        if (this.partType == DicomPartType.DataSet) {
+
+            // Parse more data-set
+            complete = this.parseNextDataSet(isDone);
+            
+        }
+
+        // If the instance is complete, end the instance
+        if (complete == true) {
+
+            // End the "instance"
+            if (this.emitter.endInstance != null) {
+                this.result = this.emitter.endInstance();
+            }
+
+            // Reset the state
+            this.reset();
 
         }
 
@@ -813,82 +803,171 @@ class DicomParser {
                 // If we are parsing a "sequence", 
                 if (this.isParsingSequence == true) {
 
-                    // Peek the sequence stack
-                    var sequence = this.peekSequence();
+                    // Process the sequence
+                    while (this.dataElements.length > 0) {
 
-                    // Peek the item from the sequence stack
-                    var item = this.peekItem();
+                        // Peek the sequence stack
+                        var sequence = this.peekSequence();
 
-                    // Clear the current data-elemen
-                    this.dataElement = null;
+                        // Peek the item from the sequence stack
+                        var item = this.peekItem();
 
-                    // If the current sequence item has undefined length, 
-                    if (item.element.valueLength == DicomConstants.UndefinedLength) {
+                        // Clear the current data-elemen
+                        this.dataElement = null;
 
-                        // Peak the next tag details
-                        var details = this.peekTagDetails();
-
-                        // If MORE data is needed, return false
-                        if (details == false)
-                            return false;
-
-                        // If the current sequence item is ended
-                        if (details.tag == Tags.ItemDelimitationItem) {
-
-                            // Validate that current item MUST be a DicomItem
-                            if (!(item.element instanceof DicomItem)) {
-                                throw new DicomException("Invalid Sequence. Current element MUST be a sequence item!", DicomErrorCodes.InvalidSequence);
-                            }
+                        // If the current sequence item has undefined length, 
+                        if (item.element.valueLength == DicomConstants.UndefinedLength) {
 
                             // Peak the next tag details
-                            var nextDetails = this.peekTagDetails(details.bytesPeeked);
+                            var details = this.peekTagDetails();
 
                             // If MORE data is needed, return false
-                            if (nextDetails == false)
+                            if (details == false)
                                 return false;
 
-                            // Consume the data-element element data
-                            this.data.consume(nextDetails.bytesPeeked);
+                            // If the current sequence item is ended
+                            if (details.tag == Tags.ItemDelimitationItem) {
 
-                            // Record bytes consumed
-                            this.totalBytesConsumed += nextDetails.bytesPeeked;
+                                // Validate that current item MUST be a DicomItem
+                                if (!(item.element instanceof DicomItem)) {
+                                    throw new DicomException("Invalid Sequence. Current element MUST be a sequence item!", DicomErrorCodes.InvalidSequence);
+                                }
 
-                            // Pop the current item
-                            this.dataElements.pop();
+                                // Peak the next tag details
+                                var nextDetails = this.peekTagDetails(details.bytesPeeked);
 
-                            // The next tag can start a new "item" or end the current "sequence"
-                            if (nextDetails.tag == Tags.Item)
-                            {
+                                // If MORE data is needed, return false
+                                if (nextDetails == false)
+                                    return false;
 
-                                // Push the next item
-                                this.dataElements.push({ 
-                                    start: nextDetails.bytesPeeked, 
-                                    element: new DicomItem(nextDetails.valueLength)
-                                });
+                                // Consume the data-element element data
+                                this.data.consume(nextDetails.bytesPeeked);
 
-                            }                        
-                            else if (nextDetails.tag == Tags.SequenceDelimitationItem) {
+                                // Record bytes consumed
+                                this.totalBytesConsumed += nextDetails.bytesPeeked;
 
-                                // Pop the current sequence
+                                // End the item
+                                if (this.emitter.endItem != null) {
+                                    this.emitter.endItem(item.element);
+                                }
+
+                                // Pop the current item
                                 this.dataElements.pop();
 
-                                // End the current sequence
-                                if (this.emitter.endSequence != null) {
-                                    this.emitter.endSequence(sequence.element);
+                                // The next tag can start a new "item" or end the current "sequence"
+                                if (nextDetails.tag == Tags.Item)
+                                {
+
+                                    // Create a new item
+                                    var nextItem = new DicomItem(nextDetails.valueLength);
+
+                                    // Push the next item
+                                    this.dataElements.push({ 
+                                        start: nextDetails.bytesPeeked, 
+                                        element: nextItem
+                                    });
+
+                                    // Start the item
+                                    if (this.emitter.startItem != null) {
+                                        this.emitter.startItem(nextItem);
+                                    }
+
+                                    // Break out of the sequence loop
+                                    break;
+
+                                }                        
+                                else if (nextDetails.tag == Tags.SequenceDelimitationItem) {
+
+                                    // Pop the current sequence
+                                    this.dataElements.pop();
+
+                                    // End the current sequence
+                                    if (this.emitter.endSequence != null) {
+                                        this.emitter.endSequence(sequence.element);
+                                    }
+
+                                }
+                                else {
+
+                                    // The prior element MUST be a sequence control item
+                                    throw new DicomException("Invalid Sequence. Current tag MUST be either Item Tag (FFFE, E000) OR Seq. Delim. Tag (FFFE, E0DD)!", DicomErrorCodes.InvalidSequence);
+
                                 }
 
                             }
                             else {
 
-                                // The prior element MUST be a sequence control item
-                                throw new DicomException("Invalid Sequence. Current tag MUST be either Item Tag (FFFE, E000) OR Seq. Delim. Tag (FFFE, E0DD)!", DicomErrorCodes.InvalidSequence);
+                                // Break out of the sequence loop
+                                break;
 
                             }
 
                         }
+                        else {
 
-                    }
+                            // If all the item data has been processed, mark it as complete
+                            if ((this.totalBytesConsumed - item.start) == item.element.valueLength) {
+
+                                // End the element
+                                if (item.element instanceof DicomItem) {
                                     
+                                    // Set the complete flag
+                                    item.element.isComplete = true;
+
+                                    // End the item
+                                    if (this.emitter.endItem != null) {
+                                        this.emitter.endItem(item.element);                                
+                                    }
+
+                                    // Pop the current item
+                                    this.dataElements.pop();
+
+                                    // If the sequence is a fixed length, see if the end has been reached
+                                    if (sequence.element.valueLength != DicomConstants.UndefinedLength) {
+
+                                        // If all sequence data has been processed, mark it as complete
+                                        if ((this.totalBytesConsumed - sequence.start) == sequence.element.valueLength) {
+
+                                            // Set the complete flag
+                                            sequence.element.isComplete = true;
+
+                                            // End the item
+                                            if (this.emitter.endSequence != null) {
+                                                this.emitter.endSequence(sequence.element);                                
+                                            }
+
+                                            // Pop the current sequnce
+                                            this.dataElements.pop();
+
+                                        }
+
+                                    }
+
+                                }
+                                else {
+
+                                    // End the item
+                                    if (this.emitter.endSequence != null) {
+                                        this.emitter.endSequence(item.element);                                
+                                    }
+
+                                    // Pop the current item
+                                    this.dataElements.pop();
+
+                                }
+
+                            }
+                            else {
+
+                                // Break out of the sequence loop
+                                break;
+                                
+                            }
+
+                        }
+                                  
+                    }
+
                 }
                 else {
 
@@ -918,25 +997,66 @@ class DicomParser {
         }
 
         // Auto-complete the last data-element (if needed)
-        if ((isDone == true) && (this.data.length() == 0) && (this.dataElement != null) && (this.dataElement.isComplete == false)) {
+        if ((isDone == true) && (this.data.length() == 0) && (this.dataElement != null)) {
 
             // Complete the data element
             this.dataElement.isComplete = true;
 
-            // End the attribute or sequence
-            if (this.dataElement instanceof DicomAttributeSequence) {
-                if (this.emitter.endSequence != null) {
-                    this.emitter.endSequence(this.dataElement);
-                }
-            }
-            else {
-                if (this.emitter.endAttribute != null) {
-                    this.emitter.endAttribute(this.dataElement);
-                }
+            // End the attribute 
+            if (this.emitter.endAttribute != null) {
+                this.emitter.endAttribute(this.dataElement);
             }
 
             // Clear the current data-elemen
             this.dataElement = null;
+
+            // If there was a sequence in process, end it
+            if (this.isParsingSequence == true) {
+
+                // Peek the sequence stack
+                var sequence = this.peekSequence();
+
+                // Peek the item from the sequence stack
+                var item = this.peekItem();
+
+                if (item.element instanceof DicomItem) {
+                                
+                    // Set the complete flag
+                    item.element.isComplete = true;
+
+                    // End the item
+                    if (this.emitter.endItem != null) {
+                        this.emitter.endItem(item.element);                                
+                    }
+
+                    // Pop the current item
+                    this.dataElements.pop();
+
+                    // Set the complete flag
+                    sequence.element.isComplete = true;
+
+                    // End the item
+                    if (this.emitter.endSequence != null) {
+                        this.emitter.endSequence(sequence.element);                                
+                    }
+
+                    // Pop the current sequnce
+                    this.dataElements.pop();
+
+                }
+                else {
+
+                    // End the item
+                    if (this.emitter.endSequence != null) {
+                        this.emitter.endSequence(item.element);                                
+                    }
+
+                    // Pop the current item
+                    this.dataElements.pop();
+
+                }
+
+            }
 
             // End the data-set
             if (this.emitter.endDataSet != null) {
@@ -1027,11 +1147,19 @@ class DicomParser {
                 element: this.dataElement 
             });
             
+            // Create the item
+            var item = new DicomItem(details.valueLength);
+
             // Push the item
             this.dataElements.push({ 
                 start: (sequenceStart + details.bytesPeeked), 
-                element: new DicomItem(details.valueLength)
+                element: item
             });
+
+            // Start the item
+            if (this.emitter.startItem != null) {
+                this.emitter.startItem(item);
+            }
 
             // Clear the current element
             this.dataElement = null;
@@ -1106,15 +1234,8 @@ class DicomParser {
 
                     // Append the attribute or sequence
                     if ((this.dataElement.length() % this.appendFrequency) == 0) {
-                        if (this.dataElement instanceof DicomAttributeSequence) {
-                            if (this.emitter.appendSequence != null) {
-                                this.emitter.appendSequence(this.dataElement);
-                            }
-                        }
-                        else {
-                            if (this.emitter.appendAttribute != null) {
-                                this.emitter.appendAttribute(this.dataElement);
-                            }
+                        if (this.emitter.appendAttribute != null) {
+                            this.emitter.appendAttribute(this.dataElement);
                         }
                     }
 
@@ -1139,30 +1260,16 @@ class DicomParser {
                     if (this.dataElement.isComplete == true) {
 
                         // End the attribute or sequence
-                        if (this.dataElement instanceof DicomAttributeSequence) {
-                            if (this.emitter.endSequence != null) {
-                                this.emitter.endSequence(this.dataElement);
-                            }
-                        }
-                        else {
-                            if (this.emitter.endAttribute != null) {
-                                this.emitter.endAttribute(this.dataElement);
-                            }
+                        if (this.emitter.endAttribute != null) {
+                            this.emitter.endAttribute(this.dataElement);
                         }
 
                     }
                     else {
 
                         // Append the attribute or sequence
-                        if (this.dataElement instanceof DicomAttributeSequence) {
-                            if (this.emitter.appendSequence != null) {
-                                this.emitter.appendSequence(this.dataElement);
-                            }
-                        }
-                        else {
-                            if (this.emitter.appendAttribute != null) {
-                                this.emitter.appendAttribute(this.dataElement);
-                            }
+                        if (this.emitter.appendAttribute != null) {
+                            this.emitter.appendAttribute(this.dataElement);
                         }
 
                     }

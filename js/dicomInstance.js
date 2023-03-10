@@ -81,6 +81,22 @@ class DicomInstance {
         this._dataset = dataSet;
     }
 
+    /**
+     * Gets the SOP Instance UID value.
+     */
+    get sopInstanceUid() {
+
+        // Find the SOP Instance UID attribute
+        var attribute = this.dataSet.find(Tags.SopInstanceUid);
+
+        if (attribute == null)
+            return "";
+
+        // Return the value
+        return attribute.value;
+
+    }
+
     constructor() {
     }
 

@@ -19,11 +19,11 @@
     <script src="js/dicomSOPClass.js"></script>
 
     <script src="js/dicomData.js"></script>
-    <script src="js/dicomItem.js"></script>
     <script src="js/dicomDataElement.js"></script>
     <script src="js/dicomAttribute.js"></script>
-    <script src="js/dicomAttributeSequence.js"></script>
     <script src="js/dicomAttributeSet.js"></script>
+    <script src="js/dicomItem.js"></script>
+    <script src="js/dicomAttributeSequence.js"></script>
     <script src="js/dicomPreamble.js"></script>
     <script src="js/dicomPrefix.js"></script>
     <script src="js/dicomDataSet.js"></script>
@@ -71,16 +71,18 @@
                 console.clear();
 
                 // Create an object URL from the selected file
-                var url = URL.createObjectURL(this.files[0]);
+                //var url = URL.createObjectURL(this.files[0]);
+                //var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094";
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583";
 
-                // Parse the DICOM file
-                (new DicomReader(
-                    new DicomParser(new DicomInstanceEmitter()), 
-                    function (error) { 
+                // Create the DICOM reader
+                var reader = new DicomReader(new DicomParser(new DicomInstanceEmitter()));
 
-                        var xxx = 100;
-
-                    })).read(url);                
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err));
 
             });
 

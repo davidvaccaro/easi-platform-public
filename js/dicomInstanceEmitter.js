@@ -47,15 +47,21 @@ class DicomInstanceEmitter {
     startAttribute(attribute) {
 
         // The attribute gets populated into either:
-        // 1. The current sequence
+        // 1. The top sequence current item
         // 2. The dataset
         // 3. The metaset
 
         // If there is a current sequence stack, add to the sequence        
         if (this.sequences.length > 0) {
 
-            // Add to the "top" of the sequence stack
-            this.sequences[this.sequences.length - 1].add(attribute);
+            // Access the top of the sequence stack
+            var sequence = this.sequences[this.sequences.length - 1];
+            
+            // Access the current item in the sequence
+            var item = sequence.items[sequence.items.length - 1];
+            
+            // Add to the item            
+            item.add(attribute);
 
         }
         else {
@@ -85,6 +91,16 @@ class DicomInstanceEmitter {
 
         // Push onto the sequence stack
         this.sequences.push(sequence);
+
+    }
+
+    startItem(item) {
+
+        // Access the top of the sequence stack
+        var sequence = this.sequences[this.sequences.length - 1];
+
+        // Add the item to the current sequence
+        sequence.add(item);
 
     }
 
@@ -132,14 +148,21 @@ class DicomInstanceEmitter {
 
     }
 
+    endItem(item) {
+    }
+
     endMetaSet() {
     }
 
     endDataSet() {
     }
 
+    /**
+     * Returns the current instance constructed by this emitter.
+     * @returns The current instance.
+     */
     endInstance() {
-        console.log(this.instance);
+        return this.instance;
     }
 
     constructor() {

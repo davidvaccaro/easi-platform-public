@@ -22,12 +22,23 @@
 class DicomAttributeSequence extends DicomAttribute {
 
     /**
+     * Adds a new item to the sequence of items.
+     * @param {*} item The item to add.
+     */
+    add(item) {
+
+        // Add the attribute to the collection
+        this.items.push(item);
+
+    }
+
+    /**
      * Find an attribute within the immediate sequence by tag identifier.
      * @param {*} tag The DICOM tag to search by.
      * @returns The attribute if found or undefined otherwise.
      */
     find(tag) {
-        return this.attributes.find(attribute => attribute.tag.ID == tag.ID);
+        return this.items.filter(item => item.find(tag.ID) != null);
     }
 
     /**
@@ -35,52 +46,25 @@ class DicomAttributeSequence extends DicomAttribute {
      * @param {*} tag True if an attribute exists, False otherwise.
      */
     has(tag) {
-        return (this.find(tag) != null);
-    }
 
-    /**
-     * Adds a new attribute to the sequence of attributes.
-     * @param {*} attribute The attribute to add.
-     */
-    add(attribute) {
+        // Find the items that have the tag
+        var items = this.find(tag);
 
-        // If the sequence already has the tag, fail with exception
-        if (this.has(attribute.tag))
-            throw new DicomException("Duplicate Attribute!", DicomErrorCodes.DuplicateAttribute);
-
-        // Add the attribute to the collection
-        this.attributes.push(attribute);
+        // Return
+        return ((items != null) && (item.length > 0));
 
     }
 
     /**
-     * Get the attribute value for a specified DICOM tag identifier.
-     * @returns The the attribute value.
-     */
-    value(tag, defaultValue = null) {
-
-        // Find the attribute by the DICOM tag
-        var attribute = this.find(tag);
-
-        // Return 0-length if NOT present
-        if (attribute == null)
-            return defaultValue;
-
-        // Return the attribute value
-        return attribute.value;
-
-    }
-
-    /**
-     * Construct an "empty" new DICOM attribute sequence instance from a tag
+     * Construct an "empty" new DICOM attribute sequence instance from a tag and other details.
      */
     constructor(tag, valueLength, data, transferSyntax) {
 
         // Call the super constructor
         super(tag, valueLength, data, transferSyntax);
 
-        // Init the attributes collection
-        this.attributes = [];
+        // Init the items collection
+        this.items = [];
 
     }
 

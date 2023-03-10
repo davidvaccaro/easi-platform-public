@@ -39,6 +39,9 @@ class DicomEmitter {
     startSequence(sequence) {
     }
 
+    startItem(item) {
+    }
+
     appendAttribute(attribute) {
     }
 
@@ -63,6 +66,9 @@ class DicomEmitter {
     endSequence(sequence) {
     }
 
+    endItem(item) {
+    }
+
     endMetaSet() {
     }
 
@@ -70,6 +76,7 @@ class DicomEmitter {
     }
 
     endInstance() {
+        return true;
     }
 
     constructor() {

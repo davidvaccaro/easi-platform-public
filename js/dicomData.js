@@ -126,7 +126,7 @@ class DicomData {
         var consumed = this.data.subarray(0, count);
 
         // Consume the sub-data bytes
-        this.data = this.data.subarray(count, (this.data.length - count));
+        this.data = this.data.subarray(count, this.data.length);
 
         // Return the "consumed" data
         return consumed;
