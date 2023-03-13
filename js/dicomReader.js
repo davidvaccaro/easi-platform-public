@@ -437,8 +437,8 @@ class DicomReader {
     }
 
     // The constructor
-    constructor(dicomParser) {
-        this.parser = dicomParser;
+    constructor(parser) {
+        this.parser = parser;
     }
 
-}
+};

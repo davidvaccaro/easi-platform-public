@@ -723,7 +723,7 @@ class DicomParser {
                 }
 
                 // If this is the transfer syntax of the dataset
-                if (this.dataElement.tag == Tags.TransferSyntaxUid) {
+                if (this.dataElement.tag == Tags.TransferSyntaxUID) {
 
                     // Capture the current data-set transfer syntax
                     this.dataSetTransferSyntax = DicomTransferSyntax.find(this.dataElement.value);
