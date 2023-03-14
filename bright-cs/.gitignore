@@ -1,0 +1,6 @@
+/.vs
+/tools/.vs
+/xs
+**/bin
+**/obj
+*.user

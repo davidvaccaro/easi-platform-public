@@ -21,7 +21,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 //
-// THIS FILE GENERATED: 3/13/2023 2:37:00 PM
+// THIS FILE GENERATED: 3/14/2023 5:23:45 PM
 
 var Tag = {
 	'00020000': new DicomTag({ ID: '00020000', Tag: '(0002, 0000)', Group: 2, Element: 0, VR: ValueRepresentations.UL,  VM: { Exact: 1 }, Name: 'File Meta Information Group Length', IsRetired: false }),

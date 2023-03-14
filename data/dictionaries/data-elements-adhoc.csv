@@ -1,0 +1,7 @@
+﻿00080000,0008,0000,8,0,Identifying Group Length (Retired),IdentifyingGroupLengthRetired,UL,1,TRUE
+00100000,0010,0000,16,0,Patient Group Length (Retired),PatientGroupLengthRetired,UL,1,TRUE
+00180000,0018,0000,24,0,Acquisition Group Length (Retired),AcquisitionGroupLengthRetired,UL,1,TRUE
+00200000,0020,0000,32,0,Relationship Group Length (Retired),RelationshipGroupLengthRetired,UL,1,TRUE
+00280000,0028,0000,40,0,Image Presentation Group Length (Retired),ImagePresentationGroupLengthRetired,UL,1,TRUE
+00540000,0054,0000,84,0,Generic Group Length (Retired),GenericGroupLengthRetired,UL,1,TRUE
+7FE00000,7FE0,0000,32736,0,Pixel Data Group Length (Retired),PixelDataGroupLengthRetired,UL,1,TRUE
