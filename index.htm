@@ -48,11 +48,17 @@
         <div>
             <input type="file" id="dicomFile" name="dicomFile" />
         </div>
+        <br>
         <div>
             <button id="instance">Parse Instance</button>
         </div>
+        <br>
         <div>
             <button id="series">Parse Series</button>
+        </div>
+        <br>
+        <div>
+            <button id="study">Parse Study</button>
         </div>
     </div>
     <div>
@@ -121,6 +127,26 @@
 
                 // Create an object URL from the selected file
                 var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583";
+
+                // Create the DICOM reader
+                var reader = new DicomReader(new DicomParser(new DicomInstanceEmitter()));
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err));
+
+            });            
+
+            // Handle Study
+            $('#study').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641";
 
                 // Create the DICOM reader
                 var reader = new DicomReader(new DicomParser(new DicomInstanceEmitter()));
