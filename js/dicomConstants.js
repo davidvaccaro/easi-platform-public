@@ -65,6 +65,9 @@ class DicomConstants {
     // https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.5.2.html
     static get UndefinedLength() { return 4294967295; }
 
+    // The standard length of the minimum DICOM Data Element Overall Length
+    static get MinimumLength() { return 10; }
+
     constructor() {
     }
 

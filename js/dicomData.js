@@ -147,6 +147,59 @@ class DicomData {
     }
 
     /**
+     * Determines the index of a specific byte sequence witin the data buffer,
+     * @param {*} begin The offset to start peeking within the DICOM data buffer. 
+     * @param {*} sequence The sequence to find.
+     */
+    indexOf(begin, sequence) {
+
+        // Loop over the buffer bytes
+        while (begin < this.data.length) {
+            
+            // If there are NOT enough remining bytes, the sequence can NOT be found
+            if ((this.data.length - begin) < sequence.length)
+                return -1;
+
+            // If the first sequence byte was found,
+            if (this.data[begin] == sequence[0]) {
+
+                // Loop over the remaining sequence bytes
+                for (var i = 1; i < sequence.length; i++) {
+
+                    // If the sequence is violated, break and continue searching
+                    if (this.data[begin + i] != sequence[i]) {
+                        break;
+                    }
+
+                    // The sequence WAS found, return
+                    if (i == sequence.length - 1) {
+                        return begin;
+                    }
+
+                }
+
+            }
+
+            begin++;
+
+        }
+
+        // The sequence was NOT found
+        return -1;
+
+    }
+
+    /**
+     * Clear the current buffer state.
+     */
+    clear() {
+
+        // Clear the buffer
+        this.data = new Uint8Array(0);
+
+    }
+
+    /**
      * Determins if this DICOM data buffer is empty.
      * @returns true if the DICOM data buffer is empty.
      */

@@ -98,25 +98,42 @@ class DicomUtilities {
     }
 
     /**
+     * Get the byte buffer containing the DICOM End Sequence.
+     * @returns The End Sequence byte buffer.
+     */
+    static getEndSequence() {
+        if (runtimeIsLittleEndian == true) {
+            return [254, 255, 221, 224, 0, 0, 0, 0];
+        }
+        return [255, 254, 224, 221, 0, 0, 0, 0];
+    }
+
+    /**
      * Determins if the specified buffer contains the DICOM "Sequence Delimiter"
      * @param {*} buffer The specified buffer.
      * @returns TRUE if the buffer contains the DICOM "Sequence Delimiter", FALSE otherwise.
      */
     static isEndSequence(buffer) {
 
-        // Parse the "Group"
-        var group = DicomUtilities.bytesToUnsignedInteger(buffer.subarray(0, 2))
-
-        if (group != Tags.SequenceDelimitationItem.Group)
+        // Check the buffer length
+        if (buffer.length < 8)
             return false;
 
-        // Parse the "Element"
-        var element = DicomUtilities.bytesToUnsignedInteger(buffer.subarray(2, 4))
+        // Get the end sequence
+        var end = getEndSequence();
 
-        if (element != Tags.SequenceDelimitationItem.Element)
-            return false;
-    
-        return true;
+        // Test the buffer
+        if ((buffer[0] == end[0]) 
+            && (buffer[1] == end[1]) 
+            && (buffer[2] == end[2])
+            && (buffer[3] == end[3])
+            && (buffer[4] == end[4])
+            && (buffer[5] == end[5])
+            && (buffer[6] == end[6])
+            && (buffer[7] == end[7]))
+            return true;
+
+        return false;
 
     }
 

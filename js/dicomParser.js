@@ -1167,85 +1167,56 @@ class DicomParser {
         }
         else {
 
-            // Handle "undefined-length" versus "explicit length"
-            if (this.dataElement.valueLength == DicomConstants.UndefinedLength) {
+            // If there is data to process
+            if (this.data.length() > 0) {
 
-                // Determine the lenght of the buffer
-                var bufferLength = (DicomConstants.GroupLength + DicomConstants.ElementLength);
+                // Handle "undefined-length" versus "explicit length"
+                if (this.dataElement.valueLength == DicomConstants.UndefinedLength) {
 
-                // Loop reading the buffer
-                while (this.data.length() > 0) {
+                    // Determine if the current buffer contains the end sequence
+                    var index = this.data.indexOf(0, DicomUtilities.getEndSequence());
 
-                    // Peek the next buffer
-                    var buf = this.data.peek(0, bufferLength);
+                    if (index == -1) {
 
-                    // If the whole buffer could NOT be read, indicate MORE data is needed
-                    if ((buf == null) || (buf.length < bufferLength)) {
+                        // Detemrine the buffer length
+                        var totalLength = this.data.length();
 
-                        // If there is NO MORE data, complete the tag
-                        if (isDone == true) {
+                        // Append the remaining bytes to the data-element
+                        this.dataElement.append(this.data.consume(totalLength));
 
-                            // If there is a buffer
-                            if ((buf != null) && (buf.length > 0)) {
-
-                                // Append the remaining bytes to the data-element
-                                this.dataElement.append(buf);
-
-                                // Consume the final bytes
-                                this.data.consume(buf.length);
-
-                                // Record bytes consumed
-                                bytesConsumed += buf.length;
-                            
-                            }
-
-                        }
-
-                        // Increment the total bytes consumed
-                        this.totalBytesConsumed += bytesConsumed;
+                        // Record bytes consumed
+                        bytesConsumed += totalLength;
                         
-                        // Indicate MORE data is needed
-                        return false;
-
                     }
+                    else {
 
-                    // Consume the buffer
-                    this.data.consume(bufferLength);
+                        // Append the remaining bytes to the data-element
+                        this.dataElement.append(this.data.consume(index));
 
-                    // Record bytes consumed
-                    bytesConsumed += bufferLength;
+                        // Record bytes consumed
+                        bytesConsumed += index;
 
-                    // Increment the total bytes consumed
-                    this.totalBytesConsumed += bytesConsumed;
+                        // Determine the End Squence length
+                        var endSequenceLength = DicomUtilities.getEndSequence().length;
 
-                    // If we have reached the end of the data-element value
-                    if (DicomUtilities.isEndSequence(buf) == true) {
+                        // Consume the End Sequence
+                        this.data.consume(endSequenceLength);
+
+                        // Record bytes consumed
+                        bytesConsumed += endSequenceLength;
 
                         // Mark the element as complete
                         this.dataElement.isComplete = true;
 
-                        // Break
-                        break;
-
                     }
 
-                    // Append the buffer
-                    this.dataElement.append(buf);
-
-                    // Append the attribute or sequence
-                    if ((this.dataElement.length() % this.appendFrequency) == 0) {
-                        if (this.emitter.appendAttribute != null) {
-                            this.emitter.appendAttribute(this.dataElement);
-                        }
+                    // Fire the "append" event
+                    if (this.emitter.appendAttribute != null) {
+                        this.emitter.appendAttribute(this.dataElement);
                     }
 
                 }
-
-            }
-            else {
-
-                // Determine if there are more bytes to process
-                if (this.data.length() > 0) {
+                else {
 
                     // Determine the next chunk (either remaining for this element OR all remining bytes in the buffer)
                     var bytesRemaining = Math.min(this.dataElement.bytesRemaining, this.data.length());
