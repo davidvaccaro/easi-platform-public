@@ -26,7 +26,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The length value.
      */
     get groupLength() {
-        return this.value(Tags.FileMetaInformationGroupLength, 0);
+        return this.value(Tag.FileMetaInformationGroupLength, 0);
     }
 
     /**
@@ -34,7 +34,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The File Meta Information Version value.
      */
     get version() {
-        return this.value(Tags.FileMetaInformationVersion);
+        return this.value(Tag.FileMetaInformationVersion);
     }
 
     /**
@@ -42,7 +42,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The Media Storage SOP Class UID value.
      */
     get mediaStorageSOPClassUID() {
-        return DicomSOPClass.find(this.value(Tags.MediaStorageSopClassUid, SOPClasses.NONE.ID));
+        return DicomSOPClass.find(this.value(Tag.MediaStorageSOPClassUID, SOPClasses.NONE.ID));
     }
 
     /**
@@ -50,7 +50,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The Media Storage SOP Instance UID value.
      */
     get mediaStorageSOPInstanceUID() {
-        return this.value(Tags.MediaStorageSopInstanceUid);
+        return this.value(Tag.MediaStorageSOPInstanceUID);
     }
 
     /**
@@ -58,7 +58,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The Transfer Syntax UID value.
      */
     get transferSyntaxUID() {
-        return DicomTransferSyntax.find(this.value(Tags.TransferSyntaxUid, TransferSyntax.NONE.ID));
+        return DicomTransferSyntax.find(this.value(Tag.TransferSyntaxUID, TransferSyntax.NONE.ID));
     }
 
     /**
@@ -66,7 +66,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The Implementation Class UID value.
      */
     get implementationSOPInstanceUID() {
-        return this.value(Tags.ImplementationClassUid);
+        return this.value(Tag.ImplementationClassUID);
     }
 
     /**
@@ -74,7 +74,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The Implementation Version Name value.
      */
     get implementationVersionName() {
-        return this.value(Tags.ImplementationVersionName);
+        return this.value(Tag.ImplementationVersionName);
     }
 
     /**
@@ -82,7 +82,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The Source Application Entity Title value.
      */
     get sourceApplicationEntityTitle() {
-        return this.value(Tags.SourceApplicationEntityTitle);
+        return this.value(Tag.SourceApplicationEntityTitle);
     }
 
     /**
@@ -90,7 +90,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The Sending Application Entity Title value.
      */
     get sendingApplicationEntityTitle() {
-        return this.value(Tags.SendingApplicationEntityTitle);
+        return this.value(Tag.SendingApplicationEntityTitle);
     }
 
     /**
@@ -98,7 +98,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The Receiving Application Entity Title value.
      */
     get receivingApplicationEntityTitle() {
-        return this.value(Tags.ReceivingApplicationEntityTitle);
+        return this.value(Tag.ReceivingApplicationEntityTitle);
     }
 
     /**
@@ -106,7 +106,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The Private Information Creator UID value.
      */
     get privateInformationCreatorUid() {
-        return this.value(Tags.PrivateInformationCreatorUid);
+        return this.value(Tag.PrivateInformationCreatorUID);
     }
 
     /**
@@ -114,7 +114,7 @@ class DicomMetaSet extends DicomAttributeSet {
      * @returns The Private Information value.
      */
     get privateInformation() {
-        return this.value(Tags.PrivateInformation);
+        return this.value(Tag.PrivateInformation);
     }
     
     /**
@@ -128,3 +128,8 @@ class DicomMetaSet extends DicomAttributeSet {
     }
 
 };
+
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomMetaSet };
+}

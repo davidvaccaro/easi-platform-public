@@ -1,0 +1,35 @@
+﻿NONE,None,0,TRUE
+AE,Application Entity,16,FALSE
+AS,Age String,4,TRUE
+AT,Attribute Tag,4,TRUE
+CS,Code String,16,FALSE
+DA,Date,8,TRUE
+DS,Decimal String,16,FALSE
+DT,Date Time,26,FALSE
+FL,Floating Point Single,4,TRUE
+FD,Floating Point Double,8,TRUE
+IS,Integer String,12,FALSE
+LO,Long String,64,FALSE
+LT,Long Text,10240,FALSE
+OB,Other Byte,NULL,FALSE
+OD,Other Double,4294967288,FALSE
+OF,Other Float,4294967292,FALSE
+OL,Other Long,NULL,FALSE
+OV,Other 64-bit Very Long,NULL,FALSE
+OW,Other Word,NULL,FALSE
+PN,Person Name,64,FALSE
+SH,Short String,16,FALSE
+SL,Signed Long,4,TRUE
+SQ,Sequence of Items,NULL,FALSE
+SS,Signed Short,2,TRUE
+ST,Short Text,1024,FALSE
+SV,Signed 64-bit Very Long,8,TRUE
+TM,Time,14,FALSE
+UC,Unlimited Characters,4294967294,FALSE
+UI,Unique Identifier (UID),64,FALSE
+UL,Unsigned Long,4,TRUE
+UN,Unknown,NULL,FALSE
+UR,Universal Resource Identifier or Universal Resource Locator (URI/URL),4294967294,FALSE
+US,Unsigned Short,2,TRUE
+UT,Unlimited Text,4294967294,FALSE
+UV,Unsigned 64-bit Very Long,8,TRUE

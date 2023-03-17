@@ -22,6 +22,8 @@
 //
 //
 
+var TemplateLookup = {};
+
 class DicomTag {
 
 	/**
@@ -44,7 +46,7 @@ class DicomTag {
 	static find(id) {
 
 		// Loopup the tag
-		var tag = Tag[id];
+		var tag = Tags[id];
 
 		// Check for private
 		if (tag == null) {
@@ -228,4 +230,7 @@ class DicomTag {
 
 };
 
-var TemplateLookup = {};
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomTag };
+}

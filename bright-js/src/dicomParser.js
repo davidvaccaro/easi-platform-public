@@ -138,7 +138,7 @@ class DicomParser {
             var tag = DicomTag.find(identifier);
 
             // If the tag is a sequence control tag, 
-            if ((tag == Tags.Item) || (tag == Tags.ItemDelimitationItem) || (tag == Tags.SequenceDelimitationItem)) {
+            if ((tag == Tag.Item) || (tag == Tag.ItemDelimitationItem) || (tag == Tag.SequenceDelimitationItem)) {
 
                 // Initialize the value-length
                 var valueLength = null;
@@ -198,7 +198,7 @@ class DicomParser {
                         throw new DicomException("Unknown Tag and Value Representation!", DicomErrorCodes.UnknownTagAndValueRepresentation);
 
                     // If the tag is found but the VR does NOT agree, process exception
-                    if ((tag != null) && (valueRepresentation != null) && (tag.VR != valueRepresentation) && (Configuration.Strict == true))
+                    if ((tag != null) && (valueRepresentation != null) && (tag.VR != valueRepresentation) && (DicomConfiguration.isStrict == true))
                         throw new DicomException("Value Representation Read and Runtime Tag do NOT Agree!", DicomErrorCodes.InvalidDataElement);
 
                     // Establish the value representation to use to parse the value
@@ -312,7 +312,7 @@ class DicomParser {
                     throw new DicomException("Invalid Value Length!", DicomErrorCodes.InvalidDataElement);
 
                 // Validate the value length based on value-representation
-                if ((result.valueRepresentation.IsFixed == true) && (result.valueRepresentation.Length != valueLength) && (Configuration.Strict == true))
+                if ((result.valueRepresentation.IsFixed == true) && (result.valueRepresentation.Length != valueLength) && (DicomConfiguration.isStrict == true))
                     throw new DicomException("Invalid Value Length! Value does NOT match VR fixed length.", DicomErrorCodes.InvalidDataElement);
 
                 // Validate the use of undefined-length value length
@@ -330,7 +330,7 @@ class DicomParser {
                         ||
                         (result.valueRepresentation == ValueRepresentations.UT)
                     )
-                    && (Configuration.Strict == true)
+                    && (DicomConfiguration.isStrict == true)
                 ) {
                     throw new DicomException("Invalid Value Length! UC, UR or UT MUST be Explicit! See: 7.1.2 Data Element Structure with Explicit VR", DicomErrorCodes.InvalidDataElement);
                 }
@@ -712,7 +712,7 @@ class DicomParser {
             if ((this.dataElement != null) && (this.dataElement.isComplete == true)) {
 
                 // The first data-element of this section MUST be the Group-Length
-                if (this.dataElement.tag == Tags.FileMetaInformationGroupLength) {
+                if (this.dataElement.tag == Tag.FileMetaInformationGroupLength) {
 
                     // Skip the Group-Length for the part-start
                     this.partStart = this.totalBytesConsumed;
@@ -723,7 +723,7 @@ class DicomParser {
                 }
 
                 // If this is the transfer syntax of the dataset
-                if (this.dataElement.tag == Tags.TransferSyntaxUID) {
+                if (this.dataElement.tag == Tag.TransferSyntaxUID) {
 
                     // Capture the current data-set transfer syntax
                     this.dataSetTransferSyntax = DicomTransferSyntax.find(this.dataElement.value);
@@ -826,7 +826,7 @@ class DicomParser {
                                 return false;
 
                             // If the current sequence item is ended
-                            if (details.tag == Tags.ItemDelimitationItem) {
+                            if (details.tag == Tag.ItemDelimitationItem) {
 
                                 // Validate that current item MUST be a DicomItem
                                 if (!(item.element instanceof DicomItem)) {
@@ -855,7 +855,7 @@ class DicomParser {
                                 this.dataElements.pop();
 
                                 // The next tag can start a new "item" or end the current "sequence"
-                                if (nextDetails.tag == Tags.Item)
+                                if (nextDetails.tag == Tag.Item)
                                 {
 
                                     // Create a new item
@@ -876,7 +876,7 @@ class DicomParser {
                                     break;
 
                                 }                        
-                                else if (nextDetails.tag == Tags.SequenceDelimitationItem) {
+                                else if (nextDetails.tag == Tag.SequenceDelimitationItem) {
 
                                     // Pop the current sequence
                                     this.dataElements.pop();
@@ -1137,7 +1137,7 @@ class DicomParser {
 
             // The tag MUST be Item Tag (FFFE, E000)
             // https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.5.2.html
-            if (details.tag != Tags.Item) {
+            if (details.tag != Tag.Item) {
                 throw new DicomException("Invalid Tag! MUST BE Item Tag (FFFE, E000)", DicomErrorCodes.InvalidTag);
             }            
 
@@ -1287,4 +1287,9 @@ class DicomParser {
 
     }
 
+};
+
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomParser };
 }

@@ -10,6 +10,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dictionaries", "dictionarie
 		..\data\dictionaries\data-elements-adhoc.csv = ..\data\dictionaries\data-elements-adhoc.csv
 		..\data\dictionaries\data-elements.csv = ..\data\dictionaries\data-elements.csv
 		..\data\dictionaries\part06.xml = ..\data\dictionaries\part06.xml
+		..\data\dictionaries\uids-adhoc.csv = ..\data\dictionaries\uids-adhoc.csv
+		..\data\dictionaries\uids.csv = ..\data\dictionaries\uids.csv
+		..\data\dictionaries\transfer-syntaxes-adhoc.csv = ..\data\dictionaries\transfer-syntaxes-adhoc.csv
+		..\data\dictionaries\transfer-syntaxes.csv = ..\data\dictionaries\transfer-syntaxes.csv
+		..\data\dictionaries\value-representations-adhoc.csv = ..\data\dictionaries\value-representations-adhoc.csv
+		..\data\dictionaries\value-representations.csv = ..\data\dictionaries\value-representations.csv
 	EndProjectSection
 EndProject
 Global

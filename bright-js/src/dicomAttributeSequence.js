@@ -68,4 +68,9 @@ class DicomAttributeSequence extends DicomAttribute {
 
     }
 
+};
+
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomAttributeSequence };
 }

@@ -169,3 +169,8 @@ class DicomInstanceEmitter {
     }
 
 };
+
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomInstanceEmitter };
+}

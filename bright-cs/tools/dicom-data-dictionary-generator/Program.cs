@@ -115,7 +115,7 @@ namespace Xinonix.Dicom.Tools
 
         #endregion
 
-        #region Generic Dictionary Generation Member Functions
+        #region Generic "Data Element" Dictionary Generation Member Functions
 
         /**
          * Regenerate the latest version of all generic (CSV) data-element for the specified table.
@@ -173,7 +173,16 @@ namespace Xinonix.Dicom.Tools
                 bool isRetired = ((retired.Trim() != string.Empty) && (retired.Contains("RET")));
 
                 // Write the tag row with COLUMNS: TAG ID, GROUP, ELEMENT, GROUP VALUE, ELEMENT VALUE, NAME, KEYWORD, VR, VM, IS RETIRED 
-                sb.AppendLine(groupCode + elementCode + "," + groupCode + "," + elementCode + "," + group + "," + element + "," + name + "," + keyword + "," + vr + "," + vm + "," + ((isRetired == true) ? "TRUE" : "FALSE"));
+                sb.AppendLine(groupCode + elementCode + ","
+                    + groupCode + ","
+                    + elementCode + ","
+                    + group + ","
+                    + element + ","
+                    + name + ","
+                    + keyword + ","
+                    + vr + ","
+                    + vm + ","
+                    + ((isRetired == true) ? "TRUE" : "FALSE"));
 
             }
 
@@ -334,6 +343,207 @@ namespace Xinonix.Dicom.Tools
 
         }
 
+        #endregion
+
+        #region Generic "UID" Dictionary Generation Member Functiond
+
+        /**
+         * Regenerate the latest version of all generic (CSV) UID for the specified table.
+         */
+        public static void generateGenericUIDTable(XElement? table, StringBuilder sb)
+        {
+
+            // Find the table header
+            XElement? header = table.Elements().Where(x => x.Name.LocalName == "thead").FirstOrDefault();
+
+            // Find the table body
+            XElement? body = table.Elements().Where(x => x.Name.LocalName == "tbody").FirstOrDefault();
+
+            // Loop over the body rows
+            foreach (XElement row in body.Elements().Where(x => x.Name.LocalName == "tr"))
+            {
+
+                // Find the list of "td" elements
+                XElement[] cols = row.Elements().Where(x => x.Name.LocalName == "td").ToArray();
+
+                // Parse the "UID"
+                String uid = cleanString(cols[0].Value);
+
+                // Parse the "NAME"
+                String name = cleanString(cols[1].Value.Replace(",", string.Empty).Trim());
+
+                // Parse the "KEYWORD"
+                String keyword = cleanString(cols[2].Value.Replace(",", string.Empty).Trim());
+
+                // Parse the "TYPE"
+                String type = cleanString(cols[3].Value.Replace(",", string.Empty).Trim());
+
+                // Determine if this is a "retired" element
+                bool isRetired = ((name.Trim() != string.Empty) && (name.Contains("Retired")));
+
+                // Write the tag row with COLUMNS: UID, NAME, KEYWORD, TYPE, IS RETIRED
+                sb.AppendLine(uid + ","
+                    + name + ","
+                    + keyword + ","
+                    + type + ","
+                    + ((isRetired == true) ? "TRUE" : "FALSE"));
+
+            }
+
+        }
+
+        /**
+         * Regenerate the latest version of all generic (CSV) UID related artifacts.
+         */
+        public static void generateGenericUIDDictionaries(XDocument dictionary)
+        {
+
+            // Get the current environment root
+            string? rootPath = Environment.GetEnvironmentVariable("BRIGHT_ROOT");
+
+            if ((rootPath == null) || (rootPath.Trim() == string.Empty))
+            {
+
+                // Report to the caller
+                Console.WriteLine("No BRIGHT_ROOT Environment Variable!");
+
+                return;
+
+            }
+
+            // Find the "chapter_A" chapter
+            XElement? chapterA = findDataDictionaryChapter(dictionary, "chapter_A");
+
+            if (chapterA == null)
+            {
+
+                // Report to the caller
+                Console.WriteLine("No DICOM Part-06 Table A-1. UID Values Registry of DICOM Unique Identifiers (UIDs) (Normative) Chapter!");
+
+                return;
+
+            }
+
+            // Find the table table
+            XElement? tableA = chapterA.Elements().Where(x => x.Name.LocalName == "table").FirstOrDefault();
+
+            if (tableA == null)
+            {
+
+                // Report to the caller
+                Console.WriteLine("No DICOM Table A-1. UID Values Registry of DICOM Unique Identifiers (UIDs) (Normative) Table!");
+
+                return;
+
+            }
+
+            // Create the new builder
+            StringBuilder sb = new StringBuilder();
+
+            // Write the header (UID, NAME, KEYWORD, TYPE, IS RETIRED)
+            sb.AppendLine("UID,NAME,KEYWORD,TYPE,IS RETIRED");
+
+            // Generate the Part-06 Table A-1. UID Values A Registry of DICOM Unique Identifiers (UIDs) (Normative)
+            generateGenericUIDTable(tableA, sb);
+
+            // Append the "Ad-Hoc" UIDs
+            foreach (string line in System.IO.File.ReadAllLines(System.IO.Path.Combine(rootPath, "data", "dictionaries", "uids-adhoc.csv")))
+            {
+                if (line.Trim() != string.Empty)
+                {
+                    sb.AppendLine(line);
+                }
+            }
+
+            // Write out the raw dictionary file
+            System.IO.File.WriteAllText(System.IO.Path.Combine(rootPath, "data", "dictionaries", "uids.csv"), sb.ToString());
+
+        }
+
+        /**
+         * Regenerate the latest version of all generic (CSV) Transfer Syntax related artifacts.
+         */
+        public static void generateGenericTransferSyntaxDictionary(XDocument dictionary) {
+
+            // Get the current environment root
+            string? rootPath = Environment.GetEnvironmentVariable("BRIGHT_ROOT");
+
+            if ((rootPath == null) || (rootPath.Trim() == string.Empty))
+            {
+
+                // Report to the caller
+                Console.WriteLine("No BRIGHT_ROOT Environment Variable!");
+
+                return;
+
+            }
+
+            // Create the new builder
+            StringBuilder sb = new StringBuilder();
+
+            // Write the header (ID,NAME,KEYWORD,IS LITTLE,IS EXPLICIT,IS COMPRESSED,IS LOSSY,APPLICATION TYPE,IS RETIRED)
+            sb.AppendLine("ID,NAME,KEYWORD,IS LITTLE,IS EXPLICIT,IS COMPRESSED,IS LOSSY,APPLICATION TYPE,IS RETIRED");
+
+            // TODO - Figure out how to generate the above columns of data from the standard
+
+            // Append the "Ad-Hoc" transfer syntazes
+            foreach (string line in System.IO.File.ReadAllLines(System.IO.Path.Combine(rootPath, "data", "dictionaries", "transfer-syntaxes-adhoc.csv")))
+            {
+                if (line.Trim() != string.Empty)
+                {
+                    sb.AppendLine(line);
+                }
+            }
+
+            // Write out the raw dictionary file
+            System.IO.File.WriteAllText(System.IO.Path.Combine(rootPath, "data", "dictionaries", "transfer-syntaxes.csv"), sb.ToString());
+
+        }
+
+        /**
+         * Regenerate the latest version of all generic (CSV) Value Representations related artifacts.
+         */
+        public static void generateGenericValueRepresentationDictionary(XDocument dictionary) {
+
+            // Get the current environment root
+            string? rootPath = Environment.GetEnvironmentVariable("BRIGHT_ROOT");
+
+            if ((rootPath == null) || (rootPath.Trim() == string.Empty))
+            {
+
+                // Report to the caller
+                Console.WriteLine("No BRIGHT_ROOT Environment Variable!");
+
+                return;
+
+            }
+
+            // Create the new builder
+            StringBuilder sb = new StringBuilder();
+
+            // Write the header (ID,NAME,LENGTH,IS FIXED)
+            sb.AppendLine("ID,NAME,LENGTH,IS FIXED");
+
+            // TODO - Figure out how to generate the above columns of data from the standard
+
+            // Append the "Ad-Hoc" transfer syntazes
+            foreach (string line in System.IO.File.ReadAllLines(System.IO.Path.Combine(rootPath, "data", "dictionaries", "value-representations-adhoc.csv")))
+            {
+                if (line.Trim() != string.Empty)
+                {
+                    sb.AppendLine(line);
+                }
+            }
+
+            // Write out the raw dictionary file
+            System.IO.File.WriteAllText(System.IO.Path.Combine(rootPath, "data", "dictionaries", "value-representations.csv"), sb.ToString());
+
+        }
+
+        #endregion
+
+        #region Generic Dictionary Generation Member Functions
+
         /**
          * Generate the generic (CSV) dictionaries from the DICOM Part-06 XML.
          */
@@ -343,11 +553,20 @@ namespace Xinonix.Dicom.Tools
             // Generate the Element Dictionaries
             generateGenericDataElementDictionaries(dictionary);
 
+            // Generate the UID Dictionaries
+            generateGenericUIDDictionaries(dictionary);
+
+            // Generate the Transfer Syntax Dictionaries
+            generateGenericTransferSyntaxDictionary(dictionary);
+
+            // Generate the Value Representation Dictionaries
+            generateGenericValueRepresentationDictionary(dictionary);
+
         }
 
         #endregion
 
-        #region Language-specific Dictionary Generation Member Functions
+        #region Javascript Dictionary Generation Member Functions
 
         /**
          * Generate the Javascript dictionaries.
@@ -368,23 +587,7 @@ namespace Xinonix.Dicom.Tools
 
             }
 
-            /*
-             * EXAMPLE:
-             * 
-                var Tag = {
-	                '00020000': new DicomTag({ ID: '00020000', Tag: '(0002, 0000)', Group: 2, Element: 0, VR: ValueRepresentations.UL, Name: 'File Meta Information Group Length', IsRetired: false })
-                }
-             * 
-             * var Templates = Object.keys(Tag).find(element => element.Group == -1 || element.Element == -1);
-             * 
-                var Tags = {
-	                FileMetaInformationGroupLength: Tag['00020000']
-                }
-             * 
-             */
-
-            // Read the raw data-element lines
-            string[] lines = System.IO.File.ReadAllLines(System.IO.Path.Combine(rootPath, "data", "dictionaries", "data-elements.csv"));
+            string[] lines;
 
             // Create a new string builder
             StringBuilder sb = new StringBuilder();
@@ -393,12 +596,99 @@ namespace Xinonix.Dicom.Tools
             sb.Append("//\n// DicomDictionaries.js - 1.0.0\n//\n// DICOM Dictionaries \n//\n// David Vaccaro, Xinonix Interactive Development, Inc / Copyright " + DateTime.Now.Year.ToString() + "\n// \n// Proprietary Notices:\n// The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors \n// and protected by applicable U.S. and international patent, copyright, trademark and trade secret laws. Xinonix \n// Interactive Development Inc and its licensors shall retain ownership in the Products, Documentation and Materials; \n// all derivatives thereof (in whole or part); and any intellectual property or other rights embodied therein. \n// \n// All proprietary notices incorporated in or affixed to any Products, Documentation or Materials shall be duplicated \n// by you on all copies of the Products, Documentation, or Material, as applicable, and shall not be altered, removed \n// or obliterated. Lease Equipment is, and shall at all times be and remain Our sole and exclusive property; you have \n// no right, title or interest therein or thereto except as expressly set forth in this Agreement. You shall keep the \n// Lease Equipment free and clear of all levies, liens and encumbrances and shall immediately notify us in writing of \n// any circumstances with respect to the location of the Equipment which will adversely affect it or our security \n// interests therein. You shall not install, attach, mount or otherwise house the Lease Equipment in a manner that \n// would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.\n//\n//");
             sb.AppendLine(string.Empty);
             sb.AppendLine("// THIS FILE GENERATED: " + DateTime.Now.ToString());
+
+            #region Handle the DICOM Value Representation Related Dictionaries
+
+            /*
+             * EXAMPLE:
+             * 
+                var ValueRepresentations = {
+	                'ID': new DicomValueRepresentation({ ID: ValueRepresentationIDs.NONE, Name: 'None', Length: 0, IsFixed: true })                
+                }
+             * 
+             * 
+                var ValueRepresentation = {
+	                ID: ValueRepresentations['ID']
+                }
+             * 
+             */
+
+            // Read the raw trasfer-syntax lines
+            lines = System.IO.File.ReadAllLines(System.IO.Path.Combine(rootPath, "data", "dictionaries", "value-representations.csv"));
+
+            #region Generate the SOP Classes Map
+
+            // Start the Tag map
             sb.AppendLine(string.Empty);
+            sb.AppendLine("var ValueRepresentations = {");
+
+            // Loop over the lines of raw data-element dictionary rows (skip the header)
+            for (int i = 1; i < lines.Length; i++)
+            {
+
+                // Split the line
+                string[] cols = lines[i].Split(new char[] { ',' });
+
+                // Append the tag line
+                sb.AppendLine("\t\'" + cols[0].Trim() + "\': new DicomValueRepresentation({ ID: '" + cols[0].Trim() + "', Name: '" + cols[1].Trim() + "', Length: " + cols[2].Trim().ToLower() + ", IsFixed: " + cols[3].Trim().ToLower() + " })" + ((i == lines.Length - 1) ? string.Empty : ","));
+
+            }
+
+            // End the Tag map
+            sb.AppendLine("};");
+
+            #endregion
+
+            #region Generate the Value Representations Lookup Map
+
+            // Start the Tag map
+            sb.AppendLine("");
+            sb.AppendLine("var ValueRepresentation = {");
+
+            // Loop over the lines of raw data-element dictionary rows (skip the header)
+            for (int i = 1; i < lines.Length; i++)
+            {
+
+                // Split the line
+                string[] cols = lines[i].Split(new char[] { ',' });
+
+                // Append the tag line
+                sb.AppendLine("\t" + cols[0].Trim() + ": ValueRepresentations['" + cols[0] + "']" + ((i == lines.Length - 1) ? string.Empty : ","));
+
+            }
+
+            // End the Tag map
+            sb.AppendLine("};");
+
+            #endregion
+
+            #endregion
+
+            #region Handle the DICOM Tag Related Dictionaries
+
+            /*
+             * EXAMPLE:
+             * 
+                var Tags = {
+	                '00020000': new DicomTag({ ID: '00020000', Tag: '(0002, 0000)', Group: 2, Element: 0, VR: ValueRepresentation.UL, Name: 'File Meta Information Group Length', IsRetired: false })
+                }
+             * 
+             * var Templates = Object.keys(Tag).find(element => element.Group == -1 || element.Element == -1);
+             * 
+                var Tag = {
+	                FileMetaInformationGroupLength: Tag['00020000']
+                }
+             * 
+             */
+
+            // Read the raw data-element lines
+            lines = System.IO.File.ReadAllLines(System.IO.Path.Combine(rootPath, "data", "dictionaries", "data-elements.csv"));
 
             #region Generate the Tag Map
 
             // Start the Tag map
-            sb.AppendLine("var Tag = {");
+            sb.AppendLine(string.Empty);
+            sb.AppendLine("var Tags = {");
 
             // Loop over the lines of raw data-element dictionary rows (skip the header)
             for (int i = 1; i < lines.Length; i++)
@@ -484,7 +774,13 @@ namespace Xinonix.Dicom.Tools
                     continue;
 
                 // Append the tag line
-                sb.AppendLine("\t\'" + cols[0].Trim() + "\': new DicomTag({ ID: '" + cols[0].Trim() + "', Tag: '(" + cols[1].Trim() + ", " + cols[2].Trim() + ")', Group: " + cols[3].Trim() + ", Element: " + cols[4].Trim() + ", VR: ValueRepresentations." + vr.Trim() + ", " + ((otherVR != string.Empty) ? ("VR2: ValueRepresentations." + otherVR + ",") : string.Empty) + " VM: " + vm + ", Name: '" + cols[5].Replace("'", string.Empty).Trim() + "', IsRetired: " + cols[9].Trim().ToLower() + " })" + ((i == lines.Length - 1) ? string.Empty : ","));
+                sb.AppendLine("\t\'" +
+                    cols[0].Trim() + "\': new DicomTag({ ID: '" +
+                    cols[0].Trim() + "', Tag: '(" + cols[1].Trim() + ", " +
+                    cols[2].Trim() + ")', Group: " + cols[3].Trim() + ", Element: " +
+                    cols[4].Trim() + ", VR: ValueRepresentation." + vr.Trim() + ", " + ((otherVR != string.Empty) ? ("VR2: ValueRepresentation." + otherVR + ",") : string.Empty) + " VM: " + vm + ", Name: '" +
+                    cols[5].Replace("'", string.Empty).Trim() + "', IsRetired: " +
+                    cols[9].Trim().ToLower() + " })" + ((i == lines.Length - 1) ? string.Empty : ","));
 
             }
 
@@ -497,7 +793,7 @@ namespace Xinonix.Dicom.Tools
 
             // Start the Tag map
             sb.AppendLine("");
-            sb.AppendLine("var Tags = {");
+            sb.AppendLine("var Tag = {");
 
             // Loop over the lines of raw data-element dictionary rows (skip the header)
             for (int i = 1; i < lines.Length; i++)
@@ -511,7 +807,7 @@ namespace Xinonix.Dicom.Tools
                     continue;
 
                 // Append the tag line
-                sb.AppendLine("\t" + cols[6].Trim() + ": Tag['" + cols[0] + "']" + ((i == lines.Length - 1) ? string.Empty : ","));
+                sb.AppendLine("\t" + cols[6].Trim() + ": Tags['" + cols[0] + "']" + ((i == lines.Length - 1) ? string.Empty : ","));
 
             }
 
@@ -520,10 +816,167 @@ namespace Xinonix.Dicom.Tools
 
             #endregion
 
+            #endregion
+
+            #region Handle the DICOM Transfer Syntax Related Dictionaries
+
+            /*
+             * EXAMPLE:
+             * 
+                var TransferSyntaxes = {
+	                '0': new DicomTransferSyntax({ 
+		                ID: '0', 
+		                Name: 'None', 
+		                IsLittleEndian: false, 
+		                IsExplicit: false, 
+		                IsCompressed: false, 
+		                IsLossy: false, 
+		                ApplicationType: TransferSyntaxApplicationType.All, 
+		                IsRetired: false 
+	                })
+                }
+             * 
+             * 
+                var TransferSyntax = {
+	                NONE: TransferSyntaxes['0'],
+                }
+             * 
+             */
+
+            // Read the raw trasfer-syntax lines
+            lines = System.IO.File.ReadAllLines(System.IO.Path.Combine(rootPath, "data", "dictionaries", "transfer-syntaxes.csv"));
+
+            #region Generate the Transfer Syntax Map
+
+            // Start the Tag map
+            sb.AppendLine(string.Empty);
+            sb.AppendLine("var TransferSyntaxes = {");
+
+            // Loop over the lines of raw data-element dictionary rows (skip the header)
+            for (int i = 1; i < lines.Length; i++)
+            {
+
+                // Split the line
+                string[] cols = lines[i].Split(new char[] { ',' });
+
+                // Append the tag line
+                sb.AppendLine("\t\'" + cols[0].Trim() + "\': new DicomTransferSyntax({ ID: '" + cols[0].Trim() + "', Name: '" + cols[1].Trim() + "', IsLittleEndian: " + cols[3].Trim().ToLower() + ", IsExplicit: " + cols[4].Trim().ToLower() + ", IsCompressed: " + cols[5].Trim().ToLower() + ", IsLossy: " + cols[6].Trim().ToLower() + ", ApplicationType: TransferSyntaxApplicationType." + cols[7].Trim() + ", IsRetired: " + cols[8].Trim().ToLower() + " })" + ((i == lines.Length - 1) ? string.Empty : ","));
+
+            }
+
+            // End the Tag map
+            sb.AppendLine("};");
+
+            #endregion
+
+            #region Generate the Transfer Syntax Lookup Map
+
+            // Start the Tag map
+            sb.AppendLine("");
+            sb.AppendLine("var TransferSyntax = {");
+
+            // Loop over the lines of raw data-element dictionary rows (skip the header)
+            for (int i = 1; i < lines.Length; i++)
+            {
+
+                // Split the line
+                string[] cols = lines[i].Split(new char[] { ',' });
+
+                // Append the tag line
+                sb.AppendLine("\t" + cols[2].Trim() + ": TransferSyntaxes['" + cols[0] + "']" + ((i == lines.Length - 1) ? string.Empty : ","));
+
+            }
+
+            // End the Tag map
+            sb.AppendLine("};");
+
+            #endregion
+
+            #endregion
+
+            #region Handle the DICOM SOP Classes Related Dictionaries
+
+            /*
+             * EXAMPLE:
+             * 
+                var SOPClasses = {
+	                '0': new DicomSOPClass({ ID: '0', Name: 'None', IsRetired: false })	                
+                }
+             * 
+             * 
+                var SOPClass = {
+	                NONE: SOPClasses['0']
+                }
+             * 
+             */
+
+            // Read the raw trasfer-syntax lines
+            lines = System.IO.File.ReadAllLines(System.IO.Path.Combine(rootPath, "data", "dictionaries", "uids.csv"));
+
+            #region Generate the SOP Classes Map
+
+            // Start the Tag map
+            sb.AppendLine(string.Empty);
+            sb.AppendLine("var SOPClasses = {");
+
+            // Loop over the lines of raw data-element dictionary rows (skip the header)
+            for (int i = 1; i < lines.Length; i++)
+            {
+
+                // Split the line
+                string[] cols = lines[i].Split(new char[] { ',' });
+
+                // Validate the row
+                if ((cols[3] != "SOP Class") || (cols[2].Trim() == string.Empty))
+                    continue;
+
+                // Append the tag line
+                sb.AppendLine("\t\'" + cols[0].Trim() + "\': new DicomSOPClass({ ID: '" + cols[0].Trim() + "', Name: '" + cols[1].Trim() + "', IsRetired: " + cols[4].Trim().ToLower() + " })" + ((i == lines.Length - 1) ? string.Empty : ","));
+
+            }
+
+            // End the Tag map
+            sb.AppendLine("};");
+
+            #endregion
+
+            #region Generate the Transfer Syntax Lookup Map
+
+            // Start the Tag map
+            sb.AppendLine("");
+            sb.AppendLine("var SOPClass = {");
+
+            // Loop over the lines of raw data-element dictionary rows (skip the header)
+            for (int i = 1; i < lines.Length; i++)
+            {
+
+                // Split the line
+                string[] cols = lines[i].Split(new char[] { ',' });
+
+                // Validate the row
+                if ((cols[3] != "SOP Class") || (cols[2].Trim() == string.Empty))
+                    continue;
+
+                // Append the tag line
+                sb.AppendLine("\t" + cols[2].Trim() + ": SOPClasses['" + cols[0] + "']" + ((i == lines.Length - 1) ? string.Empty : ","));
+
+            }
+
+            // End the Tag map
+            sb.AppendLine("};");
+
+            #endregion
+
+            #endregion
+
             // Write out the raw javascript dictionary file
             System.IO.File.WriteAllText(System.IO.Path.Combine(rootPath, "bright-js", "src", "dicomDictionaries.js"), sb.ToString());
 
         }
+
+        #endregion
+
+        #region Language-specific Dictionary Generation Member Functions
 
         /*
          * Generate the language specific dictionaries from the "generic" dictionaries.

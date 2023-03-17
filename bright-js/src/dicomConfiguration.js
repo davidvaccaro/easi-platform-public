@@ -21,11 +21,17 @@
 
 class DicomConfiguration {
 
+    /**
+     * Is the current environment configured for "strict" validation.
+     */
+    static get isStrict() { return false; }
+
     constructor() {
-        this.Strict = false;
     }
 
 };
 
-// Establish the default global configuration
-var Configuration = new DicomConfiguration();
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomConfiguration };
+}

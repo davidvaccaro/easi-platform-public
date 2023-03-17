@@ -87,7 +87,7 @@ class DicomInstance {
     get sopInstanceUid() {
 
         // Find the SOP Instance UID attribute
-        var attribute = this.dataSet.find(Tags.SopInstanceUid);
+        var attribute = this.dataSet.find(Tag.SOPInstanceUID);
 
         if (attribute == null)
             return "";
@@ -101,3 +101,8 @@ class DicomInstance {
     }
 
 };
+
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomInstance };
+}

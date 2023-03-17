@@ -88,7 +88,7 @@ class DicomData {
         var newData = null;
 
         // Prepare the new data (with a endian-swap if needed)
-        if ((this.transferSyntax != TransferSyntax.NONE) && (this.transferSyntax.IsLittleEndian != runtimeIsLittleEndian))
+        if ((this.transferSyntax != TransferSyntax.NONE) && (this.transferSyntax.IsLittleEndian != DicomUtilities.runtimeIsLittleEndian))
             newData = DicomUtilities.swapBytes(raw);
         else
             newData = raw;

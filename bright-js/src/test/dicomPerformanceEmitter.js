@@ -93,3 +93,8 @@ class DicomPerformanceEmitter {
     }
 
 };
+
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomPerformanceEmitter };
+}

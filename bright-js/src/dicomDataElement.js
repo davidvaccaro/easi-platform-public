@@ -75,3 +75,8 @@ class DicomDataElement extends DicomData {
     }
 
 };
+
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomDataElement };
+}

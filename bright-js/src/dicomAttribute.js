@@ -34,7 +34,7 @@ class DicomAttribute extends DicomDataElement {
             
             // UL: Handle converting the RAW data to a "unsigned long" value
             case ValueRepresentations.UL:
-                return (new DataView(data.buffer)).getUint32(data.byteOffset, runtimeIsLittleEndian);
+                return (new DataView(data.buffer)).getUint32(data.byteOffset, DicomUtilities.runtimeIsLittleEndian);
                 break;
 
             // AE, SH, UI: Handle converting the RAW data to a "unique identifier" value
@@ -78,3 +78,8 @@ class DicomAttribute extends DicomDataElement {
     }
 
 };
+
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomAttribute };
+}

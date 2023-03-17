@@ -40,4 +40,9 @@ class DicomException {
         this.code = code;
     }
 
+};
+
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomException, DicomErrorCodes };
 }

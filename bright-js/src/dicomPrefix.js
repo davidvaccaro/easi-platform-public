@@ -34,3 +34,8 @@ class DicomPrefix extends DicomDataElement {
     }
 
 };
+
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomPrefix };
+}

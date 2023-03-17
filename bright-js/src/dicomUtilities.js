@@ -51,9 +51,9 @@ class DicomUtilities {
     static bytesToUnsignedInteger(bytes) {
         var dv = new DataView(bytes.buffer);
         if (bytes.length == 2)
-            return dv.getUint16(bytes.byteOffset, runtimeIsLittleEndian);
+            return dv.getUint16(bytes.byteOffset, DicomUtilities.runtimeIsLittleEndian);
         else if (bytes.length == 4)
-            return dv.getUint32(bytes.byteOffset, runtimeIsLittleEndian);
+            return dv.getUint32(bytes.byteOffset, DicomUtilities.runtimeIsLittleEndian);
         return undefined;
     }
 
@@ -102,7 +102,7 @@ class DicomUtilities {
      * @returns The End Sequence byte buffer.
      */
     static getEndSequence() {
-        if (runtimeIsLittleEndian == true) {
+        if (DicomUtilities.runtimeIsLittleEndian == true) {
             return [254, 255, 221, 224, 0, 0, 0, 0];
         }
         return [255, 254, 224, 221, 0, 0, 0, 0];
@@ -137,10 +137,15 @@ class DicomUtilities {
 
     }
 
+    // Establish the current Little/Big endian-ness
+    static runtimeIsLittleEndian = DicomUtilities.isRuntimeLittleEndian();
+
     constructor() {
     }
 
 };
 
-// Establish the current Little/Big endian-ness
-let runtimeIsLittleEndian = DicomUtilities.isRuntimeLittleEndian();
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomUtilities };
+}

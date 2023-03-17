@@ -31,4 +31,9 @@ class DicomDataSet extends DicomAttributeSet {
 
     }
 
+};
+
+// Node Module Exports
+if (typeof module === 'object' && module.exports) {
+    module.exports = { DicomDataSet };
 }
