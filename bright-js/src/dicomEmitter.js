@@ -19,7 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomEmitter {
+export default class DicomEmitter {
 
     reset() {
     }
@@ -83,8 +83,3 @@ class DicomEmitter {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomEmitter };
-}

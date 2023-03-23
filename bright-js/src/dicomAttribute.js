@@ -19,7 +19,11 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomAttribute extends DicomDataElement {
+import DicomUtilities from './dicomUtilities.js';
+import { ValueRepresentations } from './dicomValueRepresentation.js';
+import DicomDataElement from './dicomDataElement.js';
+
+export default class DicomAttribute extends DicomDataElement {
 
     /**
      * Gets the value of the attribute.
@@ -78,8 +82,3 @@ class DicomAttribute extends DicomDataElement {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomAttribute };
-}

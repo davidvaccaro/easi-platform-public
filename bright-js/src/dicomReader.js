@@ -19,7 +19,11 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomReader {
+import DicomConstants from './dicomConstants.js';
+import DicomException from './dicomException.js';
+import DicomData from './dicomData.js';
+
+export default class DicomReader {
 
     /**
      * Parse the content-type from the response.
@@ -442,8 +446,3 @@ class DicomReader {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomReader };
-}

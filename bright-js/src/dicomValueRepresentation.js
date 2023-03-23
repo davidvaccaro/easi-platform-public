@@ -20,7 +20,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomValueRepresentation {
+export default class DicomValueRepresentation {
 
     /**
      * Find the value-representation by name (i.e. LO, SS, OB, OW, etc.)
@@ -51,7 +51,80 @@ class DicomValueRepresentation {
 
 };
 
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomValueRepresentation };
-}
+// BELOW CODE GENERATED ON: 3/23/2023 11:09:45 AM
+
+export var ValueRepresentations = {
+	'NONE': new DicomValueRepresentation({ ID: 'NONE', Name: 'None', Length: 0, IsFixed: true }),
+	'AE': new DicomValueRepresentation({ ID: 'AE', Name: 'Application Entity', Length: 16, IsFixed: false }),
+	'AS': new DicomValueRepresentation({ ID: 'AS', Name: 'Age String', Length: 4, IsFixed: true }),
+	'AT': new DicomValueRepresentation({ ID: 'AT', Name: 'Attribute Tag', Length: 4, IsFixed: true }),
+	'CS': new DicomValueRepresentation({ ID: 'CS', Name: 'Code String', Length: 16, IsFixed: false }),
+	'DA': new DicomValueRepresentation({ ID: 'DA', Name: 'Date', Length: 8, IsFixed: true }),
+	'DS': new DicomValueRepresentation({ ID: 'DS', Name: 'Decimal String', Length: 16, IsFixed: false }),
+	'DT': new DicomValueRepresentation({ ID: 'DT', Name: 'Date Time', Length: 26, IsFixed: false }),
+	'FL': new DicomValueRepresentation({ ID: 'FL', Name: 'Floating Point Single', Length: 4, IsFixed: true }),
+	'FD': new DicomValueRepresentation({ ID: 'FD', Name: 'Floating Point Double', Length: 8, IsFixed: true }),
+	'IS': new DicomValueRepresentation({ ID: 'IS', Name: 'Integer String', Length: 12, IsFixed: false }),
+	'LO': new DicomValueRepresentation({ ID: 'LO', Name: 'Long String', Length: 64, IsFixed: false }),
+	'LT': new DicomValueRepresentation({ ID: 'LT', Name: 'Long Text', Length: 10240, IsFixed: false }),
+	'OB': new DicomValueRepresentation({ ID: 'OB', Name: 'Other Byte', Length: null, IsFixed: false }),
+	'OD': new DicomValueRepresentation({ ID: 'OD', Name: 'Other Double', Length: 4294967288, IsFixed: false }),
+	'OF': new DicomValueRepresentation({ ID: 'OF', Name: 'Other Float', Length: 4294967292, IsFixed: false }),
+	'OL': new DicomValueRepresentation({ ID: 'OL', Name: 'Other Long', Length: null, IsFixed: false }),
+	'OV': new DicomValueRepresentation({ ID: 'OV', Name: 'Other 64-bit Very Long', Length: null, IsFixed: false }),
+	'OW': new DicomValueRepresentation({ ID: 'OW', Name: 'Other Word', Length: null, IsFixed: false }),
+	'PN': new DicomValueRepresentation({ ID: 'PN', Name: 'Person Name', Length: 64, IsFixed: false }),
+	'SH': new DicomValueRepresentation({ ID: 'SH', Name: 'Short String', Length: 16, IsFixed: false }),
+	'SL': new DicomValueRepresentation({ ID: 'SL', Name: 'Signed Long', Length: 4, IsFixed: true }),
+	'SQ': new DicomValueRepresentation({ ID: 'SQ', Name: 'Sequence of Items', Length: null, IsFixed: false }),
+	'SS': new DicomValueRepresentation({ ID: 'SS', Name: 'Signed Short', Length: 2, IsFixed: true }),
+	'ST': new DicomValueRepresentation({ ID: 'ST', Name: 'Short Text', Length: 1024, IsFixed: false }),
+	'SV': new DicomValueRepresentation({ ID: 'SV', Name: 'Signed 64-bit Very Long', Length: 8, IsFixed: true }),
+	'TM': new DicomValueRepresentation({ ID: 'TM', Name: 'Time', Length: 14, IsFixed: false }),
+	'UC': new DicomValueRepresentation({ ID: 'UC', Name: 'Unlimited Characters', Length: 4294967294, IsFixed: false }),
+	'UI': new DicomValueRepresentation({ ID: 'UI', Name: 'Unique Identifier (UID)', Length: 64, IsFixed: false }),
+	'UL': new DicomValueRepresentation({ ID: 'UL', Name: 'Unsigned Long', Length: 4, IsFixed: true }),
+	'UN': new DicomValueRepresentation({ ID: 'UN', Name: 'Unknown', Length: null, IsFixed: false }),
+	'UR': new DicomValueRepresentation({ ID: 'UR', Name: 'Universal Resource Identifier or Universal Resource Locator (URI/URL)', Length: 4294967294, IsFixed: false }),
+	'US': new DicomValueRepresentation({ ID: 'US', Name: 'Unsigned Short', Length: 2, IsFixed: true }),
+	'UT': new DicomValueRepresentation({ ID: 'UT', Name: 'Unlimited Text', Length: 4294967294, IsFixed: false }),
+	'UV': new DicomValueRepresentation({ ID: 'UV', Name: 'Unsigned 64-bit Very Long', Length: 8, IsFixed: true })
+};
+
+export var ValueRepresentation = {
+	NONE: ValueRepresentations['NONE'],
+	AE: ValueRepresentations['AE'],
+	AS: ValueRepresentations['AS'],
+	AT: ValueRepresentations['AT'],
+	CS: ValueRepresentations['CS'],
+	DA: ValueRepresentations['DA'],
+	DS: ValueRepresentations['DS'],
+	DT: ValueRepresentations['DT'],
+	FL: ValueRepresentations['FL'],
+	FD: ValueRepresentations['FD'],
+	IS: ValueRepresentations['IS'],
+	LO: ValueRepresentations['LO'],
+	LT: ValueRepresentations['LT'],
+	OB: ValueRepresentations['OB'],
+	OD: ValueRepresentations['OD'],
+	OF: ValueRepresentations['OF'],
+	OL: ValueRepresentations['OL'],
+	OV: ValueRepresentations['OV'],
+	OW: ValueRepresentations['OW'],
+	PN: ValueRepresentations['PN'],
+	SH: ValueRepresentations['SH'],
+	SL: ValueRepresentations['SL'],
+	SQ: ValueRepresentations['SQ'],
+	SS: ValueRepresentations['SS'],
+	ST: ValueRepresentations['ST'],
+	SV: ValueRepresentations['SV'],
+	TM: ValueRepresentations['TM'],
+	UC: ValueRepresentations['UC'],
+	UI: ValueRepresentations['UI'],
+	UL: ValueRepresentations['UL'],
+	UN: ValueRepresentations['UN'],
+	UR: ValueRepresentations['UR'],
+	US: ValueRepresentations['US'],
+	UT: ValueRepresentations['UT'],
+	UV: ValueRepresentations['UV']
+};

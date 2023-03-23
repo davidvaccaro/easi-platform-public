@@ -19,7 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomInstance {
+export default class DicomInstance {
 
     /**
      * Gets the DICOM Preamble.
@@ -101,8 +101,3 @@ class DicomInstance {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomInstance };
-}

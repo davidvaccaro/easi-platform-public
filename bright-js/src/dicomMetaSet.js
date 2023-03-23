@@ -19,7 +19,9 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomMetaSet extends DicomAttributeSet {
+import DicomAttributeSet from './dicomAttributeSet.js';
+
+export default class DicomMetaSet extends DicomAttributeSet {
 
     /**
      * Gets the File Meta Information Group Length.
@@ -128,8 +130,3 @@ class DicomMetaSet extends DicomAttributeSet {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomMetaSet };
-}

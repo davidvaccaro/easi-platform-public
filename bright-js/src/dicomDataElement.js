@@ -20,7 +20,9 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomDataElement extends DicomData {
+import DicomData from './dicomData.js';
+
+export default class DicomDataElement extends DicomData {
 
     /**
      * Determine if the current data element has ALL data present.
@@ -75,8 +77,3 @@ class DicomDataElement extends DicomData {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomDataElement };
-}

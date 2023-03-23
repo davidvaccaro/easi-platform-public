@@ -34,11 +34,28 @@ namespace Xinonix.Dicom.Tools
      */
     class DicomDataDictionaryGenerator {
 
+        private const string GENERATED_MARKER = "// BELOW CODE GENERATED ON:";
+
         #region General Utilities
 
         public static string cleanString(string input)
         {
             return new string(input.Where(c => !char.IsControl(c) && (char.IsLetterOrDigit(c) || char.IsPunctuation(c) || char.IsSeparator(c) || char.IsSymbol(c) || char.IsWhiteSpace(c))).ToArray());
+        }
+        public static void writeGeneratedContent(string path, StringBuilder sb) {
+
+            // Read the entire file
+            string fileContent = System.IO.File.ReadAllText(path);
+
+            // Split on the GENERATED marker
+            int generationPoint = fileContent.IndexOf(GENERATED_MARKER);
+
+            // Extract the sub-content
+            string subContent = fileContent.Substring(0, (generationPoint <= -1) ? fileContent.Length : generationPoint);
+
+            // Write the final file
+            System.IO.File.WriteAllText(path, subContent + sb.ToString());
+
         }
 
         #endregion
@@ -590,26 +607,28 @@ namespace Xinonix.Dicom.Tools
             string[] lines;
 
             // Create a new string builder
-            StringBuilder sb = new StringBuilder();
-
-            // Write out the header
-            sb.Append("//\n// DicomDictionaries.js - 1.0.0\n//\n// DICOM Dictionaries \n//\n// David Vaccaro, Xinonix Interactive Development, Inc / Copyright " + DateTime.Now.Year.ToString() + "\n// \n// Proprietary Notices:\n// The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors \n// and protected by applicable U.S. and international patent, copyright, trademark and trade secret laws. Xinonix \n// Interactive Development Inc and its licensors shall retain ownership in the Products, Documentation and Materials; \n// all derivatives thereof (in whole or part); and any intellectual property or other rights embodied therein. \n// \n// All proprietary notices incorporated in or affixed to any Products, Documentation or Materials shall be duplicated \n// by you on all copies of the Products, Documentation, or Material, as applicable, and shall not be altered, removed \n// or obliterated. Lease Equipment is, and shall at all times be and remain Our sole and exclusive property; you have \n// no right, title or interest therein or thereto except as expressly set forth in this Agreement. You shall keep the \n// Lease Equipment free and clear of all levies, liens and encumbrances and shall immediately notify us in writing of \n// any circumstances with respect to the location of the Equipment which will adversely affect it or our security \n// interests therein. You shall not install, attach, mount or otherwise house the Lease Equipment in a manner that \n// would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.\n//\n//");
-            sb.AppendLine(string.Empty);
-            sb.AppendLine("// THIS FILE GENERATED: " + DateTime.Now.ToString());
+            StringBuilder sb;
 
             #region Handle the DICOM Value Representation Related Dictionaries
+
+            sb = new StringBuilder();
+
+            // Write out the header
+            sb.AppendLine(GENERATED_MARKER + " " + DateTime.Now.ToString());
 
             /*
              * EXAMPLE:
              * 
+             * // BELOW CODE GENERATED ON: 03-03-2023
+             * 
                 var ValueRepresentations = {
 	                'ID': new DicomValueRepresentation({ ID: ValueRepresentationIDs.NONE, Name: 'None', Length: 0, IsFixed: true })                
-                }
+                };
              * 
              * 
                 var ValueRepresentation = {
 	                ID: ValueRepresentations['ID']
-                }
+                };
              * 
              */
 
@@ -620,7 +639,7 @@ namespace Xinonix.Dicom.Tools
 
             // Start the Tag map
             sb.AppendLine(string.Empty);
-            sb.AppendLine("var ValueRepresentations = {");
+            sb.AppendLine("export var ValueRepresentations = {");
 
             // Loop over the lines of raw data-element dictionary rows (skip the header)
             for (int i = 1; i < lines.Length; i++)
@@ -643,7 +662,7 @@ namespace Xinonix.Dicom.Tools
 
             // Start the Tag map
             sb.AppendLine("");
-            sb.AppendLine("var ValueRepresentation = {");
+            sb.AppendLine("export var ValueRepresentation = {");
 
             // Loop over the lines of raw data-element dictionary rows (skip the header)
             for (int i = 1; i < lines.Length; i++)
@@ -662,12 +681,22 @@ namespace Xinonix.Dicom.Tools
 
             #endregion
 
+            // Write the dynamically generated file content
+            writeGeneratedContent(System.IO.Path.Combine(rootPath, "bright-js", "src", "dicomValueRepresentation.js"), sb);
+
             #endregion
 
             #region Handle the DICOM Tag Related Dictionaries
 
+            sb = new StringBuilder();
+
+            // Write out the header
+            sb.AppendLine(GENERATED_MARKER + " " + DateTime.Now.ToString());
+
             /*
              * EXAMPLE:
+             * 
+             * // BELOW CODE GENERATED ON: 03-03-2023
              * 
                 var Tags = {
 	                '00020000': new DicomTag({ ID: '00020000', Tag: '(0002, 0000)', Group: 2, Element: 0, VR: ValueRepresentation.UL, Name: 'File Meta Information Group Length', IsRetired: false })
@@ -688,7 +717,7 @@ namespace Xinonix.Dicom.Tools
 
             // Start the Tag map
             sb.AppendLine(string.Empty);
-            sb.AppendLine("var Tags = {");
+            sb.AppendLine("export var Tags = {");
 
             // Loop over the lines of raw data-element dictionary rows (skip the header)
             for (int i = 1; i < lines.Length; i++)
@@ -793,7 +822,7 @@ namespace Xinonix.Dicom.Tools
 
             // Start the Tag map
             sb.AppendLine("");
-            sb.AppendLine("var Tag = {");
+            sb.AppendLine("export var Tag = {");
 
             // Loop over the lines of raw data-element dictionary rows (skip the header)
             for (int i = 1; i < lines.Length; i++)
@@ -816,12 +845,22 @@ namespace Xinonix.Dicom.Tools
 
             #endregion
 
+            // Write the dynamically generated file content
+            writeGeneratedContent(System.IO.Path.Combine(rootPath, "bright-js", "src", "dicomTag.js"), sb);
+
             #endregion
 
             #region Handle the DICOM Transfer Syntax Related Dictionaries
 
+            sb = new StringBuilder();
+
+            // Write out the header
+            sb.AppendLine(GENERATED_MARKER + " " + DateTime.Now.ToString());
+
             /*
              * EXAMPLE:
+             * 
+             * // BELOW CODE GENERATED ON: 03-03-2023
              * 
                 var TransferSyntaxes = {
 	                '0': new DicomTransferSyntax({ 
@@ -850,7 +889,7 @@ namespace Xinonix.Dicom.Tools
 
             // Start the Tag map
             sb.AppendLine(string.Empty);
-            sb.AppendLine("var TransferSyntaxes = {");
+            sb.AppendLine("export var TransferSyntaxes = {");
 
             // Loop over the lines of raw data-element dictionary rows (skip the header)
             for (int i = 1; i < lines.Length; i++)
@@ -873,7 +912,7 @@ namespace Xinonix.Dicom.Tools
 
             // Start the Tag map
             sb.AppendLine("");
-            sb.AppendLine("var TransferSyntax = {");
+            sb.AppendLine("export var TransferSyntax = {");
 
             // Loop over the lines of raw data-element dictionary rows (skip the header)
             for (int i = 1; i < lines.Length; i++)
@@ -892,12 +931,22 @@ namespace Xinonix.Dicom.Tools
 
             #endregion
 
+            // Write the dynamically generated file content
+            writeGeneratedContent(System.IO.Path.Combine(rootPath, "bright-js", "src", "dicomTransferSyntax.js"), sb);
+
             #endregion
 
             #region Handle the DICOM SOP Classes Related Dictionaries
 
+            sb = new StringBuilder();
+
+            // Write out the header
+            sb.AppendLine(GENERATED_MARKER + " " + DateTime.Now.ToString());
+
             /*
              * EXAMPLE:
+             * 
+             * // BELOW CODE GENERATED ON: 03-03-2023
              * 
                 var SOPClasses = {
 	                '0': new DicomSOPClass({ ID: '0', Name: 'None', IsRetired: false })	                
@@ -917,7 +966,7 @@ namespace Xinonix.Dicom.Tools
 
             // Start the Tag map
             sb.AppendLine(string.Empty);
-            sb.AppendLine("var SOPClasses = {");
+            sb.AppendLine("export var SOPClasses = {");
 
             // Loop over the lines of raw data-element dictionary rows (skip the header)
             for (int i = 1; i < lines.Length; i++)
@@ -944,7 +993,7 @@ namespace Xinonix.Dicom.Tools
 
             // Start the Tag map
             sb.AppendLine("");
-            sb.AppendLine("var SOPClass = {");
+            sb.AppendLine("export var SOPClass = {");
 
             // Loop over the lines of raw data-element dictionary rows (skip the header)
             for (int i = 1; i < lines.Length; i++)
@@ -967,10 +1016,10 @@ namespace Xinonix.Dicom.Tools
 
             #endregion
 
-            #endregion
+            // Write the dynamically generated file content
+            writeGeneratedContent(System.IO.Path.Combine(rootPath, "bright-js", "src", "dicomSOPClass.js"), sb);
 
-            // Write out the raw javascript dictionary file
-            System.IO.File.WriteAllText(System.IO.Path.Combine(rootPath, "bright-js", "src", "dicomDictionaries.js"), sb.ToString());
+            #endregion
 
         }
 

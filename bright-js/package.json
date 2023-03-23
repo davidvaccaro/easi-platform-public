@@ -1,0 +1,13 @@
+{
+    "name": "dicom-js",
+    "version": "0.0.1",
+    "type":"module",
+    "description": "A Modern Pure-Javascript DICOM implementation.",
+    "engines": {
+      "node": "18.x || 16.x"
+    },
+    "keywords": [
+      "DICOM"
+    ],
+    "license": "Xinonix Interactive Development, Inc."
+  }

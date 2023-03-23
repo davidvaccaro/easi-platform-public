@@ -19,7 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomConstants {
+export default class DicomConstants {
 
     // The standard length of the DICOM preamble
     // https://dicom.nema.org/medical/dicom/current/output/html/part10.html#chapter_7
@@ -69,8 +69,3 @@ class DicomConstants {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomConstants };
-}

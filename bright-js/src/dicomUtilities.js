@@ -19,7 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomUtilities {
+export default class DicomUtilities {
 
     /**
      * Determines the endian-ness of the current runtime
@@ -144,8 +144,3 @@ class DicomUtilities {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomUtilities };
-}

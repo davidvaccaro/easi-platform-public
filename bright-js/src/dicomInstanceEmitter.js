@@ -19,7 +19,11 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomInstanceEmitter {
+import DicomInstance from "./dicomInstance.js";
+import DicomMetaSet from "./dicomMetaSet.js";
+import DicomDataSet from "./dicomDataSet.js";
+
+export default class DicomInstanceEmitter {
 
     reset() {
 
@@ -169,8 +173,3 @@ class DicomInstanceEmitter {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomInstanceEmitter };
-}

@@ -19,7 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomAttributeSet {
+export default class DicomAttributeSet {
 
     /**
      * Find an attribute within the immediate sequence by tag identifier.
@@ -99,8 +99,3 @@ class DicomAttributeSet {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomAttributeSet };
-}

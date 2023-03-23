@@ -20,7 +20,11 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomPrefix extends DicomDataElement {
+import DicomConstants from './dicomConstants.js';
+import DicomDataElement from './dicomDataElement.js';
+import { TransferSyntax } from './dicomTransferSyntax.js'
+
+export default class DicomPrefix extends DicomDataElement {
 
     /**
      * Constructs a DICOM Part-10 File Meta Information "Prefix" from a specified raw data buffer.
@@ -34,8 +38,3 @@ class DicomPrefix extends DicomDataElement {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomPrefix };
-}

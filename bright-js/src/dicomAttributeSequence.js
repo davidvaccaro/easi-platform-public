@@ -19,7 +19,9 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomAttributeSequence extends DicomAttribute {
+import DicomAttribute from './dicomAttribute.js';
+
+export default class DicomAttributeSequence extends DicomAttribute {
 
     /**
      * Adds a new item to the sequence of items.
@@ -69,8 +71,3 @@ class DicomAttributeSequence extends DicomAttribute {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomAttributeSequence };
-}

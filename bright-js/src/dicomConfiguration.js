@@ -19,7 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomConfiguration {
+export default class DicomConfiguration {
 
     /**
      * Is the current environment configured for "strict" validation.
@@ -30,8 +30,3 @@ class DicomConfiguration {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomConfiguration };
-}

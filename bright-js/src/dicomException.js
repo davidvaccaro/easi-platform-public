@@ -19,7 +19,16 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-var DicomErrorCodes = {
+export default class DicomException {
+
+    constructor(message, code = DicomErrorCodes.GeneralError) {
+        this.message = message;
+        this.code = code;
+    }
+
+};
+
+export var DicomErrorCodes = {
     GeneralError: 'GeneralError',
     InvalidParameter: 'InvalidParameter',
     NotImplemented: 'NotImplemented',
@@ -32,17 +41,3 @@ var DicomErrorCodes = {
     DuplicateAttribute: 'DuplicateAttribute',
     InvalidMetaSet: 'InvalidMetaSet'
 };
-
-class DicomException {
-
-    constructor(message, code = DicomErrorCodes.GeneralError) {
-        this.message = message;
-        this.code = code;
-    }
-
-};
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomException, DicomErrorCodes };
-}

@@ -19,7 +19,11 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomData {
+import DicomUtilities from './dicomUtilities.js';
+import DicomException from './dicomException.js';
+import { TransferSyntax } from './dicomTransferSyntax.js'
+
+export default class DicomData {
 
     /**
      * Accesses the DICOM data buffer.
@@ -241,4 +245,4 @@ class DicomData {
 
     }
 
-}
+};

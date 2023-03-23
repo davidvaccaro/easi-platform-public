@@ -19,6 +19,28 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
+import DicomConstants from './dicomConstants.js';
+import DicomConfiguration from './dicomConfiguration.js';
+import DicomUtilities from './dicomUtilities.js';
+import DicomException from './dicomException.js';
+
+import DicomTransferSyntax from './dicomTransferSyntax.js';
+import { TransferSyntax } from './dicomTransferSyntax.js';
+
+import DicomValueRepresentation from './dicomValueRepresentation.js';
+import { ValueRepresentations } from './dicomValueRepresentation.js';
+
+import DicomTag from './dicomTag.js';
+import { Tag } from './dicomTag.js';
+
+import DicomData from './dicomData.js';
+import DicomAttribute from './dicomAttribute.js';
+import DicomItem from './dicomItem.js';
+import DicomAttributeSequence from './dicomAttributeSequence.js';
+
+import DicomPreamble from './dicomPreamble.js';
+import DicomPrefix from './dicomPrefix.js';
+
 //
 // General Layout of DICOM files
 //
@@ -52,7 +74,7 @@ var DicomDataSetSpecification = [
     DicomPartType.DataSet
 ];
 
-class DicomParser {
+export default class DicomParser {
 
     /**
      * Reset the current state of the parser.
@@ -1288,8 +1310,3 @@ class DicomParser {
     }
 
 };
-
-// Node Module Exports
-if (typeof module === 'object' && module.exports) {
-    module.exports = { DicomParser };
-}
