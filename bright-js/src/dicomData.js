@@ -19,6 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
+import DicomEnvironment from './dicomEnvironment.js';
 import DicomUtilities from './dicomUtilities.js';
 import DicomException from './dicomException.js';
 import { TransferSyntax } from './dicomTransferSyntax.js'
@@ -92,7 +93,7 @@ export default class DicomData {
         var newData = null;
 
         // Prepare the new data (with a endian-swap if needed)
-        if ((this.transferSyntax != TransferSyntax.NONE) && (this.transferSyntax.IsLittleEndian != DicomUtilities.runtimeIsLittleEndian))
+        if ((this.transferSyntax != TransferSyntax.NONE) && (this.transferSyntax.IsLittleEndian != DicomEnvironment.isLittleEndian))
             newData = DicomUtilities.swapBytes(raw);
         else
             newData = raw;

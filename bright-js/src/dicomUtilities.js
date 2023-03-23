@@ -19,29 +19,9 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
+import DicomEnvironment from './dicomEnvironment.js';
+
 export default class DicomUtilities {
-
-    /**
-     * Determines the endian-ness of the current runtime
-     * @returns true if the current runtime is "little endian" and false otherwise.
-     */
-    static isRuntimeLittleEndian() {
-
-        // Create 8-bit and 16-bit byte buffers
-        var arrayBuffer = new ArrayBuffer(2);
-        var uint8Array = new Uint8Array(arrayBuffer);
-        var uint16array = new Uint16Array(arrayBuffer);
-
-        // Set the first and second bytes
-        uint8Array[0] = 0xAA;
-        uint8Array[1] = 0xBB;
-
-        // Is "little" endian, else "big"
-        if (uint16array[0] === 0xBBAA)
-            return true;
-        return false;
-
-    }
 
     /**
      * Convert the specified byte array (2 or 4 bytes) to an unsigned integer value.
@@ -51,9 +31,9 @@ export default class DicomUtilities {
     static bytesToUnsignedInteger(bytes) {
         var dv = new DataView(bytes.buffer);
         if (bytes.length == 2)
-            return dv.getUint16(bytes.byteOffset, DicomUtilities.runtimeIsLittleEndian);
+            return dv.getUint16(bytes.byteOffset, DicomEnvironment.isLittleEndian);
         else if (bytes.length == 4)
-            return dv.getUint32(bytes.byteOffset, DicomUtilities.runtimeIsLittleEndian);
+            return dv.getUint32(bytes.byteOffset, DicomEnvironment.isLittleEndian);
         return undefined;
     }
 
@@ -102,43 +82,11 @@ export default class DicomUtilities {
      * @returns The End Sequence byte buffer.
      */
     static getEndSequence() {
-        if (DicomUtilities.runtimeIsLittleEndian == true) {
+        if (DicomEnvironment.isLittleEndian == true) {
             return [254, 255, 221, 224, 0, 0, 0, 0];
         }
         return [255, 254, 224, 221, 0, 0, 0, 0];
     }
-
-    /**
-     * Determins if the specified buffer contains the DICOM "Sequence Delimiter"
-     * @param {*} buffer The specified buffer.
-     * @returns TRUE if the buffer contains the DICOM "Sequence Delimiter", FALSE otherwise.
-     */
-    static isEndSequence(buffer) {
-
-        // Check the buffer length
-        if (buffer.length < 8)
-            return false;
-
-        // Get the end sequence
-        var end = getEndSequence();
-
-        // Test the buffer
-        if ((buffer[0] == end[0]) 
-            && (buffer[1] == end[1]) 
-            && (buffer[2] == end[2])
-            && (buffer[3] == end[3])
-            && (buffer[4] == end[4])
-            && (buffer[5] == end[5])
-            && (buffer[6] == end[6])
-            && (buffer[7] == end[7]))
-            return true;
-
-        return false;
-
-    }
-
-    // Establish the current Little/Big endian-ness
-    static runtimeIsLittleEndian = DicomUtilities.isRuntimeLittleEndian();
 
     constructor() {
     }

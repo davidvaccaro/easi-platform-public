@@ -1,13 +1,23 @@
 {
     "name": "dicom-js",
     "version": "0.0.1",
-    "type":"module",
+    "type": "module",
     "description": "A Modern Pure-Javascript DICOM implementation.",
     "engines": {
-      "node": "18.x || 16.x"
+        "node": "18.x || 16.x"
     },
     "keywords": [
-      "DICOM"
+        "DICOM"
     ],
-    "license": "Xinonix Interactive Development, Inc."
-  }
+    "license": "Xinonix Interactive Development, Inc.",
+    "devDependencies": {
+        "@babel/plugin-transform-modules-commonjs": "^7.21.2",
+        "jest": "^29.5.0"
+    },
+    "scripts": {
+        "test": "jest"
+    },
+    "jest": {
+        "collectCoverage": true
+    }
+}

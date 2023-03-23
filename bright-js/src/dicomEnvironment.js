@@ -1,7 +1,7 @@
 //
-// DicomPerformanceEmitter.js - 1.0.0
+// DicomEnvironment.js - 1.0.0
 //
-// DICOM Performance Emitter Class (TEST)
+// DICOM Environment Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,75 +19,32 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-class DicomPerformanceEmitter {
+export default class DicomEnvironment {
 
-    reset() {
-        console.log('Reset');
-    }
+    /**
+     * Determines the endian-ness of the current runtime
+     * @returns true if the current runtime is "little endian" and false otherwise.
+     */
+    static isRuntimeLittleEndian() {
 
-    startInstance() {
-        console.log('Start Instance');
-    }
+        // Create 8-bit and 16-bit byte buffers
+        var arrayBuffer = new ArrayBuffer(2);
+        var uint8Array = new Uint8Array(arrayBuffer);
+        var uint16array = new Uint16Array(arrayBuffer);
 
-    startPreamble(preamble) {
-        console.log('Start Preamble');
-    }
+        // Set the first and second bytes
+        uint8Array[0] = 0xAA;
+        uint8Array[1] = 0xBB;
 
-    startPrefix(prefix) {
-        console.log('Start Prefix');
-    }
+        // Is "little" endian, else "big"
+        if (uint16array[0] === 0xBBAA)
+            return true;
+        return false;
 
-    startAttribute(attribute) {
-        console.log('Start Attribute');
-    }
+    };
 
-    startSequence(sequence) {
-        console.log('Start Sequence');
-    }
-
-    appendAttribute(attribute) {
-        console.log('Append Attribute: ' + attribute.length() + ' bytes');
-    }
-
-    appendSequence(sequence) {
-        console.log('Append Sequence: ' + sequence.length() + ' bytes');
-    }
-
-    startMetaSet() {
-        console.log('Start MetaSet');
-    }
-
-    startDataSet() {
-        console.log('Start DataSet');
-    }
-
-    endPreamble(preamble) {
-        console.log('End Preamble');
-    }
-
-    endPrefix(prefix) {
-        console.log('End Prefix');
-    }
-
-    endAttribute(attribute) {
-        console.log('End Attribute');
-    }
-
-    endSequence(sequence) {
-        console.log('End Sequence');
-    }
-
-    endMetaSet() {
-        console.log('End MetaSet');
-    }
-
-    endDataSet() {
-        console.log('End DataSet');
-    }
-
-    endInstance() {
-        console.log('End Instance');
-    }
+    // Establish the current Little/Big endian-ness
+    static isLittleEndian = DicomEnvironment.isRuntimeLittleEndian();
 
     constructor() {
     }

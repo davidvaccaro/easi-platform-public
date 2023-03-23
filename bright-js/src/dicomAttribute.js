@@ -19,7 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import DicomUtilities from './dicomUtilities.js';
+import DicomEnvironment from './dicomEnvironment.js';
 import { ValueRepresentations } from './dicomValueRepresentation.js';
 import DicomDataElement from './dicomDataElement.js';
 
@@ -38,7 +38,7 @@ export default class DicomAttribute extends DicomDataElement {
             
             // UL: Handle converting the RAW data to a "unsigned long" value
             case ValueRepresentations.UL:
-                return (new DataView(data.buffer)).getUint32(data.byteOffset, DicomUtilities.runtimeIsLittleEndian);
+                return (new DataView(data.buffer)).getUint32(data.byteOffset, DicomEnvironment.isLittleEndian);
                 break;
 
             // AE, SH, UI: Handle converting the RAW data to a "unique identifier" value

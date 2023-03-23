@@ -52,8 +52,6 @@ import DicomPrefix from './dicomPrefix.js';
 //   - PixelData
 //
 
-var DicomDefaultAppendFrequency = 1000;
-
 var DicomPartType = {
     Preamble: 'Preamble',
     Prefix: 'Prefix',
@@ -1285,24 +1283,13 @@ export default class DicomParser {
      * Constructos a new DICOM Parser with the associated DICOM Emitter.
      * @param {*} dicomEmitter The emitter used to emit parsed elements of the DICOM data.
      */
-    constructor(dicomEmitter, appendFrequency) {
+    constructor(dicomEmitter) {
 
         // Set the emitter
         this.emitter = dicomEmitter;
 
         // Set the default part specification (Part-10)
         this.partSpecification = DicomPart10Specification;
-
-        // Set the append frequency
-        this.appendFrequency = appendFrequency;
-
-        // Set the default append frequency if needed
-        if (this.appendFrequency == null) {
-
-            // Set the default append frequency
-            this.appendFrequency = DicomDefaultAppendFrequency;
-
-        }
         
         // Reset the current state
         this.reset();

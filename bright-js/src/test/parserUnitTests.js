@@ -20,7 +20,6 @@ import { SOPClasses, SOPClass } from '../dicomSOPClass.js';
 console.clear();
 console.log(DicomConstants.PreambleLength);
 console.log(DicomConfiguration.isStrict);
-console.log(DicomUtilities.runtimeIsLittleEndian);
 console.log(DicomErrorCodes.GeneralError);
 console.log(new DicomException("Outch!", DicomErrorCodes.GeneralError));
 

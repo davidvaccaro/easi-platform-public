@@ -34,11 +34,20 @@ export default class DicomTag {
 	 * @returns The DICOM tag identifier.
 	 */
 	static identifier(group, element) {
-		return (
-			('0000' + DicomUtilities.bytesToUnsignedInteger(group).toString(16)).substr(-4)
-			+
-			('0000' + DicomUtilities.bytesToUnsignedInteger(element).toString(16)).substr(-4)
-		).toUpperCase();
+		if (typeof group === 'number') {
+			return (
+				('0000' + group.toString(16)).substr(-4)
+				+
+				('0000' + element.toString(16)).substr(-4)
+			).toUpperCase();
+		}
+		else {
+			return (
+				('0000' + DicomUtilities.bytesToUnsignedInteger(group).toString(16)).substr(-4)
+				+
+				('0000' + DicomUtilities.bytesToUnsignedInteger(element).toString(16)).substr(-4)
+			).toUpperCase();
+		}
 	}
 	
 	/**
