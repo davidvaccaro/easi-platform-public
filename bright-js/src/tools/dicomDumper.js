@@ -26,23 +26,6 @@ const path = require('path');
 export default class DicomDumper {
 
     /**
-     * Reset the current state of the parser.
-     */
-    reset() {
-    }
-
-    /**
-     * Parse the specified dump data to a dump instance.
-     * @param {*} data 
-     */
-    parse(data) {
-
-
-
-
-    }
-
-    /**
      * Dump a specified DICOM file.
      * @param {*} dicomPath The file name OR full path to a specified DICOM file.
      * @returns The dump of the DICOM file.
@@ -64,15 +47,25 @@ export default class DicomDumper {
                 const toolPathPath = path.join(brightDicomRoot, '/ext/tools/dcdump');
 
                 // Determine if the dicom file is a complete path or simply a filename
-                const dicmPathPath = dicomPath.includes('/') ? dicomPath : path.join(brightDicomRoot, '/data/dicoms/XA-MONO2-8-12x-catheter');
+                const dicmPathPath = dicomPath.includes('/') ? dicomPath : path.join(brightDicomRoot, '/data/dicoms/' + dicomPath);
 
                 // Execute the tools
-                exec(toolPathPath + " " + dicmPathPath, (error, stdout, stderr) => {
+                exec(toolPathPath + " " + dicmPathPath, (error, stdout, data) => {
 
                     try {
 
-                        if (typeof stderr != 'undefined') {
-                            resolve(true);
+                        // If there is dump data
+                        if (typeof data != 'undefined') {
+
+                            // Parse the DICOM
+                            this.parser.parse(data);
+
+                            // If the instance is value, resolve else reject
+                            if (this.parser.result != null)
+                                resolve(this.parser.result);
+                            else
+                                reject();
+
                         }
 
                     }
@@ -87,26 +80,14 @@ export default class DicomDumper {
 
         });
 
-    }
+    };
 
     /**
-     * Constructs a DICOM Dump Tool instance.
+     * Constructos a new DICOM Dumper with the associated parser.
+     * @param {*} parser The parser used to parse dumped DICOM data.
      */
-    constructor() {
-    }
-
-    /**
-     * Constructos a new DICOM Dumper with the associated DICOM Emitter.
-     * @param {*} dicomEmitter The emitter used to emit dumped elements of the DICOM data.
-     */
-    constructor(dicomEmitter) {
-
-        // Set the emitter
-        this.emitter = dicomEmitter;
-        
-        // Reset the current state
-        this.reset();
-
+    constructor(parser) {
+        this.parser = parser;
     }
 
 };

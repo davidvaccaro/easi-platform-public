@@ -92,7 +92,7 @@
         import DicomParser from './src/dicomParser.js';
         import DicomReader from './src/dicomReader.js';
         
-        import DicomDumpParser from './src/test/dicomDumpParser.js';
+        import DicomDumpParser from './src/tools/dicomDumpParser.js';
 
         $(function () {
 
@@ -197,6 +197,8 @@
                 var parser = new DicomDumpParser(new DicomInstanceEmitter());
 
                 parser.parse($('#dicomDump').val());
+
+                var xxxx = 100;
 
             });            
 

@@ -50,10 +50,135 @@ export default class DicomDumpParser {
         this.startedMetaSet = false;
         this.startedDataSet = false;
 
+        // Init the data-element stack
+        this.dataElements = [];
+
         // Reset the emitter
         if (this.emitter.reset != null) {
             this.emitter.reset();
         }
+
+    }
+
+    /**
+     * Peek the next, transfer-syntax independent, base tag details.
+     * @returns The peeked local tag details.
+     */
+    parseTagDetails(line) {
+
+        var result = null;
+
+        try {
+
+            // Establish the (0x0002,0x0000) group and element part
+            var groupAndElement = line.trim().substring(0, 14).replaceAll('(', '').replaceAll(')', '').trim().split(',');
+
+            // SKIP: invalid tag parts
+            if (groupAndElement.length != 2)
+                return null;
+
+            // Parse the group 
+            var group = parseInt(groupAndElement[0]);
+
+            // Parse the element
+            var element = parseInt(groupAndElement[1]);
+
+            // Establish the DICOM data-element tag identifier
+            var identifier = DicomTag.identifier(group, element);
+
+            // Establish the DICOM Tag
+            var tag = DicomTag.find(identifier);
+
+            // Parse the VR=<UL>
+            var start = line.indexOf('VR=<');
+
+            // SKIP: data-elements WITHOUT VR
+            if (start == -1)
+                return null;
+
+            // Parse the VR
+            var vr = DicomValueRepresentation.find(line.substring(start + 4, start + 6));
+
+            // Use the tag preset VR (if needed)
+            if (vr == null)
+                vr = tag.VR;
+
+            // Parse the VL=<
+            start = line.indexOf('VL=<', start);
+
+            // SKIP: data-elements WITHOUT VL
+            if (start == -1)
+                return null;
+
+            // Find the end of the length
+            var end = line.indexOf('>', start);
+
+            // Parse the length value
+            var valueLength = parseInt(line.substring(start + 4, end), 16);
+
+            // TODO - Populate the data
+
+            // Construct the "sequence control" tag details 
+            result = {
+                group: group,
+                element: element,
+                tag: tag,
+                valueRepresentation: vr,
+                valueLength: valueLength
+            };
+
+        }
+        catch (error) {
+
+            // TODO - Handle exception properly
+            console.log(error);
+
+        }
+
+        // Return the result
+        return result;
+
+    }
+
+    /**
+     * Peek the top sequence of the stack of sequence elements.
+     * @returns The sequence at the top of the sequence element stack.
+     */
+    peekSequence() {
+        
+        // First, Check the state
+        if ((this.dataElements == null) || (this.dataElements.length == 0))
+            return null;
+
+        // Look for the "top" sequence
+        for (var i = this.dataElements.length - 1; i >= 0; i--) {
+            if (this.dataElements[i] instanceof DicomAttributeSequence) {
+                return this.dataElements[i];
+            }
+        }
+
+        return null;
+
+    }
+
+    /**
+     * Peek the top item of the stack of sequence elements.
+     * @returns The item at the top of the sequence element stack.
+     */
+    peekItem() {
+        
+        // First, Check the state
+        if ((this.dataElements == null) || (this.dataElements.length == 0))
+            return null;
+
+        // Look for the "top" sequence
+        for (var i = this.dataElements.length - 1; i >= 0; i--) {
+            if (this.dataElements[i] instanceof DicomItem) {
+                return this.dataElements[i];
+            }
+        }
+
+        return null;
 
     }
 
@@ -77,6 +202,7 @@ export default class DicomDumpParser {
         // TAG WITH <VALUE>:    (0x0008,0x0014) UI Instance Creator UID 	 VR=<UI>   VL=<0x0040>  <1.3.6.1.4.1.14519.5.2.1.7009.2403.121957164877324988509673901373> 
         // TAG UNKNOWN:         (0x0013,0x1015)  ? 	 VR=<LO>   VL=<0x0002>  <1 > 
         // SEQUENCE ITEM:         ----:
+        // ITEM TAG:                > (0x0018,0x0031) LO Radiopharmaceutical 	 VR=<LO>   VL=<0x001a>  <FDG -- fluorodeoxyglucose > 
         // END SEQUENCE:        BLANK LINE
 
         // Loop over the lines processing
@@ -89,30 +215,29 @@ export default class DicomDumpParser {
             if (line.includes('Warning -') == true)
                 continue;
 
+            // If the line is a sequence item line, trim it up
+            if (line.trim().startsWith('> (') == true) {
+
+                // Parse the line starting with the (0x0000,0x0000)
+                var startPos = line.indexOf('(0x');
+
+                // Parse the line
+                line = line.substring(startPos);
+
+            }
+
             // Handle the various types of data lines
             if (line.trim().startsWith('(') == true) {
 
-                // Establish the (0x0002,0x0000) group and element part
-                var groupAndElement = line.trim().substring(0, 14).replaceAll('(', '').replaceAll(')', '').trim().split(',');
+                // Parse the next item details
+                var details = this.parseTagDetails(line);
 
-                // SKIP: invalid tag parts
-                if (groupAndElement.length != 2)
+                // SKIP: If the parse FAILED
+                if (details == null)
                     continue;
 
-                // Parse the group 
-                var group = parseInt(groupAndElement[0]);
-
-                // Parse the element
-                var element = parseInt(groupAndElement[1]);
-
-                // Establish the DICOM data-element tag identifier
-                var identifier = DicomTag.identifier(group, element);
-
-                // Establish the DICOM Tag
-                var tag = DicomTag.find(identifier);
-
                 // Start (and end) the MetaSet (if needed) and the DataSet
-                if (group == 2) {
+                if (details.group == 2) {
 
                     // If the MetaSet is yet to be started
                     if ((this.startedMetaSet == false) && (this.startedDataSet == false)) {
@@ -161,73 +286,105 @@ export default class DicomDumpParser {
 
                 }
 
-                // Parse the VR=<UL>
-                var start = line.indexOf('VR=<');
-
-                // SKIP: data-elements WITHOUT VR
-                if (start == -1)
-                    continue;
-
-                // Parse the VR
-                var vr = DicomValueRepresentation.find(line.substring(start + 4, start + 6));
-
-                // Use the tag preset VR (if needed)
-                if (vr == null)
-                    vr = tag.VR;
-
-                // Parse the VL=<
-                start = line.indexOf('VL=<', start);
-
-                // SKIP: data-elements WITHOUT VL
-                if (start == -1)
-                    continue;
-
-                // Find the end of the length
-                var end = line.indexOf('>', start);
-
-                // Parse the length value
-                var valueLength = parseInt(line.substring(start + 4, end), 16);
-
                 // Create the attribute
-                var dataElement = (vr == ValueRepresentations.SQ) 
-                    ? new DicomAttributeSequence(tag, valueLength, null, TransferSyntax.NONE) 
-                    : new DicomAttribute(tag, valueLength, null, TransferSyntax.NONE);
+                var dataElement = (details.valueRepresentation == ValueRepresentations.SQ) 
+                    ? new DicomAttributeSequence(details.tag, details.valueLength, null, TransferSyntax.NONE) 
+                    : new DicomAttribute(details.tag, details.valueLength, null, TransferSyntax.NONE);
 
                 // Start the attribute or sequence
                 if (dataElement instanceof DicomAttributeSequence) {
+
+                    // Start the sequence
                     if (this.emitter.startSequence != null) {
                         this.emitter.startSequence(dataElement);
                     }
+
+                    // Push the sequence element
+                    this.dataElements.push(dataElement);
+
                 }
                 else {
+
+                    // Start the typical attribute
                     if (this.emitter.startAttribute != null) {
                         this.emitter.startAttribute(dataElement);
                     }
-                }
-
-                // TODO - Populate the data
-
-                // End the 
-                if (dataElement instanceof DicomAttribute) {
 
                     // Indicate that the data-element is complete
                     dataElement.isComplete = true;
 
+                    // End the attribute
                     if (this.emitter.endAttribute != null) {
                         this.emitter.endAttribute(dataElement);
                     }
+
                 }
 
             }
             else if (line.trim().startsWith('----:') == true) {
 
+                // Peek the sequence stack
+                var sequence = this.peekSequence();
+
+                // Peek the item from the sequence stack
+                var item = this.peekItem();
+
+                // If there is a current sequence, end it
+                if (item != null) {
+
+                    // End the item
+                    if (this.emitter.endItem != null) {
+                        this.emitter.endItem(item);
+                    }
+
+                    // Pop the current item
+                    this.dataElements.pop();
+
+                }
+
+                // Create the item
+                item = new DicomItem(DicomConstants.UndefinedLength);
+
+                // Push the item
+                this.dataElements.push(item);
+
+                // Start the item
+                if (this.emitter.startItem != null) {
+                    this.emitter.startItem(item);
+                }
+
             }
             else if (line.trim() == '') {
 
+                // Peek the sequence stack
+                var sequence = this.peekSequence();
+
+                // Peek the item from the sequence stack
+                var item = this.peekItem();
+
+                // End the item
+                if (this.emitter.endItem != null) {
+                    this.emitter.endItem(item);
+                }
+
+                // Pop the current item
+                this.dataElements.pop();
+
+                // End the current sequence
+                if (this.emitter.endSequence != null) {
+                    this.emitter.endSequence(sequence);
+                }
+
+                // Pop the current sequence
+                this.dataElements.pop();
+
             }
 
+        }
 
-
+        // Emnd the data-set
+        if (this.emitter.endDataSet != null) {
+            this.emitter.endDataSet();
         }
 
         // End the "instance"

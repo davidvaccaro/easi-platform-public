@@ -383,7 +383,7 @@ export default class DicomReader {
      * @param {*} url The specified URL to a DICOM instance.
      * @returns A Promise that resolves to the result from the DICOM parse operation.
      */
-    read(url) {
+    readUrl(url) {
 
         // Establish that
         var that = this;
@@ -438,7 +438,54 @@ export default class DicomReader {
 
         });
 
-    }
+    };
+
+    /**
+     * Read a DICOM instance from the specified data.
+     * @param {*} data The specified data.
+     * @returns A Promise that resolves to the result from the DICOM parse operation.
+     */
+    readData(data) {
+
+        // Establish that
+        var that = this;
+
+        // Return the promise
+        return new Promise(function(resolve, reject) {
+
+            try {
+
+                // Reset the parser
+                that.parser.reset();
+
+                // Finalize the current parse
+                var result = that.parser.parse(data, true);
+
+                // Resolve with a singe parser result
+                if (result == true)
+                    resolve(that.parser.result);
+                else
+                    reject(new DicomException("Failed parsing single DICOM data-set.", DicomErrorCodes.GeneralError));
+                
+            }
+            catch (err) {
+                reject(err);
+            }
+    
+        });
+
+    };
+
+    /**
+     * Read a DICOM instance from the specified source of data.
+     * @param {*} source The specified source of data.
+     * @returns A Promise that resolves to the result from the DICOM parse operation.
+     */
+    read(source) {
+        if (typeof source === 'string')
+            return this.readUrl(source);
+        return this.readData(source);
+    };
 
     // The constructor
     constructor(parser) {

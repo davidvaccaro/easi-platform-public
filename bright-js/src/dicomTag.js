@@ -119,7 +119,7 @@ export default class DicomTag {
 				if (Object.keys(TemplateLookup).length == 0) {
 
 					// Select the tags that are templates
-					var templateTags = Object.keys(Tag).filter(element => element.indexOf("x") != -1);
+					var templateTags = Object.keys(Tags).filter(element => element.indexOf("x") != -1);
 
 					// Loop over the tags with "x"
 					for (var i = 0; i < templateTags.length; i++) {
@@ -154,7 +154,7 @@ export default class DicomTag {
 						// Add the template 
 						TemplateLookup[classKey].push({ 
 							Template: template, 
-							Tag: Tag[templateTags[i]] 
+							Tag: Tags[templateTags[i]] 
 						});
 
 					}
