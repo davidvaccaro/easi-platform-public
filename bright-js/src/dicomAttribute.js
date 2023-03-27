@@ -39,32 +39,23 @@ export default class DicomAttribute extends DicomDataElement {
             // UL: Handle converting the RAW data to a "unsigned long" value
             case ValueRepresentations.UL:
                 return (new DataView(data.buffer)).getUint32(data.byteOffset, DicomEnvironment.isLittleEndian);
-                break;
 
             // AE, SH, UI: Handle converting the RAW data to a "unique identifier" value
             case ValueRepresentations.AE:
             case ValueRepresentations.SH:
             case ValueRepresentations.UI:
-
                 // Decode the string value, remove NULL chars and TRIM 
-                return (new TextDecoder().decode(data)).replace(/\0/g, '').trim();
-                
-                break;                
+                return (new TextDecoder().decode(data)).replace(/\0/g, '').trim();                
 
             // OB: Handle converting the RAW data to a "other byte" value
             case ValueRepresentations.OB:
                 // Return the raw data
                 return data;
-                break;
 
             default:
                 // Return the raw data
                 return data;
-                break;
         }
-
-        // Return the raw data
-        return data;
 
     }
 

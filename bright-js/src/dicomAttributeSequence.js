@@ -40,7 +40,7 @@ export default class DicomAttributeSequence extends DicomAttribute {
      * @returns The attribute if found or undefined otherwise.
      */
     find(tag) {
-        return this.items.filter(item => item.find(tag.ID) != null);
+        return this.items.filter(item => item.find(tag) != null);
     }
 
     /**

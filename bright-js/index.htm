@@ -67,6 +67,7 @@
         <div>
             <button id="dump">Parse Dump</button>
         </div>
+        <br>
         <div>
             <textarea id="dicomDump" rows="40" cols="80">
 (0x0002,0x0010) UI Transfer Syntax UID VR=<UI> VL=<0x0014> <1.2.840.10008.1.2.1>
@@ -87,6 +88,16 @@
     </div>
 
     <script type="module">
+
+        import DicomConstants from './src/DicomConstants.js';
+
+        import { Tag } from './src/dicomTag.js';
+        import { TransferSyntax } from './src/dicomTransferSyntax.js';
+        import DicomData from './src/dicomData.js';
+        import DicomAttribute from './src/dicomAttribute.js';
+
+        import DicomItem from './src/dicomItem.js';
+        import DicomAttributeSequence from './src/dicomAttributeSequence.js';
 
         import DicomInstanceEmitter from './src/dicomInstanceEmitter.js';
         import DicomParser from './src/dicomParser.js';
@@ -187,6 +198,27 @@
 
             });            
 
+            function createNewItem(index) {
+
+                let item = new DicomItem(DicomConstants.UndefinedLength);
+                item.add(new DicomAttribute(Tag.FileMetaInformationGroupLength, 4, [255, index, 0, 0], TransferSyntax.NONE));
+
+                let data = (new TextEncoder()).encode("The Title " + index.toString());
+                item.add(new DicomAttribute(Tag.SourceApplicationEntityTitle, data.length, data, TransferSyntax.NONE));
+
+                data = (new TextEncoder()).encode("Short String" + index.toString());
+                item.add(new DicomAttribute(Tag.ImplementationVersionName, data.length, data, TransferSyntax.NONE));
+
+                data = (new TextEncoder()).encode("1.2.3.4.5.6.7.8.9.0." + index.toString());
+                item.add(new DicomAttribute(Tag.ImplementationClassUID, data.length, data, TransferSyntax.NONE));
+
+                data = new Uint8Array([255, 1, 255, 1])
+                item.add(new DicomAttribute(Tag.PixelData, data.length, data, TransferSyntax.NONE));
+
+                return item;
+
+            }
+
             // Handle Dump
             $('#dump').on('click', function () {
 
@@ -198,10 +230,21 @@
 
                 parser.parse($('#dicomDump').val());
 
-                var xxxx = 100;
+                console.log(parser.result);
 
-            });            
+                // Create the squence
+                let sequence = new DicomAttributeSequence(Tag.DirectoryRecordSequence, DicomConstants.UndefinedLength, [], TransferSyntax.NONE);
+                sequence.add(createNewItem(0));
+                sequence.add(createNewItem(1));
+                sequence.add(createNewItem(2));
+                sequence.add(createNewItem(3));
 
+                var found = sequence.find(Tag.FileMetaInformationGroupLength);
+
+                var uuu = 100;
+
+            });       
+            
         });
     </script>
 

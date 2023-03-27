@@ -101,7 +101,7 @@ export default class DicomData {
         if (this.length() == 0) {
 
             // set the new data buffer
-            this.data = newData;
+            this.data = (typeof newData === 'Uint8Array') ? newData : new Uint8Array(newData);
 
         }
         else if (newData != null) {

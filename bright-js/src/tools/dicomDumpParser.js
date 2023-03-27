@@ -395,6 +395,9 @@ export default class DicomDumpParser {
         // Reset the state
         this.reset();
 
+        // Return success
+        return true;
+
     }
 
     /**
