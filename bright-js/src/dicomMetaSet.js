@@ -20,6 +20,10 @@
 //
 
 import DicomAttributeSet from './dicomAttributeSet.js';
+import DicomSOPClass, { SOPClass } from './dicomSOPClass.js';
+import DicomTransferSyntax from './dicomTransferSyntax.js';
+import { TransferSyntax } from './dicomTransferSyntax.js';
+import { Tag } from './dicomTag.js'
 
 export default class DicomMetaSet extends DicomAttributeSet {
 
@@ -44,7 +48,7 @@ export default class DicomMetaSet extends DicomAttributeSet {
      * @returns The Media Storage SOP Class UID value.
      */
     get mediaStorageSOPClassUID() {
-        return DicomSOPClass.find(this.value(Tag.MediaStorageSOPClassUID, SOPClasses.NONE.ID));
+        return DicomSOPClass.find(this.value(Tag.MediaStorageSOPClassUID, SOPClass.NONE.ID));
     }
 
     /**
@@ -67,8 +71,16 @@ export default class DicomMetaSet extends DicomAttributeSet {
      * Get the Implementation Class UID.
      * @returns The Implementation Class UID value.
      */
-    get implementationSOPInstanceUID() {
+    get implementationClassUID() {
         return this.value(Tag.ImplementationClassUID);
+    }
+
+    /**
+     * Get the Implementation SOP Instance UID.
+     * @returns The Implementation SOP Instance UID value.
+     */
+    get implementationSOPInstanceUID() {
+        return this.value(Tag.ImplementationSOPInstanceUID);
     }
 
     /**

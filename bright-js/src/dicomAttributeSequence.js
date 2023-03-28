@@ -53,7 +53,7 @@ export default class DicomAttributeSequence extends DicomAttribute {
         var items = this.find(tag);
 
         // Return
-        return ((items != null) && (item.length > 0));
+        return ((items != null) && (items.length > 0)) ? true : false;
 
     }
 

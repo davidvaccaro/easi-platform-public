@@ -44,5 +44,9 @@ test("Test: Attribute Sequence Find", () => {
 });
 
 test("Test: Attribute Sequence Has", () => {
-    expect(sequence.find(Tag.PixelData).length).toBe(4);
+    expect(sequence.has(Tag.PixelData)).toBe(true);
+});
+
+test("Test: Attribute Sequence Has NOT", () => {
+    expect(sequence.has(Tag.AITDeviceType)).toBe(false);
 });

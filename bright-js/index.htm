@@ -96,6 +96,8 @@
         import DicomData from './src/dicomData.js';
         import DicomAttribute from './src/dicomAttribute.js';
 
+        import DicomMetaSet from './src/dicomMetaSet.js';
+
         import DicomItem from './src/dicomItem.js';
         import DicomAttributeSequence from './src/dicomAttributeSequence.js';
 
@@ -232,14 +234,16 @@
 
                 console.log(parser.result);
 
-                // Create the squence
-                let sequence = new DicomAttributeSequence(Tag.DirectoryRecordSequence, DicomConstants.UndefinedLength, [], TransferSyntax.NONE);
-                sequence.add(createNewItem(0));
-                sequence.add(createNewItem(1));
-                sequence.add(createNewItem(2));
-                sequence.add(createNewItem(3));
+                let data = null;
 
-                var found = sequence.find(Tag.FileMetaInformationGroupLength);
+                // Create the squence
+                var metaset = new DicomMetaSet();
+
+                data = (new TextEncoder()).encode("Private Information");
+                metaset.add(new DicomAttribute(Tag.PrivateInformation, data.length, data, TransferSyntax.NONE));
+
+                var ddd = metaset.privateInformation;
+
 
                 var uuu = 100;
 
