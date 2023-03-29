@@ -46,6 +46,23 @@
 </head>
 
 <body>
+    <script>
+
+        // Register the Service Worker which will polyfill the .epng (encrypted png) behavior.
+        navigator.serviceWorker.register('./dicomServiceWorker.js');
+
+        // Unfortunately, we have to wait for the Service Worker to be ready before
+        // actually loading the application so that it can intercept the image requests.
+        // Our application in this instance is just a single image tag.
+        navigator.serviceWorker.ready.then(() => {
+
+            // const image = new Image();
+            // image.src = '/bright-js/img/xa.dcm';
+            // document.body.appendChild(image);
+
+        });
+
+    </script>
     <h1>DICOM.JS Samples</h1>
     <div>
         <div>
@@ -82,6 +99,10 @@
 (0x0028,0x0010) US Rows VR=<US> VL=<0x0002> [0x0002]
 (0x0028,0x0011) US Columns VR=<US> VL=<0x0002> [0x0002]
 </textarea>
+        </div>
+        <br>
+        <div>
+            <img src="/bright-js/img/xa.dcm">
         </div>
     </div>
     <div>

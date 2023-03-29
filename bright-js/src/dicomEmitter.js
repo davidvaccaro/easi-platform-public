@@ -45,9 +45,6 @@ export default class DicomEmitter {
     appendAttribute(attribute) {
     }
 
-    appendSequence(sequence) {
-    }
-
     startMetaSet() {
     }
 
@@ -76,7 +73,8 @@ export default class DicomEmitter {
     }
 
     endInstance() {
-        return true;
+        // Return the instance
+        return null;
     }
 
     constructor() {

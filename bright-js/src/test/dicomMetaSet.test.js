@@ -28,9 +28,6 @@ beforeAll(() => {
     data = (new TextEncoder()).encode("1.2.40.0.13.1.3");
     metaset.add(new DicomAttribute(Tag.ImplementationClassUID, data.length, data, TransferSyntax.NONE));
 
-    data = (new TextEncoder()).encode("1.2.40.0.13.1.3.1.2.3.4.5");
-    metaset.add(new DicomAttribute(Tag.ImplementationSOPInstanceUID, data.length, data, TransferSyntax.NONE));
-
     data = (new TextEncoder()).encode("whatever");
     metaset.add(new DicomAttribute(Tag.ImplementationVersionName, data.length, data, TransferSyntax.NONE));
 
@@ -47,7 +44,7 @@ beforeAll(() => {
     metaset.add(new DicomAttribute(Tag.PrivateInformationCreatorUID, data.length, data, TransferSyntax.NONE));
 
     data = (new TextEncoder()).encode("Private Information");
-    metaset.add(new DicomAttribute(Tag.PrivateInformation, data.length, data, TransferSyntax.NONE));
+    metaset.add(new DicomAttribute(Tag.PrivateInformation, 4, [255, 100, 50, 25], TransferSyntax.NONE));
 
 });
 
@@ -57,6 +54,10 @@ test("Test: MetaSet Find", () => {
 
 test("Test: MetaSet Group Length", () => {
     expect(metaset.groupLength).toBe(511);
+});
+
+test("Test: MetaSet Version", () => {
+    expect(metaset.version.toString()).toBe('1,0');
 });
 
 test("Test: MetaSet Media Storage SOP Class UID", () => {
@@ -73,20 +74,6 @@ test("Test: MetaSet Transfer Syntax UID", () => {
 
 test("Test: MetaSet Implementation Class UID", () => {
     expect(metaset.implementationClassUID).toBe('1.2.40.0.13.1.3');
-});
-
-/*
-
-test("Test: MetaSet Version", () => {
-    expect(metaset.version).toBe([1, 0]);
-});
-
-test("Test: MetaSet Implementation SOP Instance UID", () => {
-    expect(metaset.implementationSOPInstanceUID).toBe('1.2.840.10008.1.2.1');
-});
-
-test("Test: MetaSet Implementation SOP Instance UID", () => {
-    expect(metaset.implementationSOPInstanceUID).toBe('1.2.40.0.13.1.3.1.2.3.4.5');
 });
 
 test("Test: MetaSet Implementation Version Name", () => {
@@ -110,7 +97,5 @@ test("Test: MetaSet Private Information Creator UID", () => {
 });
 
 test("Test: MetaSet Private Information", () => {
-    expect(metaset.privateInformation).toBe('Private Information');
+    expect(metaset.privateInformation.toString()).toBe('255,100,50,25');
 });
-
-*/

@@ -111,9 +111,6 @@ export default class DicomInstanceEmitter {
     appendAttribute(attribute) {
     }
 
-    appendSequence(sequence) {
-    }
-
     startMetaSet() {
 
         // Create the new metaset
@@ -156,9 +153,17 @@ export default class DicomInstanceEmitter {
     }
 
     endMetaSet() {
+
+        // Mark the meta-set as "complete"
+        this.instance.metaSet.isComplete = true;
+
     }
 
     endDataSet() {
+
+        // Mark the data-set as "complete"
+        this.instance.dataSet.isComplete = true;
+
     }
 
     /**

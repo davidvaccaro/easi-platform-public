@@ -76,14 +76,6 @@ export default class DicomMetaSet extends DicomAttributeSet {
     }
 
     /**
-     * Get the Implementation SOP Instance UID.
-     * @returns The Implementation SOP Instance UID value.
-     */
-    get implementationSOPInstanceUID() {
-        return this.value(Tag.ImplementationSOPInstanceUID);
-    }
-
-    /**
      * Get the Implementation Version Name.
      * @returns The Implementation Version Name value.
      */

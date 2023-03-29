@@ -19,6 +19,8 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
+import { Tag } from './dicomTag.js'
+
 export default class DicomInstance {
 
     /**
@@ -86,11 +88,15 @@ export default class DicomInstance {
      */
     get sopInstanceUid() {
 
+        // Check the state
+        if (this.dataSet == null)
+            return '';
+
         // Find the SOP Instance UID attribute
         var attribute = this.dataSet.find(Tag.SOPInstanceUID);
 
         if (attribute == null)
-            return "";
+            return '';
 
         // Return the value
         return attribute.value;
