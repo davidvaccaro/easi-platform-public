@@ -49,18 +49,18 @@
     <script>
 
         // Register the Service Worker which will polyfill the .epng (encrypted png) behavior.
-        navigator.serviceWorker.register('./dicomServiceWorker.js');
+        // navigator.serviceWorker.register('./dicomServiceWorker.js', {type: 'module'});
 
         // Unfortunately, we have to wait for the Service Worker to be ready before
         // actually loading the application so that it can intercept the image requests.
         // Our application in this instance is just a single image tag.
-        navigator.serviceWorker.ready.then(() => {
+        // navigator.serviceWorker.ready.then(() => {
 
             // const image = new Image();
             // image.src = '/bright-js/img/xa.dcm';
             // document.body.appendChild(image);
 
-        });
+        // });
 
     </script>
     <h1>DICOM.JS Samples</h1>
@@ -102,7 +102,10 @@
         </div>
         <br>
         <div>
+            <!-- 
             <img src="/bright-js/img/xa.dcm">
+            -->
+            <canvas id="canvas" width="512" height="512" style="width:512px;height:512px;"></canvas>
         </div>
     </div>
     <div>
@@ -126,6 +129,8 @@
         import DicomParser from './src/dicomParser.js';
         import DicomReader from './src/dicomReader.js';
         
+        import DicomImageObject from './src/objects/dicomImageObject.js';
+
         import DicomDumpParser from './src/tools/dicomDumpParser.js';
 
         $(function () {
@@ -156,8 +161,83 @@
                 // Read and parse the DICOM file
                 reader
                     .read(url)
+                    .then(result => {
+
+                        // Establish the parsed instance
+                        var instance = (typeof result === 'array') ? result[0] : result;
+
+                        // Create a new image object from the instance
+                        var imageObject = new DicomImageObject(instance.dataSet);
+
+                        // Create the destination for the decode
+                        var destination = new Uint8Array(imageObject.imagePixelModule.columns * imageObject.imagePixelModule.rows * 4);
+
+                        // Decoce into the destination
+                        imageObject.decodeFrame(destination);
+
+                        // Create the image data from the decoded data
+                        var data = new ImageData(
+                            new Uint8ClampedArray(destination), 
+                            imageObject.imagePixelModule.columns, 
+                            imageObject.imagePixelModule.rows);
+
+                        const canvas = document.getElementById("canvas");
+                        const ctx = canvas.getContext("2d");
+
+                        ctx.fillRect(0, 0, imageObject.imagePixelModule.columns, imageObject.imagePixelModule.columns.rows);
+                        ctx.putImageData(data, 0, 0);
+
+
+                        /*
+                        var pixeldataAttribute = instance.dataSet.find(Tag.PixelData);
+
+                        //var converted = new DicomData();
+                        var converted = new Uint8Array(512*512*4);
+
+                        // Access the source
+                        var source = pixeldataAttribute.value;
+
+                        // Loop over the image bytes
+                        for (var i = 0; i < source.length; i++) {
+
+                            var pixel = Math.floor(source[i]);
+                            converted[(i*4) + 0] = pixel;
+                            converted[(i*4) + 1] = pixel;
+                            converted[(i*4) + 2] = pixel;
+                            converted[(i*4) + 3] = 255;
+
+                            //converted.append([0, Math.floor(0.2126*pixel),  Math.floor(0.7152*pixel), Math.floor(0.0722*pixel)]);
+                            //converted.append([1, Math.floor(pixel),  Math.floor(pixel), Math.floor(pixel)]);
+
+                        }
+
+                        var data = new ImageData(new Uint8ClampedArray(converted), 512, 512);
+                        //var data = new ImageData(new Uint8ClampedArray(converted.access()), 512, 512);
+
+
+                        //var img = createImageBitmap(data);
+
+                        const canvas = document.getElementById("canvas");
+                        const ctx = canvas.getContext("2d");
+
+                        //ctx.drawImage(img, 0, 0, 512, 512, 0, 0, 512, 512);
+                        ctx.fillRect(0, 0, 512, 512);
+                        ctx.putImageData(data, 0, 0);
+
+                        */
+
+                    })
+                    .catch(err => console.log(err));
+
+
+
+                // Read and parse the DICOM file
+                /*
+                reader
+                    .read(url)
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
+                */
 
             });
 

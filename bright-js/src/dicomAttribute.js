@@ -40,11 +40,17 @@ export default class DicomAttribute extends DicomDataElement {
             case ValueRepresentations.UL:
                 return (new DataView(data.buffer)).getUint32(data.byteOffset, DicomEnvironment.isLittleEndian);
 
+            // US: Handle converting the RAW data to a "unsigned short" value
+            case ValueRepresentations.US:
+                return (new DataView(data.buffer)).getUint16(data.byteOffset, DicomEnvironment.isLittleEndian);
+
             // AE, SH, UI: Handle converting the RAW data to a "unique identifier" value
             case ValueRepresentations.AE:
             case ValueRepresentations.SH:
             case ValueRepresentations.UI:
-                // Decode the string value, remove NULL chars and TRIM 
+            case ValueRepresentations.IS:
+            case ValueRepresentations.CS:
+                    // Decode the string value, remove NULL chars and TRIM 
                 return (new TextDecoder().decode(data)).replace(/\0/g, '').trim();                
 
             // OB: Handle converting the RAW data to a "other byte" value

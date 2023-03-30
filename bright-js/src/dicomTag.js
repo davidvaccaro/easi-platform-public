@@ -242,6 +242,23 @@ export default class DicomTag {
 
 var TemplateLookup = {};
 
+export var PhotometricInterpretationType = {
+    MONOCHROME1: Symbol('MONOCHROME1'),
+    MONOCHROME2: Symbol('MONOCHROME2'),
+    PALETTECOLOR: Symbol('PALETTE COLOR'),
+    RGB: Symbol('RGB'),
+    HSV: Symbol('HSV'),
+    ARGB: Symbol('ARGB'),
+    CMYK: Symbol('CMYK'),
+    YBR_FULL: Symbol('YBR_FULL'),
+    YBR_FULL_422: Symbol('YBR_FULL_422'),
+    YBR_PARTIAL_422: Symbol('YBR_PARTIAL_422'),
+    YBR_PARTIAL_420: Symbol('YBR_PARTIAL_420'),
+    YBR_ICT: Symbol('YBR_ICT'),
+    YBR_RCT: Symbol('YBR_RCT'),
+    INVALID: Symbol('INVALID')
+};
+
 // BELOW CODE GENERATED ON: 3/23/2023 11:09:45 AM
 
 export var Tags = {
