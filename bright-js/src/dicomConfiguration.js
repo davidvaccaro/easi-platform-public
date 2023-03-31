@@ -19,12 +19,33 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
+import DicomNativePixelDataToRGBADecoder from './codecs/decoders/dicomNativePixelDataToRGBADecoder.js';
+import { TransferSyntax } from './dicomTransferSyntax.js';
+import jpegDecoder from './codecs/decoders/jpegDecoder.js';
+
 export default class DicomConfiguration {
 
     /**
      * Is the current environment configured for "strict" validation.
      */
     static get isStrict() { return false; }
+
+    /**
+     * Gets the decoder for a given transfer-syntax.
+     * @param {*} transferSyntax The transfer-syntax.
+     * @returns The decoder.
+     */
+    static decoderFor(transferSyntax, imagePixelModule) {
+
+        // Switch the transferSyntax
+        switch (transferSyntax) {
+            case TransferSyntax.JPEGBaseline8Bit:
+                return new jpegDecoder(imagePixelModule);
+        }
+
+        return new DicomNativePixelDataToRGBADecoder(imagePixelModule);
+
+    }
 
     constructor() {
     }

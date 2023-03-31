@@ -19,6 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
+import DicomConfiguration from '../dicomConfiguration.js';
 import DicomAttributeSet from '../dicomAttributeSet.js';
 import DicomModule from './dicomModule.js';
 import { Tag } from '../dicomTag.js'
@@ -128,6 +129,15 @@ export default class DicomImagePixelModule extends DicomModule {
      */
     get pixelData() {
         return this.attributeSet.value(Tag.PixelData);
+    }
+
+    /**
+     * Calculates the image size.
+     * @returns The Image Size value.
+     */
+    get imageSize() {
+        // CALCULATION: IMAGESIZE = ROWS x COLUMNS x SAMPLESPERPIXEL * (BITSALLOCATED / 8)
+        return (this.rows * this.columns * this.samplesPerPixel * (this.bitsAllocated / 8));
     }
 
     /**

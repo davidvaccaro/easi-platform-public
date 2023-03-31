@@ -86,7 +86,7 @@
         </div>
         <br>
         <div>
-            <textarea id="dicomDump" rows="40" cols="80">
+            <textarea id="dicomDump" rows="10" cols="80">
 (0x0002,0x0010) UI Transfer Syntax UID VR=<UI> VL=<0x0014> <1.2.840.10008.1.2.1>
 (0x0008,0x0016) UI SOP Class UID VR=<UI> VL=<0x001a> <1.2.840.10008.5.1.4.1.1.7>
 (0x0008,0x0018) UI SOP Instance UID VR=<UI> VL=<0x0008> <2.25.503>
@@ -169,7 +169,7 @@
                         // Create a new image object from the instance
                         var imageObject = new DicomImageObject(instance.dataSet);
 
-                        // Create the destination for the decode
+                        // Create the destination for the decode (4 BYTES PER PIXEL)
                         var destination = new Uint8Array(imageObject.imagePixelModule.columns * imageObject.imagePixelModule.rows * 4);
 
                         // Decoce into the destination

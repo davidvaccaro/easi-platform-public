@@ -19,20 +19,21 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import DicomImagePixelModule from '../modules/dicomImagePixelModule.js';
-import { Tag } from '../dicomTag.js'
-import { PhotometricInterpretationType } from '../dicomTag.js'
+import DicomImagePixelModule from '../../modules/dicomImagePixelModule.js';
+import { Tag } from '../../dicomTag.js'
+import { PhotometricInterpretationType } from '../../dicomTag.js'
 
-export default class DicomPixelDataToRGBACodec {
+export default class DicomNativePixelDataToRGBADecoder {
 
     /**
      * Decode the specificed data to the output buffer.
      * @param {*} source The Uint8Array that serves as the source of the decode operation.
-     * @param {*} sourceStart The index into the input array to start reading decode input.
+     * @param {*} sourceStart The index into the input array to START reading decode input.
+     * @param {*} sourceStop The index into the input array to STOP reading decode input.
      * @param {*} destination  The Uint8Array that serves as the destination of the decode operation.
-     * @param {*} destinationStart The index into the output array to start writing decoded output.
+     * @param {*} destinationStart The index into the output array to START writing decoded output.
      */
-    decode(source, sourceStart, destination, destinationStart) {
+    decode(source, sourceStart, sourceStop, destination, destinationStart) {
 
         // Switch the Photometric Interpretation
         switch (this.imagePixelModule.photometricInterpretation) {
@@ -45,7 +46,7 @@ export default class DicomPixelDataToRGBACodec {
                 let isOne = (this.imagePixelModule.photometricInterpretation.ID == PhotometricInterpretationType.MONOCHROME1) ? true : false;
 
                 // Loop over the source image bytes
-                for (var i = sourceStart; i < source.length; i++) {
+                for (var i = sourceStart; i < sourceStop; i++) {
 
                     // Determine the source pixel
                     var pixel = Math.floor(source[i]);
@@ -58,11 +59,12 @@ export default class DicomPixelDataToRGBACodec {
 
                 }
 
+                // Return success
                 return true;
 
         }
 
-        // Return 
+        // Return fail
         return false;
 
     }

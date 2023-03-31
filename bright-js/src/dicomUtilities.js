@@ -78,6 +78,17 @@ export default class DicomUtilities {
     }
 
     /**
+     * Get the byte buffer containing the DICOM Item.
+     * @returns The Item byte buffer.
+     */
+    static getItem() {
+        if (DicomEnvironment.isLittleEndian == true) {
+            return [254, 255, 0, 224];
+        }
+        return [255, 254, 224, 0];
+    }
+
+    /**
      * Get the byte buffer containing the DICOM End Sequence.
      * @returns The End Sequence byte buffer.
      */

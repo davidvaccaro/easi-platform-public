@@ -19,11 +19,13 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
+import DicomConfiguration from '../dicomConfiguration.js';
 import DicomObject from './dicomObject.js';
 import DicomAttributeSet from '../dicomAttributeSet.js';
 import DicomImagePixelModule from '../modules/dicomImagePixelModule.js';
 import DicomMultiFrameModule from '../modules/dicomMultiFrameModule.js';
-import DicomPixelDataToRGBACodec from '../codecs/dicomPixelDataToRGBACodec.js';
+import DicomPixelData from '../dicomPixelData.js';
+import { Tag } from '../dicomTag.js'
 
 export default class DicomImageObject extends DicomObject {
 
@@ -44,6 +46,22 @@ export default class DicomImageObject extends DicomObject {
     }
 
     /**
+     * Is the current image-object multi-frame?
+     * @returns TRUE if the current image-object is multi-frame, FALSE otherwise.
+     */
+    get isMultiFrame() {
+
+        // Determine based on the option for the modality and the current instance state.
+        return (
+            ((this.generalSeriesModule.modality.IsMultiFrame == true) 
+            && 
+            (this.multiFrameModule.numberOfFrames > 1)) 
+            ? true : false
+        );
+
+    }
+
+    /**
      * Decode the pixel data to the destination Uint8Array.
      * @param {*} destination The destination Uint8Array that serves as the destination of the decode operation.
      * @param {*} decoder (Optional) The desired decoder. Defaults to RGBA. 
@@ -53,33 +71,39 @@ export default class DicomImageObject extends DicomObject {
 
         var res = false;
 
-        // Create the default decoder (if needed)
-        if (decoder == null) {
-            decoder = new DicomPixelDataToRGBACodec(this.imagePixelModule);
-        }
+        // Access the PixelData attribute
+        var attribute = this.attributeSet.find(Tag.PixelData);
 
-        // Establish the multi-frame status
-        var isMultiFrame = (
-            (this.generalSeriesModule.modality.IsMultiFrame == true) 
-            && 
-            (this.multiFrameModule.numberOfFrames > 1)) 
-            ? true : false;
+        // Establish an instance of the decoder configured for the given transfer-syntax
+        var decoder = DicomConfiguration.decoderFor(
+            attribute.transferSyntax, 
+            this.imagePixelModule);
 
         // Decode the whole frame
-        if (isMultiFrame == false) {
+        if (this.isMultiFrame == false) {
 
+            // Establish the SIZE of a given frame
+            var frameSize = this.imagePixelModule.imageSize;
+            
             // Decode the whole frame
-            res = decoder.decode(this.imagePixelModule.pixelData, 0, destination, 0)
+            res = decoder.decode(this.imagePixelModule.pixelData, 0, frameSize, destination, 0)
 
         }
         else {
 
-            // TODO - Implement this
+            // Establish the Pixel Data accessor
+            var pixelData = new DicomPixelData(attribute);
+
+            // Access the frame offset
+            var offset = pixelData.offsets[frame];
+
+            // Decode the specified frame
+            res = decoder.decode(this.imagePixelModule.pixelData, offset.start, null, destination, 0)
 
         }
 
         return res;
-        
+
     }
         
     /**

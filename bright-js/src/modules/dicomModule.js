@@ -35,7 +35,7 @@ export default class DicomModule {
         var result = [];
         if (value != null) {
             var parts = value.split('\\');
-            for (var i = 0; i < parts; i++) {
+            for (var i = 0; i < parts.length; i++) {
                 result.push(parseInt(parts[i]));
             }
         }
