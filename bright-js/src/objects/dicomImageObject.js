@@ -24,6 +24,8 @@ import DicomObject from './dicomObject.js';
 import DicomAttributeSet from '../dicomAttributeSet.js';
 import DicomImagePixelModule from '../modules/dicomImagePixelModule.js';
 import DicomMultiFrameModule from '../modules/dicomMultiFrameModule.js';
+import DicomVisualizationFunctionModule from '../modules/dicomVisualizationFunctionModule.js'
+import DicomModalityLookUpTableModule from '../modules/dicomModalityLookUpTableModule.js'
 import DicomPixelData from '../dicomPixelData.js';
 import { Tag } from '../dicomTag.js'
 
@@ -43,6 +45,22 @@ export default class DicomImageObject extends DicomObject {
      */
     get multiFrameModule() {
         return new DicomMultiFrameModule(this.attributeSet);
+    }
+
+    /**
+     * Get the Visualization Function Module.
+     * @returns The Visualization Function Module.
+     */
+    get visualizationFunctionModule() {
+        return new DicomVisualizationFunctionModule(this.attributeSet);
+    }
+
+    /**
+     * Get the Visualization Function Module.
+     * @returns The Visualization Function Module.
+     */
+    get modalityLookUpTableModule() {
+        return new DicomModalityLookUpTableModule(this.attributeSet);
     }
 
     /**
@@ -67,17 +85,26 @@ export default class DicomImageObject extends DicomObject {
      * @param {*} decoder (Optional) The desired decoder. Defaults to RGBA. 
      * @param {*} frame (Optional) The frame index (for multi-frame images) to decode. Defaults to 0.
      */
-    decodeFrame(destination, decoder = null, frame = 0) {
+    decodeFrame(destination, decoder = null, frame = 0, windowCenter = null, windowWidth = null) {
 
         var res = false;
 
         // Access the PixelData attribute
         var attribute = this.attributeSet.find(Tag.PixelData);
 
+        // Establish any window-center and window-width
+        if ((windowCenter == null) || (windowWidth == null)) {
+
+            // Establish any DEFAULT window-center
+            windowCenter = this.visualizationFunctionModule.windowCenter.pop();
+
+            // Establish any DEFAULT window-width
+            windowWidth = this.visualizationFunctionModule.windowWidth.pop();
+
+        }
+
         // Establish an instance of the decoder configured for the given transfer-syntax
-        var decoder = DicomConfiguration.decoderFor(
-            attribute.transferSyntax, 
-            this.imagePixelModule);
+        decoder = (decoder != null) ? decoder : DicomConfiguration.decoderFor(attribute.transferSyntax, this);
 
         // Decode the whole frame
         if (this.isMultiFrame == false) {
@@ -86,7 +113,7 @@ export default class DicomImageObject extends DicomObject {
             var frameSize = this.imagePixelModule.imageSize;
             
             // Decode the whole frame
-            res = decoder.decode(this.imagePixelModule.pixelData, 0, frameSize, destination, 0)
+            res = decoder.decode(this.imagePixelModule.pixelData, 0, frameSize, destination, 0, windowCenter, windowWidth)
 
         }
         else {
@@ -98,7 +125,7 @@ export default class DicomImageObject extends DicomObject {
             var offset = pixelData.offsets[frame];
 
             // Decode the specified frame
-            res = decoder.decode(this.imagePixelModule.pixelData, offset.start, null, destination, 0)
+            res = decoder.decode(this.imagePixelModule.pixelData, offset.start, null, destination, 0, windowCenter, windowWidth)
 
         }
 

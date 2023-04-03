@@ -24,6 +24,12 @@ import { Tag } from '../dicomTag.js'
 
 export default class DicomModule {
     
+    /**
+     * Parses the value of an integer string value attribute taking into account the value multiplicity.
+     * @param {*} value The value of the integer string.
+     * @param {*} vm The value multiplicity of the integer string.
+     * @returns A single integer value for multiplicity of 1, an array of integer values for multiplicity of N, null if the value is empty.
+     */
     accessIntegerString(value, vm) {
         
         // Defaul the VM
@@ -37,6 +43,35 @@ export default class DicomModule {
             var parts = value.split('\\');
             for (var i = 0; i < parts.length; i++) {
                 result.push(parseInt(parts[i]));
+            }
+        }
+
+        // Return (based on state)
+        return (vm.Exact == 1) 
+            ? ((result.length == 0) ? null : result.pop())
+            : result;
+
+    }
+
+    /**
+     * Parses the value of an decimal string value attribute taking into account the value multiplicity.
+     * @param {*} value The value of the decimal string.
+     * @param {*} vm The value multiplicity of the decimal string.
+     * @returns A single decimal value for multiplicity of 1, an array of decimal values for multiplicity of N, null if the value is empty.
+     */
+    accessDecimalString(value, vm) {
+        
+        // Defaul the VM
+        if (vm == null) {
+            vm = { Exact: 1 };
+        }
+
+        // Populate the result array
+        var result = [];
+        if (value != null) {
+            var parts = value.split('\\');
+            for (var i = 0; i < parts.length; i++) {
+                result.push(parseFloat(parts[i]));
             }
         }
 

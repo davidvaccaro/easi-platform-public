@@ -32,7 +32,28 @@ export default class DicomImagePixelModule extends DicomModule {
      * @returns The Samples Per Pixel value.
      */
     get samplesPerPixel() {
-        return this.attributeSet.value(Tag.SamplesPerPixel);
+        
+        // Get the samples per pixel value
+        var value = this.attributeSet.value(Tag.SamplesPerPixel);
+
+        // Handle default if NOT present
+        if (value == null) {
+
+            // Switch the photometric interpretation
+            switch (this.photometricInterpretation) {
+
+                // Handle Monochrome Interpretation
+                case PhotometricInterpretationType.MONOCHROME1:
+                case PhotometricInterpretationType.MONOCHROME2:
+                    return 1;
+
+            }
+
+        }
+
+        // Return
+        return value;
+
     }
 
     /**
@@ -46,7 +67,7 @@ export default class DicomImagePixelModule extends DicomModule {
 
         // Validate the value
         if (value == null)
-            return PhotometricInterpretationType.INVALID;
+            return PhotometricInterpretationType.MONOCHROME1;
 
         // Determine the value
         value = PhotometricInterpretationType[value];
@@ -121,6 +142,22 @@ export default class DicomImagePixelModule extends DicomModule {
      */
     get pixelRepresentation() {
         return this.attributeSet.value(Tag.PixelRepresentation);
+    }
+
+    /**
+     * Get the Smallest Image Pixel Value.
+     * @returns The Smallest Image Pixel value.
+     */
+    get smallestImagePixelValue() {
+        return this.attributeSet.value(Tag.SmallestImagePixelValue);
+    }
+
+    /**
+     * Get the Largest Image Pixel Value.
+     * @returns The Largest Image Pixel value.
+     */
+    get largestImagePixelValue() {
+        return this.attributeSet.value(Tag.LargestImagePixelValue);
     }
 
     /**

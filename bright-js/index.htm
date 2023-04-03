@@ -117,10 +117,13 @@
 
         import { Tag } from './src/dicomTag.js';
         import { TransferSyntax } from './src/dicomTransferSyntax.js';
+        import { Modality } from './src/dicomModality.js';
+
         import DicomData from './src/dicomData.js';
         import DicomAttribute from './src/dicomAttribute.js';
 
         import DicomMetaSet from './src/dicomMetaSet.js';
+        import DicomDataSet from './src/dicomDataSet.js';
 
         import DicomItem from './src/dicomItem.js';
         import DicomAttributeSequence from './src/dicomAttributeSequence.js';
@@ -130,6 +133,8 @@
         import DicomReader from './src/dicomReader.js';
         
         import DicomImageObject from './src/objects/dicomImageObject.js';
+        import DicomCTObject from './src/objects/dicomCTObject.js';
+        import DicomXAObject from './src/objects/dicomXAObject.js';
 
         import DicomDumpParser from './src/tools/dicomDumpParser.js';
 
@@ -167,8 +172,21 @@
                         var instance = (typeof result === 'array') ? result[0] : result;
 
                         // Create a new image object from the instance
-                        var imageObject = new DicomImageObject(instance.dataSet);
+                        var imageObject = null;
+                        
+                        // Get the modality
+                        var modality = instance.dataSet.find(Tag.Modality).value;
 
+                        if (modality == Modality.CT.ID) {
+                            imageObject = new DicomCTObject(instance.dataSet);
+                        }
+                        else if (modality == Modality.XA.ID) {
+                            imageObject = new DicomXAObject(instance.dataSet);
+                        }
+                        else {
+                            imageObject = new DicomImageObject(instance.dataSet);
+                        }
+                                            
                         // Create the destination for the decode (4 BYTES PER PIXEL)
                         var destination = new Uint8Array(imageObject.imagePixelModule.columns * imageObject.imagePixelModule.rows * 4);
 
@@ -181,10 +199,24 @@
                             imageObject.imagePixelModule.columns, 
                             imageObject.imagePixelModule.rows);
 
+                        /*
+                        // Establish ANY pixel spacing
+                        var pixelSpacing = imageObject.imagePlaneModule.pixelSpacing;
+
+                        var width = (pixelSpacing != null) ? (pixelSpacing[1] * imageObject.imagePixelModule.columns) : imageObject.imagePixelModule.columns;
+                        var height = (pixelSpacing != null) ? (pixelSpacing[0] * imageObject.imagePixelModule.rows) : imageObject.imagePixelModule.rows;
+
+                        */
+
+                        var width = imageObject.imagePixelModule.columns;
+                        var height = imageObject.imagePixelModule.rows;
+
                         const canvas = document.getElementById("canvas");
+                        canvas.width = width;
+                        canvas.height = height;
                         const ctx = canvas.getContext("2d");
 
-                        ctx.fillRect(0, 0, imageObject.imagePixelModule.columns, imageObject.imagePixelModule.columns.rows);
+                        ctx.fillRect(0, 0, width, height);
                         ctx.putImageData(data, 0, 0);
 
 

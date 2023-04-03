@@ -1,7 +1,7 @@
 //
-// DicomConfiguration.js - 1.0.0
+// DicomImagePlaneModule.js - 1.0.0
 //
-// DICOM Configuration Class 
+// DICOM Visualization Function Module Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,38 +19,37 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import DicomNativePixelDataToRGBADecoder from './codecs/decoders/dicomNativePixelDataToRGBADecoder.js';
-import { TransferSyntax } from './dicomTransferSyntax.js';
-import jpegDecoder from './codecs/decoders/jpegDecoder.js';
+import DicomConfiguration from '../dicomConfiguration.js';
+import DicomAttributeSet from '../dicomAttributeSet.js';
+import DicomModule from './dicomModule.js';
+import { Tag } from '../dicomTag.js'
 
-export default class DicomConfiguration {
-
-    /**
-     * Is the current environment configured for "strict" validation.
-     */
-    static get isStrict() { return false; }
+export default class DicomVisualizationFunctionModule extends DicomModule {
 
     /**
-     * Gets the decoder for a given transfer-syntax.
-     * @param {*} transferSyntax The transfer-syntax.
-     * @returns The decoder.
+     * Get the Window Center.
+     * @returns The Window Center value.
      */
-    static decoderFor(transferSyntax, dicomObject) {
-
-        // Switch the transferSyntax
-        switch (transferSyntax) {
-            case TransferSyntax.JPEGBaseline8Bit:
-                return new jpegDecoder(dicomObject);
-            //case TransferSyntax.JPEGLossless:
-            //case TransferSyntax.JPEGLosslessSV1:
-                            
-        }
-
-        return new DicomNativePixelDataToRGBADecoder(dicomObject);
-
+    get windowCenter() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.WindowCenter), Tag.WindowCenter.VM);
     }
 
-    constructor() {
+    /**
+     * Get the Window Width.
+     * @returns The Window Width value.
+     */
+    get windowWidth() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.WindowWidth), Tag.WindowWidth.VM);
+    }
+
+    /**
+     * Construct an Pixel Module Accessor instance.
+     */
+    constructor(attributeSet) {
+
+        // Call the super constructor
+        super(attributeSet);
+
     }
 
 };

@@ -1196,10 +1196,10 @@ var JpegImage = (function jpegImage() {
     /**
      * Construct an Dicom Pixel Data To RGB Codec instance.
      */
-    constructor(imagePixelModule) {
+    constructor(dicomObject) {
 
         // Set the image-pixel module
-        this.imagePixelModule = imagePixelModule;
+        this.dicomObject = dicomObject;
 
     }
 

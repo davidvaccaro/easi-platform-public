@@ -1,7 +1,7 @@
 //
-// DicomConfiguration.js - 1.0.0
+// DicomModalityLookUpTableModule.js - 1.0.0
 //
-// DICOM Configuration Class 
+// DICOM Modality Look Up Table Module Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,38 +19,45 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import DicomNativePixelDataToRGBADecoder from './codecs/decoders/dicomNativePixelDataToRGBADecoder.js';
-import { TransferSyntax } from './dicomTransferSyntax.js';
-import jpegDecoder from './codecs/decoders/jpegDecoder.js';
+import DicomConfiguration from '../dicomConfiguration.js';
+import DicomAttributeSet from '../dicomAttributeSet.js';
+import DicomModule from './dicomModule.js';
+import { Tag } from '../dicomTag.js'
 
-export default class DicomConfiguration {
-
-    /**
-     * Is the current environment configured for "strict" validation.
-     */
-    static get isStrict() { return false; }
+export default class DicomModalityLookUpTableModule extends DicomModule {
 
     /**
-     * Gets the decoder for a given transfer-syntax.
-     * @param {*} transferSyntax The transfer-syntax.
-     * @returns The decoder.
+     * Get the Rescale Intercept.
+     * @returns The Rescale Intercept value.
      */
-    static decoderFor(transferSyntax, dicomObject) {
-
-        // Switch the transferSyntax
-        switch (transferSyntax) {
-            case TransferSyntax.JPEGBaseline8Bit:
-                return new jpegDecoder(dicomObject);
-            //case TransferSyntax.JPEGLossless:
-            //case TransferSyntax.JPEGLosslessSV1:
-                            
-        }
-
-        return new DicomNativePixelDataToRGBADecoder(dicomObject);
-
+    get rescaleIntercept() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.RescaleIntercept), Tag.RescaleIntercept.VM);
     }
 
-    constructor() {
+    /**
+     * Get the Rescale Slope.
+     * @returns The Rescale Slope value.
+     */
+    get rescaleSlope() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.RescaleSlope), Tag.RescaleSlope.VM);
+    }
+
+    /**
+     * Get the Rescale Type.
+     * @returns The Rescale Type value.
+     */
+    get rescaleType() {
+        return this.attributeSet.value(Tag.RescaleType);
+    }
+
+    /**
+     * Construct an Pixel Module Accessor instance.
+     */
+    constructor(attributeSet) {
+
+        // Call the super constructor
+        super(attributeSet);
+
     }
 
 };

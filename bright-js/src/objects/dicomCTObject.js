@@ -1,7 +1,7 @@
 //
-// DicomConfiguration.js - 1.0.0
+// DicomXAObject.js - 1.0.0
 //
-// DICOM Configuration Class 
+// DICOM Dicom XA Object Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,38 +19,28 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import DicomNativePixelDataToRGBADecoder from './codecs/decoders/dicomNativePixelDataToRGBADecoder.js';
-import { TransferSyntax } from './dicomTransferSyntax.js';
-import jpegDecoder from './codecs/decoders/jpegDecoder.js';
+import DicomAttributeSet from '../dicomAttributeSet.js';
+import DicomImageObject from '../objects/dicomImageObject.js';
+import DicomImagePlaneModule from '../modules/dicomImagePlaneModule.js';
 
-export default class DicomConfiguration {
-
-    /**
-     * Is the current environment configured for "strict" validation.
-     */
-    static get isStrict() { return false; }
+export default class DicomCTObject extends DicomImageObject {
 
     /**
-     * Gets the decoder for a given transfer-syntax.
-     * @param {*} transferSyntax The transfer-syntax.
-     * @returns The decoder.
+     * Get the Image Plane Module.
+     * @returns The Image Plane Module.
      */
-    static decoderFor(transferSyntax, dicomObject) {
-
-        // Switch the transferSyntax
-        switch (transferSyntax) {
-            case TransferSyntax.JPEGBaseline8Bit:
-                return new jpegDecoder(dicomObject);
-            //case TransferSyntax.JPEGLossless:
-            //case TransferSyntax.JPEGLosslessSV1:
-                            
-        }
-
-        return new DicomNativePixelDataToRGBADecoder(dicomObject);
-
+    get imagePlaneModule() {
+        return new DicomImagePlaneModule(this.attributeSet);
     }
 
-    constructor() {
+    /**
+     * Construct an DICOM XA Object instance.
+     */
+    constructor(attributeSet) {
+
+        // Call the super constructor
+        super(attributeSet);
+
     }
 
 };
