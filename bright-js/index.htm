@@ -33,7 +33,7 @@
     <script src="src/dicomInstance.js"></script>
 
     <script src="src/dicomEmitter.js"></script>
-    <script src="src/dicomInstanceEmitter.js"></script>
+    <script src="src/handlers/dicomInstanceStreamHandler.js"></script>
     <script src="src/dicomParser.js"></script>
     <script src="src/dicomReader.js"></script>
 
@@ -128,7 +128,7 @@
         import DicomItem from './src/dicomItem.js';
         import DicomAttributeSequence from './src/dicomAttributeSequence.js';
 
-        import DicomInstanceEmitter from './src/dicomInstanceEmitter.js';
+        import dicomInstanceStreamHandler from './src/handlers/dicomInstanceStreamHandler.js';
         import DicomParser from './src/dicomParser.js';
         import DicomReader from './src/dicomReader.js';
         
@@ -161,7 +161,7 @@
                 var url = URL.createObjectURL(this.files[0]);
 
                 // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new DicomInstanceEmitter()));
+                var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
 
                 // Read and parse the DICOM file
                 reader
@@ -170,6 +170,9 @@
 
                         // Establish the parsed instance
                         var instance = (typeof result === 'array') ? result[0] : result;
+
+                        // Log the instance
+                        console.log(instance);
 
                         // Create a new image object from the instance
                         var imageObject = null;
@@ -283,7 +286,7 @@
                 var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094";
 
                 // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new DicomInstanceEmitter()));
+                var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
 
                 // Read and parse the DICOM file
                 reader
@@ -303,7 +306,7 @@
                 var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583";
 
                 // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new DicomInstanceEmitter()));
+                var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
 
                 // Read and parse the DICOM file
                 reader
@@ -323,7 +326,7 @@
                 var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641";
 
                 // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new DicomInstanceEmitter()));
+                var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
 
                 // Read and parse the DICOM file
                 reader
@@ -361,7 +364,7 @@
                 console.clear();
 
                 // Create the DICOM Dump Parer
-                var parser = new DicomDumpParser(new DicomInstanceEmitter());
+                var parser = new DicomDumpParser(new dicomInstanceStreamHandler());
 
                 parser.parse($('#dicomDump').val());
 

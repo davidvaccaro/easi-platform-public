@@ -54,9 +54,12 @@ export default class DicomDumpParser {
         this.dataElements = [];
 
         // Reset the emitter
-        if (this.emitter.reset != null) {
-            this.emitter.reset();
+        if (this.emitter.onReset != null) {
+            this.emitter.onReset();
         }
+
+        // Clear the current context
+        this.context = null;
 
     }
 
@@ -192,8 +195,8 @@ export default class DicomDumpParser {
         var lines = data.split('\n');
 
         // Start the "instance"
-        if (this.emitter.startInstance != null) {
-            this.emitter.startInstance();
+        if (this.emitter.onStartInstance != null) {
+            this.context = this.emitter.onStartInstance();
         }
 
         // Classes of dump lines
@@ -246,8 +249,8 @@ export default class DicomDumpParser {
                         this.startedMetaSet = true;
 
                         // Start the meta-set
-                        if (this.emitter.startMetaSet != null) {
-                            this.emitter.startMetaSet();
+                        if (this.emitter.onStartMetaSet != null) {
+                            this.emitter.onStartMetaSet(this.context);
                         }
 
                     }
@@ -262,8 +265,8 @@ export default class DicomDumpParser {
                         this.startedMetaSet = false;
 
                         // End the meta-set
-                        if (this.emitter.endMetaSet != null) {
-                            this.emitter.endMetaSet();
+                        if (this.emitter.onEndMetaSet != null) {
+                            this.emitter.onEndMetaSet(this.context);
                         }
 
                     }
@@ -278,8 +281,8 @@ export default class DicomDumpParser {
                         this.startedDataSet = true;
 
                         // Start the data-set
-                        if (this.emitter.startDataSet != null) {
-                            this.emitter.startDataSet();
+                        if (this.emitter.onStartDataSet != null) {
+                            this.emitter.onStartDataSet(this.context);
                         }
 
                     }
@@ -295,8 +298,8 @@ export default class DicomDumpParser {
                 if (dataElement instanceof DicomAttributeSequence) {
 
                     // Start the sequence
-                    if (this.emitter.startSequence != null) {
-                        this.emitter.startSequence(dataElement);
+                    if (this.emitter.onStartSequence != null) {
+                        this.emitter.onStartSequence(this.context, dataElement);
                     }
 
                     // Push the sequence element
@@ -306,16 +309,16 @@ export default class DicomDumpParser {
                 else {
 
                     // Start the typical attribute
-                    if (this.emitter.startAttribute != null) {
-                        this.emitter.startAttribute(dataElement);
+                    if (this.emitter.onStartAttribute != null) {
+                        this.emitter.onStartAttribute(this.context, dataElement);
                     }
 
                     // Indicate that the data-element is complete
                     dataElement.isComplete = true;
 
                     // End the attribute
-                    if (this.emitter.endAttribute != null) {
-                        this.emitter.endAttribute(dataElement);
+                    if (this.emitter.onEndAttribute != null) {
+                        this.emitter.onEndAttribute(this.context, dataElement);
                     }
 
                 }
@@ -333,8 +336,8 @@ export default class DicomDumpParser {
                 if (item != null) {
 
                     // End the item
-                    if (this.emitter.endItem != null) {
-                        this.emitter.endItem(item);
+                    if (this.emitter.onEndItem != null) {
+                        this.emitter.onEndItem(this.context);
                     }
 
                     // Pop the current item
@@ -349,8 +352,8 @@ export default class DicomDumpParser {
                 this.dataElements.push(item);
 
                 // Start the item
-                if (this.emitter.startItem != null) {
-                    this.emitter.startItem(item);
+                if (this.emitter.onStartItem != null) {
+                    this.emitter.onStartItem(this.context);
                 }
 
             }
@@ -363,16 +366,16 @@ export default class DicomDumpParser {
                 var item = this.peekItem();
 
                 // End the item
-                if (this.emitter.endItem != null) {
-                    this.emitter.endItem(item);
+                if (this.emitter.onEndItem != null) {
+                    this.emitter.onEndItem(this.context);
                 }
 
                 // Pop the current item
                 this.dataElements.pop();
 
                 // End the current sequence
-                if (this.emitter.endSequence != null) {
-                    this.emitter.endSequence(sequence);
+                if (this.emitter.onEndSequence != null) {
+                    this.emitter.onEndSequence(this.context, sequence);
                 }
 
                 // Pop the current sequence
@@ -383,13 +386,13 @@ export default class DicomDumpParser {
         }
 
         // Emnd the data-set
-        if (this.emitter.endDataSet != null) {
-            this.emitter.endDataSet();
+        if (this.emitter.onEndDataSet != null) {
+            this.emitter.onEndDataSet(this.context);
         }
 
         // End the "instance"
-        if (this.emitter.endInstance != null) {
-            this.result = this.emitter.endInstance();
+        if (this.emitter.onEndInstance != null) {
+            this.result = this.emitter.onEndInstance(this.context);
         }
 
         // Reset the state

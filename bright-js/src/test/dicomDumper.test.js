@@ -1,4 +1,4 @@
-import DicomInstanceEmitter from '../dicomInstanceEmitter.js';
+import dicomInstanceStreamHandler from '../handlers/dicomInstanceStreamHandler.js';
 import DicomDumper from '../tools/dicomDumper.js';
 import DicomDumpParser from '../tools/dicomDumpParser.js';
 
@@ -14,7 +14,7 @@ test('Test: DicomDumper Dump', () => {
     const dicomFullPath = path.join(brightDicomRoot, '/data/dicoms/0002.DCM');
 
     // Create the DICOM Dumper
-    var dumper = new DicomDumper(new DicomDumpParser(new DicomInstanceEmitter()));
+    var dumper = new DicomDumper(new DicomDumpParser(new dicomInstanceStreamHandler()));
 
     // Dump the file
     dumper

@@ -1,6 +1,6 @@
 import DicomReader from '../dicomReader.js';
 import DicomParser from '../dicomParser.js';
-import DicomInstanceEmitter from '../dicomInstanceEmitter.js';
+import dicomInstanceStreamHandler from '../handlers/dicomInstanceStreamHandler.js';
 import DicomDumper from '../tools/dicomDumper.js';
 import DicomDumpParser from '../tools/dicomDumpParser.js';
 
@@ -52,7 +52,7 @@ function validateDicomSchema(dicomPath) {
             const dicomFullPath = dicomPath.includes('/') ? dicomPath : path.join(brightDicomRoot, '/data/dicoms/' + dicomPath);
 
             // Create the DICOM reader
-            var reader = new DicomReader(new DicomParser(new DicomInstanceEmitter()));
+            var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
 
             // Read and parse the DICOM file
             reader
@@ -60,7 +60,7 @@ function validateDicomSchema(dicomPath) {
                 .then(parseResult => {
 
                     // Create the DICOM Dumper
-                    var dumper = new DicomDumper(new DicomDumpParser(new DicomInstanceEmitter()));
+                    var dumper = new DicomDumper(new DicomDumpParser(new dicomInstanceStreamHandler()));
 
                     // Dump the file
                     dumper

@@ -1,5 +1,5 @@
 //
-// dicomInstanceEmitter.js - 1.0.0
+// dicomInstanceStreamHandler.js - 1.0.0
 //
 // DICOM Instance Emitter Class 
 //
@@ -19,36 +19,33 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import DicomInstance from "./dicomInstance.js";
-import DicomMetaSet from "./dicomMetaSet.js";
-import DicomDataSet from "./dicomDataSet.js";
+import DicomInstance from "../dicomInstance.js";
+import DicomMetaSet from "../dicomMetaSet.js";
+import DicomDataSet from "../dicomDataSet.js";
+import DicomItem from "../dicomItem.js";
 
-export default class DicomInstanceEmitter {
+export default class dicomInstanceStreamHandler {
 
-    reset() {
+    onReset() {
+    }
 
-        // Reset the current instance
-        this.instance = null;
+    onStartInstance() {
 
-        // Reset the sequence stack
-        this.sequences = [];
+        // Create a new instance context
+        return {
+            instance: new DicomInstance(),
+            sequences: []
+        };
 
     }
 
-    startInstance() {
-
-        // Create a new instance
-        this.instance = new DicomInstance();
-
+    onStartPreamble(context, preamble) {
     }
 
-    startPreamble(preamble) {
+    onStartPrefix(context, prefix) {
     }
 
-    startPrefix(prefix) {
-    }
-
-    startAttribute(attribute) {
+    onStartAttribute(context, attribute) {
 
         // The attribute gets populated into either:
         // 1. The top sequence current item
@@ -56,10 +53,10 @@ export default class DicomInstanceEmitter {
         // 3. The metaset
 
         // If there is a current sequence stack, add to the sequence        
-        if (this.sequences.length > 0) {
+        if (context.sequences.length > 0) {
 
             // Access the top of the sequence stack
-            var sequence = this.sequences[this.sequences.length - 1];
+            var sequence = context.sequences[context.sequences.length - 1];
             
             // Access the current item in the sequence
             var item = sequence.items[sequence.items.length - 1];
@@ -71,16 +68,16 @@ export default class DicomInstanceEmitter {
         else {
 
             // If there is a data-set, add to "data", otherwise add to "meta"
-            if (this.instance.dataSet != null) {
+            if (context.instance.dataSet != null) {
 
                 // Add to the "data-set"
-                this.instance.dataSet.add(attribute);
+                context.instance.dataSet.add(attribute);
 
             }
             else {
 
                 // Add to the "meta-set"
-                this.instance.metaSet.add(attribute);
+                context.instance.metaSet.add(attribute);
 
             }
 
@@ -88,81 +85,81 @@ export default class DicomInstanceEmitter {
 
     }
 
-    startSequence(sequence) {
+    onStartSequence(context, sequence) {
 
         // Add to the dataset
-        this.instance.dataSet.add(sequence);
+        context.instance.dataSet.add(sequence);
 
         // Push onto the sequence stack
-        this.sequences.push(sequence);
+        context.sequences.push(sequence);
 
     }
 
-    startItem(item) {
+    onStartItem(context) {
 
         // Access the top of the sequence stack
-        var sequence = this.sequences[this.sequences.length - 1];
+        var sequence = context.sequences[context.sequences.length - 1];
 
         // Add the item to the current sequence
-        sequence.add(item);
+        sequence.add(new DicomItem());
 
     }
 
-    appendAttribute(attribute) {
+    onAppendAttribute(context, attribute) {
     }
 
-    startMetaSet() {
+    onStartMetaSet(context) {
 
         // Create the new metaset
-        this.instance.metaSet = new DicomMetaSet();
+        context.instance.metaSet = new DicomMetaSet();
 
     }
 
-    startDataSet() {
+    onStartDataSet(context) {
 
         // Create the new dataset
-        this.instance.dataSet = new DicomDataSet();
+        context.instance.dataSet = new DicomDataSet();
 
     }
 
-    endPreamble(preamble) {
+    onEndPreamble(context, preamble) {
 
         // Set the preamble
-        this.instance.preamble = preamble;
+        context.instance.preamble = preamble;
 
     }
 
-    endPrefix(prefix) {
+    onEndPrefix(context, prefix) {
 
         // Set the prefix
-        this.instance.prefix = prefix;
+        context.instance.prefix = prefix;
 
     }
 
-    endAttribute(attribute) {
+    onEndAttribute(context, attribute) {
     }
 
-    endSequence(sequence) {
+    onEndSequence(context, sequence) {
 
         // Pop the current sequence stack
-        this.sequences.pop();
+        context.sequences.pop();
 
     }
 
-    endItem(item) {
+    onEndItem(context) {
     }
 
-    endMetaSet() {
+    onEndMetaSet(context) {
 
         // Mark the meta-set as "complete"
-        this.instance.metaSet.isComplete = true;
+        context.instance.metaSet.isComplete = true;
 
     }
 
-    endDataSet() {
+    onEndDataSet(context) {
 
         // Mark the data-set as "complete"
-        this.instance.dataSet.isComplete = true;
+        context.instance.dataSet.isComplete = true;
 
     }
 
@@ -170,8 +167,11 @@ export default class DicomInstanceEmitter {
      * Returns the current instance constructed by this emitter.
      * @returns The current instance.
      */
-    endInstance() {
-        return this.instance;
+    onEndInstance(context) {
+        return context.instance;
+    }
+
+    onError(context, error) {        
     }
 
     constructor() {

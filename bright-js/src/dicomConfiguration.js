@@ -22,6 +22,7 @@
 import DicomNativePixelDataToRGBADecoder from './codecs/decoders/dicomNativePixelDataToRGBADecoder.js';
 import { TransferSyntax } from './dicomTransferSyntax.js';
 import jpegDecoder from './codecs/decoders/jpegDecoder.js';
+import jpegLosslessDecoder from './codecs/decoders/jpegLosslessDecoder.js';
 
 export default class DicomConfiguration {
 
@@ -39,10 +40,13 @@ export default class DicomConfiguration {
 
         // Switch the transferSyntax
         switch (transferSyntax) {
+            
             case TransferSyntax.JPEGBaseline8Bit:
                 return new jpegDecoder(dicomObject);
-            //case TransferSyntax.JPEGLossless:
-            //case TransferSyntax.JPEGLosslessSV1:
+
+            case TransferSyntax.JPEGLossless:
+            case TransferSyntax.JPEGLosslessSV1:
+                return new jpegLosslessDecoder(dicomObject);
                             
         }
 

@@ -117,9 +117,12 @@ export default class DicomParser {
         this.data = new DicomData();
 
         // Reset the emitter
-        if (this.emitter.reset != null) {
-            this.emitter.reset();
+        if (this.emitter.onReset != null) {
+            this.emitter.onReset();
         }
+
+        // Clear the current context
+        this.context = null;
 
     }
 
@@ -363,8 +366,10 @@ export default class DicomParser {
         }
         catch (error) {
 
-            // TODO - Handle exception properly
-            console.log(error);
+            // Process the error
+            if (this.emitter.onError != null) {
+                this.emitter.onError();
+            }
 
         }
 
@@ -478,8 +483,8 @@ export default class DicomParser {
         if ((this.processedPrefix == true) && (this.partType == null)) {
 
             // Start the "instance"
-            if (this.emitter.startInstance != null) {
-                this.emitter.startInstance();
+            if (this.emitter.onStartInstance != null) {
+                this.context = this.emitter.onStartInstance();
             }
 
             // Pop the first part
@@ -523,8 +528,8 @@ export default class DicomParser {
         if (complete == true) {
 
             // End the "instance"
-            if (this.emitter.endInstance != null) {
-                this.result = this.emitter.endInstance();
+            if (this.emitter.onEndInstance != null) {
+                this.result = this.emitter.onEndInstance(this.context, this.context);
             }
 
             // Reset the state
@@ -570,8 +575,8 @@ export default class DicomParser {
                 this.part = new DicomPreamble(this.data.consume(remaining));
 
                 // Start the "preamble"
-                if (this.emitter.startPreamble != null) {
-                    this.emitter.startPreamble(this.part);
+                if (this.emitter.onStartPreamble != null) {
+                    this.emitter.onStartPreamble(this.context, this.part);
                 }
 
             }
@@ -589,8 +594,8 @@ export default class DicomParser {
             if (this.part.isComplete == true) {
 
                 // End the "preamble"
-                if (this.emitter.endPreamble != null) {
-                    this.emitter.endPreamble(this.part);
+                if (this.emitter.onEndPreamble != null) {
+                    this.emitter.onEndPreamble(this.context, this.part);
                 }
 
                 // Clear the part "started"
@@ -647,8 +652,8 @@ export default class DicomParser {
                 this.part = new DicomPrefix(this.data.consume(remaining));
 
                 // Start the "prefix"
-                if (this.emitter.startPrefix != null) {
-                    this.emitter.startPrefix(this.part);
+                if (this.emitter.onStartPrefix != null) {
+                    this.emitter.onStartPrefix(this.context, this.part);
                 }
 
             }
@@ -666,8 +671,8 @@ export default class DicomParser {
             if (this.part.isComplete == true) {
 
                 // End the "prefix"
-                if (this.emitter.endPrefix != null) {
-                    this.emitter.endPrefix(this.part);
+                if (this.emitter.onEndPrefix != null) {
+                    this.emitter.onEndPrefix(this.context, this.part);
                 }
 
                 // Clear the part "started"
@@ -719,8 +724,8 @@ export default class DicomParser {
             this.data.convert(TransferSyntax.ExplicitVRLittleEndian);
 
             // Start the meta-set
-            if (this.emitter.startMetaSet != null) {
-                this.emitter.startMetaSet();
+            if (this.emitter.onStartMetaSet != null) {
+                this.emitter.onStartMetaSet(this.context);
             }
 
         }
@@ -757,8 +762,8 @@ export default class DicomParser {
                 if ((this.totalBytesConsumed - this.partStart) == this.metaSetGroupLength) {
 
                     // End the meta-set
-                    if (this.emitter.endMetaSet != null) {
-                        this.emitter.endMetaSet();
+                    if (this.emitter.onEndMetaSet != null) {
+                        this.emitter.onEndMetaSet(this.context);
                     }
     
                     // Clear the part "started"
@@ -808,8 +813,8 @@ export default class DicomParser {
             this.data.convert(this.dataSetTransferSyntax);
 
             // Start the data-set
-            if (this.emitter.startDataSet != null) {
-                this.emitter.startDataSet();
+            if (this.emitter.onStartDataSet != null) {
+                this.emitter.onStartDataSet(this.context);
             }
 
         }
@@ -867,8 +872,8 @@ export default class DicomParser {
                                 this.totalBytesConsumed += nextDetails.bytesPeeked;
 
                                 // End the item
-                                if (this.emitter.endItem != null) {
-                                    this.emitter.endItem(item.element);
+                                if (this.emitter.onEndItem != null) {
+                                    this.emitter.onEndItem(this.context);
                                 }
 
                                 // Pop the current item
@@ -878,18 +883,15 @@ export default class DicomParser {
                                 if (nextDetails.tag == Tag.Item)
                                 {
 
-                                    // Create a new item
-                                    var nextItem = new DicomItem(nextDetails.valueLength);
-
                                     // Push the next item
                                     this.dataElements.push({ 
                                         start: nextDetails.bytesPeeked, 
-                                        element: nextItem
+                                        element: new DicomItem(nextDetails.valueLength)
                                     });
 
                                     // Start the item
-                                    if (this.emitter.startItem != null) {
-                                        this.emitter.startItem(nextItem);
+                                    if (this.emitter.onStartItem != null) {
+                                        this.emitter.onStartItem(this.context);
                                     }
 
                                     // Break out of the sequence loop
@@ -902,8 +904,8 @@ export default class DicomParser {
                                     this.dataElements.pop();
 
                                     // End the current sequence
-                                    if (this.emitter.endSequence != null) {
-                                        this.emitter.endSequence(sequence.element);
+                                    if (this.emitter.onEndSequence != null) {
+                                        this.emitter.onEndSequence(this.context, sequence.element);
                                     }
 
                                 }
@@ -935,8 +937,8 @@ export default class DicomParser {
                                     item.element.isComplete = true;
 
                                     // End the item
-                                    if (this.emitter.endItem != null) {
-                                        this.emitter.endItem(item.element);                                
+                                    if (this.emitter.onEndItem != null) {
+                                        this.emitter.onEndItem(this.context);                                
                                     }
 
                                     // Pop the current item
@@ -952,8 +954,8 @@ export default class DicomParser {
                                             sequence.element.isComplete = true;
 
                                             // End the item
-                                            if (this.emitter.endSequence != null) {
-                                                this.emitter.endSequence(sequence.element);                                
+                                            if (this.emitter.onEndSequence != null) {
+                                                this.emitter.onEndSequence(this.context, sequence.element);                                
                                             }
 
                                             // Pop the current sequnce
@@ -967,8 +969,8 @@ export default class DicomParser {
                                 else {
 
                                     // End the item
-                                    if (this.emitter.endSequence != null) {
-                                        this.emitter.endSequence(item.element);                                
+                                    if (this.emitter.onEndSequence != null) {
+                                        this.emitter.onEndSequence(this.context, item.element);                                
                                     }
 
                                     // Pop the current item
@@ -998,8 +1000,8 @@ export default class DicomParser {
                     if (((this.data.isEmpty == true) && (isDone == true)) == true) {
 
                         // End the data-set
-                        if (this.emitter.endDataSet != null) {
-                            this.emitter.endDataSet();
+                        if (this.emitter.onEndDataSet != null) {
+                            this.emitter.onEndDataSet(this.context);
                         }
 
                         // Indicate that the part is NOT started
@@ -1023,8 +1025,8 @@ export default class DicomParser {
             this.dataElement.isComplete = true;
 
             // End the attribute 
-            if (this.emitter.endAttribute != null) {
-                this.emitter.endAttribute(this.dataElement);
+            if (this.emitter.onEndAttribute != null) {
+                this.emitter.onEndAttribute(this.context, this.dataElement);
             }
 
             // Clear the current data-elemen
@@ -1045,8 +1047,8 @@ export default class DicomParser {
                     item.element.isComplete = true;
 
                     // End the item
-                    if (this.emitter.endItem != null) {
-                        this.emitter.endItem(item.element);                                
+                    if (this.emitter.onEndItem != null) {
+                        this.emitter.onEndItem(this.context);                                
                     }
 
                     // Pop the current item
@@ -1056,8 +1058,8 @@ export default class DicomParser {
                     sequence.element.isComplete = true;
 
                     // End the item
-                    if (this.emitter.endSequence != null) {
-                        this.emitter.endSequence(sequence.element);                                
+                    if (this.emitter.onEndSequence != null) {
+                        this.emitter.onEndSequence(this.context, sequence.element);                                
                     }
 
                     // Pop the current sequnce
@@ -1067,8 +1069,8 @@ export default class DicomParser {
                 else {
 
                     // End the item
-                    if (this.emitter.endSequence != null) {
-                        this.emitter.endSequence(item.element);                                
+                    if (this.emitter.onEndSequence != null) {
+                        this.emitter.onEndSequence(this.context, item.element);                                
                     }
 
                     // Pop the current item
@@ -1079,8 +1081,8 @@ export default class DicomParser {
             }
 
             // End the data-set
-            if (this.emitter.endDataSet != null) {
-                this.emitter.endDataSet();
+            if (this.emitter.onEndDataSet != null) {
+                this.emitter.onEndDataSet(this.context);
             }
 
             // Indicate that the current DICOM is fully parsed
@@ -1124,13 +1126,13 @@ export default class DicomParser {
 
             // Start the attribute or sequence
             if (this.dataElement instanceof DicomAttributeSequence) {
-                if (this.emitter.startSequence != null) {
-                    this.emitter.startSequence(this.dataElement);
+                if (this.emitter.onStartSequence != null) {
+                    this.emitter.onStartSequence(this.context, this.dataElement);
                 }
             }
             else {
-                if (this.emitter.startAttribute != null) {
-                    this.emitter.startAttribute(this.dataElement);
+                if (this.emitter.onStartAttribute != null) {
+                    this.emitter.onStartAttribute(this.context, this.dataElement);
                 }
             }
 
@@ -1167,18 +1169,15 @@ export default class DicomParser {
                 element: this.dataElement 
             });
             
-            // Create the item
-            var item = new DicomItem(details.valueLength);
-
             // Push the item
             this.dataElements.push({ 
                 start: (sequenceStart + details.bytesPeeked), 
-                element: item
+                element: new DicomItem(details.valueLength)
             });
 
             // Start the item
-            if (this.emitter.startItem != null) {
-                this.emitter.startItem(item);
+            if (this.emitter.onStartItem != null) {
+                this.emitter.onStartItem(this.context);
             }
 
             // Clear the current element
@@ -1231,8 +1230,8 @@ export default class DicomParser {
                     }
 
                     // Fire the "append" event
-                    if (this.emitter.appendAttribute != null) {
-                        this.emitter.appendAttribute(this.dataElement);
+                    if (this.emitter.onAppendAttribute != null) {
+                        this.emitter.onAppendAttribute(this.dataElement);
                     }
 
                 }
@@ -1251,16 +1250,16 @@ export default class DicomParser {
                     if (this.dataElement.isComplete == true) {
 
                         // End the attribute or sequence
-                        if (this.emitter.endAttribute != null) {
-                            this.emitter.endAttribute(this.dataElement);
+                        if (this.emitter.onEndAttribute != null) {
+                            this.emitter.onEndAttribute(this.context, this.dataElement);
                         }
 
                     }
                     else {
 
                         // Append the attribute or sequence
-                        if (this.emitter.appendAttribute != null) {
-                            this.emitter.appendAttribute(this.dataElement);
+                        if (this.emitter.onAppendAttribute != null) {
+                            this.emitter.onAppendAttribute(this.context, this.dataElement);
                         }
 
                     }

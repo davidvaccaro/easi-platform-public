@@ -11,7 +11,7 @@ import DicomDataSet from './src/dicomDataSet.js';
 import DicomItem from './src/dicomItem.js';
 import DicomAttributeSequence from './src/dicomAttributeSequence.js';
 
-import DicomInstanceEmitter from './src/dicomInstanceEmitter.js';
+import dicomInstanceStreamHandler from './src/handlers/dicomInstanceStreamHandler.js';
 import DicomParser from './src/dicomParser.js';
 import DicomReader from './src/dicomReader.js';
 
@@ -53,7 +53,7 @@ const pngFromDICOMRequest = async (request) => {
     return new Promise(function(resolve, reject) {
 
       // Create the DICOM reader
-      var reader = new DicomReader(new DicomParser(new DicomInstanceEmitter()));
+      var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
 
       // Read and parse the DICOM file
       reader

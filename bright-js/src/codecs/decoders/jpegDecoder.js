@@ -13,6 +13,8 @@
    limitations under the License.
 */
 
+// FROM: https://github.com/jpeg-js/jpeg-js
+
 // - The JPEG specification can be found in the ITU CCITT Recommendation T.81
 //   (www.w3.org/Graphics/JPEG/itu-t81.pdf)
 // - The JFIF specification can be found in the JPEG File Interchange Format
@@ -1080,9 +1082,9 @@ var JpegImage = (function jpegImage() {
     return constructor;
   })();
   
-  export default class jpegDecoder {
+export default class jpegDecoder {
 
-    static getStartSequence() {
+    static getonStartSequence() {
         return [255, 216];
     }
 
@@ -1148,7 +1150,7 @@ var JpegImage = (function jpegImage() {
         JpegImage.resetMaxMemoryUsage(opts.maxMemoryUsageInMB * 1024 * 1024);
 
         // Determine the start and stop of the next frame
-        var start = this.indexOf(source, sourceStart, jpegDecoder.getStartSequence());
+        var start = this.indexOf(source, sourceStart, jpegDecoder.getonStartSequence());
         var stop = this.indexOf(source, start, jpegDecoder.getEndSequence());
 
         // Extract the array

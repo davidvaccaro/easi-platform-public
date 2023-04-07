@@ -1,7 +1,7 @@
 import DicomConstants from '../dicomConstants.js'
 import DicomReader from '../dicomReader.js';
 import DicomParser from '../dicomParser.js';
-import DicomInstanceEmitter from '../dicomInstanceEmitter.js';
+import dicomInstanceStreamHandler from '../handlers/dicomInstanceStreamHandler.js';
 import DicomInstance from '../dicomInstance.js';
 import DicomDataSet from '../dicomDataSet.js';
 
@@ -21,7 +21,7 @@ beforeAll(() => {
     const dicomFullPath = path.join(brightDicomRoot, '/data/dicoms/0002.DCM');
 
     // Create the DICOM reader
-    var reader = new DicomReader(new DicomParser(new DicomInstanceEmitter()));
+    var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
 
     // Read and parse the DICOM file
     reader

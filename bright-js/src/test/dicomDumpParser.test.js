@@ -1,5 +1,5 @@
 import DicomDumpParser from '../tools/dicomDumpParser.js';
-import DicomInstanceEmitter from '../dicomInstanceEmitter.js';
+import dicomInstanceStreamHandler from '../handlers/dicomInstanceStreamHandler.js';
 
 const path = require('path');
 const fs = require('fs');
@@ -13,7 +13,7 @@ test('Test: DicomDumpParser Parse', () => {
     var dump = fs.readFileSync(dumpFullPath, 'utf8');
 
     // Create the DICOM Dump Parer
-    var parser = new DicomDumpParser(new DicomInstanceEmitter());
+    var parser = new DicomDumpParser(new dicomInstanceStreamHandler());
 
     // Parse the dump
     var succeeded = parser.parse(dump);
