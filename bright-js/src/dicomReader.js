@@ -21,7 +21,11 @@
 
 import DicomConstants from './dicomConstants.js';
 import DicomException from './dicomException.js';
+
+import { DicomStatus } from './dicomStatus.js';
+
 import DicomData from './dicomData.js';
+import { DicomErrorCodes } from './dicomException.js'
 
 export default class DicomReader {
 
@@ -87,26 +91,31 @@ export default class DicomReader {
      * Process the data reader as a single-part DICOM data-set response.
      * @param {*} reader The reader providing a single DICOM byte part.
      */
-    async processSinglePart(controller, reader, contentType, resolve, reject) {
+    async processSinglePart(controller, reader, contentType, contentLength, resolve, reject) {
 
-        var result = false;
+        var status = DicomStatus.CONTINUE;
 
         try {
+
+            var contentRead = 0;
 
             // Reset the parser
             this.parser.reset();
 
             // Keep reading till "done"
-            while (true) {
+            while (status == DicomStatus.CONTINUE) {
 
                 // Read a chunk of data
                 const { done, value } = await reader.read();
+
+                // Increment the total content read
+                contentRead += ((value != null) ? value.length : 0);
 
                 // Break if there is no more data
                 if (done) {
 
                     // Finalize the current parse
-                    result = this.parser.parse(value, done);
+                    status = await this.parser.parse(value, done, contentRead, contentLength);
 
                     // Break the stream looop
                     break;
@@ -114,7 +123,7 @@ export default class DicomReader {
                 }
 
                 // Parse the DICOM
-                this.parser.parse(value);
+                status = await this.parser.parse(value, false, contentRead, contentLength);
 
             }
 
@@ -123,8 +132,11 @@ export default class DicomReader {
             reader.releaseLock();
 
             // Resolve with a singe parser result
-            if (result == true)
+            if (status == DicomStatus.SUCCESS)
                 resolve(this.parser.result);
+            else if ((status == DicomStatus.SKIP) || (status == DicomStatus.STOP)) {
+                resolve(null);
+            }
             else
                 reject(new DicomException("Failed parsing single DICOM data-set.", DicomErrorCodes.GeneralError));
 
@@ -139,15 +151,16 @@ export default class DicomReader {
      * Process the data reader as a multi-part DICOM data-set response.
      * @param {*} reader The reader providing multiple DICOM byte parts.
      */
-    async processMultiPart(controller, reader, contentType, resolve, reject) {
+    async processMultiPart(controller, reader, contentType, contentLength, resolve, reject) {
 
         var doneReading = false;
-        var result = false;
-        var results = [];
+        var status = DicomStatus.CONTINUE;
 
         var start = new Date().getTime();
 
         try {
+
+            var contentRead = 0;
 
             // The temporary buffer
             var temp = new DicomData();
@@ -159,10 +172,13 @@ export default class DicomReader {
             this.parser.reset();
 
             // Keep reading till "done"
-            while (true) {
+            while ((status == DicomStatus.CONTINUE) || (status == DicomStatus.SKIP)) {
 
                 // Read a chunk of data
                 const { done, value } = await reader.read();
+
+                // Increment the total content read
+                contentRead += ((value != null) ? value.length : 0);
 
                 // Append the bytes
                 if (value != null) {
@@ -174,188 +190,252 @@ export default class DicomReader {
                     doneReading = true;
                 }
 
-                // Access the raw data
-                var data = temp.access();
+                // While there is MORE data to process
+                do {
 
-                // If still processing the part header,
-                if (partHeader.isComplete == false) {
+                    // Get the current length
+                    var currentLength = temp.length();
 
-                    // Loop over the bytes
-                    for (var i = 0; ((i < data.length) && ((i + 1) < data.length)); i++) {
+                    // If still processing the part header,
+                    if (partHeader.isComplete == false) {
+                        
+                        // Loop over the bytes
+                        for (var i = 0; ((i < temp.length()) && ((i + 1) < temp.length())); i++) {
 
-                        // Look for the boundary start "--"
-                        if (data[i] === 45 && data[i + 1] === 45) {
+                            // Access the raw data
+                            var data = temp.access();
 
-                            var boundaryMatched = false;
+                            // Look for the boundary start "--"
+                            if (data[i] === 45 && data[i + 1] === 45) {
 
-                            // Match the initial boundary
-                            for (var j = 0; ((j < contentType.boundary.length) && ((i + 2 + j) < data.length)); j++) {
+                                var boundaryMatched = false;
 
-                                boundaryMatched = true
+                                // Match the initial boundary
+                                for (var j = 0; ((j < contentType.boundary.length) && ((i + 2 + j) < data.length)); j++) {
 
-                                // Compare the boundary bytes
-                                if (data[i + 2 + j] !== contentType.boundary.charCodeAt(j)) {
+                                    boundaryMatched = true
 
-                                    // NOT matched
-                                    boundaryMatched = false
+                                    // Compare the boundary bytes
+                                    if (data[i + 2 + j] !== contentType.boundary.charCodeAt(j)) {
 
-                                  break;
+                                        // NOT matched
+                                        boundaryMatched = false
+
+                                    break;
+
+                                    }
+
+                                }
+                                
+                                // If the full boundar matched, 
+                                if (boundaryMatched == true) {
+
+                                    // Read till the next header break
+                                    for (var x = (i + contentType.boundary.length); x < data.length; x++) {
+
+                                        // Find the next "\r\n\r\n"
+                                        if (data[x] === 13 && data[x + 1] === 10 && data[x + 2] === 13 && data[x + 3] === 10) {
+
+                                            // Consume the whole multipart header and decode to text and split into lines
+                                            var decodedHeader = (new TextDecoder()).decode(temp.consume((x - i))).split(/\r?\n|\r|\n/g);
+
+                                            // If the header is valid
+                                            if ((decodedHeader != null) && (decodedHeader.length > 0)) {
+
+                                                // Set the boundary
+                                                partHeader.boundary = decodedHeader[0];
+
+                                                // Loop over the headers
+                                                for (var y = 1; y < decodedHeader.length; y++) {
+
+                                                    // Split on ":"
+                                                    var headerParts = decodedHeader[y].split(":");
+
+                                                    // Set the header
+                                                    partHeader[
+                                                        headerParts[0]
+                                                        .replaceAll("\"", "")
+                                                        .toLowerCase()
+                                                        .trim()
+                                                    ] = headerParts[1].replaceAll("\"", "").toLowerCase().trim();
+                                                    
+                                                }
+
+                                                // Set the header is completed
+                                                partHeader.isComplete = true;
+
+                                            }
+
+                                            // Consume the header break (4-bytes)
+                                            temp.consume(4);
+
+                                            // Break
+                                            break;
+
+                                        }
+
+                                    }                                
+
+                                    // Break
+                                    break;
 
                                 }
 
                             }
-                              
-                            // If the full boundar matched, 
-                            if (boundaryMatched == true) {
+                            else {
 
-                                // Read till the next header break
-                                for (var x = (i + contentType.boundary.length); x < data.length; x++) {
-
-                                    // Find the next "\r\n\r\n"
-                                    if (data[x] === 13 && data[x + 1] === 10 && data[x + 2] === 13 && data[x + 3] === 10) {
-
-                                        // Consume the whole multipart header and decode to text and split into lines
-                                        var decodedHeader = (new TextDecoder()).decode(temp.consume((x - i))).split(/\r?\n|\r|\n/g);
-
-                                        // If the header is valid
-                                        if ((decodedHeader != null) && (decodedHeader.length > 0)) {
-
-                                            // Set the boundary
-                                            partHeader.boundary = decodedHeader[0];
-
-                                            // Loop over the headers
-                                            for (var y = 1; y < decodedHeader.length; y++) {
-
-                                                // Split on ":"
-                                                var headerParts = decodedHeader[y].split(":");
-
-                                                // Set the header
-                                                partHeader[
-                                                    headerParts[0]
-                                                    .replaceAll("\"", "")
-                                                    .toLowerCase()
-                                                    .trim()
-                                                ] = headerParts[1].replaceAll("\"", "").toLowerCase().trim();
-                                                
-                                            }
-
-                                            // Set the header is completed
-                                            partHeader.isComplete = true;
-
-                                        }
-
-                                        // Consume the header break (4-bytes)
-                                        temp.consume(4);
-
-                                        // Break
-                                        break;
-
-                                    }
-
-                                }                                
-
-                                // Break
-                                break;
+                                // Consume 1-byte
+                                temp.consume(1);
 
                             }
-
-                        }
-                        else {
-
-                            // Consume 1-byte
-                            temp.consume(1);
 
                         }
 
                     }
 
-                }
-                else {
+                    // If the header is complete, 
+                    if (partHeader.isComplete == true) {
 
-                    // Only process when the buffer has MORE data that the minimal ending boundary
-                    if (temp.length() >= (2 + contentType.boundary.length)) {
+                        // Only process when the buffer has MORE data that the minimal ending boundary
+                        if (temp.length() >= (2 + contentType.boundary.length)) {
 
-                        var endIndex = temp.length();
-                        var boundaryMatched = false;
+                            var endIndex = temp.length();
+                            var boundaryMatched = false;
 
-                        // Determine if this current buffer contains the end of the part
-                        for (var i = 0; i < data.length; i++) {
+                            // Determine if this current buffer contains the end of the part
+                            for (var i = 0; i < temp.length(); i++) {
 
-                            // If we found a prospect boundary ending
-                            if (data[i] === 45) {
+                                // Access the raw data
+                                var data = temp.access();
 
-                                // Mark the processing end
-                                endIndex = i;
+                                // If we found a prospect boundary ending
+                                if (data[i] === 45) {
 
-                                // Determine if there is the end boundary
-                                if ((i + 2 + contentType.boundary.length) < data.length) {
+                                    // Mark the processing end
+                                    endIndex = i;
 
-                                    // Look for the boundary start "--"
-                                    if (data[i] === 45 && data[i + 1] === 45) {
+                                    // Determine if there is the end boundary
+                                    if ((i + 2 + contentType.boundary.length) < data.length) {
 
-                                        // Match the initial boundary
-                                        for (var j = 0; ((j < contentType.boundary.length) && ((i + 2 + j) < data.length)); j++) {
-            
-                                            boundaryMatched = true
-            
-                                            // Compare the boundary bytes
-                                            if (data[i + 2 + j] !== contentType.boundary.charCodeAt(j)) {
-            
-                                                // NOT matched
-                                                boundaryMatched = false
-            
-                                              break;
-            
+                                        // Look for the boundary start "--"
+                                        if (data[i] === 45 && data[i + 1] === 45) {
+
+                                            // Match the initial boundary
+                                            for (var j = 0; ((j < contentType.boundary.length) && ((i + 2 + j) < data.length)); j++) {
+                
+                                                boundaryMatched = true
+                
+                                                // Compare the boundary bytes
+                                                if (data[i + 2 + j] !== contentType.boundary.charCodeAt(j)) {
+                
+                                                    // NOT matched
+                                                    boundaryMatched = false
+                
+                                                break;
+                
+                                                }
+                
                                             }
-            
+
+                                            // Trim any prior \r\n
+                                            if ((boundaryMatched == true) && (endIndex >= 2) && (data[endIndex - 2] = 13) && (data[endIndex - 1] = 10)) {
+                                                endIndex -= 2;
+                                            }
+
+                                            // Break the searching
+                                            if (boundaryMatched == true) {
+                                                break;
+                                            }
+                
                                         }
 
-                                        // Trim any prior \r\n
-                                        if ((boundaryMatched == true) && (endIndex >= 2) && (data[endIndex - 2] = 13) && (data[endIndex - 1] = 10)) {
-                                            endIndex -= 2;
-                                        }
-            
                                     }
 
                                 }
 
-                                // Break for parsing
-                                break
+                            }
+
+                            // Ensure that IF the boundary was NOT matched, the data needs to be processed
+                            if (boundaryMatched == false) {
+                                endIndex = temp.length();
+                            }
+
+                            if (status == DicomStatus.CONTINUE) {
+
+                                // Continue parsing and consume either the whole buffer or the remaining bytes of the part
+                                status = await this.parser.parse(temp.consume(endIndex), boundaryMatched, contentRead, contentLength);
+
+                            }
+                            else {
+
+                                // Simply consume the remaining bytes to the next part
+                                temp.consume(endIndex);
 
                             }
 
-                        }
-
-                        // Continue parsing and consume either the whole buffer or the remaining bytes of the part
-                        var result = this.parser.parse(temp.consume(endIndex + (((boundaryMatched == false) && (temp.length() >= (endIndex + 1))) ? 1 : 0)), boundaryMatched);
-
-                        // If currently reached the next boundary
-                        if (boundaryMatched == true) {
+                            // Consume any final \r\n
+                            if ((temp.access().length >= 2) && (temp.access()[0] == 13) && (temp.access()[1] == 10)) {
+                                temp.consume(2);
+                            }
 
                             // If the DICOM was NOT fully parsed, throw error
-                            if (result == false) {
+                            if (status == DicomStatus.FAIL) {
                                 throw new DicomException("Failed parsing multiple DICOM data-sets.", DicomErrorCodes.GeneralError)
                             }
 
-                            // Push the result                            
-                            results.push(this.parser.result);
+                            // If the parsing has STOPPED
+                            if (status == DicomStatus.STOP) {
+                                break;
+                            }
 
-                            // Re-Initialize the first part
-                            partHeader = { isComplete: false };
+                            // If the DICOM was fully parsed
+                            if (status == DicomStatus.SUCCESS) {
 
-                            // Reset the parser
-                            this.parser.reset();
+                                // Re-Initialize the first part
+                                partHeader = { isComplete: false };
+
+                                // Reset the parser
+                                this.parser.reset();
+
+                                // Set the status to CONTINUE
+                                status = DicomStatus.CONTINUE;
+
+                            }
+
+                            // If we are skipping this part, keep going
+                            if (status == DicomStatus.SKIP) {
+
+                                // If currently reached the next boundary
+                                if (boundaryMatched == true) {
+
+                                    // Re-Initialize the first part
+                                    partHeader = { isComplete: false };
+
+                                    // Reset the parser
+                                    this.parser.reset();
+
+                                    // Set the status to CONTINUE
+                                    status = DicomStatus.CONTINUE;
+
+                                }
+                                
+                            }
 
                         }
 
                     }
 
+                } while ((temp.length() > 0) && (currentLength > temp.length()));
+
+                // If the parsing has STOPPED
+                if (status == DicomStatus.STOP) {
+                    break;
                 }
 
                 // Break if there is no more data
                 if ((doneReading == true) && (temp.length() < (2 + contentType.boundary.length + 2 + DicomConstants.PreambleLength))) {
 
-                    // Break the stream looop
+                    // Break the stream loop
                     break;
 
                 }
@@ -367,7 +447,7 @@ export default class DicomReader {
             reader.releaseLock();
 
             // Resolve with a singe parser result
-            resolve(results);
+            resolve(this.parser.result);
 
         }
         catch (err) {
@@ -392,6 +472,7 @@ export default class DicomReader {
         return new Promise(function(resolve, reject) {
 
             var contentType = {};
+            var contentLength = null;
 
             // Fetch the DICOM file
             fetch(url, {
@@ -401,6 +482,9 @@ export default class DicomReader {
 
                 // Parse the Content-Type header
                 contentType = that.parseContentType(response);
+
+                // Establish the Content-Length
+                contentLength = response.headers.get("content-length");
 
                 // Return the whole body
                 return response.body; 
@@ -419,10 +503,10 @@ export default class DicomReader {
 
                             // Process based on the content-type (single versus multi-part)
                             if (contentType.isMultiPart == false) {
-                                that.processSinglePart(controller, reader, contentType, resolve, reject);
+                                that.processSinglePart(controller, reader, contentType, contentLength, resolve, reject);
                             }
                             else {
-                                that.processMultiPart(controller, reader, contentType, resolve, reject);
+                                that.processMultiPart(controller, reader, contentType, contentLength, resolve, reject);
                             }
                             
                         }
@@ -451,19 +535,22 @@ export default class DicomReader {
         var that = this;
 
         // Return the promise
-        return new Promise(function(resolve, reject) {
-
+        return new Promise(async function(resolve, reject) {
+            
             try {
 
                 // Reset the parser
                 that.parser.reset();
 
                 // Finalize the current parse
-                var result = that.parser.parse(data, true);
+                var status = await that.parser.parse(data, true);
 
                 // Resolve with a singe parser result
-                if (result == true)
+                if (status == DicomStatus.SUCCESS)
                     resolve(that.parser.result);
+                else if ((status == DicomStatus.SKIP) || (status == DicomStatus.STOP)) {
+                    resolve(null);
+                }        
                 else
                     reject(new DicomException("Failed parsing single DICOM data-set.", DicomErrorCodes.GeneralError));
                 

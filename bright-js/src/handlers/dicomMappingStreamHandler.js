@@ -1,7 +1,7 @@
 //
-// dicomInstanceStreamHandler.js - 1.0.0
+// dicomMappingStreamHandler.js - 1.0.0
 //
-// DICOM Instance Stream Handler Class 
+// DICOM Mapping Stream Handler Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,14 +19,12 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import DicomInstance from "../dicomInstance.js";
-import DicomMetaSet from "../dicomMetaSet.js";
-import DicomDataSet from "../dicomDataSet.js";
+import DicomMapping from "../mappings/DicomMapping.js";
 import DicomItem from "../dicomItem.js";
 import { DicomStatus } from '../dicomStatus.js'
 import { Tag } from '../dicomTag.js'
 
-export default class dicomInstanceStreamHandler {
+export default class dicomMappingStreamHandler {
 
     onReset() {
     }
@@ -36,33 +34,37 @@ export default class dicomInstanceStreamHandler {
         // Setup the context based on the previous context
         if (context == null) {
 
-            // Create the initial context
+            // Create the initial context            
             context = {
-                instance: new DicomInstance(),
-                sequences: [],
-                instances: []
+                sequences: []
             };
 
         }
         else {
 
             // Setup the next instance
-            context.instance = new DicomInstance();
             context.sequences = [];
 
         }
 
-        return context;
+        // Start the mapping
+        return this.mapping.start(context);
 
     }
 
     onStartPreamble(context, preamble) {
+        return DicomStatus.SKIP;
     }
 
     onStartPrefix(context, prefix) {
+        return DicomStatus.SKIP;
     }
 
     onStartAttribute(context, attribute) {
+
+        // If the mapping does NOT map the current attribute, skip
+        if (this.mapping.hasTag(attribute.tag) == false)
+            return DicomStatus.SKIP;
 
         // The attribute gets populated into either:
         // 1. The top sequence current item
@@ -82,27 +84,14 @@ export default class dicomInstanceStreamHandler {
             item.add(attribute);
 
         }
-        else {
-
-            // If there is a data-set, add to "data", otherwise add to "meta"
-            if (context.instance.dataSet != null) {
-
-                // Add to the "data-set"
-                context.instance.dataSet.add(attribute);
-
-            }
-            else if (context.instance.metaSet != null) {
-
-                // Add to the "meta-set"
-                context.instance.metaSet.add(attribute);
-
-            }
-
-        }
 
     }
 
     onStartSequence(context, sequence) {
+
+        // If the mapping does NOT map the current attribute, skip
+        if (this.mapping.hasTag(sequence.tag) == false)
+            return DicomStatus.SKIP;
 
         // If there is a data-set
         if (context.instance.dataSet != null) {
@@ -123,7 +112,9 @@ export default class dicomInstanceStreamHandler {
         var sequence = context.sequences[context.sequences.length - 1];
 
         // Add the item to the current sequence
-        sequence.add(new DicomItem());
+        if (sequence != null) {
+            sequence.add(new DicomItem());
+        }
 
     }
 
@@ -131,37 +122,28 @@ export default class dicomInstanceStreamHandler {
     }
 
     onStartMetaSet(context) {
-
-        // Create the new metaset
-        context.instance.metaSet = new DicomMetaSet();
-
     }
 
     onStartDataSet(context) {
-
-        // Create the new dataset
-        context.instance.dataSet = new DicomDataSet();        
-
     }
 
     onEndPreamble(context, preamble) {
-
-        // Set the preamble
-        context.instance.preamble = preamble;
-
     }
 
     onEndPrefix(context, prefix) {
-
-        // Set the prefix
-        context.instance.prefix = prefix;
-
     }
 
     onEndAttribute(context, attribute) {
+
+        // Map the attribute
+        this.mapping.mapAttribute(context, attribute);
+
     }
 
     onEndSequence(context, sequence) {
+
+        // Map the sequence
+        this.mapping.mapAttribute(context, sequence);
 
         // Pop the current sequence stack
         context.sequences.pop();
@@ -172,17 +154,9 @@ export default class dicomInstanceStreamHandler {
     }
 
     onEndMetaSet(context) {
-
-        // Mark the meta-set as "complete"
-        context.instance.metaSet.isComplete = true;
-
     }
 
     onEndDataSet(context) {
-
-        // Mark the data-set as "complete"
-        context.instance.dataSet.isComplete = true;
-
     }
 
     /**
@@ -191,13 +165,8 @@ export default class dicomInstanceStreamHandler {
      */
     onEndInstance(context) {
 
-        // Add the prior instance to the collection
-        if (context.instance != null) {
-            context.instances.push(context.instance);
-        }
-
-        // If there is only 1 instance, return it otherwise return the collection
-        return (context.instances.length == 1) ? context.instance : context.instances;
+        // End the currnent mapping
+        return this.mapping.end(context);
 
     }
 
@@ -207,7 +176,11 @@ export default class dicomInstanceStreamHandler {
     onProgress(context, progress) {
     }
 
-    constructor() {
+    constructor(mapping) {
+
+        // Set the mapping
+        this.mapping = mapping;
+
     }
 
 };

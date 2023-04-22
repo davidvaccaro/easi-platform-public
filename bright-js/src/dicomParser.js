@@ -23,6 +23,9 @@ import DicomConstants from './dicomConstants.js';
 import DicomConfiguration from './dicomConfiguration.js';
 import DicomUtilities from './dicomUtilities.js';
 import DicomException from './dicomException.js';
+import { DicomErrorCodes } from './dicomException.js';
+
+import { DicomStatus } from './dicomStatus.js';
 
 import DicomTransferSyntax from './dicomTransferSyntax.js';
 import { TransferSyntax } from './dicomTransferSyntax.js';
@@ -116,13 +119,19 @@ export default class DicomParser {
         // Create the new DICOM data buffer
         this.data = new DicomData();
 
-        // Reset the emitter
-        if (this.emitter.onReset != null) {
-            this.emitter.onReset();
-        }
+        // Init the current status
+        this.status = DicomStatus.CONTINUE;
 
-        // Clear the current context
-        this.context = null;
+        // Init the current data-element status
+        this.dataElementStatus = DicomStatus.CONTINUE;
+
+        // Reset the handler
+        this.fireStreamEvent("onReset");            
+
+        // Clear the current bytes-processed
+        this.bytesRead = 0;
+        this.bytesProcessed = 0;
+        this.bytesTotal = 0;
 
     }
 
@@ -367,9 +376,7 @@ export default class DicomParser {
         catch (error) {
 
             // Process the error
-            if (this.emitter.onError != null) {
-                this.emitter.onError();
-            }
+            this.fireStreamEvent("onError", error);            
 
         }
 
@@ -422,14 +429,78 @@ export default class DicomParser {
     }
 
     /**
+     * Fires a stream event or skips the event if the stream-handler does NOT support the event.
+     * @param {*} name The name of the event.
+     * @param {*} param The parameter to pass to the event.
+     * @returns The status based on the standard processing.
+     */
+    async fireStreamEvent(name, param, currentStatus) {
+
+        // If the current event should be SKIP-ed, do so
+        if ((currentStatus != null) && (currentStatus == DicomStatus.SKIP))
+            return DicomStatus.CONTINUE;
+
+        // Init the complete state
+        var status = DicomStatus.CONTINUE;
+
+        // If the stream-handler supports the event,
+        if (this.handler[name] != null) {
+
+            // Call the event function
+            const result = this.handler[name](this.context, param);
+
+            if (result instanceof Promise)
+                status = await result;
+            else
+                status = result;
+
+            if (status == null) {
+                status = DicomStatus.CONTINUE;
+            }
+
+        }
+
+        // If the current status is to CONTINUE,
+        if ((name.startsWith('onEnd') == true) && (status == DicomStatus.CONTINUE)) {
+
+            // If the stream-handler supports "onProgress",
+            if (this.handler.onProgress != undefined) {
+
+                // Call the event function
+                const result = this.handler.onProgress(
+                    this.context, {
+                        bytesRead: this.bytesRead, 
+                        bytesProcessed: this.totalBytesConsumed, 
+                        bytesTotal: this.bytesTotal                        
+                    }
+                );
+
+                if (result instanceof Promise)
+                    status = await result;
+                else
+                    status = result;
+
+                if (status == null) {
+                    status = DicomStatus.CONTINUE;
+                }
+
+            }
+
+        }
+
+        return status;
+
+    }
+
+    /**
      * Parse the specified chunk of DICOM data.
      * @param {*} chunk The specified chunk of DICOM data.
      * @returns TRUE if a DICOM is fully parsed, FALSE otherwise.
      */
-    parse(chunk, isDone = false) {
+    async parse(chunk, isDone = false, totalRead = null, totalLength = null) {
 
-        // Init the complete state
-        var complete = false;
+        // Init the status
+        var status = DicomStatus.CONTINUE;
 
         // Append the new chunk of data
         if ((chunk != null) && (chunk.length > 0)) {
@@ -439,7 +510,11 @@ export default class DicomParser {
 
         }
 
-        // Parse the current data based on the current part
+        // Update the "progress" state
+        this.bytesRead = totalRead;
+        this.bytesTotal = totalLength;
+
+        // Parse the current data based on the current part        
 
         // First, attempt to detech the prefix
         if ((this.processedPrefix == false) && (this.partType == null)) {
@@ -482,10 +557,8 @@ export default class DicomParser {
         // Parse the start of the instance
         if ((this.processedPrefix == true) && (this.partType == null)) {
 
-            // Start the "instance"
-            if (this.emitter.onStartInstance != null) {
-                this.context = this.emitter.onStartInstance();
-            }
+            // Start the "instance" and receive the handlers "context"
+            this.context = await this.fireStreamEvent("onStartInstance", this.context);
 
             // Pop the first part
             this.partType = this.partSequence.pop();
@@ -496,7 +569,7 @@ export default class DicomParser {
         if (this.partType == DicomPartType.Preamble) {
 
             // Parse the next DICOM Preamble
-            this.parseNextPreamble();
+            status = await this.parseNextPreamble();
 
         }
 
@@ -504,7 +577,7 @@ export default class DicomParser {
         if (this.partType == DicomPartType.Prefix) {
 
             // Parse the next DICOM Prefix
-            this.parseNextPrefix();
+            status = await this.parseNextPrefix();
 
         }
 
@@ -512,7 +585,7 @@ export default class DicomParser {
         if (this.partType == DicomPartType.MetaSet) {
             
             // Parse more meta-set
-            this.parseNextMetaSet(isDone);
+            status = await this.parseNextMetaSet(isDone);
 
         }
 
@@ -520,25 +593,23 @@ export default class DicomParser {
         if (this.partType == DicomPartType.DataSet) {
 
             // Parse more data-set
-            complete = this.parseNextDataSet(isDone);
+            status = await this.parseNextDataSet(isDone);
             
         }
 
         // If the instance is complete, end the instance
-        if (complete == true) {
+        if (status == DicomStatus.SUCCESS) {
 
             // End the "instance"
-            if (this.emitter.onEndInstance != null) {
-                this.result = this.emitter.onEndInstance(this.context, this.context);
-            }
+            this.result = await this.fireStreamEvent("onEndInstance", this.context);
 
             // Reset the state
             this.reset();
 
         }
 
-        // Indicate that the current DICOM is NOT fully parsed
-        return complete;
+        // Indicate that current status
+        return status;
 
     }
 
@@ -546,7 +617,7 @@ export default class DicomParser {
      * Parse the next DICOM Preamble from the next chunk of data.
      * @returns TRUE if a preamble is fully parsed, FALSE otherwise.
      */
-    parseNextPreamble() {
+    async parseNextPreamble() {
 
         /*
             *  NOTE: DICOM Parser implementations should make NO assumption about the preamble content, 
@@ -556,11 +627,11 @@ export default class DicomParser {
             *  The DicomData buffer will currently have a Transfer Syntax of "NONE"
         */
 
-        // If there is data to process
-        if (this.data.length() > 0) {
+        // Establish the current data length
+        var length = this.data.length();
 
-            // Determine the next chunk (either remaining for this element OR all remining bytes in the buffer)
-            var remaining = Math.min((this.part == null) ? DicomConstants.PreambleLength : this.part.bytesRemaining, this.data.length());
+        // If there is data to process
+        if (length > 0) {
 
             // If the part has yet to be created
             if ((this.partStarted == false) && (this.part == null)) {
@@ -572,30 +643,31 @@ export default class DicomParser {
                 this.partStart = this.totalBytesConsumed;
 
                 // Create the part
-                this.part = new DicomPreamble(this.data.consume(remaining));
+                this.part = new DicomPreamble(null);
 
                 // Start the "preamble"
-                if (this.emitter.onStartPreamble != null) {
-                    this.emitter.onStartPreamble(this.context, this.part);
-                }
-
-            }
-            else {
-
-                // Append to the part
-                this.part.append(this.data.consume(remaining));
+                this.status = await this.fireStreamEvent("onStartPreamble", this.part);
 
             }
 
-            // Increment the total-bytes-consumed
-            this.totalBytesConsumed += remaining;
+            // If there are enough bytes in the buffer to contain the whole preamble
+            if (length >= DicomConstants.PreambleLength) {
 
-            // If the part is complete
-            if (this.part.isComplete == true) {
+                // Consume the bytes
+                var partData = this.data.consume(DicomConstants.PreambleLength);
 
-                // End the "preamble"
-                if (this.emitter.onEndPreamble != null) {
-                    this.emitter.onEndPreamble(this.context, this.part);
+                // Increment the total-bytes-consumed
+                this.totalBytesConsumed += DicomConstants.PreambleLength;
+
+                // Handle completing the parsing of this part
+                if (this.status == DicomStatus.CONTINUE) {
+
+                    // Append to the part
+                    this.part.append(partData);
+
+                    // End the "preamble"
+                    this.status = await this.fireStreamEvent("onEndPreamble", this.part);
+
                 }
 
                 // Clear the part "started"
@@ -607,15 +679,15 @@ export default class DicomParser {
                 // Set the next part
                 this.partType = this.partSequence.pop();
 
-                // Indicate complete
-                return true;
+                // Init the current status
+                this.status = DicomStatus.CONTINUE;
 
             }
-            
+
         }
         
-        // Indicate still reading preamble
-        return false;
+        // Indicate the current status
+        return ((this.status == DicomStatus.STOP) || (this.status == DicomStatus.FAIL)) ? this.status : DicomStatus.CONTINUE;
 
     }
 
@@ -623,7 +695,7 @@ export default class DicomParser {
      * Parse the next DICOM Prefix from the next chunk of data.
      * @returns TRUE if a prefix is fully parsed, FALSE otherwise.
      */
-    parseNextPrefix() {
+    async parseNextPrefix() {
 
         /*
             *  NOTE: DICOM Parser implementations should make NO assumption about the preamble content, 
@@ -633,11 +705,11 @@ export default class DicomParser {
             *  The DicomData buffer will currently have a Transfer Syntax of "NONE"
         */
 
-        // If there is data to process
-        if (this.data.length() > 0) {
+        // Establish the current data length
+        var length = this.data.length();
 
-            // Determine the next chunk (either remaining for this element OR all remining bytes in the buffer)
-            var remaining = Math.min((this.part == null) ? DicomConstants.PrefixLength : this.part.bytesRemaining, this.data.length());
+        // If there is data to process
+        if (length > 0) {
 
             // If the part has yet to be created
             if ((this.partStarted == false) && (this.part == null)) {
@@ -649,50 +721,51 @@ export default class DicomParser {
                 this.partStart = this.totalBytesConsumed;
 
                 // Create the part
-                this.part = new DicomPrefix(this.data.consume(remaining));
+                this.part = new DicomPrefix(null);
 
                 // Start the "prefix"
-                if (this.emitter.onStartPrefix != null) {
-                    this.emitter.onStartPrefix(this.context, this.part);
-                }
-
-            }
-            else {
-
-                // Append to the part
-                this.part.append(this.data.consume(remaining));
+                this.status = await this.fireStreamEvent("onStartPrefix", this.part);
 
             }
 
-            // Increment the total-bytes-consumed
-            this.totalBytesConsumed += remaining;
+            // If there are enough bytes in the buffer to contain the whole prefix
+            if (length >= DicomConstants.PrefixLength) {
 
-            // If the part is complete
-            if (this.part.isComplete == true) {
+                // Consume the bytes
+                var partData = this.data.consume(DicomConstants.PrefixLength);
 
-                // End the "prefix"
-                if (this.emitter.onEndPrefix != null) {
-                    this.emitter.onEndPrefix(this.context, this.part);
+                // Increment the total-bytes-consumed
+                this.totalBytesConsumed += DicomConstants.PrefixLength;
+
+                // Handle completing the parsing of this part
+                if (this.status == DicomStatus.CONTINUE) {
+
+                    // Append to the part
+                    this.part.append(partData);
+
+                    // End the "preamble"
+                    this.status = await this.fireStreamEvent("onEndPrefix", this.part);
+
                 }
 
                 // Clear the part "started"
                 this.partStarted = false;
-
+                
                 // Init the current part
                 this.part = null;
 
                 // Set the next part
                 this.partType = this.partSequence.pop();
 
-                // Indicate complete
-                return true;
+                // Init the current status
+                this.status = DicomStatus.CONTINUE;
 
             }
             
         }
 
-        // Indicate still reading prefix
-        return false;
+        // Indicate the current status
+        return ((this.status == DicomStatus.STOP) || (this.status == DicomStatus.FAIL)) ? this.status : DicomStatus.CONTINUE;
 
     }
 
@@ -700,7 +773,7 @@ export default class DicomParser {
      * Parse the next DICOM MetaSet from the next chunk of data.
      * @returns TRUE if a meta-set is fully parsed, FALSE otherwise.
      */
-    parseNextMetaSet(isDone) {
+    async parseNextMetaSet(isDone) {
 
         /*
         *  NOTE: DICOM Parser implementations shall assum that all Data Elements of the remaining File
@@ -724,48 +797,69 @@ export default class DicomParser {
             this.data.convert(TransferSyntax.ExplicitVRLittleEndian);
 
             // Start the meta-set
-            if (this.emitter.onStartMetaSet != null) {
-                this.emitter.onStartMetaSet(this.context);
-            }
+            this.status = await this.fireStreamEvent("onStartMetaSet");
 
         }
 
-        // Read the next data-element elements until the part is complete
-        while (this.parseNextDataElement(isDone) == true) {
+        // Handle SKIP of the meta-set versus full PARSE
+        if (this.status == DicomStatus.SKIP) {
 
-            // If the current data element is "complete"
-            if ((this.dataElement != null) && (this.dataElement.isComplete == true)) {
+            // If the meta-set length and transfer-syntax has yet to be parsed, continue parsing
+            if ((this.metaSetGroupLength == null) || (this.metaSetGroupLength == 0) || (this.dataSetTransferSyntax == null)) {
 
-                // The first data-element of this section MUST be the Group-Length
-                if (this.dataElement.tag == Tag.FileMetaInformationGroupLength) {
+                // Read the next data-element elements until the part is complete
+                while (await this.parseNextDataElement(isDone) == true) {
 
-                    // Skip the Group-Length for the part-start
-                    this.partStart = this.totalBytesConsumed;
+                    // If the current data element is "complete"
+                    if ((this.dataElement != null) && (this.dataElement.isComplete == true)) {
 
-                    // Save the meta-set part length
-                    this.metaSetGroupLength = this.dataElement.value;
+                        // The first data-element of this section MUST be the Group-Length
+                        if (this.dataElement.tag == Tag.FileMetaInformationGroupLength) {
 
-                }
+                            // Skip the Group-Length for the part-start
+                            this.partStart = this.totalBytesConsumed;
 
-                // If this is the transfer syntax of the dataset
-                if (this.dataElement.tag == Tag.TransferSyntaxUID) {
+                            // Save the meta-set part length
+                            this.metaSetGroupLength = this.dataElement.value;
 
-                    // Capture the current data-set transfer syntax
-                    this.dataSetTransferSyntax = DicomTransferSyntax.find(this.dataElement.value);
+                        }
+                        else if (this.dataElement.tag == Tag.TransferSyntaxUID) {
 
-                }
+                            // Capture the current data-set transfer syntax
+                            this.dataSetTransferSyntax = DicomTransferSyntax.find(this.dataElement.value);
 
-                // Clear the current data-elemen
-                this.dataElement = null;
+                            // Clear the current data-elemen
+                            this.dataElement = null;
 
-                // If the meta-set is complete, emit it
-                if ((this.totalBytesConsumed - this.partStart) == this.metaSetGroupLength) {
+                            // STOP parsing data-elements
+                            break;
 
-                    // End the meta-set
-                    if (this.emitter.onEndMetaSet != null) {
-                        this.emitter.onEndMetaSet(this.context);
+                        }
+
+                        // Clear the current data-elemen
+                        this.dataElement = null;
+
                     }
-    
+
+                }
+
+            }
+
+            // If there is a valid group-length and trnsfer-syntax, skip the reminaing meta-set bytes
+            if ((this.metaSetGroupLength > 0) && (this.dataSetTransferSyntax != null)) {
+
+                // Calculate the bytes remaining to the meta-set
+                var bytesRemaining = ((this.partStart + this.metaSetGroupLength) - this.totalBytesConsumed);
+
+                // If there is enough bytes to complete the part, SKIP consume it
+                if (this.data.length() > bytesRemaining) {
+
+                    // Consume the bytes
+                    this.data.consume(bytesRemaining);
+
+                    // Increment the total-bytes-consumed
+                    this.totalBytesConsumed += bytesRemaining;
+
                     // Clear the part "started"
                     this.partStarted = false;
 
@@ -775,8 +869,63 @@ export default class DicomParser {
                     // Set the next part
                     this.partType = this.partSequence.pop();
 
-                    // Indicate successful compleation of meta-set
-                    return true;
+                    // Init the current status
+                    this.status = DicomStatus.CONTINUE;
+
+                }
+
+            }
+
+        }
+        else if (this.status == DicomStatus.CONTINUE) {
+
+            // Read the next data-element elements until the part is complete
+            while (await this.parseNextDataElement(isDone) == true) {
+
+                // If the current data element is "complete"
+                if ((this.dataElement != null) && (this.dataElement.isComplete == true)) {
+
+                    // The first data-element of this section MUST be the Group-Length
+                    if (this.dataElement.tag == Tag.FileMetaInformationGroupLength) {
+
+                        // Skip the Group-Length for the part-start
+                        this.partStart = this.totalBytesConsumed;
+
+                        // Save the meta-set part length
+                        this.metaSetGroupLength = this.dataElement.value;
+
+                    }
+
+                    // If this is the transfer syntax of the dataset
+                    if (this.dataElement.tag == Tag.TransferSyntaxUID) {
+
+                        // Capture the current data-set transfer syntax
+                        this.dataSetTransferSyntax = DicomTransferSyntax.find(this.dataElement.value);
+
+                    }
+
+                    // Clear the current data-elemen
+                    this.dataElement = null;
+
+                    // If the meta-set is complete, emit it
+                    if ((this.totalBytesConsumed - this.partStart) == this.metaSetGroupLength) {
+
+                        // End the meta-set
+                        this.status = await this.fireStreamEvent("onEndMetaSet");
+
+                        // Clear the part "started"
+                        this.partStarted = false;
+
+                        // Init the current part
+                        this.part = null;
+
+                        // Set the next part
+                        this.partType = this.partSequence.pop();
+
+                        // Break
+                        break;
+
+                    }
 
                 }
 
@@ -784,8 +933,8 @@ export default class DicomParser {
 
         }
 
-        // Indicate still reading meta-set
-        return false;
+        // Indicate the current status
+        return ((this.status == DicomStatus.STOP) || (this.status == DicomStatus.FAIL)) ? this.status : DicomStatus.CONTINUE;
 
     }
 
@@ -793,7 +942,7 @@ export default class DicomParser {
      * Parse the next DICOM DataSet from the next chunk of data.
      * @returns TRUE if a data-set is fully parsed, FALSE otherwise.
      */
-    parseNextDataSet(isDone) {
+    async parseNextDataSet(isDone) {
 
         /*
         *  Each File shall contain a single Data Set representing a single SOP Instance related to a single SOP Class (and corresponding IOD).
@@ -813,23 +962,217 @@ export default class DicomParser {
             this.data.convert(this.dataSetTransferSyntax);
 
             // Start the data-set
-            if (this.emitter.onStartDataSet != null) {
-                this.emitter.onStartDataSet(this.context);
-            }
+            this.status = await this.fireStreamEvent("onStartDataSet");
 
         }
 
-        // Read the next data-element elements until the part is complete
-        while (this.parseNextDataElement(isDone) == true) {
+        // Handle SKIP of the meta-set versus full PARSE
+        if (this.status === DicomStatus.CONTINUE) {
 
-            // If the current data element is "complete"
-            if ((this.dataElement != null) && (this.dataElement.isComplete == true)) {
+            // Read the next data-element elements until the part is complete
+            while (await this.parseNextDataElement(isDone) == true) {
 
-                // If we are parsing a "sequence", 
-                if (this.isParsingSequence == true) {
+                // If the current data element is "complete"
+                if ((this.dataElement != null) && (this.dataElement.isComplete == true)) {
 
-                    // Process the sequence
-                    while (this.dataElements.length > 0) {
+                    // If we are parsing a "sequence", 
+                    if (this.isParsingSequence == true) {
+
+                        // Process the sequence
+                        while (this.dataElements.length > 0) {
+
+                            // Peek the sequence stack
+                            var sequence = this.peekSequence();
+
+                            // Peek the item from the sequence stack
+                            var item = this.peekItem();
+
+                            // Clear the current data-elemen
+                            this.dataElement = null;
+
+                            // If the current sequence item has undefined length, 
+                            if (item.element.valueLength == DicomConstants.UndefinedLength) {
+
+                                // Peak the next tag details
+                                var details = this.peekTagDetails();
+
+                                // If MORE data is needed, return false
+                                if (details == false) {
+                                    return DicomStatus.CONTINUE;
+                                }
+
+                                // If the current sequence item is ended
+                                if (details.tag == Tag.ItemDelimitationItem) {
+
+                                    // Validate that current item MUST be a DicomItem
+                                    if (!(item.element instanceof DicomItem)) {
+                                        throw new DicomException("Invalid Sequence. Current element MUST be a sequence item!", DicomErrorCodes.InvalidSequence);
+                                    }
+
+                                    // Peak the next tag details
+                                    var nextDetails = this.peekTagDetails(details.bytesPeeked);
+
+                                    // If MORE data is needed, return false
+                                    if (nextDetails == false) {
+                                        return DicomStatus.CONTINUE;
+                                    }
+
+                                    // Consume the data-element element data
+                                    this.data.consume(nextDetails.bytesPeeked);
+
+                                    // Record bytes consumed
+                                    this.totalBytesConsumed += nextDetails.bytesPeeked;
+
+                                    // End the item (possibly SKIP)
+                                    await this.fireStreamEvent("onEndItem", null, item.status);
+
+                                    // Pop the current item
+                                    this.dataElements.pop();
+
+                                    // The next tag can start a new "item" or end the current "sequence"
+                                    if (nextDetails.tag == Tag.Item)
+                                    {
+
+                                        // Push the next item
+                                        var count = this.dataElements.push({ 
+                                            start: nextDetails.bytesPeeked, 
+                                            element: new DicomItem(nextDetails.valueLength)
+                                        });
+
+                                        // Start the item
+                                        this.dataElements[count - 1].status = await this.fireStreamEvent("onStartItem");
+                                        
+                                        // Break out of the sequence loop
+                                        break;
+
+                                    }                        
+                                    else if (nextDetails.tag == Tag.SequenceDelimitationItem) {
+
+                                        // Pop the current sequence
+                                        this.dataElements.pop();
+
+                                        // End the current sequence (possibly SKIP)
+                                        await this.fireStreamEvent("onEndSequence", sequence.element, sequence.status);
+
+                                    }
+                                    else {
+
+                                        // The prior element MUST be a sequence control item
+                                        throw new DicomException("Invalid Sequence. Current tag MUST be either Item Tag (FFFE, E000) OR Seq. Delim. Tag (FFFE, E0DD)!", DicomErrorCodes.InvalidSequence);
+
+                                    }
+
+                                }
+                                else {
+
+                                    // Break out of the sequence loop
+                                    break;
+
+                                }
+
+                            }
+                            else {
+
+                                // If all the item data has been processed, mark it as complete
+                                if ((this.totalBytesConsumed - item.start) == item.element.valueLength) {
+
+                                    // End the element
+                                    if (item.element instanceof DicomItem) {
+                                        
+                                        // Set the complete flag
+                                        item.element.isComplete = true;
+
+                                        // End the item (possibly SKIP)
+                                        await this.fireStreamEvent("onEndItem", null, item.status);
+
+                                        // Pop the current item
+                                        this.dataElements.pop();
+
+                                        // If the sequence is a fixed length, see if the end has been reached
+                                        if (sequence.element.valueLength != DicomConstants.UndefinedLength) {
+
+                                            // If all sequence data has been processed, mark it as complete
+                                            if ((this.totalBytesConsumed - sequence.start) == sequence.element.valueLength) {
+
+                                                // Set the complete flag
+                                                sequence.element.isComplete = true;
+
+                                                // End the item (possibly SKIP)
+                                                await this.fireStreamEvent("onEndSequence", sequence.element, sequence.status);
+
+                                                // Pop the current sequnce
+                                                this.dataElements.pop();
+
+                                            }
+
+                                        }
+
+                                    }
+                                    else {
+
+                                        // End the item (possibly SKIP)
+                                        await this.fireStreamEvent("onEndSequence", item.element, item.status);
+
+                                        // Pop the current item
+                                        this.dataElements.pop();
+
+                                    }
+
+                                }
+                                else {
+
+                                    // Break out of the sequence loop
+                                    break;
+                                    
+                                }
+
+                            }
+                                    
+                        }
+
+                    }
+                    else {
+
+                        // Clear the current data-elemen
+                        this.dataElement = null;
+
+                        // If the part is complete
+                        if (((this.data.isEmpty == true) && (isDone == true)) == true) {
+
+                            // End the data-set
+                            await this.fireStreamEvent("onEndDataSet");
+
+                            // Indicate that the part is NOT started
+                            this.partStarted = false;
+
+                            // Indicate that the current DICOM is fully parsed
+                            return DicomStatus.SUCCESS;
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            // If the parsing is COMPLETE!
+            if ((isDone == true) && (this.data.length() == 0)) {
+
+                // Auto-complete the last data-element (if needed)
+                if (this.dataElement != null) {
+
+                    // Complete the data element
+                    this.dataElement.isComplete = true;
+
+                    // End the attribute 
+                    await this.fireStreamEvent("onEndAttribute", this.dataElement, this.dataElementStatus);
+
+                    // Clear the current data-elemen
+                    this.dataElement = null;
+
+                    // If there was a sequence in process, end it
+                    if (this.isParsingSequence == true) {
 
                         // Peek the sequence stack
                         var sequence = this.peekSequence();
@@ -837,261 +1180,53 @@ export default class DicomParser {
                         // Peek the item from the sequence stack
                         var item = this.peekItem();
 
-                        // Clear the current data-elemen
-                        this.dataElement = null;
+                        if (item.element instanceof DicomItem) {
+                                        
+                            // Set the complete flag
+                            item.element.isComplete = true;
 
-                        // If the current sequence item has undefined length, 
-                        if (item.element.valueLength == DicomConstants.UndefinedLength) {
+                            // End the item
+                            await this.fireStreamEvent("onEndItem", null, item.status);
 
-                            // Peak the next tag details
-                            var details = this.peekTagDetails();
+                            // Pop the current item
+                            this.dataElements.pop();
 
-                            // If MORE data is needed, return false
-                            if (details == false)
-                                return false;
+                            // Set the complete flag
+                            sequence.element.isComplete = true;
 
-                            // If the current sequence item is ended
-                            if (details.tag == Tag.ItemDelimitationItem) {
+                            // End the item
+                            await this.fireStreamEvent("onEndSequence", sequence.element, sequence.status);
 
-                                // Validate that current item MUST be a DicomItem
-                                if (!(item.element instanceof DicomItem)) {
-                                    throw new DicomException("Invalid Sequence. Current element MUST be a sequence item!", DicomErrorCodes.InvalidSequence);
-                                }
-
-                                // Peak the next tag details
-                                var nextDetails = this.peekTagDetails(details.bytesPeeked);
-
-                                // If MORE data is needed, return false
-                                if (nextDetails == false)
-                                    return false;
-
-                                // Consume the data-element element data
-                                this.data.consume(nextDetails.bytesPeeked);
-
-                                // Record bytes consumed
-                                this.totalBytesConsumed += nextDetails.bytesPeeked;
-
-                                // End the item
-                                if (this.emitter.onEndItem != null) {
-                                    this.emitter.onEndItem(this.context);
-                                }
-
-                                // Pop the current item
-                                this.dataElements.pop();
-
-                                // The next tag can start a new "item" or end the current "sequence"
-                                if (nextDetails.tag == Tag.Item)
-                                {
-
-                                    // Push the next item
-                                    this.dataElements.push({ 
-                                        start: nextDetails.bytesPeeked, 
-                                        element: new DicomItem(nextDetails.valueLength)
-                                    });
-
-                                    // Start the item
-                                    if (this.emitter.onStartItem != null) {
-                                        this.emitter.onStartItem(this.context);
-                                    }
-
-                                    // Break out of the sequence loop
-                                    break;
-
-                                }                        
-                                else if (nextDetails.tag == Tag.SequenceDelimitationItem) {
-
-                                    // Pop the current sequence
-                                    this.dataElements.pop();
-
-                                    // End the current sequence
-                                    if (this.emitter.onEndSequence != null) {
-                                        this.emitter.onEndSequence(this.context, sequence.element);
-                                    }
-
-                                }
-                                else {
-
-                                    // The prior element MUST be a sequence control item
-                                    throw new DicomException("Invalid Sequence. Current tag MUST be either Item Tag (FFFE, E000) OR Seq. Delim. Tag (FFFE, E0DD)!", DicomErrorCodes.InvalidSequence);
-
-                                }
-
-                            }
-                            else {
-
-                                // Break out of the sequence loop
-                                break;
-
-                            }
+                            // Pop the current sequnce
+                            this.dataElements.pop();
 
                         }
                         else {
 
-                            // If all the item data has been processed, mark it as complete
-                            if ((this.totalBytesConsumed - item.start) == item.element.valueLength) {
+                            // End the sequence
+                            await this.fireStreamEvent("onEndSequence", item.element, item.status);
 
-                                // End the element
-                                if (item.element instanceof DicomItem) {
-                                    
-                                    // Set the complete flag
-                                    item.element.isComplete = true;
-
-                                    // End the item
-                                    if (this.emitter.onEndItem != null) {
-                                        this.emitter.onEndItem(this.context);                                
-                                    }
-
-                                    // Pop the current item
-                                    this.dataElements.pop();
-
-                                    // If the sequence is a fixed length, see if the end has been reached
-                                    if (sequence.element.valueLength != DicomConstants.UndefinedLength) {
-
-                                        // If all sequence data has been processed, mark it as complete
-                                        if ((this.totalBytesConsumed - sequence.start) == sequence.element.valueLength) {
-
-                                            // Set the complete flag
-                                            sequence.element.isComplete = true;
-
-                                            // End the item
-                                            if (this.emitter.onEndSequence != null) {
-                                                this.emitter.onEndSequence(this.context, sequence.element);                                
-                                            }
-
-                                            // Pop the current sequnce
-                                            this.dataElements.pop();
-
-                                        }
-
-                                    }
-
-                                }
-                                else {
-
-                                    // End the item
-                                    if (this.emitter.onEndSequence != null) {
-                                        this.emitter.onEndSequence(this.context, item.element);                                
-                                    }
-
-                                    // Pop the current item
-                                    this.dataElements.pop();
-
-                                }
-
-                            }
-                            else {
-
-                                // Break out of the sequence loop
-                                break;
-                                
-                            }
+                            // Pop the current item
+                            this.dataElements.pop();
 
                         }
-                                  
-                    }
-
-                }
-                else {
-
-                    // Clear the current data-elemen
-                    this.dataElement = null;
-
-                    // If the part is complete
-                    if (((this.data.isEmpty == true) && (isDone == true)) == true) {
-
-                        // End the data-set
-                        if (this.emitter.onEndDataSet != null) {
-                            this.emitter.onEndDataSet(this.context);
-                        }
-
-                        // Indicate that the part is NOT started
-                        this.partStarted = false;
-
-                        // Indicate that the current DICOM is fully parsed
-                        return true;
 
                     }
 
                 }
+
+                // End the data-set
+                await this.fireStreamEvent("onEndDataSet");
+
+                // Indicate that the current DICOM is fully parsed
+                return DicomStatus.SUCCESS;
 
             }
 
         }
 
-        // Auto-complete the last data-element (if needed)
-        if ((isDone == true) && (this.data.length() == 0) && (this.dataElement != null)) {
-
-            // Complete the data element
-            this.dataElement.isComplete = true;
-
-            // End the attribute 
-            if (this.emitter.onEndAttribute != null) {
-                this.emitter.onEndAttribute(this.context, this.dataElement);
-            }
-
-            // Clear the current data-elemen
-            this.dataElement = null;
-
-            // If there was a sequence in process, end it
-            if (this.isParsingSequence == true) {
-
-                // Peek the sequence stack
-                var sequence = this.peekSequence();
-
-                // Peek the item from the sequence stack
-                var item = this.peekItem();
-
-                if (item.element instanceof DicomItem) {
-                                
-                    // Set the complete flag
-                    item.element.isComplete = true;
-
-                    // End the item
-                    if (this.emitter.onEndItem != null) {
-                        this.emitter.onEndItem(this.context);                                
-                    }
-
-                    // Pop the current item
-                    this.dataElements.pop();
-
-                    // Set the complete flag
-                    sequence.element.isComplete = true;
-
-                    // End the item
-                    if (this.emitter.onEndSequence != null) {
-                        this.emitter.onEndSequence(this.context, sequence.element);                                
-                    }
-
-                    // Pop the current sequnce
-                    this.dataElements.pop();
-
-                }
-                else {
-
-                    // End the item
-                    if (this.emitter.onEndSequence != null) {
-                        this.emitter.onEndSequence(this.context, item.element);                                
-                    }
-
-                    // Pop the current item
-                    this.dataElements.pop();
-
-                }
-
-            }
-
-            // End the data-set
-            if (this.emitter.onEndDataSet != null) {
-                this.emitter.onEndDataSet(this.context);
-            }
-
-            // Indicate that the current DICOM is fully parsed
-            return true;
-
-        }
-
-        // Indicate still reading data-set
-        return false;
+        // Indicate the current status
+        return ((this.status == DicomStatus.STOP) || (this.status == DicomStatus.FAIL) || (this.status == DicomStatus.SKIP)) ? this.status : DicomStatus.CONTINUE;
 
     }
 
@@ -1099,7 +1234,7 @@ export default class DicomParser {
      * Parse the next DICOM Data Element from the next chunk of data.
      * @returns The TRUE if there is more data to process and FALSE otherwise
      */
-    parseNextDataElement(isDone) {
+    async parseNextDataElement(isDone) {
 
         var bytesConsumed = 0;
 
@@ -1110,8 +1245,9 @@ export default class DicomParser {
             var details = this.peekTagDetails();
 
             // If MORE data is needed, return false
-            if (details == false)
+            if (details == false) {
                 return false;
+            }
 
             // Consume the data-element element data
             this.data.consume(details.bytesPeeked);
@@ -1124,16 +1260,26 @@ export default class DicomParser {
                 ? new DicomAttributeSequence(details.tag, details.valueLength, null, this.data.transferSyntax) 
                 : new DicomAttribute(details.tag, details.valueLength, null, this.data.transferSyntax);
 
-            // Start the attribute or sequence
-            if (this.dataElement instanceof DicomAttributeSequence) {
-                if (this.emitter.onStartSequence != null) {
-                    this.emitter.onStartSequence(this.context, this.dataElement);
+            // If the STATUS is CONTINUE
+            if (this.status == DicomStatus.CONTINUE) {
+
+                // Start the attribute or sequence
+                if (this.dataElement instanceof DicomAttributeSequence) {    
+                    
+                    // Start the sequence
+                    this.dataElementStatus = await this.fireStreamEvent("onStartSequence", this.dataElement);
+                    
                 }
+                else {
+
+                    // Start the attribute
+                    this.dataElementStatus = await this.fireStreamEvent("onStartAttribute", this.dataElement);
+                    
+                }
+
             }
-            else {
-                if (this.emitter.onStartAttribute != null) {
-                    this.emitter.onStartAttribute(this.context, this.dataElement);
-                }
+            else if (this.status == DicomStatus.SKIP) {
+                this.dataElementStatus = DicomStatus.SKIP;
             }
 
         }
@@ -1148,40 +1294,59 @@ export default class DicomParser {
             var details = this.peekTagDetails();
 
             // If MORE data is needed, return false
-            if (details == false)
+            if (details == false) {
                 return false;
+            }
 
-            // Consume the data-element element data
-            this.data.consume(details.bytesPeeked);
+            // Default the element status
+            if (this.status == DicomStatus.SKIP) {
+                this.dataElementStatus = DicomStatus.SKIP;
+            }
 
-            // Record bytes consumed
-            bytesConsumed += details.bytesPeeked;
-
-            // The tag MUST be Item Tag (FFFE, E000)
-            // https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.5.2.html
+            // If the current data-element is NOT an Item, assume the sequence is empty
             if (details.tag != Tag.Item) {
-                throw new DicomException("Invalid Tag! MUST BE Item Tag (FFFE, E000)", DicomErrorCodes.InvalidTag);
-            }            
 
-            // Push the sequence
-            this.dataElements.push({ 
-                start: sequenceStart, 
-                element: this.dataElement 
-            });
-            
-            // Push the item
-            this.dataElements.push({ 
-                start: (sequenceStart + details.bytesPeeked), 
-                element: new DicomItem(details.valueLength)
-            });
+                // End the current sequence (possibly SKIP)
+                await this.fireStreamEvent("onEndSequence", this.dataElement, this.dataElementStatus);
 
-            // Start the item
-            if (this.emitter.onStartItem != null) {
-                this.emitter.onStartItem(this.context);
+            }
+            else {
+
+                // Consume the data-element element data
+                this.data.consume(details.bytesPeeked);
+
+                // Record bytes consumed
+                bytesConsumed += details.bytesPeeked;
+
+                // Push the sequence
+                this.dataElements.push({ 
+                    start: sequenceStart, 
+                    element: this.dataElement,
+                    status: this.dataElementStatus 
+                });
+                
+                // Push the item
+                var count = this.dataElements.push({ 
+                    start: (sequenceStart + details.bytesPeeked), 
+                    element: new DicomItem(details.valueLength),
+                    status: this.dataElementStatus 
+                });
+
+                // If the STATUS is CONTINUE
+                if (this.dataElementStatus == DicomStatus.CONTINUE) {
+
+                    // Start the item
+                    this.dataElements[count - 1].status = await this.fireStreamEvent("onStartItem");
+
+                }
+
             }
 
             // Clear the current element
             this.dataElement = null;
+
+            // Clear the element status
+            this.dataElementStatus = DicomStatus.CONTINUE;
 
         }
         else {
@@ -1229,10 +1394,8 @@ export default class DicomParser {
 
                     }
 
-                    // Fire the "append" event
-                    if (this.emitter.onAppendAttribute != null) {
-                        this.emitter.onAppendAttribute(this.dataElement);
-                    }
+                    // Fire the "append" event (possibly SKIP)
+                    await this.fireStreamEvent("onAppendAttribute", this.dataElement, this.dataElementStatus);
 
                 }
                 else {
@@ -1246,20 +1409,21 @@ export default class DicomParser {
                     // Record bytes consumed
                     bytesConsumed += bytesRemaining;
 
-                    // If the current data-element is complete,
-                    if (this.dataElement.isComplete == true) {
+                    // If the STATUS is CONTINUE
+                    if (this.status == DicomStatus.CONTINUE) {
 
-                        // End the attribute or sequence
-                        if (this.emitter.onEndAttribute != null) {
-                            this.emitter.onEndAttribute(this.context, this.dataElement);
+                        // If the current data-element is complete,
+                        if (this.dataElement.isComplete == true) {
+
+                            // End the attribute
+                            await this.fireStreamEvent("onEndAttribute", this.dataElement, this.dataElementStatus);
+
                         }
+                        else {
 
-                    }
-                    else {
+                            // Append the attribute
+                            await this.fireStreamEvent("onAppendAttribute", this.dataElement, this.dataElementStatus);
 
-                        // Append the attribute or sequence
-                        if (this.emitter.onAppendAttribute != null) {
-                            this.emitter.onAppendAttribute(this.context, this.dataElement);
                         }
 
                     }
@@ -1279,17 +1443,20 @@ export default class DicomParser {
     }
 
     /**
-     * Constructos a new DICOM Parser with the associated DICOM Emitter.
-     * @param {*} dicomEmitter The emitter used to emit parsed elements of the DICOM data.
+     * Constructos a new DICOM Parser with the associated DICOM Stream Handler.
+     * @param {*} dicomStreamHandler The handler used to handle parsed elements of the DICOM data.
      */
-    constructor(dicomEmitter) {
+    constructor(dicomStreamHandler) {
 
-        // Set the emitter
-        this.emitter = dicomEmitter;
+        // Set the handler
+        this.handler = dicomStreamHandler;
 
         // Set the default part specification (Part-10)
         this.partSpecification = DicomPart10Specification;
         
+        // Init the session context
+        this.context = null;
+
         // Reset the current state
         this.reset();
 

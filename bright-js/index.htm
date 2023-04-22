@@ -82,6 +82,18 @@
         </div>
         <br>
         <div>
+            <button id="fhir">Parse Instance To FHIR</button>
+        </div>
+        <br>
+        <div>
+            <button id="fhirSeries">Parse Series To FHIR</button>
+        </div>
+        <br>
+        <div>
+            <button id="fhirStudy">Parse Study To FHIR</button>
+        </div>
+        <br>
+        <div>
             <button id="dump">Parse Dump</button>
         </div>
         <br>
@@ -99,6 +111,11 @@
 (0x0028,0x0010) US Rows VR=<US> VL=<0x0002> [0x0002]
 (0x0028,0x0011) US Columns VR=<US> VL=<0x0002> [0x0002]
 </textarea>
+        </div>
+        <br>
+        <div>
+            <textarea id="fhirDump" rows="10" cols="80">                
+            </textarea>
         </div>
         <br>
         <div>
@@ -129,6 +146,10 @@
         import DicomAttributeSequence from './src/dicomAttributeSequence.js';
 
         import dicomInstanceStreamHandler from './src/handlers/dicomInstanceStreamHandler.js';
+        import dicomMappingStreamHandler from './src/handlers/dicomMappingStreamHandler.js';
+
+        import DicomToFHIRImagingStudyMapping from './src/mappings/DicomToFHIRImagingStudyMapping.js';
+
         import DicomParser from './src/dicomParser.js';
         import DicomReader from './src/dicomReader.js';
         
@@ -332,6 +353,75 @@
                 reader
                     .read(url)
                     .then(result => console.log(result))
+                    .catch(err => console.log(err));
+
+            });            
+
+            // Handle Instance
+            $('#fhir').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094";
+
+                // Create the DICOM reader
+                var reader = new DicomReader(new DicomParser(new dicomMappingStreamHandler(new DicomToFHIRImagingStudyMapping())));
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => {
+                         console.log(result); 
+                         $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });
+
+            // Handle Series
+            $('#fhirSeries').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583";
+
+                // Create the DICOM reader
+                var reader = new DicomReader(new DicomParser(new dicomMappingStreamHandler(new DicomToFHIRImagingStudyMapping())));
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => {
+                         console.log(result); 
+                         $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // Handle Study
+            $('#fhirStudy').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641";
+
+                // Create the DICOM reader
+                var reader = new DicomReader(new DicomParser(new dicomMappingStreamHandler(new DicomToFHIRImagingStudyMapping())));
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => {
+                         console.log(result); 
+                         $('#fhirDump').val(JSON.stringify(result)); 
+                    })
                     .catch(err => console.log(err));
 
             });            

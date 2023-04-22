@@ -11,7 +11,19 @@ const { Blob } = require("buffer");
 
 // Establish the list of DICOM paths
 var dicomPaths = fs.readdirSync(path.join(process.cwd().split('bright-js')[0], '/data/dicoms'))
-    .filter(element => element != '.DS_Store');
+    .filter(element => 
+        element != '.DS_Store' 
+        && 
+        element != 'DIRS'
+        && 
+        element != 'KOS'
+        && 
+        element != 'SR'
+        && 
+        element != 'SERIES 1'
+        && 
+        element != 'SERIES 2'
+    );
 
 function attributeSetMatches(as1, as2) {
 

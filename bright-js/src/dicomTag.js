@@ -212,13 +212,22 @@ export default class DicomTag {
 	};
 
 	/**
+	 * Determine if the specified group is Private.
+	 * @param {*} group The specified DICOM Group Number.
+	 * https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html
+	 */
+	static isPrivateGroup(group) {		
+		return ((group % 2) > 0);
+	}
+
+	/**
 	 * Determine if the specified group and element identify a DICOM Private Creator ID Tag
 	 * @param {*} group The specified DICOM Group Number.
 	 * @param {*} element The specified DICOM Element Number.
 	 * https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html
 	 */
 	static isPrivateCreatorIDTag(group, element) {		
-		return (((group % 2) > 0) && (element >= 16) && (element <= 255));
+		return (this.isPrivateGroup(group) && (element >= 16) && (element <= 255));
 	}
 
 	/**
@@ -228,7 +237,7 @@ export default class DicomTag {
 	 * https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html
 	 */
 	static isPrivateTag(group, element) {
-		return ((element >= 4096) && (element <= 4351));
+		return (this.isPrivateGroup(group) && (element >= 256) && (element <= 65280));
 	}
 
 	/**

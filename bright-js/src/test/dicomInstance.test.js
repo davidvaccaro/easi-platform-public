@@ -12,7 +12,7 @@ const { Blob } = require("buffer");
 
 var instance = null;
 
-beforeAll(() => {
+beforeAll(async () => {
     
     // Establish the root path to BrightDicom
     var brightDicomRoot = process.cwd().split('bright-js')[0];
@@ -24,7 +24,7 @@ beforeAll(() => {
     var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
 
     // Read and parse the DICOM file
-    reader
+    await reader
         .read(fs.readFileSync(dicomFullPath))
         .then(parseResult => {
 
