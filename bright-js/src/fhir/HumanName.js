@@ -20,7 +20,10 @@
 //
 
 import Element from "./Element.js"
+import { NameUse } from "./NameUse.js";
 import CodeableConcept from "./CodeableConcept.js";
+import StringUtils from "../utils/StringUtils.js";
+import SymbolUtils from "../utils/SymbolUtils.js";
 
 export default class HumanName extends Element {
   
@@ -81,17 +84,33 @@ export default class HumanName extends Element {
     }
 
     /**
+     * Add an name to the multi-value given name.
+     * @param {*} given The specified given name.
+     */
+    addGiven(given) {
+        this.addMultiValue('given', given);
+    }
+
+    /**
      * Gets the prefix value.
      */
     get prefix() {
         return this._prefix;
-    }
+    }    
 
     /**
      * Sets the prefix value.
      */
     set prefix(prefix) {
         this._prefix = prefix;
+    }
+
+    /**
+     * Add an prefix to the multi-value prefix.
+     * @param {*} prefix The specified prefix.
+     */
+    addPrefix(prefix) {
+        this.addMultiValue('prefix', prefix);
     }
 
     /**
@@ -109,6 +128,14 @@ export default class HumanName extends Element {
     }
 
     /**
+     * Add an suffix to the multi-value suffix.
+     * @param {*} suffix The specified suffix.
+     */
+    addSuffix(suffix) {
+        this.addMultiValue('suffix', suffix);
+    }
+
+    /**
      * Gets the period value.
      */
     get period() {
@@ -120,6 +147,111 @@ export default class HumanName extends Element {
      */
     set period(period) {
         this._period = period;
+    }
+
+    /**
+     * Coerce the specified value into a complete HumanName.
+     * @param {*} value The specified value.
+     */
+    static coerce(value) {
+
+        // Handle NOOP NULL or HumanName
+        if ((value == null) || (value instanceof HumanName)) {
+            return value;
+        }
+
+        // Create the resultant human name
+        var result = new HumanName();
+
+        // Handle coercing a string
+        if (typeof value === 'string') {
+
+            // Detemine the type of name based on certain encoding information
+
+            // If there are carets "^", treat this as an DICOM/HL7 multi-component "Person Name"
+            if (value.includes("^")) {
+
+                // MODEL: family name complex^given name complex^middle name^name prefix^name suffix.
+
+                // Split the name value
+                var parts = value.split('^');
+
+                // Set the "family name complex"
+                if ((parts.length > 0) && (StringUtils.isValid(parts[0]) == true)) {
+                    result.family = parts[0].trim();
+                }
+
+                // Set the "given name complex"
+                if ((parts.length > 1) && (StringUtils.isValid(parts[1]) == true)) {
+                    result.addGiven(parts[1].trim());
+                }
+
+                // Set the "middle name"
+                if ((parts.length > 2) && (StringUtils.isValid(parts[2]) == true)) {
+                    result.addGiven(parts[2].trim());
+                }
+
+                // Set the "name prefix"
+                if ((parts.length > 3) && (StringUtils.isValid(parts[3]) == true)) {
+                    result.addPrefix(parts[3].trim());
+                }
+
+                // Set the "name suffix"
+                if ((parts.length > 4) && (StringUtils.isValid(parts[4]) == true)) {
+                    result.addSuffix(parts[4].trim());
+                }
+
+                // Formulate the "text"
+                var names = [];
+
+                // First the "given"
+                if (result.given != null) {
+                    if (Array.isArray(result.given))
+                        names.push(...result.given);
+                    else
+                        names.push(result.given);
+                }
+
+                // Next the "family"
+                if (result.family != null) {
+                    names.push(result.family);
+                }
+
+                // Set the "text" value
+                result.text = names.join(' ');
+
+                // Set the "name use" to "USUAL"
+                result.use = NameUse.USUAL;
+
+            }
+            else {
+
+                // Simply set the family name
+                result.family = value;
+
+            }
+
+        }
+
+        // Return the human name
+        return result;
+
+    }
+
+    /**
+     * Convert to JSON data
+     * @returns 
+     */
+    toJSON() {
+        return {
+            use: NameUse.toJSON(this.use),
+            text: this.text,
+            family: this.family,
+            given: this.given,
+            prefix: this.prefix,
+            suffix: this.suffix,
+            period: this.period
+        }
     }
 
     constructor() {

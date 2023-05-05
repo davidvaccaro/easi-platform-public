@@ -93,10 +93,44 @@ export default class Coding extends Element {
         this._userSelected = userSelected;
     }
 
-    constructor() {
+    /**
+     * Create a new Coding instance.
+     * @param {*} system The specified system.
+     * @param {*} code The specified system.
+     */
+    static create(system, code) {
 
+        // First, check the params
+        if (code == null) {
+            return null;
+        }
+        
+        // Create the new codeable concept instance
+        return new Coding({ 
+            system: system, 
+            code: code.trim() 
+        });
+        
+    }
+
+    /**
+     * Convert to JSON data
+     * @returns 
+     */
+    toJSON() {
+        return {
+            system: this.system,
+            version: this.version,
+            code: this.code,
+            display: this.display,
+            userSelected: this.userSelected
+        }
+    }
+
+    constructor(data) {
+        
         // Call the base
-        super();
+        super(data);
 
     }
 

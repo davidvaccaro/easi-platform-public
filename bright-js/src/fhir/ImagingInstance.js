@@ -19,7 +19,10 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
+import NumberUtils from "../utils/NumberUtils.js";
 import BackboneElement from "./BackboneElement.js"
+import Coding from "./Coding.js";
+import CodingSystems from "./CodingSystems.js";
 
 export default class ImagingInstance extends BackboneElement {
   
@@ -48,7 +51,15 @@ export default class ImagingInstance extends BackboneElement {
      * Sets the sopClass value.
      */
     set sopClass(sopClass) {
-        this._sopClass = sopClass;
+
+        // First, check the params
+        if (sopClass == null) {
+            this._sopClass = null;
+        }
+        else {
+            this._sopClass = Coding.create(CodingSystems.URI, "urn:oid:" + sopClass);
+        }
+        
     }
 
     /**
@@ -87,7 +98,7 @@ export default class ImagingInstance extends BackboneElement {
         return {
             uid: this.uid,
             sopClass: this.sopClass,
-            number: this.number,
+            number: NumberUtils.parseUnsignedInteger(this.number),
             title: this.title
         }
     }

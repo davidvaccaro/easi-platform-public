@@ -99,6 +99,89 @@ export default class DicomUtilities {
         return [255, 254, 224, 221, 0, 0, 0, 0];
     }
 
+    /**
+     * Parses the specified DA date string value to a Date instance.
+     * @param {*} value The specified date value in the DA format YYYYMMDD. 
+     * @returns The value parsed to a Date.
+     */
+    static parseDA(value) {
+        
+        // First, check the params
+        if ((value == null) || (value.trim() == '')) {
+            return null;
+        }
+
+        // Parse the parts
+        const year = parseInt(value.slice(0, 4), 10);
+        const month = parseInt(value.slice(4, 6), 10) - 1; // Subtract 1 for zero-based months
+        const day = parseInt(value.slice(6, 8), 10);
+      
+        // Return the date
+        return new Date(year, month, day);
+
+    }
+    
+    /**
+     * Parses the specified DT date string value to a Date instance.
+     * @param {*} value The specified date value in the DT format YYYYMMDDHHMMSS.FFFFFF&ZZXX. 
+     * @returns The value parsed to a Date.
+     */
+    static parseDT(value) {
+
+        // First, check the params
+        if ((value == null) || (value.trim() == '')) {
+            return null;
+        }
+
+        // Parse the parts
+        const year = value.slice(0, 4);
+        const month = value.slice(4, 6);
+        const day = value.slice(6, 8);
+        const hours = value.slice(8, 10);
+        const minutes = value.slice(10, 12);
+        const seconds = value.slice(12, 14);
+        const milliseconds = value.slice(15, 21); // Keep only the first 3 digits for JavaScript Date object
+        const tzSign = value.slice(21, 22);
+        const tzHours = value.slice(22, 24);
+        const tzMinutes = value.slice(24, 26);
+      
+        // Convert the timezone offset to the format ±HH:mm
+        const timezoneOffset = `${tzSign}${tzHours}:${tzMinutes}`;
+      
+        // Combine the date, time, and timezone components into an ISO 8601-compliant string
+        const iso8601DateStr = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}${timezoneOffset}`;
+      
+        // Parse the ISO 8601 string into a JavaScript Date object
+        return new Date(iso8601DateStr);
+
+    }  
+
+    /**
+     * Parses the specified TM date string value to a Date instance.
+     * @param {*} value The specified date value in the TM format HHMMSS.FFFFFF. 
+     * @returns The value parsed to a Date.
+     */
+    static parseTM(value) {
+
+        // First, check the params
+        if ((value == null) || (value.trim() == '')) {
+            return null;
+        }
+
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const day = currentDate.getDate();
+      
+        const hours = parseInt(value.slice(0, 2), 10);
+        const minutes = parseInt(value.slice(2, 4), 10);
+        const seconds = parseInt(value.slice(4, 6), 10);
+        const milliseconds = parseInt(value.slice(7, 10), 10); // Keep only the first 3 digits for JavaScript Date object
+      
+        return new Date(year, month, day, hours, minutes, seconds, milliseconds);
+
+    }
+
     constructor() {
     }
 

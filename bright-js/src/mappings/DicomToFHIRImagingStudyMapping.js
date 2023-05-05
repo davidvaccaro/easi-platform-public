@@ -156,13 +156,21 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         // Setup the Series-level Mappings
         this.addTag(Tag.SeriesInstanceUID, "series.uid");
         this.addTag(Tag.SeriesNumber, "series.number");
+        this.addTag(Tag.Modality, "series.modality");
+        this.addTag(Tag.SeriesDescription, "series.description");
 
         // Setup the Instance-level Mappings
         this.addTag(Tag.SOPInstanceUID, "instance.uid");
+        this.addTag(Tag.SOPClassUID, "instance.sopClass");
         this.addTag(Tag.InstanceNumber, "instance.number");
        
         // Setup the Patient-level Mappings
         this.addTag(Tag.PatientID, "patient.identifier");
+        this.addTag(Tag.PatientName, "patient.name");
+        this.addTag(Tag.PatientTelecomInformation, "patient.addTelcom");
+        this.addTag(Tag.PatientTelephoneNumbers, "patient.addTelcom");
+        this.addTag(Tag.PatientSex, "patient.gender");
+        this.addTag(Tag.PatientBirthDate, "patient.birthDate");
 
     }
 

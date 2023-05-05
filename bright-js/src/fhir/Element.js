@@ -37,10 +37,56 @@ export default class Element extends Base {
         this._id = id;
     }
 
-    constructor() {
+    /**
+     * Add a specified value to the potentially multi-vaued property identified by the specified name.
+     * @param {*} name The specified name of the multi-valued property to append to.
+     * @param {*} value The value to append.
+     */
+    addMultiValue(name, value) {
+
+        // First, Check the params
+        if (value == null) {
+
+            // TODO - Possibly throw exception here
+            return;
+
+        }
+
+        // Get the current value of the property
+        var current = this[name];
+
+        // If there current is NO current value, just set the value
+        if (current == null) {
+            this[name] = value;
+        }
+        else {
+
+            // Establish the collection of values
+            var values = (typeof current == 'array') ? current : [current];
+
+            // Append the new value to the value collection
+            if (Array.isArray(value)) {
+                values.push(...value);
+            } else {
+                values.push(value);
+            }
+
+            // Set the new value
+            this[name] = values;
+
+        }
+
+    }
+
+    constructor(data) {
 
         // Call the base
         super();
+
+        // Assign any provided data
+        if (data != null) {
+            Object.assign(this, data);
+        }
 
     }
 

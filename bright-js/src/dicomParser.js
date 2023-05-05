@@ -1036,12 +1036,18 @@ export default class DicomParser {
                                         // Push the next item
                                         var count = this.dataElements.push({ 
                                             start: nextDetails.bytesPeeked, 
-                                            element: new DicomItem(nextDetails.valueLength)
+                                            element: new DicomItem(nextDetails.valueLength),
+                                            status: sequence.status 
                                         });
 
-                                        // Start the item
-                                        this.dataElements[count - 1].status = await this.fireStreamEvent("onStartItem");
-                                        
+                                        // If the current sequence STATUS is CONTINUE
+                                        if (sequence.status == DicomStatus.CONTINUE) {
+
+                                            // Start the item
+                                            this.dataElements[count - 1].status = await this.fireStreamEvent("onStartItem");
+
+                                        }
+
                                         // Break out of the sequence loop
                                         break;
 
@@ -1332,7 +1338,7 @@ export default class DicomParser {
                     status: this.dataElementStatus 
                 });
 
-                // If the STATUS is CONTINUE
+                // If the current sequence STATUS is CONTINUE
                 if (this.dataElementStatus == DicomStatus.CONTINUE) {
 
                     // Start the item

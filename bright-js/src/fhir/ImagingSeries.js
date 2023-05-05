@@ -19,7 +19,10 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
+import NumberUtils from "../utils/NumberUtils.js";
 import BackboneElement from "./BackboneElement.js"
+import CodeableConcept from "./CodeableConcept.js";
+import CodingSystems from "./CodingSystems.js";
 
 export default class ImagingSeries extends BackboneElement {
   
@@ -62,7 +65,7 @@ export default class ImagingSeries extends BackboneElement {
      * Sets the modality value.
      */
     set modality(modality) {
-        this._modality = modality;
+        this._modality = CodeableConcept.create(CodingSystems.DICOM, modality);
     }    
 
     /**
@@ -142,7 +145,7 @@ export default class ImagingSeries extends BackboneElement {
     toJSON() {
         return {
             uid: this.uid,
-            number: this.number,
+            number: NumberUtils.parseUnsignedInteger(this.number),
             modality: this.modality,
             description: this.description,
             numberOfInstances: this.numberOfInstances,

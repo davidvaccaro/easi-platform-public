@@ -1,7 +1,7 @@
 //
-// CodeableConcept.js - 1.0.0
+// StringUtils.js - 1.0.0
 //
-// FHIR CodeableConcept Class 
+// String Utils Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,76 +19,13 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import Element from './Element.js'
-import Coding from './Coding.js'
-
-export default class CodeableConcept extends Element {
-  
-    /**
-     * Gets the coding value.
-     */
-    get coding() {
-        return this._coding;
-    }
+export default class StringUtils {
 
     /**
-     * Sets the coding value.
+     * Tests the specified string value to determine if it is "valid" (i.e. not NULL or EMPTY).
+     * @param {*} str The specified string value to test.
+     * @returns TRUE if the specified string value is "valid", FALSE otherwise.
      */
-    set coding(coding) {
-        this._coding = coding;
-    }
-
-    /**
-     * Gets the text value.
-     */
-    get text() {
-        return this._text;
-    }
-
-    /**
-     * Sets the text value.
-     */
-    set text(text) {
-        this._text = text;
-    }
-
-    /**
-     * Create a new CodeableConcept instance.
-     * @param {*} system The specified system.
-     * @param {*} code The specified system.
-     */
-    static create(system, code) {
-        
-        // First, check the params
-        if (code == null) {
-            return null;
-        }
-
-        // Create the new codeable concept instance
-        return new CodeableConcept({
-            coding: [
-                Coding.create(system, code)          
-            ]
-        });
-        
-    }
-
-    /**
-     * Convert to JSON data
-     * @returns 
-     */
-    toJSON() {
-        return {
-            coding: this.coding,
-            text: this.text
-        }
-    }
-
-    constructor(data) {
-
-        // Call the super
-        super(data);
-
-    }
+    static isValid = (str) => str !== null && str.trim() !== '';
 
 };

@@ -20,6 +20,10 @@
 //
 
 import DomainResource from "./DomainResource.js"
+import HumanName from "./HumanName.js";
+import ContactPoint from "./ContactPoint.js";
+import { AdministrativeGender } from "./AdministrativeGender.js";
+import DateUtils from "../utils/DateUtils.js";
 
 export default class Patient extends DomainResource {
   
@@ -62,7 +66,15 @@ export default class Patient extends DomainResource {
      * Sets the name value.
      */
     set name(name) {
-        this._name = name;
+        this._name = HumanName.coerce(name);
+    }
+
+    /**
+     * Adds the name value.
+     * @param {*} name The name value to add.
+     */
+    addName(name) {
+        this.addMultiValue('name', HumanName.coerce(name));
     }
 
     /**
@@ -80,6 +92,14 @@ export default class Patient extends DomainResource {
     }
 
     /**
+     * Adds the telcom value.
+     * @param {*} telcom The telcom value to add.
+     */
+    addTelcom(telcom) {
+        this.addMultiValue('telcom', ContactPoint.coerce(telcom));
+    }
+
+    /**
      * Gets the gender value.
      */
     get gender() {
@@ -90,7 +110,7 @@ export default class Patient extends DomainResource {
      * Sets the gender value.
      */
     set gender(gender) {
-        this._gender = gender;
+        this._gender = AdministrativeGender.coerce(gender);
     }
 
     /**
@@ -118,8 +138,8 @@ export default class Patient extends DomainResource {
             active: this.active,
             name: this.name,
             telcom: this.telcom,
-            gender: this.gender,
-            birthDate: this.birthDate
+            gender: AdministrativeGender.toJSON(this.gender),
+            birthDate: DateUtils.formatToYYYYMMDD(this.birthDate)
         }
     }
 

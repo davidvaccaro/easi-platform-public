@@ -22,6 +22,7 @@
 import DicomEnvironment from './dicomEnvironment.js';
 import { ValueRepresentations } from './dicomValueRepresentation.js';
 import DicomDataElement from './dicomDataElement.js';
+import DicomUtilities from './dicomUtilities.js';
 
 export default class DicomAttribute extends DicomDataElement {
 
@@ -52,7 +53,7 @@ export default class DicomAttribute extends DicomDataElement {
             case ValueRepresentations.SS:
                 return (new DataView(data.buffer)).getInt16(data.byteOffset, DicomEnvironment.isLittleEndian);
 
-            // AE, SH, UI, IS, DS, CS: Handle converting the RAW data to a "unique identifier" value
+            // AE, SH, UI, IS, DS, CS, PN, LT: Handle converting the RAW data to a generic string value
             case ValueRepresentations.AE:
             case ValueRepresentations.SH:
             case ValueRepresentations.UI:
@@ -60,8 +61,22 @@ export default class DicomAttribute extends DicomDataElement {
             case ValueRepresentations.IS:
             case ValueRepresentations.DS:
             case ValueRepresentations.CS:
-                // Decode the string value, remove NULL chars and TRIM 
+            case ValueRepresentations.PN:
+            case ValueRepresentations.LT:
+                    // Decode the string value, remove NULL chars and TRIM 
                 return (new TextDecoder().decode(data)).replace(/\0/g, '').trim();                
+
+            // DA: Handle converting the RAW data to a short "Date" value
+            case ValueRepresentations.DA:
+                return DicomUtilities.parseDA((new TextDecoder().decode(data)).replace(/\0/g, '').trim());
+
+            // DT: Handle converting the RAW data to a long "DateTime" value
+            case ValueRepresentations.DT:
+                return DicomUtilities.parseDT((new TextDecoder().decode(data)).replace(/\0/g, '').trim());
+
+            // TM: Handle converting the RAW data to a short "Time" value
+            case ValueRepresentations.TM:
+                return DicomUtilities.parseTM((new TextDecoder().decode(data)).replace(/\0/g, '').trim());
 
             // OB: Handle converting the RAW data to a "other byte" value
             case ValueRepresentations.OB:

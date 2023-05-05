@@ -1,7 +1,8 @@
 //
-// CodeableConcept.js - 1.0.0
+// AdministrativeGender.js - 1.0.0
 //
-// FHIR CodeableConcept Class 
+// FHIR AdministrativeGender Class
+// https://www.hl7.org/fhir/valueset-name-use.html
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,76 +20,46 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import Element from './Element.js'
-import Coding from './Coding.js'
+import SymbolUtils from "../utils/SymbolUtils.js";
 
-export default class CodeableConcept extends Element {
-  
-    /**
-     * Gets the coding value.
-     */
-    get coding() {
-        return this._coding;
-    }
+export var AdministrativeGender = {
+    MALE: Symbol('MALE'),
+    FEMALE: Symbol('FEMALE'),
+    OTHER: Symbol('OTHER'),
+    UNKNOWN: Symbol('UNKNOWN'),
 
-    /**
-     * Sets the coding value.
-     */
-    set coding(coding) {
-        this._coding = coding;
-    }
+    coerce: function (value) {
 
-    /**
-     * Gets the text value.
-     */
-    get text() {
-        return this._text;
-    }
-
-    /**
-     * Sets the text value.
-     */
-    set text(text) {
-        this._text = text;
-    }
-
-    /**
-     * Create a new CodeableConcept instance.
-     * @param {*} system The specified system.
-     * @param {*} code The specified system.
-     */
-    static create(system, code) {
-        
-        // First, check the params
-        if (code == null) {
-            return null;
+        // Handle NOOP NULL or Symbol
+        if ((value == null) || (typeof value === 'symbol')) {
+            return value;
         }
 
-        // Create the new codeable concept instance
-        return new CodeableConcept({
-            coding: [
-                Coding.create(system, code)          
-            ]
-        });
-        
-    }
+        // Default to UNKNOWN
+        var result = AdministrativeGender.UNKNOWN;
 
-    /**
-     * Convert to JSON data
-     * @returns 
-     */
-    toJSON() {
-        return {
-            coding: this.coding,
-            text: this.text
+        // If the value is a string, 
+        if (typeof value === 'string') {
+
+            // Switch the value
+            switch (value.trim().toUpperCase()) {
+                case 'M': result = AdministrativeGender.MALE; break; 
+                case 'F': result = AdministrativeGender.FEMALE; break; 
+                case 'O': result = AdministrativeGender.OTHER; break; 
+                case 'U': result = AdministrativeGender.UNKNOWN; break; 
+                case 'MALE': result = AdministrativeGender.MALE; break; 
+                case 'FEMALE': result = AdministrativeGender.FEMALE; break; 
+                case 'OTHER': result = AdministrativeGender.OTHER; break; 
+                case 'UNKNOWN': result = AdministrativeGender.UNKNOWN; break; 
+            }
+
         }
+
+        return result;
+
+    },
+
+    toJSON: function (value) {
+        return SymbolUtils.toJSON(value);
     }
-
-    constructor(data) {
-
-        // Call the super
-        super(data);
-
-    }
-
 };

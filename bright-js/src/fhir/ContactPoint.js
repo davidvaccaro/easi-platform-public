@@ -94,6 +94,14 @@ export default class ContactPoint extends Element {
         this._period = period;
     }
 
+    /**
+     * Coerce the specified value into a complete ContactPoint.
+     * @param {*} value The specified value.
+     */
+    static coerce(value) {
+        throw new Error("Not Implemented Yet");
+    }
+
     constructor() {
 
         // Call the super
