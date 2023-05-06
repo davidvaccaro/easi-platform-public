@@ -20,8 +20,7 @@
 //
 
 import DicomMapping from "./DicomMapping.js";
-import DicomTag from "../dicomTag.js"
-import { Tag } from "../dicomTag.js"
+import Tag from "../dicom/Tag.js"
 
 import Reference from "../fhir/Reference.js";
 import ImagingStudy from "../fhir/ImagingStudy.js";

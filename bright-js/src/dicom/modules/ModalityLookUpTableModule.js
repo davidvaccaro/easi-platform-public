@@ -1,7 +1,7 @@
 //
-// DateUtils.js - 1.0.0
+// ModalityLookUpTableModule.js - 1.0.0
 //
-// Date Utils Class 
+// DICOM Modality Look Up Table Module Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,27 +19,42 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+import Module from './Module.js';
+import Tag from '../Tag.js'
+
+export default class ModalityLookUpTableModule extends Module {
 
     /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
+     * Get the Rescale Intercept.
+     * @returns The Rescale Intercept value.
      */
-    static formatToYYYYMMDD(value) {
+    get rescaleIntercept() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.RescaleIntercept), Tag.RescaleIntercept.VM);
+    }
 
-        // Check the vaue
-        if (value == null) {
-            return undefined;
-        }
+    /**
+     * Get the Rescale Slope.
+     * @returns The Rescale Slope value.
+     */
+    get rescaleSlope() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.RescaleSlope), Tag.RescaleSlope.VM);
+    }
 
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
+    /**
+     * Get the Rescale Type.
+     * @returns The Rescale Type value.
+     */
+    get rescaleType() {
+        return this.attributeSet.value(Tag.RescaleType);
+    }
+
+    /**
+     * Construct an Pixel Module Accessor instance.
+     */
+    constructor(attributeSet) {
+
+        // Call the super constructor
+        super(attributeSet);
 
     }
 

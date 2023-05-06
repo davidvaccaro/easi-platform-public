@@ -1,7 +1,7 @@
 //
-// DateUtils.js - 1.0.0
+// Runtime.js - 1.0.0
 //
-// Date Utils Class 
+// DICOM Environment Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,28 +19,41 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+export default class Runtime {
+
+    static _isLittleEndian = null;
 
     /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
+     * Determines the endian-ness of the current runtime
+     * @returns true if the current runtime is "little endian" and false otherwise.
      */
-    static formatToYYYYMMDD(value) {
+    static get isLittleEndian() {
 
-        // Check the vaue
-        if (value == null) {
-            return undefined;
+        // If the value has yet to be determined, do so
+        if (Runtime._isLittleEndian == null) {
+
+            // Create 8-bit and 16-bit byte buffers
+            var arrayBuffer = new ArrayBuffer(2);
+            var uint8Array = new Uint8Array(arrayBuffer);
+            var uint16array = new Uint16Array(arrayBuffer);
+
+            // Set the first and second bytes
+            uint8Array[0] = 0xAA;
+            uint8Array[1] = 0xBB;
+
+            // Is "little" endian, else "big"
+            if (uint16array[0] === 0xBBAA)
+                Runtime._isLittleEndian = true;
+            else
+                Runtime._isLittleEndian =  false;
+
         }
 
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
+        return Runtime._isLittleEndian;
 
+    };
+
+    constructor() {
     }
 
 };

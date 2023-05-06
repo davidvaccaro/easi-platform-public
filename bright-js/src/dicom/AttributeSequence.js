@@ -1,7 +1,7 @@
 //
-// DateUtils.js - 1.0.0
+// AttributeSequence.js - 1.0.0
 //
-// Date Utils Class 
+// DICOM Attribute Sequence Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,27 +19,54 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+import DicomAttribute from './Attribute.js';
+
+export default class AttributeSequence extends DicomAttribute {
 
     /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
+     * Adds a new item to the sequence of items.
+     * @param {*} item The item to add.
      */
-    static formatToYYYYMMDD(value) {
+    add(item) {
 
-        // Check the vaue
-        if (value == null) {
-            return undefined;
-        }
+        // Add the attribute to the collection
+        this.items.push(item);
 
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
+    }
+
+    /**
+     * Find an attribute within the immediate sequence by tag identifier.
+     * @param {*} tag The DICOM tag to search by.
+     * @returns The attribute if found or undefined otherwise.
+     */
+    find(tag) {
+        return this.items.filter(item => item.find(tag) != null);
+    }
+
+    /**
+     * Determine if an attribute exists within the immediate sequence by tag.
+     * @param {*} tag True if an attribute exists, False otherwise.
+     */
+    has(tag) {
+
+        // Find the items that have the tag
+        var items = this.find(tag);
+
+        // Return
+        return ((items != null) && (items.length > 0)) ? true : false;
+
+    }
+
+    /**
+     * Construct an "empty" new DICOM attribute sequence instance from a tag and other details.
+     */
+    constructor(tag, valueLength, data, transferSyntax) {
+
+        // Call the super constructor
+        super(tag, valueLength, data, transferSyntax);
+
+        // Init the items collection
+        this.items = [];
 
     }
 

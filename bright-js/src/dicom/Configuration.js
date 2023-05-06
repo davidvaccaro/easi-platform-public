@@ -1,7 +1,7 @@
 //
-// DateUtils.js - 1.0.0
+// Configuration.js - 1.0.0
 //
-// Date Utils Class 
+// DICOM Configuration Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,28 +19,42 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+import DicomNativePixelDataToRGBADecoder from '../codecs/decoders/dicomNativePixelDataToRGBADecoder.js';
+import TransferSyntax from './TransferSyntax.js';
+import jpegDecoder from '../codecs/decoders/jpegDecoder.js';
+import jpegLosslessDecoder from '../codecs/decoders/jpegLosslessDecoder.js';
+
+export default class Configuration {
 
     /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
+     * Is the current environment configured for "strict" validation.
      */
-    static formatToYYYYMMDD(value) {
+    static get isStrict() { return false; }
 
-        // Check the vaue
-        if (value == null) {
-            return undefined;
+    /**
+     * Gets the decoder for a given transfer-syntax.
+     * @param {*} transferSyntax The transfer-syntax.
+     * @returns The decoder.
+     */
+    static decoderFor(transferSyntax, dicomObject) {
+
+        // Switch the transferSyntax
+        switch (transferSyntax) {
+            
+            case TransferSyntax.JPEGBaseline8Bit:
+                return new jpegDecoder(dicomObject);
+
+            case TransferSyntax.JPEGLossless:
+            case TransferSyntax.JPEGLosslessSV1:
+                return new jpegLosslessDecoder(dicomObject);
+                            
         }
 
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
+        return new DicomNativePixelDataToRGBADecoder(dicomObject);
 
+    }
+
+    constructor() {
     }
 
 };

@@ -1,7 +1,7 @@
 //
-// DateUtils.js - 1.0.0
+// DataSet.js - 1.0.0
 //
-// Date Utils Class 
+// DICOM Data Set Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,27 +19,17 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+import AttributeSet from './AttributeSet.js';
+
+export default class DataSet extends AttributeSet {
 
     /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
+     * Construct an "empty" new DICOM data-set
      */
-    static formatToYYYYMMDD(value) {
+    constructor() {
 
-        // Check the vaue
-        if (value == null) {
-            return undefined;
-        }
-
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
+        // Call the super constructor
+        super();
 
     }
 

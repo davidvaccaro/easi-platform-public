@@ -1,7 +1,8 @@
 //
-// DateUtils.js - 1.0.0
+// Preamble.js - 1.0.0
 //
-// Date Utils Class 
+// DICOM Preamble Class
+// https://dicom.nema.org/medical/dicom/current/output/html/part05.html#chapter_7
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,27 +20,20 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+import Constants from './Constants.js';
+import DataElement from './DataElement.js';
+import TransferSyntax from './TransferSyntax.js'
+
+export default class Preamble extends DataElement {
 
     /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
+     * Constructs a DICOM Part-10 File Meta Information "Preamble" from a specified raw data buffer.
+     * @param {*} data The specified raw data buffer.
      */
-    static formatToYYYYMMDD(value) {
+    constructor(data) {
 
-        // Check the vaue
-        if (value == null) {
-            return undefined;
-        }
-
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
+        // Call the super constructor
+        super(data, TransferSyntax.NONE, Constants.PreambleLength);
 
     }
 

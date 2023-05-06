@@ -19,12 +19,8 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import DicomImagePixelModule from '../../modules/dicomImagePixelModule.js';
-import DicomVisualizationFunctionModule from '../../modules/dicomVisualizationFunctionModule.js';
-import DicomModalityLookupTableModule from '../../modules/dicomModalityLookUpTableModule.js';
-import { Tag } from '../../dicomTag.js'
-import { PhotometricInterpretationType } from '../../dicomTag.js'
-import { Modality } from '../../dicomModality.js';
+import { PhotometricInterpretationType } from '../../dicom/Tag.js'
+import Modality from '../../dicom/Modality.js';
 
 export default class DicomNativePixelDataToRGBADecoder {
 

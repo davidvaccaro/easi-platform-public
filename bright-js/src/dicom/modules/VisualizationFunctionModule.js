@@ -1,7 +1,7 @@
 //
-// DateUtils.js - 1.0.0
+// VisualizationFunctionModule.js - 1.0.0
 //
-// Date Utils Class 
+// DICOM Visualization Function Module Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,27 +19,34 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+import Module from './Module.js';
+import Tag from '../Tag.js'
+
+export default class VisualizationFunctionModule extends Module {
 
     /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
+     * Get the Window Center.
+     * @returns The Window Center value.
      */
-    static formatToYYYYMMDD(value) {
+    get windowCenter() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.WindowCenter), Tag.WindowCenter.VM);
+    }
 
-        // Check the vaue
-        if (value == null) {
-            return undefined;
-        }
+    /**
+     * Get the Window Width.
+     * @returns The Window Width value.
+     */
+    get windowWidth() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.WindowWidth), Tag.WindowWidth.VM);
+    }
 
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
+    /**
+     * Construct an Pixel Module Accessor instance.
+     */
+    constructor(attributeSet) {
+
+        // Call the super constructor
+        super(attributeSet);
 
     }
 

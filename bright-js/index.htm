@@ -8,7 +8,7 @@
 </head>
 <body>
     <script>
-        navigator.serviceWorker.register('./dicomServiceWorker.js', { type: 'module' });
+        //navigator.serviceWorker.register('./dicomServiceWorker.js', { type: 'module' });
     </script>
     <h1>DICOM.JS Samples</h1>
     <br>
@@ -85,34 +85,38 @@
 
     <script type="module">
 
-        import DicomConstants from './src/DicomConstants.js';
+        import EASI from './src/EASI.js';
 
-        import { Tag } from './src/dicomTag.js';
-        import { TransferSyntax } from './src/dicomTransferSyntax.js';
-        import { Modality } from './src/dicomModality.js';
+        import Constants from './src/dicom/Constants.js';
 
-        import DicomData from './src/dicomData.js';
-        import DicomAttribute from './src/dicomAttribute.js';
+        import Tag from './src/dicom/Tag.js';
+        import TransferSyntax from './src/dicom/TransferSyntax.js';
+        import Modality from './src/dicom/Modality.js';
 
-        import DicomMetaSet from './src/dicomMetaSet.js';
-        import DicomDataSet from './src/dicomDataSet.js';
+        import Data from './src/dicom/Data.js';
+        import Attribute from './src/dicom/Attribute.js'
 
-        import DicomItem from './src/dicomItem.js';
-        import DicomAttributeSequence from './src/dicomAttributeSequence.js';
+        import MetaSet from './src/dicom/MetaSet.js';
+        import DataSet from './src/dicom/DataSet.js';
 
-        import dicomInstanceStreamHandler from './src/handlers/dicomInstanceStreamHandler.js';
-        import dicomMappingStreamHandler from './src/handlers/dicomMappingStreamHandler.js';
+        import Item from './src/dicom/Item.js';
+        import AttributeSequence from './src/dicom/AttributeSequence.js';
+
+        import StreamingDicomInstanceHandler from './src/handlers/StreamingDicomInstanceHandler.js';
+        import StreamingDicomMappingHandler from './src/handlers/StreamingDicomMappingHandler.js';
 
         import DicomToFHIRImagingStudyMapping from './src/mappings/DicomToFHIRImagingStudyMapping.js';
 
-        import DicomParser from './src/dicomParser.js';
-        import DicomReader from './src/dicomReader.js';
+        import StreamingDicomDataParser from './src/parsers/StreamingDicomDataParser.js';
+        import StreamingReader from './src/readers/StreamingReader.js';
         
-        import DicomImageObject from './src/objects/dicomImageObject.js';
-        import DicomCTObject from './src/objects/dicomCTObject.js';
-        import DicomXAObject from './src/objects/dicomXAObject.js';
+        import StreamingReaderBuilder from './src/builders/StreamingReaderBuilder.js';
 
-        import DicomDumpParser from './src/tools/dicomDumpParser.js';
+        import ImageObject from './src/dicom/objects/ImageObject.js';
+        import CTObject from './src/dicom/objects/CTObject.js';
+        import XAObject from './src/dicom/objects/XAObject.js';
+
+        import DumpParser from './src/tools/dicom/DumpParser.js';
 
         $(function () {
             
@@ -135,8 +139,11 @@
                 // Create an object URL from the selected file
                 var url = URL.createObjectURL(this.files[0]);
 
-                // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomInstanceHandler())
+                    .build();
 
                 // Read and parse the DICOM file
                 reader
@@ -156,13 +163,13 @@
                         var modality = instance.dataSet.find(Tag.Modality).value;
 
                         if (modality == Modality.CT.ID) {
-                            imageObject = new DicomCTObject(instance.dataSet);
+                            imageObject = new CTObject(instance.dataSet);
                         }
                         else if (modality == Modality.XA.ID) {
-                            imageObject = new DicomXAObject(instance.dataSet);
+                            imageObject = new XAObject(instance.dataSet);
                         }
                         else {
-                            imageObject = new DicomImageObject(instance.dataSet);
+                            imageObject = new ImageObject(instance.dataSet);
                         }
                                             
                         // Create the destination for the decode (4 BYTES PER PIXEL)
@@ -177,15 +184,6 @@
                             imageObject.imagePixelModule.columns, 
                             imageObject.imagePixelModule.rows);
 
-                        /*
-                        // Establish ANY pixel spacing
-                        var pixelSpacing = imageObject.imagePlaneModule.pixelSpacing;
-
-                        var width = (pixelSpacing != null) ? (pixelSpacing[1] * imageObject.imagePixelModule.columns) : imageObject.imagePixelModule.columns;
-                        var height = (pixelSpacing != null) ? (pixelSpacing[0] * imageObject.imagePixelModule.rows) : imageObject.imagePixelModule.rows;
-
-                        */
-
                         var width = imageObject.imagePixelModule.columns;
                         var height = imageObject.imagePixelModule.rows;
 
@@ -197,57 +195,8 @@
                         ctx.fillRect(0, 0, width, height);
                         ctx.putImageData(data, 0, 0);
 
-
-                        /*
-                        var pixeldataAttribute = instance.dataSet.find(Tag.PixelData);
-
-                        //var converted = new DicomData();
-                        var converted = new Uint8Array(512*512*4);
-
-                        // Access the source
-                        var source = pixeldataAttribute.value;
-
-                        // Loop over the image bytes
-                        for (var i = 0; i < source.length; i++) {
-
-                            var pixel = Math.floor(source[i]);
-                            converted[(i*4) + 0] = pixel;
-                            converted[(i*4) + 1] = pixel;
-                            converted[(i*4) + 2] = pixel;
-                            converted[(i*4) + 3] = 255;
-
-                            //converted.append([0, Math.floor(0.2126*pixel),  Math.floor(0.7152*pixel), Math.floor(0.0722*pixel)]);
-                            //converted.append([1, Math.floor(pixel),  Math.floor(pixel), Math.floor(pixel)]);
-
-                        }
-
-                        var data = new ImageData(new Uint8ClampedArray(converted), 512, 512);
-                        //var data = new ImageData(new Uint8ClampedArray(converted.access()), 512, 512);
-
-
-                        //var img = createImageBitmap(data);
-
-                        const canvas = document.getElementById("canvas");
-                        const ctx = canvas.getContext("2d");
-
-                        //ctx.drawImage(img, 0, 0, 512, 512, 0, 0, 512, 512);
-                        ctx.fillRect(0, 0, 512, 512);
-                        ctx.putImageData(data, 0, 0);
-
-                        */
-
                     })
                     .catch(err => console.log(err));
-
-
-
-                // Read and parse the DICOM file
-                /*
-                reader
-                    .read(url)
-                    .then(result => console.log(result))
-                    .catch(err => console.log(err));
-                */
 
             });
 
@@ -260,8 +209,11 @@
                 // Create an object URL from the selected file
                 var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094";
 
-                // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomInstanceHandler())
+                    .build();
 
                 // Read and parse the DICOM file
                 reader
@@ -280,8 +232,11 @@
                 // Create an object URL from the selected file
                 var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583";
 
-                // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomInstanceHandler())
+                    .build();
 
                 // Read and parse the DICOM file
                 reader
@@ -300,8 +255,11 @@
                 // Create an object URL from the selected file
                 var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641";
 
-                // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomInstanceHandler())
+                    .build();
 
                 // Read and parse the DICOM file
                 reader
@@ -320,8 +278,11 @@
                 // Create an object URL from the selected file
                 var url = URL.createObjectURL(this.files[0]);
 
-                // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new dicomMappingStreamHandler(new DicomToFHIRImagingStudyMapping())));
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                    .build();
 
                 // Read and parse the DICOM file
                 reader
@@ -343,8 +304,11 @@
                 // Create an object URL from the selected file
                 var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094";
 
-                // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new dicomMappingStreamHandler(new DicomToFHIRImagingStudyMapping())));
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                    .build();
 
                 // Read and parse the DICOM file
                 reader
@@ -366,8 +330,11 @@
                 // Create an object URL from the selected file
                 var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583";
 
-                // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new dicomMappingStreamHandler(new DicomToFHIRImagingStudyMapping())));
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                    .build();
 
                 // Read and parse the DICOM file
                 reader
@@ -389,8 +356,11 @@
                 // Create an object URL from the selected file
                 var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641";
 
-                // Create the DICOM reader
-                var reader = new DicomReader(new DicomParser(new dicomMappingStreamHandler(new DicomToFHIRImagingStudyMapping())));
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                    .build();
 
                 // Read and parse the DICOM file
                 reader
@@ -405,20 +375,20 @@
 
             function createNewItem(index) {
 
-                let item = new DicomItem(DicomConstants.UndefinedLength);
-                item.add(new DicomAttribute(Tag.FileMetaInformationGroupLength, 4, [255, index, 0, 0], TransferSyntax.NONE));
+                let item = new Item(Constants.UndefinedLength);
+                item.add(new Attribute(Tag.FileMetaInformationGroupLength, 4, [255, index, 0, 0], TransferSyntax.NONE));
 
                 let data = (new TextEncoder()).encode("The Title " + index.toString());
-                item.add(new DicomAttribute(Tag.SourceApplicationEntityTitle, data.length, data, TransferSyntax.NONE));
+                item.add(new Attribute(Tag.SourceApplicationEntityTitle, data.length, data, TransferSyntax.NONE));
 
                 data = (new TextEncoder()).encode("Short String" + index.toString());
-                item.add(new DicomAttribute(Tag.ImplementationVersionName, data.length, data, TransferSyntax.NONE));
+                item.add(new Attribute(Tag.ImplementationVersionName, data.length, data, TransferSyntax.NONE));
 
                 data = (new TextEncoder()).encode("1.2.3.4.5.6.7.8.9.0." + index.toString());
-                item.add(new DicomAttribute(Tag.ImplementationClassUID, data.length, data, TransferSyntax.NONE));
+                item.add(new Attribute(Tag.ImplementationClassUID, data.length, data, TransferSyntax.NONE));
 
                 data = new Uint8Array([255, 1, 255, 1])
-                item.add(new DicomAttribute(Tag.PixelData, data.length, data, TransferSyntax.NONE));
+                item.add(new Attribute(Tag.PixelData, data.length, data, TransferSyntax.NONE));
 
                 return item;
 
@@ -431,7 +401,7 @@
                 console.clear();
 
                 // Create the DICOM Dump Parer
-                var parser = new DicomDumpParser(new dicomInstanceStreamHandler());
+                var parser = new DicomDumpParser(new StreamingDicomInstanceHandler());
 
                 parser.parse($('#dicomDump').val());
 
@@ -440,10 +410,10 @@
                 let data = null;
 
                 // Create the squence
-                var metaset = new DicomMetaSet();
+                var metaset = new MetaSet();
 
                 data = (new TextEncoder()).encode("Private Information");
-                metaset.add(new DicomAttribute(Tag.PrivateInformation, data.length, data, TransferSyntax.NONE));
+                metaset.add(new Attribute(Tag.PrivateInformation, data.length, data, TransferSyntax.NONE));
 
                 var ddd = metaset.privateInformation;
 
@@ -455,6 +425,7 @@
         });
     </script>
 
+<!--
     <div style="background-color: black;margin: 40px;padding:40px;">
 
         <img src="/bright-js/img/xa.dcm" style="margin: 20px;">
@@ -462,6 +433,7 @@
         <img src="/bright-js/img/ct.dcm" style="margin: 20px;">
 
     </div>
+-->
 
 </body>
 

@@ -220,9 +220,6 @@ export default class HumanName extends Element {
                 // Set the "text" value
                 result.text = names.join(' ');
 
-                // Set the "name use" to "USUAL"
-                result.use = NameUse.USUAL;
-
             }
             else {
 
@@ -230,6 +227,9 @@ export default class HumanName extends Element {
                 result.family = value;
 
             }
+
+            // Set the "name use" to "USUAL"
+            result.use = NameUse.USUAL;
 
         }
 

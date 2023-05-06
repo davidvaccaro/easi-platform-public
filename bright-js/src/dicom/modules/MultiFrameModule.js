@@ -1,7 +1,7 @@
 //
-// DateUtils.js - 1.0.0
+// MultiFrameModule.js - 1.0.0
 //
-// Date Utils Class 
+// DICOM Multi Frame Module Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,27 +19,34 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+import Module from './Module.js';
+import Tag from '../Tag.js'
+
+export default class MultiFrameModule extends Module {
 
     /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
+     * Get the Stereo Pairs Present.
+     * @returns The Stereo Pairs Present value.
      */
-    static formatToYYYYMMDD(value) {
+    get stereoPairsPresent() {
+        return this.attributeSet.value(Tag.StereoPairsPresent);
+    }
 
-        // Check the vaue
-        if (value == null) {
-            return undefined;
-        }
+    /**
+     * Get the Number Of Frames.
+     * @returns The Number Of Frames value.
+     */
+    get numberOfFrames() {
+        return this.accessIntegerString(this.attributeSet.value(Tag.NumberOfFrames), Tag.NumberOfFrames.VM);
+    }
 
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
+    /**
+     * Construct an Pixel Module Accessor instance.
+     */
+    constructor(attributeSet) {
+
+        // Call the super constructor
+        super(attributeSet);
 
     }
 

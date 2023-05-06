@@ -1,11 +1,11 @@
-import { Tag } from '/bright-js/src/dicomTag.js';
-import { Modality } from '/bright-js/src/dicomModality.js';
-import DicomParser from '/bright-js/src/dicomParser.js';
-import DicomReader from '/bright-js/src/dicomReader.js';
-import dicomInstanceStreamHandler from "/bright-js/src/handlers/dicomInstanceStreamHandler.js";
-import DicomImageObject from '/bright-js/src/objects/dicomImageObject.js';
-import DicomCTObject from '/bright-js/src/objects/dicomCTObject.js';
-import DicomXAObject from '/bright-js/src/objects/dicomXAObject.js';
+import EASI from './src/EASI.js';
+import Tag from '/bright-js/src/dicom/Tag.js';
+import Modality from '/bright-js/src/dicom/Modality.js';
+import StreamingDicomDataParser from '/bright-js/src/parsers/StreamingDicomDataParser.js';
+import StreamingDicomInstanceHandler from "/bright-js/src/handlers/StreamingDicomInstanceHandler.js";
+import ImageObject from '/bright-js/src/dicom/objects/ImageObject.js';
+import CTObject from '/bright-js/src/dicom/objects/CTObject.js';
+import XAObject from '/bright-js/src/dicom/objects/XAObject.js';
 
 // Call clients.claim so that we intercept requests even on initial page load.
 self.addEventListener('activate', () => self.clients.claim());
@@ -43,8 +43,11 @@ const pngFromDICOMRequest = async (request) => {
     // Return the promise
     return new Promise(function(resolve, reject) {
 
-      // Create the DICOM reader
-      var reader = new DicomReader(new DicomParser(new dicomInstanceStreamHandler()));
+      // Build the DICOM streaming reader
+      const reader = EASI.newStreamingReaderBuilder()
+        .withParser(new StreamingDicomDataParser())
+        .withHandler(new StreamingDicomInstanceHandler())
+        .build();
 
       // Read and parse the DICOM file
       reader
@@ -61,13 +64,13 @@ const pngFromDICOMRequest = async (request) => {
           var modality = instance.dataSet.find(Tag.Modality).value;
 
           if (modality == Modality.CT.ID) {
-              imageObject = new DicomCTObject(instance.dataSet);
+              imageObject = new CTObject(instance.dataSet);
           }
           else if (modality == Modality.XA.ID) {
-              imageObject = new DicomXAObject(instance.dataSet);
+              imageObject = new XAObject(instance.dataSet);
           }
           else {
-              imageObject = new DicomImageObject(instance.dataSet);
+              imageObject = new ImageObject(instance.dataSet);
           }
                               
           // Create the destination for the decode (4 BYTES PER PIXEL)

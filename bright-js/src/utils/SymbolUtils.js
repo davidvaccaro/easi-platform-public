@@ -26,13 +26,13 @@ export default class SymbolUtils {
      * @param {*} value The specified symbols value to convert.
      * @returns The JSON serialized representation of the specified symbol.
      */
-    static toJSON = (value) => (value !== null) 
+    static toJSON = (value) => (value != null) 
         ? value
             .toString()
             .toLowerCase()
             .replace("symbol(", "")
             .replace(")", "")
             .trim() 
-        : null;
+        : undefined;
 
 };

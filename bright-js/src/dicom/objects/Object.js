@@ -1,7 +1,7 @@
 //
-// DateUtils.js - 1.0.0
+// Object.js - 1.0.0
 //
-// Date Utils Class 
+// DICOM Dicom Object Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,27 +19,25 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+import GeneralSeriesModule from '../modules/GeneralSeriesModule.js';
+
+export default class Object {
 
     /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
+     * Get the General Series Module.
+     * @returns The Rows value.
      */
-    static formatToYYYYMMDD(value) {
+    get generalSeriesModule() {
+        return new GeneralSeriesModule(this.attributeSet);
+    }
 
-        // Check the vaue
-        if (value == null) {
-            return undefined;
-        }
+    /**
+     * Construct an DICOM Object Accessor instance.
+     */
+    constructor(attributeSet) {
 
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
+        // Set the attribute-set
+        this.attributeSet = attributeSet;
 
     }
 

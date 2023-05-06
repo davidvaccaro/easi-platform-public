@@ -1,7 +1,7 @@
 //
-// DateUtils.js - 1.0.0
+// EASI.js - 1.0.0
 //
-// Date Utils Class 
+// EASI Master Factory Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,28 +19,16 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+import StreamingReaderBuilder from "./builders/StreamingReaderBuilder.js";
+
+export default class EASI {
 
     /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
+     * Create a new instance of the EASI Streaming Reader Builder class.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
      */
-    static formatToYYYYMMDD(value) {
-
-        // Check the vaue
-        if (value == null) {
-            return undefined;
-        }
-
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
-
+    static newStreamingReaderBuilder() {
+        return new StreamingReaderBuilder();
     }
 
 };

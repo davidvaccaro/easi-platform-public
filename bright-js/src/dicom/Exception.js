@@ -1,7 +1,7 @@
 //
-// DateUtils.js - 1.0.0
+// Exception.js - 1.0.0
 //
-// Date Utils Class 
+// DICOM Exception Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,28 +19,25 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+export default class Exception {
 
-    /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
-     */
-    static formatToYYYYMMDD(value) {
-
-        // Check the vaue
-        if (value == null) {
-            return undefined;
-        }
-
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
-
+    constructor(message, code = DicomErrorCodes.GeneralError) {
+        this.message = message;
+        this.code = code;
     }
 
+};
+
+export var DicomErrorCodes = {
+    GeneralError: 'GeneralError',
+    InvalidParameter: 'InvalidParameter',
+    NotImplemented: 'NotImplemented',
+    InvalidPart: 'InvalidPart',
+    InvalidValueRepresentation: 'InvalidValueRepresentation',
+    InvalidTag: 'InvalidTag',
+    UnknownTagAndValueRepresentation: 'UnknownTagAndValueRepresentation',
+    InvalidDataElement: 'InvalidDataElement',
+    InvalidSequence: 'InvalidSequence',
+    DuplicateAttribute: 'DuplicateAttribute',
+    InvalidMetaSet: 'InvalidMetaSet'
 };

@@ -31,10 +31,10 @@ The 'Progress' object hosts the following properties:
 
 #### Returns: 
 The implementor can optionally return any of the following:
-- null or DicomStatus.CONTINUE: Indicates that the parser should simply continue parsing.
-- DicomStatus.SKIP: Indicates that the parser should STOP parsing the current DICOM data and skip to the next.
-- DicomStatus.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
-- DicomStatus.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
+- null or Status.CONTINUE: Indicates that the parser should simply continue parsing.
+- Status.SKIP: Indicates that the parser should STOP parsing the current DICOM data and skip to the next.
+- Status.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
+- Status.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
 
 ### onStartInstance()
 Called at the beginning of a new DICOM instance.
@@ -62,10 +62,10 @@ Called when the parser encounters the 128-byte preamble.
 
 #### Returns: 
 The implementor can optionally return any of the following:
-- null or DicomStatus.CONTINUE: Indicates that the parser should simply continue parsing.
-- DicomStatus.SKIP: Indicates that the parser should SKIP the Preamble and continue parsing.
-- DicomStatus.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
-- DicomStatus.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
+- null or Status.CONTINUE: Indicates that the parser should simply continue parsing.
+- Status.SKIP: Indicates that the parser should SKIP the Preamble and continue parsing.
+- Status.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
+- Status.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
 
 ### onEndPreamble(context)
 Called when the parser finishes processing the preamble.
@@ -82,10 +82,10 @@ Called when the parser encounters the 4-byte prefix.
 
 #### Returns: 
 The implementor can optionally return any of the following:
-- null or DicomStatus.CONTINUE: Indicates that the parser should simply continue parsing.
-- DicomStatus.SKIP: Indicates that the parser should SKIP the Prefix and continue parsing.
-- DicomStatus.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
-- DicomStatus.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
+- null or Status.CONTINUE: Indicates that the parser should simply continue parsing.
+- Status.SKIP: Indicates that the parser should SKIP the Prefix and continue parsing.
+- Status.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
+- Status.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
 
 ### onEndPrefix(context)
 Called when the parser finishes processing the prefix.
@@ -102,10 +102,10 @@ Called when the parser encounters a new attribute.
 
 #### Returns: 
 The implementor can optionally return any of the following:
-- null or DicomStatus.CONTINUE: Indicates that the parser should simply continue parsing.
-- DicomStatus.SKIP: Indicates that the parser should SKIP the Attribute and continue parsing.
-- DicomStatus.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
-- DicomStatus.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
+- null or Status.CONTINUE: Indicates that the parser should simply continue parsing.
+- Status.SKIP: Indicates that the parser should SKIP the Attribute and continue parsing.
+- Status.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
+- Status.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
 
 ### onAppendAttribute(context, attribute)
 Called when more data is available for the current attribute.
@@ -130,10 +130,10 @@ Called when the parser encounters a new sequence.
 
 #### Returns: 
 The implementor can optionally return any of the following:
-- null or DicomStatus.CONTINUE: Indicates that the parser should simply continue parsing.
-- DicomStatus.SKIP: Indicates that the parser should SKIP the Sequence (and all child Items) and continue parsing.
-- DicomStatus.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
-- DicomStatus.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
+- null or Status.CONTINUE: Indicates that the parser should simply continue parsing.
+- Status.SKIP: Indicates that the parser should SKIP the Sequence (and all child Items) and continue parsing.
+- Status.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
+- Status.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
 
 ### onEndSequence(context, sequence)
 Called when the parser finishes processing a sequence.
@@ -150,10 +150,10 @@ Called when the parser encounters a new item within a sequence.
 
 #### Returns: 
 The implementor can optionally return any of the following:
-- null or DicomStatus.CONTINUE: Indicates that the parser should simply continue parsing.
-- DicomStatus.SKIP: Indicates that the parser should SKIP the Item and continue parsing.
-- DicomStatus.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
-- DicomStatus.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
+- null or Status.CONTINUE: Indicates that the parser should simply continue parsing.
+- Status.SKIP: Indicates that the parser should SKIP the Item and continue parsing.
+- Status.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
+- Status.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
 
 ### onEndItem(context)
 Called when the parser finishes processing an item within a sequence.
@@ -169,10 +169,10 @@ Called at the beginning of the DICOM Meta Information Set.
 
 #### Returns: 
 The implementor can optionally return any of the following:
-- null or DicomStatus.CONTINUE: Indicates that the parser should simply continue parsing.
-- DicomStatus.SKIP: Indicates that the parser should SKIP the entire MetaSet and continue parsing.
-- DicomStatus.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
-- DicomStatus.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
+- null or Status.CONTINUE: Indicates that the parser should simply continue parsing.
+- Status.SKIP: Indicates that the parser should SKIP the entire MetaSet and continue parsing.
+- Status.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
+- Status.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
 
 ### onEndMetaSet(context)
 Called at the end of the DICOM Meta Information Set.
@@ -188,10 +188,10 @@ Called at the beginning of the DICOM Data Set.
 
 #### Returns: 
 The implementor can optionally return any of the following:
-- null or DicomStatus.CONTINUE: Indicates that the parser should simply continue parsing.
-- DicomStatus.SKIP: Indicates that the parser should SKIP the entire DataSet and continue parsing.
-- DicomStatus.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
-- DicomStatus.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
+- null or Status.CONTINUE: Indicates that the parser should simply continue parsing.
+- Status.SKIP: Indicates that the parser should SKIP the entire DataSet and continue parsing.
+- Status.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
+- Status.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
 
 ### onEndDataSet(context)
 Called at the end of the DICOM Data Set.

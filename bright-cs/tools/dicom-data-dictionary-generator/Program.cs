@@ -622,7 +622,7 @@ namespace Xinonix.Dicom.Tools
              * // BELOW CODE GENERATED ON: 03-03-2023
              * 
                 var ValueRepresentations = {
-	                'ID': new DicomValueRepresentation({ ID: ValueRepresentationIDs.NONE, Name: 'None', Length: 0, IsFixed: true })                
+	                'ID': new ValueRepresentation({ ID: ValueRepresentationIDs.NONE, Name: 'None', Length: 0, IsFixed: true })                
                 };
              * 
              * 
@@ -649,7 +649,7 @@ namespace Xinonix.Dicom.Tools
                 string[] cols = lines[i].Split(new char[] { ',' });
 
                 // Append the tag line
-                sb.AppendLine("\t\'" + cols[0].Trim() + "\': new DicomValueRepresentation({ ID: '" + cols[0].Trim() + "', Name: '" + cols[1].Trim() + "', Length: " + cols[2].Trim().ToLower() + ", IsFixed: " + cols[3].Trim().ToLower() + " })" + ((i == lines.Length - 1) ? string.Empty : ","));
+                sb.AppendLine("\t\'" + cols[0].Trim() + "\': new ValueRepresentation({ ID: '" + cols[0].Trim() + "', Name: '" + cols[1].Trim() + "', Length: " + cols[2].Trim().ToLower() + ", IsFixed: " + cols[3].Trim().ToLower() + " })" + ((i == lines.Length - 1) ? string.Empty : ","));
 
             }
 
@@ -682,7 +682,7 @@ namespace Xinonix.Dicom.Tools
             #endregion
 
             // Write the dynamically generated file content
-            writeGeneratedContent(System.IO.Path.Combine(rootPath, "bright-js", "src", "dicomValueRepresentation.js"), sb);
+            writeGeneratedContent(System.IO.Path.Combine(rootPath, "bright-js", "src", "ValueRepresentation.js"), sb);
 
             #endregion
 
@@ -699,7 +699,7 @@ namespace Xinonix.Dicom.Tools
              * // BELOW CODE GENERATED ON: 03-03-2023
              * 
                 var Tags = {
-	                '00020000': new DicomTag({ ID: '00020000', Tag: '(0002, 0000)', Group: 2, Element: 0, VR: ValueRepresentation.UL, Name: 'File Meta Information Group Length', IsRetired: false })
+	                '00020000': new Tag({ ID: '00020000', Tag: '(0002, 0000)', Group: 2, Element: 0, VR: ValueRepresentation.UL, Name: 'File Meta Information Group Length', IsRetired: false })
                 }
              * 
              * var Templates = Object.keys(Tag).find(element => element.Group == -1 || element.Element == -1);
@@ -804,7 +804,7 @@ namespace Xinonix.Dicom.Tools
 
                 // Append the tag line
                 sb.AppendLine("\t\'" +
-                    cols[0].Trim() + "\': new DicomTag({ ID: '" +
+                    cols[0].Trim() + "\': new Tag({ ID: '" +
                     cols[0].Trim() + "', Tag: '(" + cols[1].Trim() + ", " +
                     cols[2].Trim() + ")', Group: " + cols[3].Trim() + ", Element: " +
                     cols[4].Trim() + ", VR: ValueRepresentation." + vr.Trim() + ", " + ((otherVR != string.Empty) ? ("VR2: ValueRepresentation." + otherVR + ",") : string.Empty) + " VM: " + vm + ", Name: '" +
@@ -846,7 +846,7 @@ namespace Xinonix.Dicom.Tools
             #endregion
 
             // Write the dynamically generated file content
-            writeGeneratedContent(System.IO.Path.Combine(rootPath, "bright-js", "src", "dicomTag.js"), sb);
+            writeGeneratedContent(System.IO.Path.Combine(rootPath, "bright-js", "src", "Tag.js"), sb);
 
             #endregion
 
@@ -863,7 +863,7 @@ namespace Xinonix.Dicom.Tools
              * // BELOW CODE GENERATED ON: 03-03-2023
              * 
                 var TransferSyntaxes = {
-	                '0': new DicomTransferSyntax({ 
+	                '0': new TransferSyntax({ 
 		                ID: '0', 
 		                Name: 'None', 
 		                IsLittleEndian: false, 
@@ -899,7 +899,7 @@ namespace Xinonix.Dicom.Tools
                 string[] cols = lines[i].Split(new char[] { ',' });
 
                 // Append the tag line
-                sb.AppendLine("\t\'" + cols[0].Trim() + "\': new DicomTransferSyntax({ ID: '" + cols[0].Trim() + "', Name: '" + cols[1].Trim() + "', IsLittleEndian: " + cols[3].Trim().ToLower() + ", IsExplicit: " + cols[4].Trim().ToLower() + ", IsCompressed: " + cols[5].Trim().ToLower() + ", IsLossy: " + cols[6].Trim().ToLower() + ", ApplicationType: TransferSyntaxApplicationType." + cols[7].Trim() + ", IsRetired: " + cols[8].Trim().ToLower() + " })" + ((i == lines.Length - 1) ? string.Empty : ","));
+                sb.AppendLine("\t\'" + cols[0].Trim() + "\': new TransferSyntax({ ID: '" + cols[0].Trim() + "', Name: '" + cols[1].Trim() + "', IsLittleEndian: " + cols[3].Trim().ToLower() + ", IsExplicit: " + cols[4].Trim().ToLower() + ", IsCompressed: " + cols[5].Trim().ToLower() + ", IsLossy: " + cols[6].Trim().ToLower() + ", ApplicationType: TransferSyntaxApplicationType." + cols[7].Trim() + ", IsRetired: " + cols[8].Trim().ToLower() + " })" + ((i == lines.Length - 1) ? string.Empty : ","));
 
             }
 
@@ -932,7 +932,7 @@ namespace Xinonix.Dicom.Tools
             #endregion
 
             // Write the dynamically generated file content
-            writeGeneratedContent(System.IO.Path.Combine(rootPath, "bright-js", "src", "dicomTransferSyntax.js"), sb);
+            writeGeneratedContent(System.IO.Path.Combine(rootPath, "bright-js", "src", "TransferSyntax.js"), sb);
 
             #endregion
 

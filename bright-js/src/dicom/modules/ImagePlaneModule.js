@@ -1,7 +1,7 @@
 //
-// DateUtils.js - 1.0.0
+// ImagePlaneModule.js - 1.0.0
 //
-// Date Utils Class 
+// DICOM Image Plane Module Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,27 +19,58 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class DateUtils {
+import Module from './Module.js';
+import Tag from '../Tag.js'
+
+export default class ImagePlaneModule extends Module {
 
     /**
-     * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
-     * @returns The formatted string value.
+     * Get the Slice Thickness.
+     * @returns The Slice Thickness value.
      */
-    static formatToYYYYMMDD(value) {
+    get sliceThickness() {
+        return this.attributeSet.value(Tag.SliceThickness);
+    }
 
-        // Check the vaue
-        if (value == null) {
-            return undefined;
-        }
+    /**
+     * Get the Image Position.
+     * @returns The Image Position value.
+     */
+    get imagePosition() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.ImagePosition), Tag.ImagePosition.VM);
+    }
 
-        // Establish the parts
-        const year = value.getFullYear();
-        const month = (value.getMonth() + 1).toString().padStart(2, '0');
-        const day = value.getDate().toString().padStart(2, '0');
-      
-        // Return the format
-        return `${year}-${month}-${day}`;
+    /**
+     * Get the Image Orientation.
+     * @returns The Image Orientation value.
+     */
+    get imageOrientation() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.ImageOrientation), Tag.ImageOrientation.VM);
+    }
+
+    /**
+     * Get the Slice Location.
+     * @returns The Slice Location value.
+     */
+    get sliceLocation() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.SliceLocation), Tag.SliceLocation.VM);
+    }
+
+    /**
+     * Get the Pixel Spacing.
+     * @returns The Pixel Spacing value.
+     */
+    get pixelSpacing() {
+        return this.accessDecimalString(this.attributeSet.value(Tag.PixelSpacing), Tag.PixelSpacing.VM);
+    }
+
+    /**
+     * Construct an Pixel Module Accessor instance.
+     */
+    constructor(attributeSet) {
+
+        // Call the super constructor
+        super(attributeSet);
 
     }
 
