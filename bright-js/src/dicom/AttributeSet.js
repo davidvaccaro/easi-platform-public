@@ -1,7 +1,7 @@
 //
 // AttributeSet.js - 1.0.0
 //
-// DICOM Tag Set Class 
+// DICOM Attribute Set Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -32,7 +32,8 @@ export default class AttributeSet {
 
     /**
      * Determine if an attribute exists within the immediate sequence by tag.
-     * @param {*} tag True if an attribute exists, False otherwise.
+     * @param {*} tag The DICOM tag to search by.
+     * @returns {*} TRUE if an attribute exists, FALSE otherwise.
      */
     has(tag) {
         return (this.find(tag) != null);

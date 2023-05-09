@@ -1,9 +1,7 @@
-
 //
-// Status.js - 1.0.0
+// Filter.js - 1.0.0
 //
-// Parse Status Class
-// https://dicom.nema.org/medical/dicom/current/output/html/part05.html#chapter_7
+// Filter Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -21,29 +19,26 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-/**
- * Enumeration for the status of a parseing session.
- * @readonly
- * @enum {symbol}
- */
-export var Status = {
+export default class Selection {
 
-    /** @description Continue processing. */
-    CONTINUE: Symbol('CONTINUE'),
+    /**
+     * Start the selection session.
+     * @param {*} context The session context.
+     */
+    start(context) {
+    }
 
-    /** @description The current parsed data "element" should be skipped. Parse whatever remining data is required to skip over the current "element". */    
-    SKIP: Symbol('SKIP'),
+    /**
+     * End the selection session.
+     * @param {*} context The session context.
+     */
+    end(context) {
+    }
 
-    /** @description The current parsed data "part" should be skipped. Parse whatever remining data is required to jump over the current "part". */    
-    JUMP: Symbol('JUMP'),
-
-    /** @description The current parsed objective is complete. Stop reading and parsing additional data. */    
-    STOP: Symbol('STOP'),
-
-    /** @description The current parse session failed. Stop reading and parsing additional data. */    
-    FAIL: Symbol('FAIL'),
-
-    /** @description The current parse session succeeded in parseing all available data. */
-    SUCCESS: Symbol('SUCCESS')
+    /**
+     * Create a new instance of the selection class.
+     */
+    constructor() {
+    }
 
 };

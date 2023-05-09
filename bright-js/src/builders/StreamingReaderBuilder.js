@@ -46,6 +46,17 @@ export default class StreamingReaderBuilder {
     }
 
     /**
+     * Sets the the status indicating that this parser is perfomring "strict" parsing.
+     * @description Strict indicates that the parser will strictly enforce general structural aspects of the given standard being parsed.
+     * @param {*} isStrict Indicates that the parsing should be performed "strictly"
+     * @returns The reference to the current builder.
+     */
+    withIsStrict(isStrict) {
+        this.isStrict = isStrict;
+        return this;
+    }
+
+    /**
      * Build a new reader instance.
      * @returns The new reader instance.
      */
@@ -53,7 +64,7 @@ export default class StreamingReaderBuilder {
 
         // Default to the "DICOM Streaming Parser"
         if (this.parser == null) {
-            this.parser = new StreamingDicomDataParser();
+            throw new Error();
         }
 
         // Default to the "DICOM Streaming Instance Handler"
@@ -70,6 +81,9 @@ export default class StreamingReaderBuilder {
         // Set the "parser" into the "reader"
         reader.parser = this.parser;
 
+        // Set the "strict" status
+        reader.parser.isStrict = this.isStrict;
+
         // Return the build
         return reader;
 
@@ -81,6 +95,7 @@ export default class StreamingReaderBuilder {
     constructor() {
 
         // Initialze the build parameters
+        this.isStrict = false;
         this.parser = null;
         this.handler = null;
 

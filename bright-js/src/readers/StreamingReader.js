@@ -20,12 +20,12 @@
 //
 
 import Constants from '../dicom/Constants.js';
-import Exception from '../dicom/Exception.js';
+import Exception from '../environment/Exception.js';
+import { GeneralErrorCodes } from '../environment/Exception.js'
 
 import { Status } from '../parsers/Status.js';
 
 import Data from '../dicom/Data.js';
-import { DicomErrorCodes } from '../dicom/Exception.js'
 
 export default class StreamingReader {
 
@@ -134,11 +134,12 @@ export default class StreamingReader {
             // Resolve with a singe parser result
             if (status == Status.SUCCESS)
                 resolve(this._parser.result);
-            else if ((status == Status.SKIP) || (status == Status.STOP)) {
+            else if (status == Status.STOP)
+                resolve(this._parser.result);
+            else if (status == Status.JUMP)
                 resolve(null);
-            }
             else
-                reject(new Exception("Failed parsing single DICOM data-set.", DicomErrorCodes.GeneralError));
+                reject(new Exception("Failed parsing single DICOM data-set.", GeneralErrorCodes.GeneralError));
 
         }
         catch (err) {
@@ -172,7 +173,7 @@ export default class StreamingReader {
             this._parser.reset();
 
             // Keep reading till "done"
-            while ((status == Status.CONTINUE) || (status == Status.SKIP)) {
+            while ((status == Status.CONTINUE) || (status == Status.JUMP)) {
 
                 // Read a chunk of data
                 const { done, value } = await reader.read();
@@ -380,7 +381,7 @@ export default class StreamingReader {
 
                             // If the DICOM was NOT fully parsed, throw error
                             if (status == Status.FAIL) {
-                                throw new Exception("Failed parsing multiple DICOM data-sets.", DicomErrorCodes.GeneralError)
+                                throw new Exception("Failed parsing multiple DICOM data-sets.", GeneralErrorCodes.GeneralError)
                             }
 
                             // If the parsing has STOPPED
@@ -402,8 +403,8 @@ export default class StreamingReader {
 
                             }
 
-                            // If we are skipping this part, keep going
-                            if (status == Status.SKIP) {
+                            // If we are jumpping this part, keep going
+                            if (status == Status.JUMP) {
 
                                 // If currently reached the next boundary
                                 if (boundaryMatched == true) {
@@ -548,11 +549,12 @@ export default class StreamingReader {
                 // Resolve with a singe parser result
                 if (status == Status.SUCCESS)
                     resolve(that.parser.result);
-                else if ((status == Status.SKIP) || (status == Status.STOP)) {
+                else if (status == Status.STOP)
+                    resolve(that.parser.result);
+                else if (status == Status.JUMP)
                     resolve(null);
-                }        
                 else
-                    reject(new Exception("Failed parsing single DICOM data-set.", DicomErrorCodes.GeneralError));
+                    reject(new Exception("Failed parsing single DICOM data-set.", GeneralErrorCodes.GeneralError));
                 
             }
             catch (err) {

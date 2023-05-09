@@ -1,23 +1,24 @@
-import Exception from '../../dicom/Exception.js';
-import { DicomErrorCodes } from '../../dicom/Exception.js';
+import Exception from '../../environment/Exception.js';
+import { GeneralErrorCodes } from '../../environment/Exception.js';
+import { DicomErrorCodes } from '../../environment/Exception.js';
 
 test("Test: GeneralError", () => {
     const t = () => {
-      throw new Exception("GeneralError", DicomErrorCodes.GeneralError);
+      throw new Exception("GeneralError", GeneralErrorCodes.GeneralError);
     };
     expect(t).toThrow(Exception);
 });
 
 test("Test: InvalidParameter", () => {
     const t = () => {
-      throw new Exception("InvalidParameter", DicomErrorCodes.InvalidParameter);
+      throw new Exception("InvalidParameter", GeneralErrorCodes.InvalidParameter);
     };
     expect(t).toThrow(Exception);
 });
 
 test("Test: NotImplemented", () => {
     const t = () => {
-      throw new Exception("NotImplemented", DicomErrorCodes.NotImplemented);
+      throw new Exception("NotImplemented", GeneralErrorCodes.NotImplemented);
     };
     expect(t).toThrow(Exception);
 });

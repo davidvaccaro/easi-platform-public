@@ -30,6 +30,7 @@ import Tag from '../../dicom/Tag.js';
 import Attribute from '../../dicom/Attribute.js';
 import Item from '../../dicom/Item.js';
 import AttributeSequence from '../../dicom/AttributeSequence.js';
+import Exception, { DicomErrorCodes } from '../../environment/Exception.js';
 
 export default class DumpParser {
 
@@ -125,8 +126,8 @@ export default class DumpParser {
         }
         catch (error) {
 
-            // TODO - Handle exception properly
-            console.log(error);
+            // Throw the parsing error
+            throw new Exception("Invalid Data Element parsing Tag details.", DicomErrorCodes.InvalidDataElement, error);
 
         }
 

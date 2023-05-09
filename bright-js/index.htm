@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DICOM.JS Samples</title>
+    <title>EASI DICOM Samples</title>
 
     <!-- JQuery -->
     <script src="lib/jquery.js"></script>
@@ -10,10 +10,9 @@
     <script>
         //navigator.serviceWorker.register('./dicomServiceWorker.js', { type: 'module' });
     </script>
-    <h1>DICOM.JS Samples</h1>
-    <br>
+    <h1>EASI DICOM Samples</h1>
     <div>
-        <h4>DICOM Related Actions</h4>
+        <h4>DICOM Data Parse Related Actions</h4>
         <div>
             <input type="file" id="dicomFile" name="dicomFile" />
         </div>
@@ -29,8 +28,9 @@
         <div>
             <button id="study">Parse Study</button>
         </div>
+
         <br>
-        <h4>FHIR Related Actions</h4>
+        <h4>FHIR Mapping Related Actions</h4>
         <div>
             <input type="file" id="dicomFileFHIR" name="dicomFileFHIR" />
         </div>
@@ -46,12 +46,31 @@
         <div>
             <button id="fhirStudy">Parse Study To FHIR</button>
         </div>
+
         <br>
+        <h4>Selection Related Actions</h4>
+        <div>
+            <input type="file" id="dicomFileSelection" name="dicomFileSelection" />
+        </div>
+        <br>
+        <div>
+            <button id="selection">Parse Instance To a Selection</button>
+        </div>
+        <br>
+        <div>
+            <button id="selectionSeries">Parse Series To a Selection</button>
+        </div>
+        <br>
+        <div>
+            <button id="selectionStudy">Parse Study To a Selection</button>
+        </div>
+        
+        <br>
+        <h4>DUMP Related Actions</h4>
         <div>
             <button id="dump">Parse Dump</button>
         </div>
         <br>
-        <h4>DUMP Related Actions</h4>
         <div>
             <textarea id="dicomDump" rows="10" cols="80">
 (0x0002,0x0010) UI Transfer Syntax UID VR=<UI> VL=<0x0014> <1.2.840.10008.1.2.1>
@@ -79,6 +98,9 @@
             -->
             <canvas id="canvas" width="512" height="512" style="width:512px;height:512px;"></canvas>
         </div>
+        <div>
+            <button id="sample">Run the Sample</button>
+        </div>
     </div>
     <div>
     </div>
@@ -104,8 +126,11 @@
 
         import StreamingDicomInstanceHandler from './src/handlers/StreamingDicomInstanceHandler.js';
         import StreamingDicomMappingHandler from './src/handlers/StreamingDicomMappingHandler.js';
+        import StreamingDicomSelectingHandler from './src/handlers/StreamingDicomSelectingHandler.js';
 
-        import DicomToFHIRImagingStudyMapping from './src/mappings/DicomToFHIRImagingStudyMapping.js';
+        import DicomToFHIRImagingStudyMapping from './src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
+
+        import DicomSelection from './src/handlers/selections/DicomSelection.js'
 
         import StreamingDicomDataParser from './src/parsers/StreamingDicomDataParser.js';
         import StreamingReader from './src/readers/StreamingReader.js';
@@ -130,6 +155,10 @@
                 return true;
 
             }            
+
+            // ================================
+            // PARSE DICOM
+            // ================================
 
             $('#dicomFile').on('change', function () {
 
@@ -269,6 +298,10 @@
 
             });            
 
+            // ================================
+            // FHIR DICOM
+            // ================================
+
             // Handle FHIR File 
             $('#dicomFileFHIR').on('change', function () {
 
@@ -373,6 +406,146 @@
 
             });            
 
+            // ================================
+            // SELECTION DICOM
+            // ================================
+
+            // Handle SELECTION File 
+            $('#dicomFileSelection').on('change', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = URL.createObjectURL(this.files[0]);
+
+                // Create the new selection
+                var selection = new DicomSelection();
+
+                selection.addTag(Tag.PatientID);
+                selection.addTag(Tag.PatientName);
+                selection.addTag(Tag.PatientBirthDate);
+
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomSelectingHandler(selection))
+                    .build();
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => {
+                        console.log(result); 
+                        $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });
+
+            // Handle Instance
+            $('#selection').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094";
+
+                // Create the new selection
+                var selection = new DicomSelection();
+
+                selection.addTag(Tag.PatientID);
+                selection.addTag(Tag.PatientName);
+                selection.addTag(Tag.PatientBirthDate);
+
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomSelectingHandler(selection))
+                    .build();
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => {
+                        console.log(result); 
+                        $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });
+
+            // Handle Series
+            $('#selectionSeries').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583";
+
+                // Create the new selection
+                var selection = new DicomSelection();
+
+                selection.addTag(Tag.PatientID);
+                selection.addTag(Tag.PatientName);
+                selection.addTag(Tag.PatientBirthDate);
+
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomSelectingHandler(selection))
+                    .build();
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => {
+                        console.log(result); 
+                        $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // Handle Study
+            $('#selectionStudy').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641";
+
+                // Create the new selection
+                var selection = new DicomSelection();
+
+                selection.addTag(Tag.PatientID);
+                selection.addTag(Tag.PatientName);
+                selection.addTag(Tag.PatientBirthDate);
+
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomSelectingHandler(selection))
+                    .build();
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => {
+                        console.log(result); 
+                        $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // ================================
+            // DUMP DICOM
+            // ================================
+
             function createNewItem(index) {
 
                 let item = new Item(Constants.UndefinedLength);
@@ -421,6 +594,49 @@
                 var uuu = 100;
 
             });       
+
+            // SAMPLE CODE 
+            $('#sample').on('click', function () {
+
+                // Build the EASI DICOM Streaming Reader configured to parse DICOM Data to DICOM Instances
+                const reader = EASI
+                    .newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomInstanceHandler())
+                    .build();
+
+                // URI to a single DICOM data instance (either WADO-RS or any other HTTP resource)
+                const uri = 'https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583';
+
+                // Issue the HTTP request, read and parse the DICOM data response 
+                reader
+                    .read(uri)
+                    .then(instances => {
+
+                        for (const instance of instances) {
+
+                            // Access the primary patient details
+                            const patientId = instance.dataSet.find(Tag.PatientID); 
+                            const patientName = instance.dataSet.find(Tag.PatientName); 
+                            const patientDOB = instance.dataSet.find(Tag.PatientBirthDate); 
+
+                            // Access the modality details
+                            const modality = instance.dataSet.find(Tag.Modality); 
+
+                            // Access the pixel-data
+                            const pixels = instance.dataSet.find(Tag.PixelData); 
+
+                            // Do something useful with the patient and pixel data
+                            var xxx = 100;
+
+                        }
+
+                    })
+                    .catch(error => { 
+                        // Handler the error  
+                    });                
+
+            });
             
         });
     </script>

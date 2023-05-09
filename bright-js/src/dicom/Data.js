@@ -21,7 +21,8 @@
 
 import Runtime from '../environment/Runtime.js';
 import Utilities from './Utilities.js';
-import Exception from './Exception.js';
+import Exception from '../environment/Exception.js';
+import { GeneralErrorCodes } from '../environment/Exception.js';
 import TransferSyntax from './TransferSyntax.js'
 
 export default class Data {
@@ -87,7 +88,7 @@ export default class Data {
 
         // Validate the appended data
         if (raw == null)
-            throw new Exception("Invalid raw DICOM data. Cannot append undefind or null data.", DicomErrorCodes.InvalidParameter);
+            throw new Exception("Invalid raw DICOM data. Cannot append undefind or null data.", GeneralErrorCodes.InvalidParameter);
 
         // Establish the new data
         var newData = null;

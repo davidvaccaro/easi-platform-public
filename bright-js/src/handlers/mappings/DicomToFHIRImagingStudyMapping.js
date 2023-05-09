@@ -20,13 +20,13 @@
 //
 
 import DicomMapping from "./DicomMapping.js";
-import Tag from "../dicom/Tag.js"
+import Tag from "../../dicom/Tag.js"
 
-import Reference from "../fhir/Reference.js";
-import ImagingStudy from "../fhir/ImagingStudy.js";
-import ImagingSeries from "../fhir/ImagingSeries.js";
-import ImagingInstance from "../fhir/ImagingInstance.js";
-import Patient from "../fhir/Patient.js";
+import Reference from "../../fhir/Reference.js";
+import ImagingStudy from "../../fhir/ImagingStudy.js";
+import ImagingSeries from "../../fhir/ImagingSeries.js";
+import ImagingInstance from "../../fhir/ImagingInstance.js";
+import Patient from "../../fhir/Patient.js";
 
 export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
 

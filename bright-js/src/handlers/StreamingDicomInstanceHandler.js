@@ -184,8 +184,8 @@ export default class StreamingDicomInstanceHandler {
     }
 
     /**
-     * Returns the current instance constructed by this emitter.
-     * @returns The current instance.
+     * Returns the current data product constructed by this handler.
+     * @returns The current data product.
      */
     onEndInstance(context) {
 

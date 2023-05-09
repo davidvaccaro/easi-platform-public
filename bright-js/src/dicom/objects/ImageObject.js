@@ -19,7 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import Configuration from '../Configuration.js';
+import Configuration from '../../environment/Configuration.js';
 import Object from './Object.js';
 import ImagePixelModule from '../modules/ImagePixelModule.js';
 import MultiFrameModule from '../modules/MultiFrameModule.js';
@@ -103,7 +103,7 @@ export default class ImageObject extends Object {
         }
 
         // Establish an instance of the decoder configured for the given transfer-syntax
-        decoder = (decoder != null) ? decoder : Configuration.decoderFor(attribute.transferSyntax, this);
+        decoder = (decoder != null) ? decoder : Configuration.global.getDecoderFor(attribute.transferSyntax, this);
 
         // Decode the whole frame
         if (this.isMultiFrame == false) {

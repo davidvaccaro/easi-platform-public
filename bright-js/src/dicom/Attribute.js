@@ -31,6 +31,10 @@ export default class Attribute extends DataElement {
      */
     get value() {
         
+        // If there is a value override, return it
+        if (this._value != null)
+            return _value;
+
         // Access the "raw" data
         var data = this.access();
 
@@ -86,8 +90,17 @@ export default class Attribute extends DataElement {
             default:
                 // Return the raw data
                 return data;
+
         }
 
+    }
+
+    /**
+     * Sets the value of the attribute.
+     * @description This feature is primaerily used as an preference overried to the value that can be decoded from the attribute data.
+     */
+    set value(value) {
+        this._value = value;
     }
 
     /**
@@ -100,6 +113,9 @@ export default class Attribute extends DataElement {
 
         // Set the properties
         this.tag = tag;
+
+        // Init the value overried
+        this._value = null;
 
     }
 

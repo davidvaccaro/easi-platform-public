@@ -20,10 +20,9 @@
 //
 
 import Constants from '../dicom/Constants.js';
-import Configuration from '../dicom/Configuration.js';
 import Utilities from '../dicom/Utilities.js';
-import Exception from '../dicom/Exception.js';
-import { DicomErrorCodes } from '../dicom/Exception.js';
+import Exception from '../environment/Exception.js';
+import { DicomErrorCodes } from '../environment/Exception.js';
 
 import { Status } from './Status.js';
 
@@ -228,7 +227,7 @@ export default class StreamingDicomDataParser {
                         throw new Exception("Unknown Tag and Value Representation!", DicomErrorCodes.UnknownTagAndValueRepresentation);
 
                     // If the tag is found but the VR does NOT agree, process exception
-                    if ((tag != null) && (valueRepresentation != null) && (tag.VR != valueRepresentation) && (Configuration.isStrict == true))
+                    if ((tag != null) && (valueRepresentation != null) && (tag.VR != valueRepresentation) && (this.isStrict == true))
                         throw new Exception("Value Representation Read and Runtime Tag do NOT Agree!", DicomErrorCodes.InvalidDataElement);
 
                     // Establish the value representation to use to parse the value
@@ -342,7 +341,7 @@ export default class StreamingDicomDataParser {
                     throw new Exception("Invalid Value Length!", DicomErrorCodes.InvalidDataElement);
 
                 // Validate the value length based on value-representation
-                if ((result.valueRepresentation.IsFixed == true) && (result.valueRepresentation.Length != valueLength) && (Configuration.isStrict == true))
+                if ((result.valueRepresentation.IsFixed == true) && (result.valueRepresentation.Length != valueLength) && (this.isStrict == true))
                     throw new Exception("Invalid Value Length! Value does NOT match VR fixed length.", DicomErrorCodes.InvalidDataElement);
 
                 // Validate the use of undefined-length value length
@@ -360,7 +359,7 @@ export default class StreamingDicomDataParser {
                         ||
                         (result.valueRepresentation == ValueRepresentations.UT)
                     )
-                    && (Configuration.isStrict == true)
+                    && (this.isStrict == true)
                 ) {
                     throw new Exception("Invalid Value Length! UC, UR or UT MUST be Explicit! See: 7.1.2 Data Element Structure with Explicit VR", DicomErrorCodes.InvalidDataElement);
                 }
@@ -600,7 +599,7 @@ export default class StreamingDicomDataParser {
         }
 
         // If the instance is complete, end the instance
-        if (status == Status.SUCCESS) {
+        if ((status == Status.SUCCESS) || (status == Status.JUMP) || (status == Status.STOP)) {
 
             // End the "instance"
             this.result = await this.fireStreamEvent("onEndInstance", this.context);
@@ -1234,7 +1233,7 @@ export default class StreamingDicomDataParser {
         }
 
         // Indicate the current status
-        return ((this.status == Status.STOP) || (this.status == Status.FAIL) || (this.status == Status.SKIP)) ? this.status : Status.CONTINUE;
+        return ((this.status == Status.STOP) || (this.status == Status.FAIL) || (this.status == Status.SKIP) || (this.status == Status.JUMP)) ? this.status : Status.CONTINUE;
 
     }
 
@@ -1290,147 +1289,157 @@ export default class StreamingDicomDataParser {
                 this.dataElementStatus = Status.SKIP;
             }
 
+            // Set the primary status if we are JUMPING, STOPPING or FAILING
+            if ((this.dataElementStatus == Status.JUMP) || (this.dataElementStatus == Status.STOP) || (this.dataElementStatus == Status.FAIL)) {
+                this.status = this.dataElementStatus;
+            }
+
         }
 
-        // Handle DICOM sequence data-element versus normal data-element
-        if (this.dataElement instanceof AttributeSequence) {
+        // If the status is still to continue processing (including SKIPPING, continue)
+        if ((this.status != Status.JUMP) && (this.status != Status.STOP) && (this.status != Status.FAIL)) {
 
-            // Capture the sequence start
-            var sequenceStart = this.totalBytesConsumed;
+            // Handle DICOM sequence data-element versus normal data-element
+            if (this.dataElement instanceof AttributeSequence) {
 
-            // Peak the next tag details
-            var details = this.peekTagDetails();
+                // Capture the sequence start
+                var sequenceStart = this.totalBytesConsumed;
 
-            // If MORE data is needed, return false
-            if (details == false) {
-                return false;
-            }
+                // Peak the next tag details
+                var details = this.peekTagDetails();
 
-            // Default the element status
-            if (this.status == Status.SKIP) {
-                this.dataElementStatus = Status.SKIP;
-            }
-
-            // If the current data-element is NOT an Item, assume the sequence is empty
-            if (details.tag != Tag.Item) {
-
-                // End the current sequence (possibly SKIP)
-                await this.fireStreamEvent("onEndSequence", this.dataElement, this.dataElementStatus);
-
-            }
-            else {
-
-                // Consume the data-element element data
-                this.data.consume(details.bytesPeeked);
-
-                // Record bytes consumed
-                bytesConsumed += details.bytesPeeked;
-
-                // Push the sequence
-                this.dataElements.push({ 
-                    start: sequenceStart, 
-                    element: this.dataElement,
-                    status: this.dataElementStatus 
-                });
-                
-                // Push the item
-                var count = this.dataElements.push({ 
-                    start: (sequenceStart + details.bytesPeeked), 
-                    element: new Item(details.valueLength),
-                    status: this.dataElementStatus 
-                });
-
-                // If the current sequence STATUS is CONTINUE
-                if (this.dataElementStatus == Status.CONTINUE) {
-
-                    // Start the item
-                    this.dataElements[count - 1].status = await this.fireStreamEvent("onStartItem");
-
+                // If MORE data is needed, return false
+                if (details == false) {
+                    return false;
                 }
 
-            }
+                // Default the element status
+                if (this.status == Status.SKIP) {
+                    this.dataElementStatus = Status.SKIP;
+                }
 
-            // Clear the current element
-            this.dataElement = null;
+                // If the current data-element is NOT an Item, assume the sequence is empty
+                if (details.tag != Tag.Item) {
 
-            // Clear the element status
-            this.dataElementStatus = Status.CONTINUE;
-
-        }
-        else {
-
-            // If there is data to process
-            if (this.data.length() > 0) {
-
-                // Handle "undefined-length" versus "explicit length"
-                if (this.dataElement.valueLength == Constants.UndefinedLength) {
-
-                    // Determine if the current buffer contains the end sequence
-                    var index = this.data.indexOf(0, Utilities.getEndSequence());
-
-                    if (index == -1) {
-
-                        // Detemrine the buffer length
-                        var totalLength = this.data.length();
-
-                        // Append the remaining bytes to the data-element
-                        this.dataElement.append(this.data.consume(totalLength));
-
-                        // Record bytes consumed
-                        bytesConsumed += totalLength;
-                        
-                    }
-                    else {
-
-                        // Append the remaining bytes to the data-element
-                        this.dataElement.append(this.data.consume(index));
-
-                        // Record bytes consumed
-                        bytesConsumed += index;
-
-                        // Determine the End Squence length
-                        var endSequenceLength = Utilities.getEndSequence().length;
-
-                        // Consume the End Sequence
-                        this.data.consume(endSequenceLength);
-
-                        // Record bytes consumed
-                        bytesConsumed += endSequenceLength;
-
-                        // Mark the element as complete
-                        this.dataElement.isComplete = true;
-
-                    }
-
-                    // Fire the "append" event (possibly SKIP)
-                    await this.fireStreamEvent("onAppendAttribute", this.dataElement, this.dataElementStatus);
+                    // End the current sequence (possibly SKIP)
+                    await this.fireStreamEvent("onEndSequence", this.dataElement, this.dataElementStatus);
 
                 }
                 else {
 
-                    // Determine the next chunk (either remaining for this element OR all remining bytes in the buffer)
-                    var bytesRemaining = Math.min(this.dataElement.bytesRemaining, this.data.length());
-
-                    // Append the data-element data 
-                    this.dataElement.append(this.data.consume(bytesRemaining));
+                    // Consume the data-element element data
+                    this.data.consume(details.bytesPeeked);
 
                     // Record bytes consumed
-                    bytesConsumed += bytesRemaining;
+                    bytesConsumed += details.bytesPeeked;
 
-                    // If the STATUS is CONTINUE
-                    if (this.status == Status.CONTINUE) {
+                    // Push the sequence
+                    this.dataElements.push({ 
+                        start: sequenceStart, 
+                        element: this.dataElement,
+                        status: this.dataElementStatus 
+                    });
+                    
+                    // Push the item
+                    var count = this.dataElements.push({ 
+                        start: (sequenceStart + details.bytesPeeked), 
+                        element: new Item(details.valueLength),
+                        status: this.dataElementStatus 
+                    });
 
-                        // If the current data-element is complete,
-                        if (this.dataElement.isComplete == true) {
+                    // If the current sequence STATUS is CONTINUE
+                    if (this.dataElementStatus == Status.CONTINUE) {
 
-                            // End the attribute
-                            await this.fireStreamEvent("onEndAttribute", this.dataElement, this.dataElementStatus);
+                        // Start the item
+                        this.dataElements[count - 1].status = await this.fireStreamEvent("onStartItem");
 
+                    }
+
+                }
+
+                // Clear the current element
+                this.dataElement = null;
+
+                // Clear the element status
+                this.dataElementStatus = Status.CONTINUE;
+
+            }
+            else {
+
+                // If there is data to process
+                if (this.data.length() > 0) {
+
+                    // Handle "undefined-length" versus "explicit length"
+                    if (this.dataElement.valueLength == Constants.UndefinedLength) {
+
+                        // Determine if the current buffer contains the end sequence
+                        var index = this.data.indexOf(0, Utilities.getEndSequence());
+
+                        if (index == -1) {
+
+                            // Detemrine the buffer length
+                            var totalLength = this.data.length();
+
+                            // Append the remaining bytes to the data-element
+                            this.dataElement.append(this.data.consume(totalLength));
+
+                            // Record bytes consumed
+                            bytesConsumed += totalLength;
+                            
                         }
                         else {
 
-                            // Append the attribute
-                            await this.fireStreamEvent("onAppendAttribute", this.dataElement, this.dataElementStatus);
+                            // Append the remaining bytes to the data-element
+                            this.dataElement.append(this.data.consume(index));
+
+                            // Record bytes consumed
+                            bytesConsumed += index;
+
+                            // Determine the End Squence length
+                            var endSequenceLength = Utilities.getEndSequence().length;
+
+                            // Consume the End Sequence
+                            this.data.consume(endSequenceLength);
+
+                            // Record bytes consumed
+                            bytesConsumed += endSequenceLength;
+
+                            // Mark the element as complete
+                            this.dataElement.isComplete = true;
+
+                        }
+
+                        // Fire the "append" event (possibly SKIP)
+                        await this.fireStreamEvent("onAppendAttribute", this.dataElement, this.dataElementStatus);
+
+                    }
+                    else {
+
+                        // Determine the next chunk (either remaining for this element OR all remining bytes in the buffer)
+                        var bytesRemaining = Math.min(this.dataElement.bytesRemaining, this.data.length());
+
+                        // Append the data-element data 
+                        this.dataElement.append(this.data.consume(bytesRemaining));
+
+                        // Record bytes consumed
+                        bytesConsumed += bytesRemaining;
+
+                        // If the STATUS is CONTINUE
+                        if (this.status == Status.CONTINUE) {
+
+                            // If the current data-element is complete,
+                            if (this.dataElement.isComplete == true) {
+
+                                // End the attribute
+                                await this.fireStreamEvent("onEndAttribute", this.dataElement, this.dataElementStatus);
+
+                            }
+                            else {
+
+                                // Append the attribute
+                                await this.fireStreamEvent("onAppendAttribute", this.dataElement, this.dataElementStatus);
+
+                            }
 
                         }
 
@@ -1446,8 +1455,24 @@ export default class StreamingDicomDataParser {
         this.totalBytesConsumed += bytesConsumed;
 
         // Return TRUE if there are more bytes to process
-        return (this.data.isEmpty == false);
+        return (((this.status != Status.JUMP) && (this.status != Status.STOP) && (this.Status != Status.FAIL)) && (this.data.isEmpty == false));
 
+    }
+
+    /**
+     * Sets the the status indicating that this parser is perfomring "strict" parsing.
+     * @description Strict indicates that the parser will strictly enforce general structural aspects of the DICOM Standard.
+     */
+    set isStrict (isStrict) {
+        this._isStrict = isStrict;
+    }
+
+    /**
+     * Gets the status indicating that this parser is performing "strict" parsing.
+     * @description Strict indicates that the parser will strictly enforce general structural aspects of the DICOM Standard.
+     */
+    get isStrict() {
+        return this._isStrict;
     }
 
     /**
@@ -1470,6 +1495,9 @@ export default class StreamingDicomDataParser {
      * Constructos a new DICOM Parser with the associated DICOM Stream Handler.
      */
     constructor() {
+
+        // Default the "strict" status
+        this._isStrict = false;
 
         // Set the default part specification (Part-10)
         this.partSpecification = DicomPart10Specification;

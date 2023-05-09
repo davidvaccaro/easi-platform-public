@@ -1,7 +1,7 @@
 //
-// Configuration.js - 1.0.0
+// Exception.js - 1.0.0
 //
-// DICOM Configuration Class 
+// Exception Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,42 +19,41 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import DicomNativePixelDataToRGBADecoder from '../codecs/decoders/dicomNativePixelDataToRGBADecoder.js';
-import TransferSyntax from './TransferSyntax.js';
-import jpegDecoder from '../codecs/decoders/jpegDecoder.js';
-import jpegLosslessDecoder from '../codecs/decoders/jpegLosslessDecoder.js';
-
-export default class Configuration {
+export default class Exception {
 
     /**
-     * Is the current environment configured for "strict" validation.
+     * Create a new Exception given a message, code and optional underlying error.
+     * @param {*} message The message describing the error condition.
+     * @param {*} code The code identifying the error condition.
+     * @param {*} error The underlying error associated to the error condition.
      */
-    static get isStrict() { return false; }
-
-    /**
-     * Gets the decoder for a given transfer-syntax.
-     * @param {*} transferSyntax The transfer-syntax.
-     * @returns The decoder.
-     */
-    static decoderFor(transferSyntax, dicomObject) {
-
-        // Switch the transferSyntax
-        switch (transferSyntax) {
-            
-            case TransferSyntax.JPEGBaseline8Bit:
-                return new jpegDecoder(dicomObject);
-
-            case TransferSyntax.JPEGLossless:
-            case TransferSyntax.JPEGLosslessSV1:
-                return new jpegLosslessDecoder(dicomObject);
-                            
-        }
-
-        return new DicomNativePixelDataToRGBADecoder(dicomObject);
-
+    constructor(message, code = GeneralErrorCodes.GeneralError, error = null) {
+        this.message = message;
+        this.code = code;
+        this.error = error;
     }
 
-    constructor() {
-    }
+};
 
+/**
+ * General error conditions.
+ */
+export var GeneralErrorCodes = {
+    GeneralError: 'GeneralError',
+    InvalidParameter: 'InvalidParameter',
+    NotImplemented: 'NotImplemented'
+};
+
+/**
+ * DICOM-specific error conditions.
+ */
+export var DicomErrorCodes = {
+    InvalidPart: 'InvalidPart',
+    InvalidValueRepresentation: 'InvalidValueRepresentation',
+    InvalidTag: 'InvalidTag',
+    UnknownTagAndValueRepresentation: 'UnknownTagAndValueRepresentation',
+    InvalidDataElement: 'InvalidDataElement',
+    InvalidSequence: 'InvalidSequence',
+    DuplicateAttribute: 'DuplicateAttribute',
+    InvalidMetaSet: 'InvalidMetaSet'
 };

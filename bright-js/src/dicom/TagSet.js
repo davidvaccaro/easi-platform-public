@@ -1,7 +1,7 @@
 //
-// Exception.js - 1.0.0
+// TagSet.js - 1.0.0
 //
-// DICOM Exception Class 
+// DICOM Tag Set Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,25 +19,45 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class Exception {
+export default class TagSet {
 
-    constructor(message, code = DicomErrorCodes.GeneralError) {
-        this.message = message;
-        this.code = code;
+    /**
+     * Find an tag within the tag set by tag identifier.
+     * @param {*} tag The DICOM tag to search by.
+     * @returns The tag if found or NULL otherwise.
+     */
+    find(tag) {
+        return this.tags.find(element => element.ID == tag.ID);
     }
 
-};
+    /**
+     * Determine if an tag exists within the tag set.
+     * @param {*} tag The DICOM tag to test.
+     * @returns {*} TRUE if an tag exists in the tag set, FALSE otherwise.
+     */
+    has(tag) {
+        return (this.find(tag) != null);
+    }
 
-export var DicomErrorCodes = {
-    GeneralError: 'GeneralError',
-    InvalidParameter: 'InvalidParameter',
-    NotImplemented: 'NotImplemented',
-    InvalidPart: 'InvalidPart',
-    InvalidValueRepresentation: 'InvalidValueRepresentation',
-    InvalidTag: 'InvalidTag',
-    UnknownTagAndValueRepresentation: 'UnknownTagAndValueRepresentation',
-    InvalidDataElement: 'InvalidDataElement',
-    InvalidSequence: 'InvalidSequence',
-    DuplicateAttribute: 'DuplicateAttribute',
-    InvalidMetaSet: 'InvalidMetaSet'
+    /**
+     * Adds a new tag to the set of tags.
+     * @param {*} tag The attribute to add.
+     */
+    add(tag) {
+
+        // Add the attribute to the collection
+        this.tags.push(tag);
+
+    }
+
+    /**
+     * Construct a new DICOM tag set instance
+     */
+    constructor() {
+
+        // Init the attributes collection
+        this.tags = [];
+
+    }
+
 };
