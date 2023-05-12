@@ -1,7 +1,7 @@
 //
-// CTObject.js - 1.0.0
+// XA.js - 1.0.0
 //
-// DICOM Dicom CT Object Class 
+// DICOM Dicom XA Object Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,18 +19,9 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import ImageObject from './ImageObject.js';
-import ImagePlaneModule from '../modules/ImagePlaneModule.js';
+import Image from './Image.js';
 
-export default class CTObject extends ImageObject {
-
-    /**
-     * Get the Image Plane Module.
-     * @returns The Image Plane Module.
-     */
-    get imagePlaneModule() {
-        return new ImagePlaneModule(this.attributeSet);
-    }
+export default class XA extends Image {
 
     /**
      * Construct an DICOM XA Object instance.

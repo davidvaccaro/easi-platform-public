@@ -19,9 +19,12 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import StreamingDicomDataParser from "../parsers/StreamingDicomDataParser.js";
 import StreamingReader from "../readers/StreamingReader.js";
+import StreamingDicomDataParser from "../parsers/StreamingDicomDataParser.js";
 import StreamingDicomInstanceHandler from "../handlers/StreamingDicomInstanceHandler.js";
+import StreamingDicomMappingHandler from '../handlers/StreamingDicomMappingHandler.js';
+import StreamingDicomSelectingHandler from "../handlers/StreamingDicomSelectingHandler.js";
+import DicomToFHIRImagingStudyMapping from '../handlers/mappings/DicomToFHIRImagingStudyMapping.js';
 
 export default class StreamingReaderBuilder {
   
@@ -46,6 +49,15 @@ export default class StreamingReaderBuilder {
     }
 
     /**
+     * Sets the "onPart" option for the stream-read session.
+     * @param {*} onPart The "onPart" function handler called to resolve each part of a multi-part stream. 
+     */
+    withOnPart(onPart) {
+        this.onPart = onPart;
+        return this;
+    }
+
+    /**
      * Sets the the status indicating that this parser is perfomring "strict" parsing.
      * @description Strict indicates that the parser will strictly enforce general structural aspects of the given standard being parsed.
      * @param {*} isStrict Indicates that the parsing should be performed "strictly"
@@ -54,6 +66,80 @@ export default class StreamingReaderBuilder {
     withIsStrict(isStrict) {
         this.isStrict = isStrict;
         return this;
+    }
+
+    /**
+     * Sets the current build to stream-parse DICOM Data.
+     * @returns The reference to the current builder.
+     */
+    forDicomData() {
+        
+        // Setup for stream-parsing DICOM data ...
+        this.parser = new StreamingDicomDataParser();
+
+        return this;
+
+    }
+
+    /**
+     * Sets the current build to stream-parse to DICOM instances.
+     * @returns The reference to the current builder.
+     */
+    toInstances() {
+        
+        // ...into DICOM instances
+        this.handler = new StreamingDicomInstanceHandler();
+
+        return this;
+
+    }
+
+    /**
+     * Sets the current build to stream-parse to a mapping.
+     * @returns The reference to the current builder.
+     */
+    toMapping(mapping) {
+        
+        // Setup for stream-parsing DICOM data ...
+        this.parser = new StreamingDicomDataParser();
+
+        // ...into a mapping
+        this.handler = new StreamingDicomMappingHandler(mapping);
+
+        return this;
+
+    }
+
+    /**
+     * Sets the current build to stream-parse to a selection.
+     * @returns The reference to the current builder.
+     */
+    toSelection(selection) {
+        
+        // Setup for stream-parsing DICOM data ...
+        this.parser = new StreamingDicomDataParser();
+
+        // ...into a selection
+        this.handler = new StreamingDicomSelectingHandler(selection);
+
+        return this;
+
+    }
+
+    /**
+     * Sets the current build to stream-parse to a FHIR ImagingStudy resource.
+     * @returns The reference to the current builder.
+     */
+    toFHIRImagingStudies() {
+        
+        // Setup for stream-parsing DICOM data ...
+        this.parser = new StreamingDicomDataParser();
+
+        // ...into a FHIR ImagingStudy resource
+        this.handler = new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping());
+
+        return this;
+
     }
 
     /**
@@ -74,6 +160,9 @@ export default class StreamingReaderBuilder {
 
         // Create the new "DICOM Streaming Reader" instance
         const reader = new StreamingReader();
+
+        // Set the "onPart" option
+        reader.onPart = this.onPart;
 
         // Set the "handler" into the "parser"
         this.parser.handler = this.handler;
@@ -98,6 +187,7 @@ export default class StreamingReaderBuilder {
         this.isStrict = false;
         this.parser = null;
         this.handler = null;
+        this.resolveOnPart = false;
 
     }
   

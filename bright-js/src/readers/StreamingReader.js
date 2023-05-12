@@ -398,8 +398,19 @@ export default class StreamingReader {
                                 // Reset the parser
                                 this._parser.reset();
 
-                                // Set the status to CONTINUE
-                                status = Status.CONTINUE;
+                                // Handle the "onPart" option
+                                if (this.onPart != null) {
+
+                                    // Call the onPart handler 
+                                    status = this.onPart(this._parser.result);
+
+                                }
+                                else {
+
+                                    // Set the status to CONTINUE
+                                    status = Status.CONTINUE;
+
+                                }
 
                             }
 
@@ -590,6 +601,20 @@ export default class StreamingReader {
      */
     get parser () {
         return this._parser;
+    }
+
+    /**
+     * Sets the "onPart" option for the stream-read session.
+     */
+    set onPart (onPart) {
+        this._onPart = onPart;
+    }
+
+    /**
+     * Gets the "onPart" option for the stream-read session.
+     */
+    get onPart() {
+        return this._onPart;
     }
 
     /**

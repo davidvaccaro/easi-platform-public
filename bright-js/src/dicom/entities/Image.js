@@ -1,5 +1,5 @@
 //
-// ImageObject.js - 1.0.0
+// Image.js - 1.0.0
 //
 // DICOM Dicom Image Object Class 
 //
@@ -20,15 +20,15 @@
 //
 
 import Configuration from '../../environment/Configuration.js';
-import Object from './Object.js';
 import ImagePixelModule from '../modules/ImagePixelModule.js';
 import MultiFrameModule from '../modules/MultiFrameModule.js';
 import VisualizationFunctionModule from '../modules/VisualizationFunctionModule.js'
 import ModalityLookUpTableModule from '../modules/ModalityLookUpTableModule.js'
 import PixelData from '../PixelData.js';
 import Tag from '../Tag.js'
+import Entity from './Entity.js';
 
-export default class ImageObject extends Object {
+export default class Image extends Entity {
 
     /**
      * Get the Image Pixel Module.

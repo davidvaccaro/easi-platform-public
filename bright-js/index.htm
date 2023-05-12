@@ -111,6 +111,8 @@
 
         import Constants from './src/dicom/Constants.js';
 
+        import { Status } from './src/parsers/Status.js';
+
         import Tag from './src/dicom/Tag.js';
         import TransferSyntax from './src/dicom/TransferSyntax.js';
         import Modality from './src/dicom/Modality.js';
@@ -137,9 +139,9 @@
         
         import StreamingReaderBuilder from './src/builders/StreamingReaderBuilder.js';
 
-        import ImageObject from './src/dicom/objects/ImageObject.js';
-        import CTObject from './src/dicom/objects/CTObject.js';
-        import XAObject from './src/dicom/objects/XAObject.js';
+        import Image from './src/dicom/entities/Image.js';
+        import CT from './src/dicom/entities/CT.js';
+        import XA from './src/dicom/entities/XA.js';
 
         import DumpParser from './src/tools/dicom/DumpParser.js';
 
@@ -186,35 +188,35 @@
                         console.log(instance);
 
                         // Create a new image object from the instance
-                        var imageObject = null;
+                        var imageEntity = null;
                         
                         // Get the modality
                         var modality = instance.dataSet.find(Tag.Modality).value;
 
                         if (modality == Modality.CT.ID) {
-                            imageObject = new CTObject(instance.dataSet);
+                            imageEntity = new CT(instance.dataSet);
                         }
                         else if (modality == Modality.XA.ID) {
-                            imageObject = new XAObject(instance.dataSet);
+                            imageEntity = new XA(instance.dataSet);
                         }
                         else {
-                            imageObject = new ImageObject(instance.dataSet);
+                            imageEntity = new Image(instance.dataSet);
                         }
                                             
                         // Create the destination for the decode (4 BYTES PER PIXEL)
-                        var destination = new Uint8Array(imageObject.imagePixelModule.columns * imageObject.imagePixelModule.rows * 4);
+                        var destination = new Uint8Array(imageEntity.imagePixelModule.columns * imageEntity.imagePixelModule.rows * 4);
 
                         // Decoce into the destination
-                        imageObject.decodeFrame(destination);
+                        imageEntity.decodeFrame(destination);
 
                         // Create the image data from the decoded data
                         var data = new ImageData(
                             new Uint8ClampedArray(destination), 
-                            imageObject.imagePixelModule.columns, 
-                            imageObject.imagePixelModule.rows);
+                            imageEntity.imagePixelModule.columns, 
+                            imageEntity.imagePixelModule.rows);
 
-                        var width = imageObject.imagePixelModule.columns;
-                        var height = imageObject.imagePixelModule.rows;
+                        var width = imageEntity.imagePixelModule.columns;
+                        var height = imageEntity.imagePixelModule.rows;
 
                         const canvas = document.getElementById("canvas");
                         canvas.width = width;
@@ -270,7 +272,9 @@
                 // Read and parse the DICOM file
                 reader
                     .read(url)
-                    .then(result => console.log(result))
+                    .then(result => { 
+                        console.log(result); 
+                    })
                     .catch(err => console.log(err));
 
             });            
@@ -288,6 +292,18 @@
                 const reader = EASI.newStreamingReaderBuilder()
                     .withParser(new StreamingDicomDataParser())
                     .withHandler(new StreamingDicomInstanceHandler())
+                    .withOnPart(function (result) { 
+
+                        // Log
+                        if (Array.isArray(result) == false)                    
+                            console.log(result);
+                        else
+                            console.log(result[result.length - 1]);
+
+                        // Return CONTINUE
+                        return Status.CONTINUE;
+
+                    })
                     .build();
 
                 // Read and parse the DICOM file

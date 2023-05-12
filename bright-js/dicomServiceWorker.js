@@ -3,9 +3,9 @@ import Tag from '/bright-js/src/dicom/Tag.js';
 import Modality from '/bright-js/src/dicom/Modality.js';
 import StreamingDicomDataParser from '/bright-js/src/parsers/StreamingDicomDataParser.js';
 import StreamingDicomInstanceHandler from "/bright-js/src/handlers/StreamingDicomInstanceHandler.js";
-import ImageObject from '/bright-js/src/dicom/objects/ImageObject.js';
-import CTObject from '/bright-js/src/dicom/objects/CTObject.js';
-import XAObject from '/bright-js/src/dicom/objects/XAObject.js';
+import Image from '/bright-js/src/dicom/entities/Image.js';
+import CT from '/bright-js/src/dicom/entities/CT.js';
+import XA from '/bright-js/src/dicom/entities/XA.js';
 
 // Call clients.claim so that we intercept requests even on initial page load.
 self.addEventListener('activate', () => self.clients.claim());
@@ -58,32 +58,32 @@ const pngFromDICOMRequest = async (request) => {
           var instance = (typeof result === 'array') ? result[0] : result;
 
           // Create a new image object from the instance
-          var imageObject = null;
+          var imageEntity = null;
           
           // Get the modality
           var modality = instance.dataSet.find(Tag.Modality).value;
 
           if (modality == Modality.CT.ID) {
-              imageObject = new CTObject(instance.dataSet);
+            imageEntity = new CT(instance.dataSet);
           }
           else if (modality == Modality.XA.ID) {
-              imageObject = new XAObject(instance.dataSet);
+            imageEntity = new XA(instance.dataSet);
           }
           else {
-              imageObject = new ImageObject(instance.dataSet);
+            imageEntity = new Image(instance.dataSet);
           }
                               
           // Create the destination for the decode (4 BYTES PER PIXEL)
-          var destination = new Uint8Array(imageObject.imagePixelModule.columns * imageObject.imagePixelModule.rows * 4);
+          var destination = new Uint8Array(imageEntity.imagePixelModule.columns * imageEntity.imagePixelModule.rows * 4);
 
           // Decoce into the destination
-          imageObject.decodeFrame(destination);
+          imageEntity.decodeFrame(destination);
 
           // Create the image data from the decoded data
           var data = new ImageData(
               new Uint8ClampedArray(destination), 
-              imageObject.imagePixelModule.columns, 
-              imageObject.imagePixelModule.rows);
+              imageEntity.imagePixelModule.columns, 
+              imageEntity.imagePixelModule.rows);
 
             const canvas = new OffscreenCanvas(data.width, data.height)
             

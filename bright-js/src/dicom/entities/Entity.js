@@ -1,7 +1,7 @@
 //
-// Object.js - 1.0.0
+// Entity.js - 1.0.0
 //
-// DICOM Dicom Object Class 
+// DICOM Dicom Entity Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -21,7 +21,7 @@
 
 import GeneralSeriesModule from '../modules/GeneralSeriesModule.js';
 
-export default class Object {
+export default class Entity {
 
     /**
      * Get the General Series Module.
