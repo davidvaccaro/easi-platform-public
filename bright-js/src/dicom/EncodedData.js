@@ -1,5 +1,5 @@
 //
-// Data.js - 1.0.0
+// EncodedData.js - 1.0.0
 //
 // DICOM Data Class 
 //
@@ -19,43 +19,14 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
+import Data from '../data/Data.js'
 import Runtime from '../environment/Runtime.js';
 import Utilities from './Utilities.js';
 import Exception from '../environment/Exception.js';
 import { GeneralErrorCodes } from '../environment/Exception.js';
 import TransferSyntax from './TransferSyntax.js'
 
-export default class Data {
-
-    /**
-     * Accesses the DICOM data buffer.
-     * @returns The DICOM data buffer.
-     */
-    access() {
-
-        // Check the state
-        if (this.data == null)
-            return null;
-
-        // Return the data buffer
-        return this.data;
-
-    }
-
-    /**
-     * Determins the length (in bytes) of the DICOM data buffer.
-     * @returns The length (in bytes) of the DICOM data buffer.
-     */
-    length() {
-
-        // Check the state
-        if (this.data == null)
-            return 0;
-
-        // Return the data buffer length
-        return this.data.length;
-
-    }
+export default class EncodedData extends Data {
 
     /**
      * Convert the current DICOM data buffer to the specified transfer-syntax.
@@ -122,118 +93,12 @@ export default class Data {
     }
 
     /**
-     * Consume "count" length of bytes from the DICOM data buffer.
-     * @param {*} count The count of bytes to consume.
-     * @returns An array of the bytes consumed or an empty array if there are no more bytes within the buffer.
-     */
-    consume(count) {
-
-        // Read the "consumed" sub-data
-        var consumed = this.data.subarray(0, count);
-
-        // Consume the sub-data bytes
-        this.data = this.data.subarray(count, this.data.length);
-
-        // Return the "consumed" data
-        return consumed;
-
-    }
-
-    /**
-     * Peak the current DICOM data buffer at a given "begin" offset and for a "count" length of bytes.
-     * @param {*} begin The offset to start peeking within the DICOM data buffer.
-     * @param {*} count The count of bytes to peek.
-     * @returns An array of the bytes peaked or an empty array if begin is beyond the end of the array.
-     */
-    peek(begin, count) {
-
-        // Return the "peeked" sub-data
-        return this.data.subarray(begin, (begin + count));
-
-    }
-
-    /**
-     * Determines the index of a specific byte sequence witin the data buffer,
-     * @param {*} begin The offset to start peeking within the DICOM data buffer. 
-     * @param {*} sequence The sequence to find.
-     */
-    indexOf(begin, sequence) {
-
-        // Loop over the buffer bytes
-        while (begin < this.data.length) {
-            
-            // If there are NOT enough remining bytes, the sequence can NOT be found
-            if ((this.data.length - begin) < sequence.length)
-                return -1;
-
-            // If the first sequence byte was found,
-            if (this.data[begin] == sequence[0]) {
-
-                // Loop over the remaining sequence bytes
-                for (var i = 1; i < sequence.length; i++) {
-
-                    // If the sequence is violated, break and continue searching
-                    if (this.data[begin + i] != sequence[i]) {
-                        break;
-                    }
-
-                    // The sequence WAS found, return
-                    if (i == sequence.length - 1) {
-                        return begin;
-                    }
-
-                }
-
-            }
-
-            begin++;
-
-        }
-
-        // The sequence was NOT found
-        return -1;
-
-    }
-
-    /**
-     * Clear the current buffer state.
-     */
-    clear() {
-
-        // Clear the buffer
-        this.data = new Uint8Array(0);
-
-    }
-
-    /**
-     * Determins if this DICOM data buffer is empty.
-     * @returns true if the DICOM data buffer is empty.
-     */
-    get isEmpty() {
-        return (this.length() == 0);
-    }
-
-    /**
-     * Determins if the data is only filled with zeros.
-     * @returns TRU of the data is zero-space, FALSE otherwise.
-     */
-    get isZeroSpace() {
-
-        // First check the state
-        if ((this.data == undefined) || (this.data == null))
-            return true;
-
-        // Check is every byte is 0
-        return this.data.every(function (v) {
-            return v === 0;
-        });
-
-    }
-
-    /**
      * Construct the new DICOM data buffer.
      */
     constructor(raw = null, transferSyntax = TransferSyntax.NONE) {
+
+        // Call the super
+        super();
 
         // Check the params
         if (raw == null)

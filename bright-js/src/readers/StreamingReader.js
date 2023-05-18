@@ -25,7 +25,7 @@ import { GeneralErrorCodes } from '../environment/Exception.js'
 
 import { Status } from '../parsers/Status.js';
 
-import Data from '../dicom/Data.js';
+import Data from '../data/Data.js';
 
 export default class StreamingReader {
 
@@ -95,6 +95,8 @@ export default class StreamingReader {
 
         var status = Status.CONTINUE;
 
+        var start = new Date().getTime();
+
         try {
 
             var contentRead = 0;
@@ -145,6 +147,8 @@ export default class StreamingReader {
         catch (err) {
             reject(err);
         }
+
+        console.log('Execution time: ' + (new Date().getTime() - start) + ' ms');        
 
     }
 

@@ -31,10 +31,13 @@ export var Status = {
     /** @description Continue processing. */
     CONTINUE: Symbol('CONTINUE'),
 
-    /** @description The current parsed data "element" should be skipped. Parse whatever remining data is required to skip over the current "element". */    
+    /** @description The current parsed "element" data should be hopped through. Parse whatever remining data is required to hop through the current data by a specified number of bytes. */    
+    HOP: Symbol('HOP'),
+
+    /** @description The current parsed data "element" should be skipped over entierly. Parse whatever remining data is required to skip over the current data "element". */    
     SKIP: Symbol('SKIP'),
 
-    /** @description The current parsed data "part" should be skipped. Parse whatever remining data is required to jump over the current "part". */    
+    /** @description The current parsed data "part" should be jumpped over entierly. Parse whatever remining data is required to jump over the current data "part". */    
     JUMP: Symbol('JUMP'),
 
     /** @description The current parsed objective is complete. Stop reading and parsing additional data. */    

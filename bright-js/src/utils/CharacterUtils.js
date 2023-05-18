@@ -1,7 +1,7 @@
 //
-// Exception.js - 1.0.0
+// CharacterUtils.js - 1.0.0
 //
-// Exception Class 
+// Character Utils Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,49 +19,20 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class Exception {
+export default class CharacterUtils {
 
     /**
-     * Create a new Exception given a message, code and optional underlying error.
-     * @param {*} message The message describing the error condition.
-     * @param {*} code The code identifying the error condition.
-     * @param {*} error The underlying error associated to the error condition.
+     * Tests the specified string value to determine if it is "whitespace" (per JSON definition).
+     * @param {*} char The character to test.
+     * @returns TRUE if the spoecified character is "whitespace", FALSE otherwise.
      */
-    constructor(message, code = GeneralErrorCodes.GeneralError, error = null) {
-        this.message = message;
-        this.code = code;
-        this.error = error;
+    static isWhitespace = (byte) => {
+        return byte === 0x20 || byte === 0x09 || byte === 0x0A || byte === 0x0D;
     }
 
 };
 
-/**
- * General error conditions.
- */
-export var GeneralErrorCodes = {
-    GeneralError: 'GeneralError',
-    InvalidParameter: 'InvalidParameter',
-    NotImplemented: 'NotImplemented'
-};
 
-/**
- * Parse error conditions.
- */
-export var ParseErrorCodes = {
-    InvalidToken: 'InvalidToken',
-    InvalidElement: 'InvalidElement'
-};
 
-/**
- * DICOM-specific error conditions.
- */
-export var DicomErrorCodes = {
-    InvalidPart: 'InvalidPart',
-    InvalidValueRepresentation: 'InvalidValueRepresentation',
-    InvalidTag: 'InvalidTag',
-    UnknownTagAndValueRepresentation: 'UnknownTagAndValueRepresentation',
-    InvalidDataElement: 'InvalidDataElement',
-    InvalidSequence: 'InvalidSequence',
-    DuplicateAttribute: 'DuplicateAttribute',
-    InvalidMetaSet: 'InvalidMetaSet'
-};
+
+

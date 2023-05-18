@@ -1,16 +1,16 @@
-import Data from '../../dicom/Data.js';
+import EncodedData from '../../dicom/EncodedData.js';
 import TransferSyntax from '../../dicom/TransferSyntax.js';
 
 test("Test: Data Length", () => {
-    expect((new Data([0, 0, 0, 0], TransferSyntax.None)).length()).toBe(4);
+    expect((new EncodedData([0, 0, 0, 0], TransferSyntax.None)).length()).toBe(4);
 });
 
 test("Test: Data Length Default Transfer Syntax", () => {
-    expect((new Data([0, 0, 0, 0])).length()).toBe(4);
+    expect((new EncodedData([0, 0, 0, 0])).length()).toBe(4);
 });
 
 test("Test: Data Access", () => {
-    let data = new Data([1, 2, 3, 4]);
+    let data = new EncodedData([1, 2, 3, 4]);
     let accessed = data.access();
     expect(accessed[0]).toBe(1);
     expect(accessed[1]).toBe(2);
@@ -19,7 +19,7 @@ test("Test: Data Access", () => {
 });
 
 test("Test: Convert Transfer Syntax Endianess", () => {
-    let data = new Data([1, 2, 3, 4], TransferSyntax.ExplicitVRLittleEndian);
+    let data = new EncodedData([1, 2, 3, 4], TransferSyntax.ExplicitVRLittleEndian);
     data.convert(TransferSyntax.ExplicitVRBigEndian);
     let accessed = data.access();
     expect(accessed[0]).toBe(2);
@@ -29,7 +29,7 @@ test("Test: Convert Transfer Syntax Endianess", () => {
 });
 
 test("Test: Append Data", () => {
-    let data = new Data([1, 2, 3, 4]);
+    let data = new EncodedData([1, 2, 3, 4]);
     data.append([5, 6, 7, 8]);
     let accessed = data.access();
     expect(accessed[0]).toBe(1);
@@ -43,7 +43,7 @@ test("Test: Append Data", () => {
 });
 
 test("Test: Consume Data", () => {
-    let data = new Data([1, 2, 3, 4]);
+    let data = new EncodedData([1, 2, 3, 4]);
     data.append([5, 6, 7, 8]);
     let consumed = data.consume(4);
     let accessed = data.access();
@@ -58,7 +58,7 @@ test("Test: Consume Data", () => {
 });
 
 test("Test: Peek Data", () => {
-    let data = new Data([1, 2, 3, 4]);
+    let data = new EncodedData([1, 2, 3, 4]);
     data.append([5, 6, 7, 8]);
     let peeked = data.peek(2, 4);
     expect(peeked[0]).toBe(3);
@@ -68,13 +68,13 @@ test("Test: Peek Data", () => {
 });
 
 test("Test: Find Data", () => {
-    let data = new Data([1, 2, 3, 4]);
+    let data = new EncodedData([1, 2, 3, 4]);
     data.append([5, 6, 7, 8]);
     expect(data.indexOf(0, [4, 5, 6])).toBe(3);
 });
 
 test("Test: Consume and Clear Data", () => {
-    let data = new Data([1, 2, 3, 4]);
+    let data = new EncodedData([1, 2, 3, 4]);
     expect(data.length()).toBe(4);
     data.append([5, 6, 7, 8]);
     expect(data.length()).toBe(8);
@@ -85,7 +85,7 @@ test("Test: Consume and Clear Data", () => {
 });
 
 test("Test: Consume to Empty Data", () => {
-    let data = new Data([1, 2, 3, 4]);
+    let data = new EncodedData([1, 2, 3, 4]);
     expect(data.length()).toBe(4);
     data.append([5, 6, 7, 8]);
     expect(data.length()).toBe(8);
@@ -97,13 +97,13 @@ test("Test: Consume to Empty Data", () => {
 });
 
 test("Test: Zero Data", () => {
-    let data = new Data([0, 0, 0, 0]);
+    let data = new EncodedData([0, 0, 0, 0]);
     expect(data.length()).toBe(4);
     expect(data.isZeroSpace).toBe(true);    
 });
 
 test("Test: Append Array to Uint8Array Data", () => {
-    let data = new Data(new Uint8Array([1, 2, 3, 4]));
+    let data = new EncodedData(new Uint8Array([1, 2, 3, 4]));
     data.append([5, 6, 7, 8]);
     let peeked = data.peek(2, 4);
     expect(peeked[0]).toBe(3);
@@ -113,7 +113,7 @@ test("Test: Append Array to Uint8Array Data", () => {
 });
 
 test("Test: Append Uint8Array to Array Data", () => {
-    let data = new Data([1, 2, 3, 4]);
+    let data = new EncodedData([1, 2, 3, 4]);
     data.append(new Uint8Array([5, 6, 7, 8]));
     let peeked = data.peek(2, 4);
     expect(peeked[0]).toBe(3);

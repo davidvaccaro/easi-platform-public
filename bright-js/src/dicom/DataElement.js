@@ -20,9 +20,9 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import Data from './Data.js';
+import EncodedData from './EncodedData.js';
 
-export default class DataElement extends Data {
+export default class DataElement extends EncodedData {
 
     /**
      * Determine if the current data element has ALL data present.

@@ -33,7 +33,7 @@ import { ValueRepresentations } from '../dicom/ValueRepresentation.js';
 
 import Tag from '../dicom/Tag.js';
 
-import Data from '../dicom/Data.js';
+import EncodedData from '../dicom/EncodedData.js';
 import Attribute from '../dicom/Attribute.js';
 import Item from '../dicom/Item.js';
 import AttributeSequence from '../dicom/AttributeSequence.js';
@@ -114,7 +114,7 @@ export default class StreamingDicomDataParser {
         this.dataElements = [];
 
         // Create the new DICOM data buffer
-        this.data = new Data();
+        this.data = new EncodedData();
 
         // Init the current status
         this.status = Status.CONTINUE;
@@ -502,6 +502,11 @@ export default class StreamingDicomDataParser {
 
         // Init the status
         var status = Status.CONTINUE;
+
+        // Ensure that the parser has performed the initiel reset
+        if (this.data == null) {
+            this.data.reset();
+        }
 
         // Append the new chunk of data
         if ((chunk != null) && (chunk.length > 0)) {

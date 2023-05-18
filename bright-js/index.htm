@@ -64,6 +64,28 @@
         <div>
             <button id="selectionStudy">Parse Study To a Selection</button>
         </div>
+
+        <br>
+        <h4>JSON Related Actions</h4>
+        <div>
+            <button id="jsonFromBox">Parse JSON</button>
+        </div>
+        <br>
+        <div>
+            <button id="jsonInstance">Parse Instance from JSON</button>&nbsp;<button id="jsonInstanceGET">GET Instance from JSON</button>
+        </div>
+        <br>
+        <div>
+            <button id="jsonSeries">Parse Series from JSON</button>
+        </div>
+        <br>
+        <div>
+            <button id="jsonStudy">Parse Study from JSON</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="jsonBox" rows="10" cols="80">"Hello World Dave!"</textarea>
+        </div>
         
         <br>
         <h4>DUMP Related Actions</h4>
@@ -117,7 +139,7 @@
         import TransferSyntax from './src/dicom/TransferSyntax.js';
         import Modality from './src/dicom/Modality.js';
 
-        import Data from './src/dicom/Data.js';
+        import Data from './src/data/Data.js';
         import Attribute from './src/dicom/Attribute.js'
 
         import MetaSet from './src/dicom/MetaSet.js';
@@ -129,19 +151,21 @@
         import StreamingDicomInstanceHandler from './src/handlers/StreamingDicomInstanceHandler.js';
         import StreamingDicomMappingHandler from './src/handlers/StreamingDicomMappingHandler.js';
         import StreamingDicomSelectingHandler from './src/handlers/StreamingDicomSelectingHandler.js';
+        import StreamingJsonHandler from './src/handlers/StreamingJsonHandler.js';
 
         import DicomToFHIRImagingStudyMapping from './src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
 
         import DicomSelection from './src/handlers/selections/DicomSelection.js'
 
         import StreamingDicomDataParser from './src/parsers/StreamingDicomDataParser.js';
-        import StreamingReader from './src/readers/StreamingReader.js';
-        
+        import StreamingReader from './src/readers/StreamingReader.js';    
         import StreamingReaderBuilder from './src/builders/StreamingReaderBuilder.js';
 
         import Image from './src/dicom/entities/Image.js';
         import CT from './src/dicom/entities/CT.js';
         import XA from './src/dicom/entities/XA.js';
+
+        import StreamingJsonDataParser from './src/parsers/StreamingJsonDataParser.js';
 
         import DumpParser from './src/tools/dicom/DumpParser.js';
 
@@ -554,6 +578,146 @@
                         console.log(result); 
                         $('#fhirDump').val(JSON.stringify(result)); 
                     })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // ================================
+            // PARSE JSON
+            // ================================
+
+            $('#jsonFromBox').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = URL.createObjectURL(new Blob([$('#jsonBox').val()], {type : 'text/plain'}));
+
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingJsonDataParser())
+                    .withHandler(new StreamingJsonHandler())
+                    .build();
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => {
+
+                        // Log the instance
+                        console.log(result);
+
+                    })
+                    .catch(err => console.log(err));
+
+                });
+
+            // Handle Instance
+            $('#jsonInstance').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094/metadata";
+
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingJsonDataParser())
+                    .withHandler(new StreamingJsonHandler())
+                    .build();
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err));
+
+            });
+
+            $('#jsonInstanceGET').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094/metadata";
+
+                var start = new Date().getTime();
+
+                // HTTP GET the configuration
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    async: true,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        console.log('Execution time: ' + (new Date().getTime() - start) + ' ms');        
+
+                    }
+                });
+
+            });
+
+            // Handle Series
+            $('#jsonSeries').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/metadata";
+
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingJsonDataParser())
+                    .withHandler(new StreamingJsonHandler())
+                    .build();
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => { 
+                        console.log(result); 
+                    })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // Handle Study
+            $('#jsonStudy').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/metadata";
+
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingJsonDataParser())
+                    .withHandler(new StreamingJsonHandler())
+                    .withOnPart(function (result) { 
+
+                        // Log
+                        if (Array.isArray(result) == false)                    
+                            console.log(result);
+                        else
+                            console.log(result[result.length - 1]);
+
+                        // Return CONTINUE
+                        return Status.CONTINUE;
+
+                    })
+                    .build();
+
+                // Read and parse the DICOM file
+                reader
+                    .read(url)
+                    .then(result => console.log(result))
                     .catch(err => console.log(err));
 
             });            
