@@ -159,6 +159,9 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
 
         try {
 
+            // Establish the data length
+            var length = this.data.length();
+
             var ch = null;            
 
             // Peek the current data-element
@@ -171,13 +174,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     &&
                     (dataElement.isComplete == false)
                     &&
-                    (
-                        (dataElement.type == 'string') 
-                        || 
-                        (dataElement.type == 'key') 
-                        || 
-                        (dataElement.type == 'number')
-                    )                         
+                    (dataElement.type == 'string') 
                 ) 
                 ? true 
                 : false
@@ -187,7 +184,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
             if (isContinue == false) {
 
                 // Loop over the data skipping whitespace
-                while (bytesPeeked < this.data.length()) {
+                while (bytesPeeked < length) {
 
                     // Peek the next data-element "group"
                     ch = this.data.peekOne(bytesPeeked);
@@ -204,8 +201,9 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 }
 
                 // If more data is needed, indicate FALSE
-                if (ch == null)
+                if ((ch == null) || (bytesPeeked == length)) {
                     return false;
+                }
 
             }
 
@@ -272,25 +270,21 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 };
 
             }
-            else if (((isContinue == true) && (dataElement.type == 'number')) || ((isContinue == false) && this.isNumberCharacter(ch))) {
+            else if ((isContinue == false) && this.isNumberCharacter(ch)) {
 
                 // HANDLE: Number
-
-                var previous = null;
 
                 // Capture the "start"
                 var start = bytesPeeked;
 
                 // Increment past the current char
-                if (isContinue == false) {
-                    bytesPeeked ++;
-                }
+                bytesPeeked ++;
 
                 // Null the current ch
                 ch = null;
 
                 // Read the whole string
-                while (bytesPeeked < this.data.length()) {
+                while (bytesPeeked < length) {
 
                     // Peek the next data-element "group"
                     ch = this.data.peekOne(bytesPeeked);
@@ -301,12 +295,6 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         // Increment the bytes peeked
                         bytesPeeked ++;
 
-                        // Save the previous character
-                        previous = ch;
-
-                        // Null the current character
-                        ch =  null;
-
                     }
                     else {
 
@@ -316,44 +304,36 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     }
     
                 }
+
+                // If more data is needed, indicate FALSE
+                if (bytesPeeked >= length) {
+                    return false;
+                }
     
                 // Capture the end of the sequence
                 var end = bytesPeeked;
 
-                // Access the data
-                var valueData = this.data.peek(start, (end - start));
-
                 var value = null;
 
-                // Determine if the current value is complete
-                var isComplete = ((ch == null) && (this.data.length() > valueData.length)) ? false : true;
+                // Convert the current value to 
+                var strValue = this.decoder.decode(this.data.peek(start, (end - start)));
 
-                // Decode the value
-                if (isComplete == true) {
-
-                    // Convert the current value to 
-                    var strValue = (new TextDecoder()).decode(valueData);
-
-                    // Determine if the value is "float" versus "integer"
-                    if (strValue.indexOf('.') != -1)
-                        value = parseFloat(strValue);
-                    else
-                        value = parseInt(strValue);
-
-                }
+                // Determine if the value is "float" versus "integer"
+                if (strValue.indexOf('.') != -1)
+                    value = parseFloat(strValue);
+                else
+                    value = parseInt(strValue);
 
                 // Construct the "number" details 
                 result = {
                     bytesPeeked: bytesPeeked,
-                    start: start,
-                    end: end,
                     type: 'number',
                     value: value,
-                    isComplete: isComplete
+                    isComplete: true
                 };
 
             }
-            else if (((isContinue == true) && ((dataElement.type == 'string') || (dataElement.type == 'key'))) || ((isContinue == false) && (ch === 34))) {
+            else if (((isContinue == true) && (dataElement.type == 'string')) || ((isContinue == false) && (ch === 34))) {
                
                 // HANDLE: String
 
@@ -374,14 +354,11 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 ch = null;
 
                 // Read the whole string
-                while (bytesPeeked < this.data.length()) {
+                while (bytesPeeked < length) {
 
                     // Peek the next data-element "group"
                     ch = this.data.peekOne(bytesPeeked);
         
-                    // Increment the bytes peeked
-                    bytesPeeked ++;
-
                     // If we hit another ", interpret
                     if (ch === 34) {
 
@@ -392,6 +369,9 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
 
                     }
     
+                    // Increment the bytes peeked
+                    bytesPeeked ++;
+
                     // Save the previous character
                     previous = ch;
 
@@ -399,7 +379,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     ch =  null;
     
                 }
-    
+
                 // Capture the end of the sequence
                 var end = bytesPeeked;
 
@@ -410,7 +390,12 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 var type = ((dataElement == null) || (dataElement.type != 'object') || (dataElement.isOpen == false)) ? 'string' : 'key';
 
                 // Detemrine if this is complete
-                var isComplete = (ch == null) ? false : true;
+                var isComplete = ((ch == null) || (bytesPeeked >= length)) ? false : true;
+
+                // If this is a "key" and it is NOT complete, indicate FALSE
+                if ((isComplete == false) && (type == 'key')) {
+                    return false;
+                }
 
                 // Adjust the start and end to strip the "
                 if ((isAppending == false) && (isComplete == true)) {
@@ -424,33 +409,29 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     end--;
                 }
                 else if ((isAppending == true) && (isComplete == false)) {
+                    var xxx = 100;
                     // DO NOTHING
                 }
 
                 // Access the data
-                var valueData = this.data.peek(start, (end - start));
+                var valueData = this.data.peek(start, (end - start) + 1);
 
                 // Decode the vallue
-                var value = (new TextDecoder()).decode(valueData);
+                var value = this.decoder.decode(valueData);
+
+                // Possibly increment the peeked
+                if (isComplete == true) {
+                    bytesPeeked ++;
+                }
 
                 // Construct the "string" details 
                 result = {
                     bytesPeeked: bytesPeeked,
-                    start: start,
-                    end: end,
                     type: type,
                     value: value,
                     isComplete: isComplete
                 };                
 
-            }
-
-            if (result == null) {
-                console.log("Consumed: " + this.totalBytesConsumed);
-                console.log("CH: " + ch);
-                console.log("bytesPeeked: " + bytesPeeked);
-                console.log("JSON: " + (new TextDecoder()).decode(this.data.access()));
-                console.log(dataElement);
             }
     
         }
@@ -949,7 +930,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
             currentElement = this.peekCurrent();            
 
             // If there is NO MORE DATA but remaining data-element, complete it
-            if ((this.data.isEmpty == true) && (currentElement != null)) {
+            if ((isDone == true) && (this.data.isEmpty == true) && (currentElement != null)) {
 
                 // End the current element, based on the type
                 if (currentElement.type == 'object') {
@@ -1100,6 +1081,9 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
 
         // Call the super 
         super();
+
+        // Create a text decoder
+        this.decoder = new TextDecoder();
 
     }
     
