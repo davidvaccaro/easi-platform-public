@@ -51,6 +51,17 @@ export default class AttributeSet {
     }
 
     /**
+     * Adds ALL the specified attributes to the sequence of attributes.
+     * @param {*} attributes The array of attributes to add.
+     */
+    addAll(attributes) {
+
+        // Add ALL the attributes to the collection
+        this.attributes = this.attributes.concat(attributes);
+
+    }
+
+    /**
      * Get the attribute value for a specified DICOM tag identifier.
      * @returns The the attribute value.
      */

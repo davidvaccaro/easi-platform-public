@@ -20,11 +20,16 @@
 //
 
 import StreamingReader from "../readers/StreamingReader.js";
+
 import StreamingDicomDataParser from "../parsers/StreamingDicomDataParser.js";
+import StreamingJsonDataParser from "../parsers/StreamingJsonDataParser.js";
+
+import DicomToFHIRImagingStudyMapping from '../handlers/mappings/DicomToFHIRImagingStudyMapping.js';
+
 import StreamingDicomInstanceHandler from "../handlers/StreamingDicomInstanceHandler.js";
 import StreamingDicomMappingHandler from '../handlers/StreamingDicomMappingHandler.js';
 import StreamingDicomSelectingHandler from "../handlers/StreamingDicomSelectingHandler.js";
-import DicomToFHIRImagingStudyMapping from '../handlers/mappings/DicomToFHIRImagingStudyMapping.js';
+import StreamingJsonMetadataInstanceHandler from "../handlers/StreamingJsonMetadataInstanceHandler.js";
 
 export default class StreamingReaderBuilder {
   
@@ -82,13 +87,29 @@ export default class StreamingReaderBuilder {
     }
 
     /**
+     * Sets the current build to stream-parse DICOM MetaData.
+     * @returns The reference to the current builder.
+     */
+    forDicomMetaData() {
+        
+        // Setup for stream-parsing DICOM data ...
+        this.parser = new StreamingJsonDataParser();
+
+        return this;
+
+    }
+
+    /**
      * Sets the current build to stream-parse to DICOM instances.
      * @returns The reference to the current builder.
      */
     toInstances() {
         
         // ...into DICOM instances
-        this.handler = new StreamingDicomInstanceHandler();
+        if ((this.parser instanceof StreamingDicomDataParser) || (this.parser == null))
+            this.handler = new StreamingDicomInstanceHandler();
+        else if (this.parser instanceof StreamingJsonDataParser)
+            this.handler = new StreamingJsonMetadataInstanceHandler();
 
         return this;
 

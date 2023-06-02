@@ -35,6 +35,17 @@ export default class AttributeSequence extends DicomAttribute {
     }
 
     /**
+     * Adds ALL the specified items to the sequence of items.
+     * @param {*} items The array of items to add.
+     */
+    addAll(items) {
+
+        // Add ALL the itemss to the collection
+        this.items = this.items.concat(items);
+
+    }
+
+    /**
      * Find an attribute within the immediate sequence by tag identifier.
      * @param {*} tag The DICOM tag to search by.
      * @returns The attribute if found or undefined otherwise.

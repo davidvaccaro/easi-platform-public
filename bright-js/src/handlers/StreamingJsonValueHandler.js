@@ -1,5 +1,5 @@
 //
-// StreamingJsonHandler.js - 1.0.0
+// StreamingJsonValueHandler.js - 1.0.0
 //
 // Stream JSON Handler Class 
 //
@@ -21,7 +21,7 @@
 
 import { Status } from "../parsers/Status.js";
 
-export default class StreamingJsonHandler {
+export default class StreamingJsonValueHandler {
 
     onReset() {
     }
