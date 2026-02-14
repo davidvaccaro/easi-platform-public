@@ -51,7 +51,7 @@ const reader = EASI
 Using the above configured streaming reader, the following code snippet then stream-reads and stream-parses DICOM data from a specified URI (using HTTP GET by default) and results in one (or more) DICOM instances that can be used to directly access typical DICOM data elements. 
 
 NOTE: Whether the remote service delivers a single 'application/dicom' response payload or an HTTP Multipart response consisting of multiple 'application/dicom' data parts, the stream reader will automatically detect and correctly process each response as appropriate.
-```js:
+```javascript:
 reader
     .read(uri)
     .then(instance => {

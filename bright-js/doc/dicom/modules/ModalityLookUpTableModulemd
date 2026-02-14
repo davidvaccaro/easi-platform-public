@@ -1,0 +1,83 @@
+# `ModalityLookUpTableModule` Class
+
+Provides access to the **Modality LUT Module** attributes within a DICOM dataset, such as Rescale Intercept, Rescale Slope, and Rescale Type.
+
+## Inheritance
+
+```text
+ModalityLookUpTableModule → Module
+```
+
+## Constructor
+
+### `new ModalityLookUpTableModule(attributeSet)`
+
+Creates a new instance of `ModalityLookUpTableModule`.
+
+#### Parameters
+
+| Name           | Type           | Description                                     |
+|----------------|----------------|-------------------------------------------------|
+| `attributeSet` | `AttributeSet` | The DICOM attribute set used for lookup access. |
+
+---
+
+## Properties
+
+### `rescaleIntercept`
+
+Gets the **Rescale Intercept** value (DICOM Tag `0028,1052`).
+
+#### Returns
+
+| Type     | Description                            |
+|----------|----------------------------------------|
+| `number` | The Rescale Intercept as a decimal.    |
+
+---
+
+### `rescaleSlope`
+
+Gets the **Rescale Slope** value (DICOM Tag `0028,1053`).
+
+#### Returns
+
+| Type     | Description                         |
+|----------|-------------------------------------|
+| `number` | The Rescale Slope as a decimal.     |
+
+---
+
+### `rescaleType`
+
+Gets the **Rescale Type** value (DICOM Tag `0028,1054`).
+
+#### Returns
+
+| Type     | Description                       |
+|----------|-----------------------------------|
+| `string` | The Rescale Type string value.    |
+
+---
+
+## Example Usage
+
+```javascript
+import ModalityLookUpTableModule from './ModalityLookUpTableModule';
+import AttributeSet from './AttributeSet';
+import Tag from './Tag';
+
+// Create a mock attribute set with LUT values
+const attributeSet = new AttributeSet();
+attributeSet.add({ tag: Tag.RescaleIntercept, value: '0.0' });
+attributeSet.add({ tag: Tag.RescaleSlope, value: '1.0' });
+attributeSet.add({ tag: Tag.RescaleType, value: 'HU' });
+
+// Create the module
+const lutModule = new ModalityLookUpTableModule(attributeSet);
+
+// Access values
+console.log(lutModule.rescaleIntercept);  // 0.0
+console.log(lutModule.rescaleSlope);      // 1.0
+console.log(lutModule.rescaleType);       // 'HU'
+```

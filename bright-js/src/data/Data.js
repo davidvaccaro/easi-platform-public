@@ -30,10 +30,6 @@ export default class Data {
      */
     access() {
 
-        // Check the state
-        if (this.data == null)
-            return null;
-
         // Return the data buffer
         return this.data;
 
@@ -44,10 +40,6 @@ export default class Data {
      * @returns The length (in bytes) of the data buffer.
      */
     length() {
-
-        // Check the state
-        if (this.data == null)
-            return 0;
 
         // Return the data buffer length
         return this.data.length;
@@ -136,11 +128,27 @@ export default class Data {
     }
 
     /**
-     * Determines the index of a specific byte sequence witin the data buffer,
+     * Skip forward in the current data buffer by "count" bytes.
+     * @param {*} count The count of bytes to skip from the start of the current buffer.
+     */
+    skip(count) {
+        this.data = this.data.subarray(count);
+    }    
+
+    /**
+     * Determines the index of a specific byte sequence within the data buffer,
      * @param {*} begin The offset to start peeking within the data buffer. 
      * @param {*} sequence The sequence to find.
+     * @returns {number} The index of the sequence, or -1 if not found.
      */
     indexOf(begin, sequence) {
+
+        // Validate inputs
+        if (!sequence || sequence.length === 0) 
+            return -1;
+
+        if (this.data.length === 0 || begin >= this.data.length) 
+            return -1;
 
         // Loop over the buffer bytes
         while (begin < this.data.length) {
@@ -217,6 +225,10 @@ export default class Data {
      * Construct the new data buffer.
      */
     constructor() {
+
+        // Init the buffer
+        this.clear();
+
     }
 
 };

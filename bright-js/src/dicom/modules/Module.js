@@ -23,11 +23,14 @@ export default class Module {
     
     /**
      * Parses the value of an integer string value attribute taking into account the value multiplicity.
-     * @param {*} value The value of the integer string.
+     * @param {*} tag The tag of the integer string value.
      * @param {*} vm The value multiplicity of the integer string.
      * @returns A single integer value for multiplicity of 1, an array of integer values for multiplicity of N, null if the value is empty.
      */
-    accessIntegerString(value, vm) {
+    accessIntegerString(tag, vm = null) {
+        
+        // Access the vaue
+        var value = this.attributeSet.value(tag);
         
         // Defaul the VM
         if (vm == null) {
@@ -52,12 +55,15 @@ export default class Module {
 
     /**
      * Parses the value of an decimal string value attribute taking into account the value multiplicity.
-     * @param {*} value The value of the decimal string.
+     * @param {*} tag The tag of the integer string value.
      * @param {*} vm The value multiplicity of the decimal string.
      * @returns A single decimal value for multiplicity of 1, an array of decimal values for multiplicity of N, null if the value is empty.
      */
-    accessDecimalString(value, vm) {
+    accessDecimalString(tag, vm = null) {
         
+        // Access the vaue
+        var value = this.attributeSet.value(tag);
+
         // Defaul the VM
         if (vm == null) {
             vm = { Exact: 1 };

@@ -107,7 +107,7 @@ export default class ImagePixelModule extends Module {
      * @returns The Pixel Aspect Ratio value.
      */
     get pixelAspectRatio() {
-        return this.accessIntegerString(this.attributeSet.value(Tag.PixelAspectRatio), Tag.PixelAspectRatio.VM);
+        return this.accessIntegerString(Tag.PixelAspectRatio, Tag.PixelAspectRatio.VM);
     }
 
     /**
