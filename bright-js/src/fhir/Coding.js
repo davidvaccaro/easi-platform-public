@@ -95,8 +95,8 @@ export default class Coding extends Element {
 
     /**
      * Create a new Coding instance.
-     * @param {*} system The specified system.
-     * @param {*} code The specified system.
+     * @param {string} system The specified system.
+     * @param {string} code The specified system.
      */
     static create(system, code) {
 

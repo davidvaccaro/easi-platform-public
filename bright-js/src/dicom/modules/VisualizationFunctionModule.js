@@ -29,7 +29,7 @@ export default class VisualizationFunctionModule extends Module {
      * @returns The Window Center value.
      */
     get windowCenter() {
-        return this.accessDecimalString(this.attributeSet.value(Tag.WindowCenter), Tag.WindowCenter.VM);
+        return this.accessDecimalString(Tag.WindowCenter, Tag.WindowCenter.VM);
     }
 
     /**
@@ -37,7 +37,7 @@ export default class VisualizationFunctionModule extends Module {
      * @returns The Window Width value.
      */
     get windowWidth() {
-        return this.accessDecimalString(this.attributeSet.value(Tag.WindowWidth), Tag.WindowWidth.VM);
+        return this.accessDecimalString(Tag.WindowWidth, Tag.WindowWidth.VM);
     }
 
     /**

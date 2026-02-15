@@ -29,7 +29,7 @@ export default class ModalityLookUpTableModule extends Module {
      * @returns The Rescale Intercept value.
      */
     get rescaleIntercept() {
-        return this.accessDecimalString(this.attributeSet.value(Tag.RescaleIntercept), Tag.RescaleIntercept.VM);
+        return this.accessDecimalString(Tag.RescaleIntercept, Tag.RescaleIntercept.VM);
     }
 
     /**
@@ -37,7 +37,7 @@ export default class ModalityLookUpTableModule extends Module {
      * @returns The Rescale Slope value.
      */
     get rescaleSlope() {
-        return this.accessDecimalString(this.attributeSet.value(Tag.RescaleSlope), Tag.RescaleSlope.VM);
+        return this.accessDecimalString(Tag.RescaleSlope, Tag.RescaleSlope.VM);
     }
 
     /**

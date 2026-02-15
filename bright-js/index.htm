@@ -203,6 +203,10 @@
         import DumpParser from './src/tools/dicom/DumpParser.js';
 
         $(function () {
+
+            var studyUrl = 'http://localhost:8042/dicom-web/studies/1.2.276.0.50.192168001099.7810872.14547392.111';
+            var seriesUrl = 'http://localhost:8042/dicom-web/studies/1.2.276.0.50.192168001099.7810872.14547392.111/series/1.2.276.0.50.192168001099.7810872.14547392.111';
+            var instanceUrl = 'http://localhost:8042/dicom-web/studies/1.2.276.0.50.192168001099.7810872.14547392.111/series/1.2.276.0.50.192168001099.7810872.14547392.111/instances/1.2.276.0.50.192168001099.7810872.14547392.467';
             
             // Set the top-level exception handler
             window.onerror = function (message, source, lineno, columnno, error) {
@@ -294,9 +298,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094";
-
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
                     .withParser(new StreamingDicomDataParser())
@@ -305,7 +306,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(instanceUrl)
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -317,9 +318,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583";
-
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
                     .withParser(new StreamingDicomDataParser())
@@ -328,7 +326,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(seriesUrl)
                     .then(result => { 
                         console.log(result); 
                     })
@@ -341,9 +339,6 @@
 
                 // Cleare the console
                 console.clear();
-
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641";
 
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
@@ -365,7 +360,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(studyUrl)
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -407,9 +402,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094";
-
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
                     .withParser(new StreamingDicomDataParser())
@@ -418,7 +410,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(instanceUrl)
                     .then(result => {
                          console.log(result); 
                          $('#fhirDump').val(JSON.stringify(result)); 
@@ -433,9 +425,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583";
-
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
                     .withParser(new StreamingDicomDataParser())
@@ -444,7 +433,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(seriesUrl)
                     .then(result => {
                          console.log(result); 
                          $('#fhirDump').val(JSON.stringify(result)); 
@@ -459,9 +448,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641";
-
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
                     .withParser(new StreamingDicomDataParser())
@@ -470,7 +456,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(studyUrl)
                     .then(result => {
                          console.log(result); 
                          $('#fhirDump').val(JSON.stringify(result)); 
@@ -522,9 +508,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094";
-
                 // Create the new selection
                 var selection = new DicomSelection();
 
@@ -540,7 +523,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(instanceUrl)
                     .then(result => {
                         console.log(result); 
                         $('#fhirDump').val(JSON.stringify(result)); 
@@ -555,9 +538,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583";
-
                 // Create the new selection
                 var selection = new DicomSelection();
 
@@ -573,7 +553,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(seriesUrl)
                     .then(result => {
                         console.log(result); 
                         $('#fhirDump').val(JSON.stringify(result)); 
@@ -588,9 +568,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641";
-
                 // Create the new selection
                 var selection = new DicomSelection();
 
@@ -606,7 +583,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(studyUrl)
                     .then(result => {
                         console.log(result); 
                         $('#fhirDump').val(JSON.stringify(result)); 
@@ -652,9 +629,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094/metadata";
-
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
                     .withParser(new StreamingJsonDataParser())
@@ -663,7 +637,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(instanceUrl + "/metadata")
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -674,14 +648,11 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094/metadata";
-
                 var start = new Date().getTime();
 
                 // HTTP GET the configuration
                 $.ajax({
-                    url: url,
+                    url: instanceUrl + "/metadata",
                     type: 'GET',
                     async: true,
                     success: function (data) {
@@ -701,9 +672,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/metadata";
-
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
                     .withParser(new StreamingJsonDataParser())
@@ -712,7 +680,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(seriesUrl + "/metadata")
                     .then(result => { 
                         console.log(result); 
                     })
@@ -725,9 +693,6 @@
 
                 // Cleare the console
                 console.clear();
-
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/metadata";
 
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
@@ -749,7 +714,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(studyUrl + "/metadata")
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -765,9 +730,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/instances/1.3.6.1.4.1.14519.5.2.1.7009.2403.178093459220118793111194022094/metadata";
-
                 // Build the DICOM streaming reader
                 const reader = EASI
                     .newStreamingReaderBuilder()
@@ -777,7 +739,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(instanceUrl + "/metadata")
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -789,9 +751,6 @@
                 // Cleare the console
                 console.clear();
 
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583/metadata";
-
                 // Build the DICOM streaming reader
                 const reader = EASI
                     .newStreamingReaderBuilder()
@@ -801,7 +760,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(seriesUrl + "/metadata")
                     .then(result => { 
                         console.log(result); 
                     })
@@ -814,9 +773,6 @@
 
                 // Cleare the console
                 console.clear();
-
-                // Create an object URL from the selected file
-                var url = "https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/metadata";
 
                 // Build the DICOM streaming reader
                 const reader = EASI
@@ -839,7 +795,7 @@
 
                 // Read and parse the DICOM file
                 reader
-                    .read(url)
+                    .read(studyUrl + "/metadata")
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -877,7 +833,7 @@
                 console.clear();
 
                 // Create the DICOM Dump Parer
-                var parser = new DicomDumpParser(new StreamingDicomInstanceHandler());
+                var parser = new DumpParser(new StreamingDicomInstanceHandler());
 
                 parser.parse($('#dicomDump').val());
 
@@ -908,12 +864,9 @@
                     .withHandler(new StreamingDicomInstanceHandler())
                     .build();
 
-                // URI to a single DICOM data instance (either WADO-RS or any other HTTP resource)
-                const uri = 'https://server.dcmjs.org/dcm4chee-arc/aets/DCM4CHEE/rs/studies/1.3.6.1.4.1.14519.5.2.1.7009.2403.129940714907926843330943219641/series/1.3.6.1.4.1.14519.5.2.1.7009.2403.338964154217479272713063899583';
-
                 // Issue the HTTP request, read and parse the DICOM data response 
                 reader
-                    .read(uri)
+                    .read(seriesUrl)
                     .then(instances => {
 
                         for (const instance of instances) {

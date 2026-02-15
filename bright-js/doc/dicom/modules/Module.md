@@ -45,7 +45,7 @@ Parses a DICOM IS (Integer String) value, considering the value multiplicity.
 
 ---
 
-### `accessDecimalString(value, vm)`
+### `(value, vm)`
 
 Parses a DICOM DS (Decimal String) value, considering the value multiplicity.
 
@@ -82,7 +82,7 @@ attributeSet.add({
 let module = new Module(attributeSet);
 
 // Access an integer string value with VM = 1 (default)
-let sliceCount = module.accessIntegerString(Tag.NumberOfSlices);
+let sliceCount = module.(Tag.NumberOfSlices);
 console.log(sliceCount); // Output: 15
 
 // Access an integer string value with VM = N

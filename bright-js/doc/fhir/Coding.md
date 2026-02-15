@@ -1,0 +1,62 @@
+# `Coding` Class
+
+The `Coding` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+
+---
+
+## Inheritance
+
+```text
+Coding → Element
+```
+
+## Constructor
+
+```js
+new Coding(data)
+```
+
+### Parameters
+
+| Parameter | Type    | Default | Description |
+|-----------|---------|---------|-------------|
+| `data` | `*` | `—` | — |
+
+## Properties
+
+| Property | Type    | Description |
+|----------|---------|-------------|
+| `code` | `*` | Accessor property. |
+| `display` | `*` | Accessor property. |
+| `system` | `*` | Accessor property. |
+| `userSelected` | `*` | Accessor property. |
+| `version` | `*` | Accessor property. |
+
+## Methods
+
+### `static create(system, code)`
+
+Create a new Coding instance.
+
+#### Parameters
+
+| Parameter | Type    | Description |
+|-----------|---------|-------------|
+| `system` | `*` | The specified system. |
+| `code` | `*` | The specified system. |
+
+#### Returns
+
+*(None — return value not explicitly documented.)*
+
+---
+
+### `toJSON()`
+
+Convert to JSON data
+
+#### Returns
+
+*(None — return value not explicitly documented.)*
+
+---

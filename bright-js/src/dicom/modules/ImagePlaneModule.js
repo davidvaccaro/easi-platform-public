@@ -37,7 +37,7 @@ export default class ImagePlaneModule extends Module {
      * @returns The Image Position value.
      */
     get imagePosition() {
-        return this.accessDecimalString(this.attributeSet.value(Tag.ImagePosition), Tag.ImagePosition.VM);
+        return this.accessDecimalString(Tag.ImagePosition, Tag.ImagePosition.VM);
     }
 
     /**
@@ -45,7 +45,7 @@ export default class ImagePlaneModule extends Module {
      * @returns The Image Orientation value.
      */
     get imageOrientation() {
-        return this.accessDecimalString(this.attributeSet.value(Tag.ImageOrientation), Tag.ImageOrientation.VM);
+        return this.accessDecimalString(Tag.ImageOrientation, Tag.ImageOrientation.VM);
     }
 
     /**
@@ -53,7 +53,7 @@ export default class ImagePlaneModule extends Module {
      * @returns The Slice Location value.
      */
     get sliceLocation() {
-        return this.accessDecimalString(this.attributeSet.value(Tag.SliceLocation), Tag.SliceLocation.VM);
+        return this.accessDecimalString(Tag.SliceLocation, Tag.SliceLocation.VM);
     }
 
     /**
@@ -61,7 +61,7 @@ export default class ImagePlaneModule extends Module {
      * @returns The Pixel Spacing value.
      */
     get pixelSpacing() {
-        return this.accessDecimalString(this.attributeSet.value(Tag.PixelSpacing), Tag.PixelSpacing.VM);
+        return this.accessDecimalString(Tag.PixelSpacing, Tag.PixelSpacing.VM);
     }
 
     /**

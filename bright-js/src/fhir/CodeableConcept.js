@@ -54,8 +54,8 @@ export default class CodeableConcept extends Element {
 
     /**
      * Create a new CodeableConcept instance.
-     * @param {*} system The specified system.
-     * @param {*} code The specified system.
+     * @param {string} system The specified system.
+     * @param {string} code The specified system.
      */
     static create(system, code) {
         

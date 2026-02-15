@@ -37,7 +37,7 @@ export default class MultiFrameModule extends Module {
      * @returns The Number Of Frames value.
      */
     get numberOfFrames() {
-        return this.accessIntegerString(this.attributeSet.value(Tag.NumberOfFrames), Tag.NumberOfFrames.VM);
+        return this.accessIntegerString(Tag.NumberOfFrames, Tag.NumberOfFrames.VM);
     }
 
     /**
