@@ -74,3 +74,134 @@ reader
     })
     .catch(err => console.log(err));
 ```
+
+<!-- MASTER_DOC_INDEX_START -->
+## Master Documentation Index
+
+Use this index to navigate all documentation markdown files in `bright-js/doc`.
+
+### root
+- [EASI](./EASI.md)
+
+### builders
+- [StreamingReaderBuilder](./builders/StreamingReaderBuilder.md)
+
+### codecs
+- [Decoders](./codecs/Decoders.md)
+
+### codecs/decoders
+- [dicomNativePixelDataToRGBADecoder](./codecs/decoders/dicomNativePixelDataToRGBADecoder.md)
+- [jpegDecoder](./codecs/decoders/jpegDecoder.md)
+- [jpegLosslessDecoder](./codecs/decoders/jpegLosslessDecoder.md)
+
+### data
+- [Data](./data/Data.md)
+
+### dicom
+- [Attribute](./dicom/Attribute.md)
+- [AttributeSequence](./dicom/AttributeSequence.md)
+- [AttributeSet](./dicom/AttributeSet.md)
+- [Constants](./dicom/Constants.md)
+- [DataElement](./dicom/DataElement.md)
+- [DataSet](./dicom/DataSet.md)
+- [EncodedData](./dicom/EncodedData.md)
+- [Instance](./dicom/Instance.md)
+- [Item](./dicom/Item.md)
+- [MetaSet](./dicom/MetaSet.md)
+- [Modality](./dicom/Modality.md)
+- [PixelData](./dicom/PixelData.md)
+- [Preamble](./dicom/Preamble.md)
+- [Prefix](./dicom/Prefix.md)
+- [SOPClass](./dicom/SOPClass.md)
+- [Tag](./dicom/Tag.md)
+- [TagSet](./dicom/TagSet.md)
+- [TransferSyntax](./dicom/TransferSyntax.md)
+- [Utilities](./dicom/Utilities.md)
+- [ValueRepresentation](./dicom/ValueRepresentation.md)
+
+### dicom/entities
+- [CT](./dicom/entities/CT.md)
+- [Entity](./dicom/entities/Entity.md)
+- [Image](./dicom/entities/Image.md)
+- [XA](./dicom/entities/XA.md)
+
+### dicom/modules
+- [GeneralSeriesModule](./dicom/modules/GeneralSeriesModule.md)
+- [ImagePixelModule](./dicom/modules/ImagePixelModule.md)
+- [ImagePlaneModule](./dicom/modules/ImagePlaneModule.md)
+- [ModalityLookUpTableModule](./dicom/modules/ModalityLookUpTableModule.md)
+- [Module](./dicom/modules/Module.md)
+- [MultiFrameModule](./dicom/modules/MultiFrameModule.md)
+- [VisualizationFunctionModule](./dicom/modules/VisualizationFunctionModule.md)
+
+### environment
+- [Configuration](./environment/Configuration.md)
+- [Exception](./environment/Exception.md)
+- [Runtime](./environment/Runtime.md)
+
+### fhir
+- [BackboneElement](./fhir/BackboneElement.md)
+- [Base](./fhir/Base.md)
+- [CodeableConcept](./fhir/CodeableConcept.md)
+- [CodeableReference](./fhir/CodeableReference.md)
+- [Coding](./fhir/Coding.md)
+- [CodingSystems](./fhir/CodingSystems.md)
+- [ContactPoint](./fhir/ContactPoint.md)
+- [DiagnosticReport](./fhir/DiagnosticReport.md)
+- [DocumentReference](./fhir/DocumentReference.md)
+- [DomainResource](./fhir/DomainResource.md)
+- [Element](./fhir/Element.md)
+- [Encounter](./fhir/Encounter.md)
+- [HumanName](./fhir/HumanName.md)
+- [Identifier](./fhir/Identifier.md)
+- [ImagingInstance](./fhir/ImagingInstance.md)
+- [ImagingSelection](./fhir/ImagingSelection.md)
+- [ImagingSeries](./fhir/ImagingSeries.md)
+- [ImagingStudy](./fhir/ImagingStudy.md)
+- [Narrative](./fhir/Narrative.md)
+- [Organization](./fhir/Organization.md)
+- [Patient](./fhir/Patient.md)
+- [Period](./fhir/Period.md)
+- [Practitioner](./fhir/Practitioner.md)
+- [PractitionerRole](./fhir/PractitionerRole.md)
+- [Reference](./fhir/Reference.md)
+- [Resource](./fhir/Resource.md)
+
+### handlers
+- [Stream Handler](./handler/StreamHandler.md)
+- [StreamingDicomInstanceHandler](./handlers/StreamingDicomInstanceHandler.md)
+- [StreamingDicomMappingHandler](./handlers/StreamingDicomMappingHandler.md)
+- [StreamingDicomSelectingHandler](./handlers/StreamingDicomSelectingHandler.md)
+- [StreamingJsonMetadataInstanceHandler](./handlers/StreamingJsonMetadataInstanceHandler.md)
+- [StreamingJsonValueHandler](./handlers/StreamingJsonValueHandler.md)
+
+### handlers/mappings
+- [DicomMapping](./handlers/mappings/DicomMapping.md)
+- [DicomToFHIRImagingStudyMapping](./handlers/mappings/DicomToFHIRImagingStudyMapping.md)
+- [Mapping](./handlers/mappings/Mapping.md)
+
+### handlers/selections
+- [DicomSelection](./handlers/selections/DicomSelection.md)
+- [Selection](./handlers/selections/Selection.md)
+
+### parsers
+- [Status](./parsers/Status.md)
+- [StreamingDataParser](./parsers/StreamingDataParser.md)
+- [StreamingDicomDataParser](./parsers/StreamingDicomDataParser.md)
+- [StreamingJsonDataParser](./parsers/StreamingJsonDataParser.md)
+
+### readers
+- [StreamingReader](./readers/StreamingReader.md)
+
+### tools/dicom
+- [Dumper](./tools/dicom/Dumper.md)
+- [DumpParser](./tools/dicom/DumpParser.md)
+
+### utils
+- [CharacterUtils](./utils/CharacterUtils.md)
+- [DateUtils](./utils/DateUtils.md)
+- [NumberUtils](./utils/NumberUtils.md)
+- [StringUtils](./utils/StringUtils.md)
+- [SymbolUtils](./utils/SymbolUtils.md)
+
+<!-- MASTER_DOC_INDEX_END -->
