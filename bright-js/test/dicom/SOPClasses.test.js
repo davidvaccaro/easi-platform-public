@@ -1,5 +1,5 @@
-import SOPClass from '../../dicom/SOPClass.js';
-import { SOPClasses } from '../../dicom/SOPClass.js';
+import SOPClass from '../../src/dicom/SOPClass.js';
+import { SOPClasses } from '../../src/dicom/SOPClass.js';
 
 test("Test: Find All SOP Classes", () => {
 

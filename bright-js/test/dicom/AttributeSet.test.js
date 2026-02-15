@@ -1,7 +1,7 @@
-import Attribute from '../../dicom/Attribute.js';
-import AttributeSet from '../../dicom/AttributeSet.js';
-import TransferSyntax from '../../dicom/TransferSyntax.js';
-import Tag from '../../dicom/Tag.js'
+import Attribute from '../../src/dicom/Attribute.js';
+import AttributeSet from '../../src/dicom/AttributeSet.js';
+import TransferSyntax from '../../src/dicom/TransferSyntax.js';
+import Tag from '../../src/dicom/Tag.js'
 
 var attributes = null;
 

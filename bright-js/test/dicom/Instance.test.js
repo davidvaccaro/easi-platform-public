@@ -1,9 +1,9 @@
-import EASI from '../../EASI.js';
-import Constants from '../../dicom/Constants.js'
-import StreamingDicomDataParser from '../../parsers/StreamingDicomDataParser.js';
-import StreamingDicomInstanceHandler from '../../handlers/StreamingDicomInstanceHandler.js';
-import Instance from '../../dicom/Instance.js';
-import DataSet from '../../dicom/DataSet.js';
+import EASI from '../../src/EASI.js';
+import Constants from '../../src/dicom/Constants.js'
+import StreamingDicomDataParser from '../../src/parsers/StreamingDicomDataParser.js';
+import StreamingDicomInstanceHandler from '../../src/handlers/StreamingDicomInstanceHandler.js';
+import Instance from '../../src/dicom/Instance.js';
+import DataSet from '../../src/dicom/DataSet.js';
 
 const { exec } = require("child_process");
 const path = require('path');

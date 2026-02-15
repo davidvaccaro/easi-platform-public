@@ -1,4 +1,4 @@
-import Runtime from "../../environment/Runtime.js";
+import Runtime from "../../src/environment/Runtime.js";
 
 test('Test: isRuntimeLittleEndian Method', () => {
 

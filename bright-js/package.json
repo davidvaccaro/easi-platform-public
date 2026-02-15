@@ -18,7 +18,13 @@
         "test": "jest"
     },
     "jest": {
-        "collectCoverage": true
+        "collectCoverage": true,
+        "testMatch": [
+            "<rootDir>/test/**/*.test.js"
+        ],
+        "collectCoverageFrom": [
+            "src/**/*.js"
+        ]
     },
     "dependencies": {
         "node-fetch": "^3.3.1"

@@ -1,5 +1,5 @@
-import TransferSyntax from '../../dicom/TransferSyntax.js';
-import { TransferSyntaxes } from '../../dicom/TransferSyntax.js';
+import TransferSyntax from '../../src/dicom/TransferSyntax.js';
+import { TransferSyntaxes } from '../../src/dicom/TransferSyntax.js';
 
 test("Test: Find All Transfer Syntaxes", () => {
 

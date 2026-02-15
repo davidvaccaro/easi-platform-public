@@ -1,5 +1,5 @@
-import Preamble from '../../dicom/Preamble.js';
-import Constants from '../../dicom/Constants.js'
+import Preamble from '../../src/dicom/Preamble.js';
+import Constants from '../../src/dicom/Constants.js'
 
 var preamble = null;
 

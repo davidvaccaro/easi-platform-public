@@ -1,5 +1,5 @@
-import DataElement from '../../dicom/DataElement.js';
-import TransferSyntax from '../../dicom/TransferSyntax.js';
+import DataElement from '../../src/dicom/DataElement.js';
+import TransferSyntax from '../../src/dicom/TransferSyntax.js';
 
 test("Test: Data Length Complete", () => {
     expect((new DataElement([0, 0, 0, 0], TransferSyntax.None, 4)).isComplete).toBe(true);

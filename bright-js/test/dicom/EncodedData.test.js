@@ -1,5 +1,5 @@
-import EncodedData from '../../dicom/EncodedData.js';
-import TransferSyntax from '../../dicom/TransferSyntax.js';
+import EncodedData from '../../src/dicom/EncodedData.js';
+import TransferSyntax from '../../src/dicom/TransferSyntax.js';
 
 test("Test: Data Length", () => {
     expect((new EncodedData([0, 0, 0, 0], TransferSyntax.None)).length()).toBe(4);

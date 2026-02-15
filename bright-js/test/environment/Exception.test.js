@@ -1,6 +1,6 @@
-import Exception from '../../environment/Exception.js';
-import { GeneralErrorCodes } from '../../environment/Exception.js';
-import { DicomErrorCodes } from '../../environment/Exception.js';
+import Exception from '../../src/environment/Exception.js';
+import { GeneralErrorCodes } from '../../src/environment/Exception.js';
+import { DicomErrorCodes } from '../../src/environment/Exception.js';
 
 test("Test: GeneralError", () => {
     const t = () => {

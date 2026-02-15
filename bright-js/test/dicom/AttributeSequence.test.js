@@ -1,9 +1,9 @@
-import Attribute from '../../dicom/Attribute.js';
-import Item from '../../dicom/Item.js';
-import AttributeSequence from '../../dicom/AttributeSequence.js';
-import Constants from '../../dicom/Constants.js'
-import TransferSyntax from '../../dicom/TransferSyntax.js';
-import Tag from '../../dicom/Tag.js'
+import Attribute from '../../src/dicom/Attribute.js';
+import Item from '../../src/dicom/Item.js';
+import AttributeSequence from '../../src/dicom/AttributeSequence.js';
+import Constants from '../../src/dicom/Constants.js'
+import TransferSyntax from '../../src/dicom/TransferSyntax.js';
+import Tag from '../../src/dicom/Tag.js'
 
 var sequence = null;
 

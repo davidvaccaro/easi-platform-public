@@ -1,7 +1,7 @@
-import DataSet from '../../dicom/DataSet.js';
-import Attribute from '../../dicom/Attribute.js';
-import TransferSyntax from '../../dicom/TransferSyntax.js';
-import Tag from '../../dicom/Tag.js'
+import DataSet from '../../src/dicom/DataSet.js';
+import Attribute from '../../src/dicom/Attribute.js';
+import TransferSyntax from '../../src/dicom/TransferSyntax.js';
+import Tag from '../../src/dicom/Tag.js'
 
 test("Test: Data Find", () => {
     let dataset = new DataSet();

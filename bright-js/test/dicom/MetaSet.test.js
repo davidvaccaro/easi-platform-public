@@ -1,8 +1,8 @@
-import MetaSet from '../../dicom/MetaSet.js';
-import Attribute from '../../dicom/Attribute.js';
-import TransferSyntax from '../../dicom/TransferSyntax.js';
-import Tag from '../../dicom/Tag.js'
-import SOPClass from '../../dicom/SOPClass.js';
+import MetaSet from '../../src/dicom/MetaSet.js';
+import Attribute from '../../src/dicom/Attribute.js';
+import TransferSyntax from '../../src/dicom/TransferSyntax.js';
+import Tag from '../../src/dicom/Tag.js'
+import SOPClass from '../../src/dicom/SOPClass.js';
 
 var metaset = null;
 

@@ -1,6 +1,6 @@
-import StreamingDicomInstanceHandler from '../../handlers/StreamingDicomInstanceHandler.js';
-import Dumper from '../../tools/dicom/Dumper.js';
-import DumpParser from '../../tools/dicom/DumpParser.js';
+import StreamingDicomInstanceHandler from '../../../src/handlers/StreamingDicomInstanceHandler.js';
+import Dumper from '../../../src/tools/dicom/Dumper.js';
+import DumpParser from '../../../src/tools/dicom/DumpParser.js';
 
 const path = require('path');
 const fs = require('fs');

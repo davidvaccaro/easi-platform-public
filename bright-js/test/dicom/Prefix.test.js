@@ -1,5 +1,5 @@
-import Prefix from '../../dicom/Prefix.js';
-import Constants from '../../dicom/Constants.js'
+import Prefix from '../../src/dicom/Prefix.js';
+import Constants from '../../src/dicom/Constants.js'
 
 var prefix = null;
 

@@ -1,5 +1,5 @@
-import ValueRepresentation from '../../dicom/ValueRepresentation.js';
-import { ValueRepresentations } from '../../dicom/ValueRepresentation.js';
+import ValueRepresentation from '../../src/dicom/ValueRepresentation.js';
+import { ValueRepresentations } from '../../src/dicom/ValueRepresentation.js';
 
 test("Test: Find All Value Representations", () => {
 

@@ -1,6 +1,6 @@
-import Attribute from '../../dicom/Attribute.js';
-import TransferSyntax from '../../dicom/TransferSyntax.js';
-import Tag from '../../dicom/Tag.js'
+import Attribute from '../../src/dicom/Attribute.js';
+import TransferSyntax from '../../src/dicom/TransferSyntax.js';
+import Tag from '../../src/dicom/Tag.js'
 
 test("Test: Attribute UL Value Array", () => {
     let attribute = new Attribute(Tag.FileMetaInformationGroupLength, 4, [255, 1, 0, 0], TransferSyntax.NONE);

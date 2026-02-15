@@ -1,5 +1,5 @@
-import Tag from '../../dicom/Tag.js';
-import { Tags } from '../../dicom/Tag.js';
+import Tag from '../../src/dicom/Tag.js';
+import { Tags } from '../../src/dicom/Tag.js';
 
 test("Test: Find All Tags", () => {
 

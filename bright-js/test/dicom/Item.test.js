@@ -1,5 +1,5 @@
-import Item from '../../dicom/Item.js';
-import Constants from '../../dicom/Constants.js'
+import Item from '../../src/dicom/Item.js';
+import Constants from '../../src/dicom/Constants.js'
 
 test("Test: Item Value Length", () => {
     let item = new Item(Constants.UndefinedLength);

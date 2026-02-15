@@ -1,6 +1,6 @@
-import Runtime from '../../environment/Runtime.js';
-import Constants from '../../dicom/Constants.js';
-import Utilities from '../../dicom/Utilities.js';
+import Runtime from '../../src/environment/Runtime.js';
+import Constants from '../../src/dicom/Constants.js';
+import Utilities from '../../src/dicom/Utilities.js';
 
 test('Test: 2 bytesToUnsignedInteger', () => {
     expect(Utilities.bytesToUnsignedInteger(new Uint8Array([1, 1]))).toBe(257);

@@ -1,4 +1,4 @@
-import Constants from '../../dicom/Constants.js'
+import Constants from '../../src/dicom/Constants.js'
 
 test('Test: PreambleLength', () => {
     expect(Constants.PreambleLength).toBe(128);
