@@ -168,7 +168,7 @@ Use this index to navigate all documentation markdown files in `bright-js/doc`.
 - [Resource](./fhir/Resource.md)
 
 ### handlers
-- [Stream Handler](./handler/StreamHandler.md)
+- [StreamHandler](./handlers/StreamHandler.md)
 - [StreamingDicomInstanceHandler](./handlers/StreamingDicomInstanceHandler.md)
 - [StreamingDicomMappingHandler](./handlers/StreamingDicomMappingHandler.md)
 - [StreamingDicomSelectingHandler](./handlers/StreamingDicomSelectingHandler.md)
