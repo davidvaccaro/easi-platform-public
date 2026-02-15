@@ -48,7 +48,7 @@ export default class Data {
 
     /**
      * Append the specified raw bytes to the data buffer.
-     * @param {*} raw The raw byts to append.
+     * @param {Uint8Array} raw The raw byts to append.
      */
     append(raw) {
 
@@ -86,7 +86,7 @@ export default class Data {
 
     /**
      * Consume "count" length of bytes from the data buffer.
-     * @param {*} count The count of bytes to consume.
+     * @param {number} count The count of bytes to consume.
      * @returns An array of the bytes consumed or an empty array if there are no more bytes within the buffer.
      */
     consume(count) {
@@ -104,8 +104,8 @@ export default class Data {
 
     /**
      * Peak the current data buffer at a given "begin" offset and for a "count" length of bytes.
-     * @param {*} begin The offset to start peeking within the data buffer.
-     * @param {*} count The count of bytes to peek.
+     * @param {number} begin The offset to start peeking within the data buffer.
+     * @param {number} count The count of bytes to peek.
      * @returns An array of the bytes peaked or an empty array if begin is beyond the end of the array.
      */
     peek(begin, count) {
@@ -117,7 +117,7 @@ export default class Data {
 
     /**
      * Peak one byte of the current data buffer at a given "begin" offset.
-     * @param {*} begin The offset to start peeking within the data buffer.
+     * @param {number} begin The offset to start peeking within the data buffer.
      * @returns An single byte peaked from the current array.
      */
     peekOne(begin) {
@@ -129,7 +129,7 @@ export default class Data {
 
     /**
      * Skip forward in the current data buffer by "count" bytes.
-     * @param {*} count The count of bytes to skip from the start of the current buffer.
+     * @param {number} count The count of bytes to skip from the start of the current buffer.
      */
     skip(count) {
         this.data = this.data.subarray(count);
@@ -137,8 +137,8 @@ export default class Data {
 
     /**
      * Determines the index of a specific byte sequence within the data buffer,
-     * @param {*} begin The offset to start peeking within the data buffer. 
-     * @param {*} sequence The sequence to find.
+     * @param {number} begin The offset to start peeking within the data buffer. 
+     * @param {Uint8Array} sequence The sequence to find.
      * @returns {number} The index of the sequence, or -1 if not found.
      */
     indexOf(begin, sequence) {

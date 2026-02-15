@@ -26,7 +26,7 @@ export default class StreamingDataParser {
   
     /**
      * Fires a stream event or skips the event if the stream-handler does NOT support the event.
-     * @param {*} name The name of the event.
+     * @param {string} name The name of the event.
      * @param {*} param The parameter to pass to the event.
      * @returns The status based on the standard processing.
      */
@@ -118,7 +118,7 @@ export default class StreamingDataParser {
         
     /**
      * Parse the specified chunk of data.
-     * @param {*} chunk The specified chunk of data.
+     * @param {Uint8Array} chunk The specified chunk of data.
      * @returns The Status for the reader to use to correctly process the next check.
      */
     async parse(chunk, isDone = false, totalRead = null, totalLength = null) {
@@ -142,7 +142,7 @@ export default class StreamingDataParser {
 
     /**
      * Sets the current handler for this parser.
-     * @param {*} handler The handler used to handle parsed elements of the data.
+     * @param {object} handler The handler used to handle parsed elements of the data.
      */
     set handler (handler) {
         this._handler = handler;

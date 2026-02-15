@@ -20,7 +20,7 @@ new DumpParser(dicomEmitter)
 
 | Parameter | Type    | Default | Description |
 |-----------|---------|---------|-------------|
-| `dicomEmitter` | `*` | `—` | The emitter used to emit dumped elements of the DICOM data. |
+| `dicomEmitter` | `object` | `—` | The emitter used to emit dumped elements of the DICOM data. |
 
 ## Properties
 
@@ -90,7 +90,7 @@ Parse the specified dump data to a dump instance.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `data` | `*` | — |
+| `data` | `string` | — |
 
 #### Returns
 

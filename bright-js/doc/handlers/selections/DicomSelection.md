@@ -33,7 +33,7 @@ Add a selection item for the specified DICOM Tag.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `tag` | `*` | The specified DICOM Tag. |
+| `tag` | `Tag` | The specified DICOM Tag. |
 
 #### Returns
 
@@ -49,7 +49,7 @@ Determine if the selection item has the current DICOM Tag.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `tag` | `*` | The specified DICOM Tag. |
+| `tag` | `Tag` | The specified DICOM Tag. |
 
 #### Returns
 
@@ -67,8 +67,8 @@ Match the specified attribute.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `context` | `*` | — |
-| `attribute` | `*` | — |
+| `context` | `object` | — |
+| `attribute` | `Attribute | AttributeSequence` | — |
 
 #### Returns
 

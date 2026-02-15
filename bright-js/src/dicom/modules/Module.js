@@ -23,8 +23,8 @@ export default class Module {
     
     /**
      * Parses the value of an integer string value attribute taking into account the value multiplicity.
-     * @param {*} tag The tag of the integer string value.
-     * @param {*} vm The value multiplicity of the integer string.
+     * @param {Tag} tag The tag of the integer string value.
+     * @param {number | string} vm The value multiplicity of the integer string.
      * @returns A single integer value for multiplicity of 1, an array of integer values for multiplicity of N, null if the value is empty.
      */
     accessIntegerString(tag, vm = null) {
@@ -55,8 +55,8 @@ export default class Module {
 
     /**
      * Parses the value of an decimal string value attribute taking into account the value multiplicity.
-     * @param {*} tag The tag of the integer string value.
-     * @param {*} vm The value multiplicity of the decimal string.
+     * @param {Tag} tag The tag of the integer string value.
+     * @param {number | string} vm The value multiplicity of the decimal string.
      * @returns A single decimal value for multiplicity of 1, an array of decimal values for multiplicity of N, null if the value is empty.
      */
     accessDecimalString(tag, vm = null) {

@@ -38,8 +38,8 @@ Generate a mask suitable for masking out unsued bits.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `bitsPerPixel` | `*` | The bits per pixel that this mask will be applied to. |
-| `numUnmaskedBits` | `*` | The number of bits that should remain unmasked. |
+| `bitsPerPixel` | `number` | The bits per pixel that this mask will be applied to. |
+| `numUnmaskedBits` | `number` | The number of bits that should remain unmasked. |
 
 #### Returns
 
@@ -57,11 +57,11 @@ Decode the specified source 8-bit DICOM MONOCHROME pixel-data into the destinati
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `source` | `*` | The source DICOM MONOCHROME pixel-data. |
-| `sourceStart` | `*` | The index into the source pixel-data buffer to START processing. |
-| `sourceStop` | `*` | The index into the source pixel-data buffer to STOP processin. |
-| `destination` | `*` | The destination buffer to store the decoded RGBA pixel-data. |
-| `destinationStart` | `*` | The index into the destination pixel-data buffer to start processing. |
+| `source` | `Uint8Array` | The source DICOM MONOCHROME pixel-data. |
+| `sourceStart` | `number` | The index into the source pixel-data buffer to START processing. |
+| `sourceStop` | `number` | The index into the source pixel-data buffer to STOP processin. |
+| `destination` | `Uint8Array` | The destination buffer to store the decoded RGBA pixel-data. |
+| `destinationStart` | `number` | The index into the destination pixel-data buffer to start processing. |
 
 #### Returns
 
@@ -79,11 +79,11 @@ Decode the specified source 8-bit DICOM MONOCHROME pixel-data into the destinati
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `source` | `*` | The source DICOM MONOCHROME pixel-data. |
-| `sourceStart` | `*` | The index into the source pixel-data buffer to START processing. |
-| `sourceStop` | `*` | The index into the source pixel-data buffer to STOP processin. |
-| `destination` | `*` | The destination buffer to store the decoded RGBA pixel-data. |
-| `destinationStart` | `*` | The index into the destination pixel-data buffer to start processing. |
+| `source` | `Uint8Array` | The source DICOM MONOCHROME pixel-data. |
+| `sourceStart` | `number` | The index into the source pixel-data buffer to START processing. |
+| `sourceStop` | `number` | The index into the source pixel-data buffer to STOP processin. |
+| `destination` | `Uint8Array` | The destination buffer to store the decoded RGBA pixel-data. |
+| `destinationStart` | `number` | The index into the destination pixel-data buffer to start processing. |
 
 #### Returns
 
@@ -101,11 +101,11 @@ Decode the specificed data to the output buffer.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `source` | `*` | The Uint8Array that serves as the source of the decode operation. |
-| `sourceStart` | `*` | The index into the input array to START reading decode input. |
-| `sourceStop` | `*` | The index into the input array to STOP reading decode input. |
-| `destination` | `*` | The Uint8Array that serves as the destination of the decode operation. |
-| `destinationStart` | `*` | The index into the output array to START writing decoded output. |
+| `source` | `Uint8Array` | The Uint8Array that serves as the source of the decode operation. |
+| `sourceStart` | `number` | The index into the input array to START reading decode input. |
+| `sourceStop` | `number` | The index into the input array to STOP reading decode input. |
+| `destination` | `Uint8Array` | The Uint8Array that serves as the destination of the decode operation. |
+| `destinationStart` | `number` | The index into the output array to START writing decoded output. |
 
 #### Returns
 

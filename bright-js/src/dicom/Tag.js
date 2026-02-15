@@ -30,8 +30,8 @@ export default class Tag {
 
 	/**
 	 * Constructs a proper DICOM Tag identifier from a specified group and element. (e.g. 00020000)
-	 * @param {*} group The specified DICOM Group Number.
-	 * @param {*} element The specified DICOM Element Number.
+	 * @param {number} group The specified DICOM Group Number.
+	 * @param {number} element The specified DICOM Element Number.
 	 * @returns The DICOM tag identifier.
 	 */
 	static identifier(group, element) {
@@ -214,7 +214,7 @@ export default class Tag {
 
 	/**
 	 * Determine if the specified group is Private.
-	 * @param {*} group The specified DICOM Group Number.
+	 * @param {number} group The specified DICOM Group Number.
 	 * https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html
 	 */
 	static isPrivateGroup(group) {		
@@ -223,8 +223,8 @@ export default class Tag {
 
 	/**
 	 * Determine if the specified group and element identify a DICOM Private Creator ID Tag
-	 * @param {*} group The specified DICOM Group Number.
-	 * @param {*} element The specified DICOM Element Number.
+	 * @param {number} group The specified DICOM Group Number.
+	 * @param {number} element The specified DICOM Element Number.
 	 * https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html
 	 */
 	static isPrivateCreatorIDTag(group, element) {		
@@ -233,8 +233,8 @@ export default class Tag {
 
 	/**
 	 * Determine if the specified group and element identify a DICOM Private Creator Tag
-	 * @param {*} group The specified DICOM Group Number.
-	 * @param {*} element The specified DICOM Element Number.
+	 * @param {number} group The specified DICOM Group Number.
+	 * @param {number} element The specified DICOM Element Number.
 	 * https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html
 	 */
 	static isPrivateTag(group, element) {

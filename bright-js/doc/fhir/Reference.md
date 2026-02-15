@@ -20,7 +20,7 @@ new Reference(reference)
 
 | Parameter | Type    | Default | Description |
 |-----------|---------|---------|-------------|
-| `reference` | `*` | `—` | The reference value. |
+| `reference` | `string` | `—` | The reference value. |
 
 ## Properties
 

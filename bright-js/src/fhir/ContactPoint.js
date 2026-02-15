@@ -96,7 +96,7 @@ export default class ContactPoint extends Element {
 
     /**
      * Coerce the specified value into a complete ContactPoint.
-     * @param {*} value The specified value.
+     * @param {ContactPoint | object | string} value The specified value.
      */
     static coerce(value) {
         throw new Error("Not Implemented Yet");

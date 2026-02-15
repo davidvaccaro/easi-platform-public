@@ -38,7 +38,7 @@ Add a specified value to the potentially multi-vaued property identified by the 
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `name` | `*` | The specified name of the multi-valued property to append to. |
+| `name` | `string` | The specified name of the multi-valued property to append to. |
 | `value` | `*` | The value to append. |
 
 #### Returns

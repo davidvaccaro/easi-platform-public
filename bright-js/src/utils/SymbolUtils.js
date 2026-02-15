@@ -23,7 +23,7 @@ export default class SymbolUtils {
 
     /**
      * Converts the specified symbol value to a JSON serialized representation.
-     * @param {*} value The specified symbols value to convert.
+     * @param {symbol} value The specified symbols value to convert.
      * @returns The JSON serialized representation of the specified symbol.
      */
     static toJSON = (value) => (value != null) 

@@ -25,7 +25,7 @@ export default class AttributeSequence extends DicomAttribute {
 
     /**
      * Adds a new item to the sequence of items.
-     * @param {*} item The item to add.
+     * @param {Item} item The item to add.
      */
     add(item) {
 
@@ -36,7 +36,7 @@ export default class AttributeSequence extends DicomAttribute {
 
     /**
      * Adds ALL the specified items to the sequence of items.
-     * @param {*} items The array of items to add.
+     * @param {Array<Item>} items The array of items to add.
      */
     addAll(items) {
 
@@ -47,7 +47,7 @@ export default class AttributeSequence extends DicomAttribute {
 
     /**
      * Find an attribute within the immediate sequence by tag identifier.
-     * @param {*} tag The DICOM tag to search by.
+     * @param {Tag} tag The DICOM tag to search by.
      * @returns The attribute if found or undefined otherwise.
      */
     find(tag) {
@@ -56,7 +56,7 @@ export default class AttributeSequence extends DicomAttribute {
 
     /**
      * Determine if an attribute exists within the immediate sequence by tag.
-     * @param {*} tag True if an attribute exists, False otherwise.
+     * @param {Tag} tag True if an attribute exists, False otherwise.
      */
     has(tag) {
 

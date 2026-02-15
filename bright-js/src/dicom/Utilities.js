@@ -25,7 +25,7 @@ export default class Utilities {
 
     /**
      * Convert the specified byte array (2 or 4 bytes) to an unsigned integer value.
-     * @param {*} bytes The specified byte array.
+     * @param {Uint8Array} bytes The specified byte array.
      * @returns The unsigned integer value of the byte array.
      */
     static bytesToUnsignedInteger(bytes) {
@@ -39,7 +39,7 @@ export default class Utilities {
 
     /**
      * Convert the specified byte array to a string representation.
-     * @param {*} bytes The specifide byte array. 
+     * @param {Uint8Array} bytes The specifide byte array. 
      * @returns The string value of the byte array.
      */
     static bytesToString(bytes) {
@@ -48,7 +48,7 @@ export default class Utilities {
 
     /**
      * Swap bytes in the array for when differences in the endian-ness of the runtime requires data adjustment.
-     * @param {*} buf The buffer of data bytes
+     * @param {Uint8Array} buf The buffer of data bytes
      */
     static swapBytes(buf) {
 
@@ -70,7 +70,7 @@ export default class Utilities {
 
     /**
      * Performs a "deep" compy of the specified array.
-     * @param {*} arr The specified array.
+     * @param {Array<unknown>} arr The specified array.
      * @returns The "deep" copy of the specified array.
      */
     static deepCopyArray(arr) {
@@ -101,7 +101,7 @@ export default class Utilities {
 
     /**
      * Parses the specified DA date string value to a Date instance.
-     * @param {*} value The specified date value in the DA format YYYYMMDD. 
+     * @param {string} value The specified date value in the DA format YYYYMMDD. 
      * @returns The value parsed to a Date.
      */
     static parseDA(value) {
@@ -123,7 +123,7 @@ export default class Utilities {
     
     /**
      * Parses the specified DT date string value to a Date instance.
-     * @param {*} value The specified date value in the DT format YYYYMMDDHHMMSS.FFFFFF&ZZXX. 
+     * @param {string} value The specified date value in the DT format YYYYMMDDHHMMSS.FFFFFF&ZZXX. 
      * @returns The value parsed to a Date.
      */
     static parseDT(value) {
@@ -158,7 +158,7 @@ export default class Utilities {
 
     /**
      * Parses the specified TM date string value to a Date instance.
-     * @param {*} value The specified date value in the TM format HHMMSS.FFFFFF. 
+     * @param {string} value The specified date value in the TM format HHMMSS.FFFFFF. 
      * @returns The value parsed to a Date.
      */
     static parseTM(value) {

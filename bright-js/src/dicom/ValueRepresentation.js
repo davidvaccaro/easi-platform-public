@@ -24,7 +24,7 @@ export default class ValueRepresentation {
 
     /**
      * Find the value-representation by name (i.e. LO, SS, OB, OW, etc.)
-     * @param {*} name The name of the value representation.
+     * @param {string} name The name of the value representation.
      * @returns  The value representation.
      */
     static find(name) {
@@ -43,7 +43,7 @@ export default class ValueRepresentation {
 
     /**
      * Constructs a new value representation instance.
-     * @param {*} data 
+     * @param {object} data 
      */
     constructor(data) {
         Object.assign(this, data);

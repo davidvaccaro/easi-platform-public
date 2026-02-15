@@ -39,7 +39,7 @@ export default class Element extends Base {
 
     /**
      * Add a specified value to the potentially multi-vaued property identified by the specified name.
-     * @param {*} name The specified name of the multi-valued property to append to.
+     * @param {string} name The specified name of the multi-valued property to append to.
      * @param {*} value The value to append.
      */
     addMultiValue(name, value) {

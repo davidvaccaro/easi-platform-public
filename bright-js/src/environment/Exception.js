@@ -23,9 +23,9 @@ export default class Exception {
 
     /**
      * Create a new Exception given a message, code and optional underlying error.
-     * @param {*} message The message describing the error condition.
-     * @param {*} code The code identifying the error condition.
-     * @param {*} error The underlying error associated to the error condition.
+     * @param {string} message The message describing the error condition.
+     * @param {string} code The code identifying the error condition.
+     * @param {Error | null} error The underlying error associated to the error condition.
      */
     constructor(message, code = GeneralErrorCodes.GeneralError, error = null) {
         this.message = message;

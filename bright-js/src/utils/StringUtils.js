@@ -23,7 +23,7 @@ export default class StringUtils {
 
     /**
      * Tests the specified string value to determine if it is "valid" (i.e. not NULL or EMPTY).
-     * @param {*} str The specified string value to test.
+     * @param {string} str The specified string value to test.
      * @returns TRUE if the specified string value is "valid", FALSE otherwise.
      */
     static isValid = (str) => str !== null && str.trim() !== '';

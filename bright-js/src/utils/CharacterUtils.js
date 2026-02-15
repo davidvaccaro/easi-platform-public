@@ -23,7 +23,7 @@ export default class CharacterUtils {
 
     /**
      * Tests the specified string value to determine if it is "whitespace" (per JSON definition).
-     * @param {*} char The character to test.
+     * @param {number} char The character to test.
      * @returns TRUE if the spoecified character is "whitespace", FALSE otherwise.
      */
     static isWhitespace = (byte) => {

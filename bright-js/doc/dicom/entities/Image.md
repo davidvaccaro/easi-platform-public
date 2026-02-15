@@ -79,7 +79,7 @@ Decodes one frame of pixel data into the given destination array.
 | Name           | Type             | Description                                                                 |
 |----------------|------------------|-----------------------------------------------------------------------------|
 | `destination`  | `Uint8Array`     | The buffer to write decoded pixel values into.                             |
-| `decoder`      | `Decoder`        | (Optional) A custom decoder. Defaults to a global decoder via configuration. |
+| `decoder`      | `object`        | (Optional) A custom decoder. Defaults to a global decoder via configuration. |
 | `frame`        | `number`         | (Optional) The frame index to decode (multi-frame). Defaults to `0`.       |
 | `windowCenter` | `number`         | (Optional) Window center override.                                          |
 | `windowWidth`  | `number`         | (Optional) Window width override.                                           |

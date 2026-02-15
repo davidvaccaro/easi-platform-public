@@ -26,7 +26,7 @@ export default class Item extends AttributeSet {
 
     /**
      * Constructs a DICOM Part-10 Sequence Item.
-     * @param {*} valueLength The length of the item.
+     * @param {number} valueLength The length of the item.
      */
     constructor(valueLength) {
 

@@ -80,9 +80,9 @@ export default class Image extends Entity {
 
     /**
      * Decode the pixel data to the destination Uint8Array.
-     * @param {*} destination The destination Uint8Array that serves as the destination of the decode operation.
-     * @param {*} decoder (Optional) The desired decoder. Defaults to RGBA. 
-     * @param {*} frame (Optional) The frame index (for multi-frame images) to decode. Defaults to 0.
+     * @param {Uint8Array} destination The destination Uint8Array that serves as the destination of the decode operation.
+     * @param {object} decoder (Optional) The desired decoder. Defaults to RGBA. 
+     * @param {number} frame (Optional) The frame index (for multi-frame images) to decode. Defaults to 0.
      */
     decodeFrame(destination, decoder = null, frame = 0, windowCenter = null, windowWidth = null) {
 

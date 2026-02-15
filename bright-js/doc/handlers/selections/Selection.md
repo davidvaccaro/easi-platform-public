@@ -26,7 +26,7 @@ Start the selection session.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `context` | `*` | The session context. |
+| `context` | `object` | The session context. |
 
 #### Returns
 
@@ -42,7 +42,7 @@ End the selection session.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `context` | `*` | The session context. |
+| `context` | `object` | The session context. |
 
 #### Returns
 

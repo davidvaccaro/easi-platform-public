@@ -26,8 +26,8 @@ Add a mapping for the specified DICOM Tag.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `tag` | `*` | The specified DICOM Tag. |
-| `property` | `*` | The property The property name or path to a property within an object hierarchy. |
+| `tag` | `Tag` | The specified DICOM Tag. |
+| `property` | `string` | The property The property name or path to a property within an object hierarchy. |
 
 #### Returns
 
@@ -43,7 +43,7 @@ Determine if the mapping has the current DICOM Tag.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `tag` | `*` | The specified DICOM Tag. |
+| `tag` | `Tag` | The specified DICOM Tag. |
 
 #### Returns
 
@@ -61,8 +61,8 @@ Map the attribute to the destination property.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `context` | `*` | — |
-| `attribute` | `*` | — |
+| `context` | `object` | — |
+| `attribute` | `Attribute` | — |
 
 #### Returns
 

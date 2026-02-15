@@ -23,7 +23,7 @@ export default class AttributeSet {
 
     /**
      * Find an attribute within the immediate sequence by tag identifier.
-     * @param {*} tag The DICOM tag to search by.
+     * @param {Tag} tag The DICOM tag to search by.
      * @returns The attribute if found or undefined otherwise.
      */
     find(tag) {
@@ -32,8 +32,8 @@ export default class AttributeSet {
 
     /**
      * Determine if an attribute exists within the immediate sequence by tag.
-     * @param {*} tag The DICOM tag to search by.
-     * @returns {*} TRUE if an attribute exists, FALSE otherwise.
+     * @param {Tag} tag The DICOM tag to search by.
+     * @returns {boolean} TRUE if an attribute exists, FALSE otherwise.
      */
     has(tag) {
         return (this.find(tag) != null);
@@ -41,7 +41,7 @@ export default class AttributeSet {
 
     /**
      * Adds a new attribute to the sequence of attributes.
-     * @param {*} attribute The attribute to add.
+     * @param {Attribute} attribute The attribute to add.
      */
     add(attribute) {
 
@@ -52,7 +52,7 @@ export default class AttributeSet {
 
     /**
      * Adds ALL the specified attributes to the sequence of attributes.
-     * @param {*} attributes The array of attributes to add.
+     * @param {Array<Attribute>} attributes The array of attributes to add.
      */
     addAll(attributes) {
 

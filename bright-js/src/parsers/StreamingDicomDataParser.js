@@ -427,7 +427,7 @@ export default class StreamingDicomDataParser {
 
     /**
      * Fires a stream event or skips the event if the stream-handler does NOT support the event.
-     * @param {*} name The name of the event.
+     * @param {string} name The name of the event.
      * @param {*} param The parameter to pass to the event.
      * @returns The status based on the standard processing.
      */
@@ -495,7 +495,7 @@ export default class StreamingDicomDataParser {
 
     /**
      * Parse the specified chunk of DICOM data.
-     * @param {*} chunk The specified chunk of DICOM data.
+     * @param {Uint8Array} chunk The specified chunk of DICOM data.
      * @returns TRUE if a DICOM is fully parsed, FALSE otherwise.
      */
     async parse(chunk, isDone = false, totalRead = null, totalLength = null) {
@@ -1482,7 +1482,7 @@ export default class StreamingDicomDataParser {
 
     /**
      * Sets the current handler for this parser.
-     * @param {*} handler The handler used to handle parsed elements of the DICOM data.
+     * @param {object} handler The handler used to handle parsed elements of the DICOM data.
      */
     set handler (handler) {
         this._handler = handler;

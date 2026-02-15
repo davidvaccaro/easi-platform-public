@@ -54,7 +54,7 @@ Finds a DICOM attribute within the set by its tag.
 
 | Parameter | Type  | Description                         |
 |-----------|-------|-------------------------------------|
-| `tag`     | `any` | The DICOM tag to search for.        |
+| `tag`     | `Tag` | The DICOM tag to search for.        |
 
 #### Returns
 
@@ -72,7 +72,7 @@ Checks whether a DICOM attribute with the specified tag exists in the set.
 
 | Parameter | Type  | Description                         |
 |-----------|-------|-------------------------------------|
-| `tag`     | `any` | The DICOM tag to check for.         |
+| `tag`     | `Tag` | The DICOM tag to check for.         |
 
 #### Returns
 
@@ -90,7 +90,7 @@ Adds a single attribute to the attribute set.
 
 | Parameter  | Type  | Description                    |
 |------------|-------|--------------------------------|
-| `attribute`| `any` | The attribute to be added.     |
+| `attribute`| `Attribute` | The attribute to be added.     |
 
 #### Returns
 
@@ -108,7 +108,7 @@ Adds an array of attributes to the attribute set.
 
 | Parameter   | Type    | Description                          |
 |-------------|---------|--------------------------------------|
-| `attributes`| `Array` | The array of attributes to add.      |
+| `attributes`| `Array<Attribute>` | The array of attributes to add.      |
 
 #### Returns
 

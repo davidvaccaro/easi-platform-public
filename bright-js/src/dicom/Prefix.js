@@ -28,7 +28,7 @@ export default class Prefix extends DataElement {
 
     /**
      * Constructs a DICOM Part-10 File Meta Information "Prefix" from a specified raw data buffer.
-     * @param {*} byteData The specified raw data buffer.
+     * @param {Uint8Array} byteData The specified raw data buffer.
      */
     constructor(data) {
 

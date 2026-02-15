@@ -37,7 +37,7 @@ Adds the name value.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `name` | `*` | The name value to add. |
+| `name` | `HumanName | string` | The name value to add. |
 
 #### Returns
 
@@ -53,7 +53,7 @@ Adds the telcom value.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `telcom` | `*` | The telcom value to add. |
+| `telcom` | `ContactPoint | object | string` | The telcom value to add. |
 
 #### Returns
 

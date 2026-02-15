@@ -26,8 +26,8 @@ export default class StreamingDicomSelectingHandler {
 
     /**
      * Determine if the current attribute should be skipped based on the current context and attribute data.
-     * @param {*} context The current context.
-     * @param {*} attribute The current attribute.
+     * @param {object} context The current context.
+     * @param {Attribute | AttributeSequence} attribute The current attribute.
      */
     skipAttribute(context, attribute) {
 
@@ -41,8 +41,8 @@ export default class StreamingDicomSelectingHandler {
 
     /**
      * Determine if the current attribute should be skipped based on the current context and attribute data.
-     * @param {*} context The current context.
-     * @param {*} attribute The current attribute.
+     * @param {object} context The current context.
+     * @param {Attribute | AttributeSequence} attribute The current attribute.
      */
     stopAttribute(context, attribute) {
 
@@ -218,7 +218,7 @@ export default class StreamingDicomSelectingHandler {
 
     /**
      * Create a new instance of the handler with the specified "selection".
-     * @param {*} selection The specified selection to apply when processing the DICOM Data.
+     * @param {Selection} selection The specified selection to apply when processing the DICOM Data.
      */
     constructor(selection) {
 

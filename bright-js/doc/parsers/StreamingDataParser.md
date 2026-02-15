@@ -39,7 +39,7 @@ Fires a stream event, invoking the appropriate handler function if it exists.
 | Parameter | Type  | Description                                             |
 |-----------|-------|---------------------------------------------------------|
 | `name`   | `string` | The name of the event to fire.   |
-| `param`   | `any` | The parameter to pass to the event handler.   |
+| `param`   | `*` | The parameter to pass to the event handler.   |
 | `currentStatus`   | `Status` | The current processing status.   |
 
 #### Returns
@@ -70,7 +70,7 @@ Parses a chunk of streamed data. *(Method stub — implementation not shown in c
 
 | Parameter | Type  | Description                                             |
 |-----------|-------|---------------------------------------------------------|
-| `chunk`   | `Buffer or Uint8Array` | Data to parse.   |
+| `chunk`   | `Uint8Array` | Data to parse.   |
 | `isDone`   | `boolean` | Whether this is the final chunk. *(Optional)*.   |
 | `totalRead`   | `number` | Number of total bytes read. *(Optional)*   |
 | `totalLength`   | `number` | Total length of the data. *(Optional)*   |

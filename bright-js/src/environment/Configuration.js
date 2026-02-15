@@ -47,7 +47,7 @@ export default class Configuration {
 
     /**
      * Gets the decoder for a given transfer-syntax.
-     * @param {*} transferSyntax The specified transfer-syntax.
+     * @param {TransferSyntax} transferSyntax The specified transfer-syntax.
      * @returns A newly created/initialized decoder instance. 
      */
     getDecoderFor(transferSyntax, dicomObject) {
@@ -70,8 +70,8 @@ export default class Configuration {
 
     /**
      * Sets the decoder for a given transfer-syntax.
-     * @param {*} transferSyntax The specified transfer-syntax.
-     * @param {*} decoderPrototype The prototype instance of the decoder to associated to the specified transfer-syntax.
+     * @param {TransferSyntax} transferSyntax The specified transfer-syntax.
+     * @param {object} decoderPrototype The prototype instance of the decoder to associated to the specified transfer-syntax.
      */
     setDecoderFor(transferSyntax, decoderPrototype) {
         this.decoderPrototypes[transferSyntax.ID] = decoderPrototype;

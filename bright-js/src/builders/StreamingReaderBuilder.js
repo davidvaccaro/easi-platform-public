@@ -35,7 +35,7 @@ export default class StreamingReaderBuilder {
   
     /**
      * Set the current parser.
-     * @param {*} parser The parser used to parsed elements.
+     * @param {StreamingDicomDataParser | StreamingJsonDataParser} parser The parser used to parsed elements.
      * @returns The reference to the current builder.
      */
     withParser(parser) {
@@ -45,7 +45,7 @@ export default class StreamingReaderBuilder {
       
     /**
      * Set the current handler.
-     * @param {*} handler The handler used to handle parsed elements.
+     * @param {StreamingDicomInstanceHandler | StreamingJsonMetadataInstanceHandler | StreamingDicomMappingHandler | StreamingDicomSelectingHandler} handler The handler used to handle parsed elements.
      * @returns The reference to the current builder.
      */
     withHandler(handler) {
@@ -55,7 +55,7 @@ export default class StreamingReaderBuilder {
 
     /**
      * Sets the "onPart" option for the stream-read session.
-     * @param {*} onPart The "onPart" function handler called to resolve each part of a multi-part stream. 
+     * @param {Function} onPart The "onPart" function handler called to resolve each part of a multi-part stream. 
      */
     withOnPart(onPart) {
         this.onPart = onPart;
@@ -65,7 +65,7 @@ export default class StreamingReaderBuilder {
     /**
      * Sets the the status indicating that this parser is perfomring "strict" parsing.
      * @description Strict indicates that the parser will strictly enforce general structural aspects of the given standard being parsed.
-     * @param {*} isStrict Indicates that the parsing should be performed "strictly"
+     * @param {boolean} isStrict Indicates that the parsing should be performed "strictly"
      * @returns The reference to the current builder.
      */
     withIsStrict(isStrict) {

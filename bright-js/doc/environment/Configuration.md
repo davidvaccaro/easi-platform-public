@@ -40,7 +40,7 @@ Returns a new decoder instance appropriate for the specified DICOM Transfer Synt
 
 | Parameter        | Type    | Description                          |
 |------------------|---------|--------------------------------------|
-| `transferSyntax` | `*`     | The Transfer Syntax object.           |
+| `transferSyntax` | `TransferSyntax`     | The Transfer Syntax object.           |
 | `dicomObject`    | `*`     | The DICOM object to decode.           |
 
 #### Returns
@@ -59,8 +59,8 @@ Associates a decoder prototype with a specified Transfer Syntax.
 
 | Parameter           | Type    | Description                             |
 |---------------------|---------|-----------------------------------------|
-| `transferSyntax`    | `*`     | The Transfer Syntax to associate.        |
-| `decoderPrototype`  | `*`     | The prototype decoder instance to use.   |
+| `transferSyntax`    | `TransferSyntax`     | The Transfer Syntax to associate.        |
+| `decoderPrototype`  | `object`     | The prototype decoder instance to use.   |
 
 #### Returns
 

@@ -36,7 +36,7 @@ Coerce the specified value into a complete ContactPoint.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `value` | `*` | The specified value. |
+| `value` | `ContactPoint | object | string` | The specified value. |
 
 #### Returns
 

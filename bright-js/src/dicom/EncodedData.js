@@ -30,7 +30,7 @@ export default class EncodedData extends Data {
 
     /**
      * Convert the current DICOM data buffer to the specified transfer-syntax.
-     * @param {*} newTransferSyntax The new transfer-syntax to convert to.
+     * @param {TransferSyntax} newTransferSyntax The new transfer-syntax to convert to.
      */
     convert(newTransferSyntax) {
 
@@ -53,7 +53,7 @@ export default class EncodedData extends Data {
 
     /**
      * Append the specified raw bytes to the DICOM data buffer.
-     * @param {*} raw The raw byts to append.
+     * @param {Uint8Array} raw The raw byts to append.
      */
     append(raw) {
 

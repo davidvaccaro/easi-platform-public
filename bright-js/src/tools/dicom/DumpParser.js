@@ -180,7 +180,7 @@ export default class DumpParser {
 
     /**
      * Parse the specified dump data to a dump instance.
-     * @param {*} data 
+     * @param {string} data 
      */
     parse(data) {
 
@@ -398,7 +398,7 @@ export default class DumpParser {
 
     /**
      * Constructos a new DICOM Dumper with the associated DICOM Emitter.
-     * @param {*} dicomEmitter The emitter used to emit dumped elements of the DICOM data.
+     * @param {object} dicomEmitter The emitter used to emit dumped elements of the DICOM data.
      */
     constructor(dicomEmitter) {
 

@@ -38,7 +38,7 @@ Add an name to the multi-value given name.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `given` | `*` | The specified given name. |
+| `given` | `string` | The specified given name. |
 
 #### Returns
 
@@ -54,7 +54,7 @@ Add an prefix to the multi-value prefix.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `prefix` | `*` | The specified prefix. |
+| `prefix` | `string` | The specified prefix. |
 
 #### Returns
 
@@ -70,7 +70,7 @@ Add an suffix to the multi-value suffix.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `suffix` | `*` | The specified suffix. |
+| `suffix` | `string` | The specified suffix. |
 
 #### Returns
 
@@ -86,7 +86,7 @@ Coerce the specified value into a complete HumanName.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `value` | `*` | The specified value. |
+| `value` | `HumanName | string` | The specified value. |
 
 #### Returns
 

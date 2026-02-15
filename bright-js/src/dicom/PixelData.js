@@ -126,7 +126,7 @@ export default class PixelData {
 
     /**
      * Constructs a DICOM Pixel Data reader.
-     * @param {*} attribute The specified raw Pixel Data attribute.
+     * @param {Attribute} attribute The specified raw Pixel Data attribute.
      */
     constructor(attribute) {
 

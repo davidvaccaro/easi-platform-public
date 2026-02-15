@@ -26,8 +26,8 @@ Add a maping from a key to an object property.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `key` | `*` | The specified key. |
-| `property` | `*` | The property name or path to a property within an object hierarchy. |
+| `key` | `string` | The specified key. |
+| `property` | `string` | The property name or path to a property within an object hierarchy. |
 
 #### Returns
 
@@ -43,7 +43,7 @@ Determine if the mapping has the current key.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `key` | `*` | The specified key. |
+| `key` | `string` | The specified key. |
 
 #### Returns
 
@@ -61,7 +61,7 @@ Start the mapping session.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `context` | `*` | The session context. |
+| `context` | `object` | The session context. |
 
 #### Returns
 
@@ -77,7 +77,7 @@ End the mapping session.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `context` | `*` | The session context. |
+| `context` | `object` | The session context. |
 
 #### Returns
 
@@ -93,9 +93,9 @@ Map the key and value to the destination property.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `context` | `*` | The session context. |
-| `key` | `*` | The specified key. |
-| `value` | `*` | The value to set to the destination mapped attribute. |
+| `context` | `object` | The session context. |
+| `key` | `string` | The specified key. |
+| `value` | `unknown` | The value to set to the destination mapped attribute. |
 
 #### Returns
 

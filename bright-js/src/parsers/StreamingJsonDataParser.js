@@ -30,7 +30,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
   
     /**
      * Determines if the supplied character is a component of a number sequence.
-     * @param {*} ch The character to test.
+     * @param {number} ch The character to test.
      * @returns TRUE if the character is a start of a number, FALSE otherwise
      */
     isNumberCharacter(ch) {
@@ -1014,7 +1014,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
 
     /**
      * Parse the specified chunk of DICOM data.
-     * @param {*} chunk The specified chunk of DICOM data.
+     * @param {Uint8Array} chunk The specified chunk of DICOM data.
      * @returns TRUE if a DICOM is fully parsed, FALSE otherwise.
      */
     async parse(chunk, isDone = false, totalRead = null, totalLength = null) {

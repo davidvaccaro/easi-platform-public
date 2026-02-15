@@ -94,7 +94,7 @@ export default class Reference extends Element {
 
     /**
      * Create a new reference instance.
-     * @param {*} reference The reference value.
+     * @param {string} reference The reference value.
      */
     constructor(reference) {
 

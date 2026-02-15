@@ -37,7 +37,7 @@ Adds a new item to the sequence.
 
 | Parameter | Type  | Description                   |
 |-----------|-------|-------------------------------|
-| `item`    | `any` | The item to add to the sequence.|
+| `item`    | `Item` | The item to add to the sequence.|
 
 #### Returns
 
@@ -55,7 +55,7 @@ Adds an array of items to the sequence.
 
 | Parameter | Type    | Description                         |
 |-----------|---------|-------------------------------------|
-| `items`   | `Array` | Array of items to add to the sequence.|
+| `items`   | `Array<Item>` | Array of items to add to the sequence.|
 
 #### Returns
 
@@ -73,7 +73,7 @@ Finds all items in the sequence that contain the specified tag.
 
 | Parameter | Type  | Description                          |
 |-----------|-------|--------------------------------------|
-| `tag`     | `any` | The DICOM tag to search for.          |
+| `tag`     | `Tag` | The DICOM tag to search for.          |
 
 #### Returns
 
@@ -91,7 +91,7 @@ Determines if the specified tag exists in any of the sequence items.
 
 | Parameter | Type  | Description                 |
 |-----------|-------|-----------------------------|
-| `tag`     | `any` | The DICOM tag to check for.  |
+| `tag`     | `Tag` | The DICOM tag to check for.  |
 
 #### Returns
 

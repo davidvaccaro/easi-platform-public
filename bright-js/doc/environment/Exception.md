@@ -14,9 +14,9 @@ new Exception(message, code, error)
 
 | Parameter | Type    | Default                                      | Description                                    |
 |-----------|---------|----------------------------------------------|------------------------------------------------|
-| `message` | `*`     | —                                            | A message describing the error condition.      |
-| `code`    | `*`     | `GeneralErrorCodes.GeneralError`              | A code identifying the error condition.        |
-| `error`   | `*`     | `null`                                       | An optional underlying error (chained error).  |
+| `message` | `string`     | —                                            | A message describing the error condition.      |
+| `code`    | `string`     | `GeneralErrorCodes.GeneralError`              | A code identifying the error condition.        |
+| `error`   | `Error | null`     | `null`                                       | An optional underlying error (chained error).  |
 
 ## Common Error Codes
 

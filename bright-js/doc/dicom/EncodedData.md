@@ -53,7 +53,7 @@ Appends raw bytes to the data buffer, with optional byte swapping based on Trans
 
 | Parameter | Type    | Description                              |
 |-----------|---------|------------------------------------------|
-| `raw`     | `*`     | The raw bytes to append.                  |
+| `raw`     | `Uint8Array`     | The raw bytes to append.                  |
 
 #### Returns
 

@@ -26,8 +26,8 @@ export default class DicomNativePixelDataToRGBADecoder {
 
     /**
      * Generate a mask suitable for masking out unsued bits.
-     * @param {*} bitsPerPixel The bits per pixel that this mask will be applied to.
-     * @param {*} numUnmaskedBits The number of bits that should remain unmasked.
+     * @param {number} bitsPerPixel The bits per pixel that this mask will be applied to.
+     * @param {number} numUnmaskedBits The number of bits that should remain unmasked.
      * @returns The pixel bit mask.
      */    
     generatePixelMask(bitsPerPixel, numUnmaskedBits) {
@@ -36,11 +36,11 @@ export default class DicomNativePixelDataToRGBADecoder {
 
     /**
      * Decode the specified source 8-bit DICOM MONOCHROME pixel-data into the destination buffer as standard RGBA pixel-data.
-     * @param {*} source The source DICOM MONOCHROME pixel-data.
-     * @param {*} sourceStart The index into the source pixel-data buffer to START processing.
-     * @param {*} sourceStop The index into the source pixel-data buffer to STOP processin.
-     * @param {*} destination The destination buffer to store the decoded RGBA pixel-data. 
-     * @param {*} destinationStart The index into the destination pixel-data buffer to start processing.
+     * @param {Uint8Array} source The source DICOM MONOCHROME pixel-data.
+     * @param {number} sourceStart The index into the source pixel-data buffer to START processing.
+     * @param {number} sourceStop The index into the source pixel-data buffer to STOP processin.
+     * @param {Uint8Array} destination The destination buffer to store the decoded RGBA pixel-data. 
+     * @param {number} destinationStart The index into the destination pixel-data buffer to start processing.
      * @returns TRUE if the conversion succeeded, FALSE otherwise.
      */
     decode8BitDICOMMonochromeToRGB(source, sourceStart, sourceStop, destination, destinationStart, bitsPerPixel, windowCenter, windowWidth) {
@@ -92,11 +92,11 @@ export default class DicomNativePixelDataToRGBADecoder {
 
     /**
      * Decode the specified source 8-bit DICOM MONOCHROME pixel-data into the destination buffer as standard RGBA pixel-data.
-     * @param {*} source The source DICOM MONOCHROME pixel-data.
-     * @param {*} sourceStart The index into the source pixel-data buffer to START processing.
-     * @param {*} sourceStop The index into the source pixel-data buffer to STOP processin.
-     * @param {*} destination The destination buffer to store the decoded RGBA pixel-data. 
-     * @param {*} destinationStart The index into the destination pixel-data buffer to start processing.
+     * @param {Uint8Array} source The source DICOM MONOCHROME pixel-data.
+     * @param {number} sourceStart The index into the source pixel-data buffer to START processing.
+     * @param {number} sourceStop The index into the source pixel-data buffer to STOP processin.
+     * @param {Uint8Array} destination The destination buffer to store the decoded RGBA pixel-data. 
+     * @param {number} destinationStart The index into the destination pixel-data buffer to start processing.
      * @returns TRUE if the conversion succeeded, FALSE otherwise.
      */
     decode16BitDICOMMonochromeToRGB(source, sourceStart, sourceStop, destination, destinationStart, bitsPerPixel, windowCenter, windowWidth) {
@@ -217,11 +217,11 @@ export default class DicomNativePixelDataToRGBADecoder {
 
     /**
      * Decode the specificed data to the output buffer.
-     * @param {*} source The Uint8Array that serves as the source of the decode operation.
-     * @param {*} sourceStart The index into the input array to START reading decode input.
-     * @param {*} sourceStop The index into the input array to STOP reading decode input.
-     * @param {*} destination  The Uint8Array that serves as the destination of the decode operation.
-     * @param {*} destinationStart The index into the output array to START writing decoded output.
+     * @param {Uint8Array} source The Uint8Array that serves as the source of the decode operation.
+     * @param {number} sourceStart The index into the input array to START reading decode input.
+     * @param {number} sourceStop The index into the input array to STOP reading decode input.
+     * @param {Uint8Array} destination  The Uint8Array that serves as the destination of the decode operation.
+     * @param {number} destinationStart The index into the output array to START writing decoded output.
      */
     decode(source, sourceStart, sourceStop, destination, destinationStart, windowCenter, windowWidth) {
 

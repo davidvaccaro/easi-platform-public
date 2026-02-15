@@ -23,7 +23,7 @@ export default class NumberUtils {
 
     /**
      * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
+     * @param {string} value The specified Date value.
      * @returns The formatted string value.
      */
     static parseUnsignedInteger(value) {

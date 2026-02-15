@@ -20,7 +20,7 @@ new StreamingDicomSelectingHandler(selection)
 
 | Parameter | Type    | Default | Description |
 |-----------|---------|---------|-------------|
-| `selection` | `*` | `—` | The specified selection to apply when processing the DICOM Data. |
+| `selection` | `Selection` | `—` | The specified selection to apply when processing the DICOM Data. |
 
 ## Properties
 
@@ -38,8 +38,8 @@ Determine if the current attribute should be skipped based on the current contex
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `context` | `*` | The current context. |
-| `attribute` | `*` | The current attribute. |
+| `context` | `object` | The current context. |
+| `attribute` | `Attribute | AttributeSequence` | The current attribute. |
 
 #### Returns
 
@@ -55,8 +55,8 @@ Determine if the current attribute should be skipped based on the current contex
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `context` | `*` | The current context. |
-| `attribute` | `*` | The current attribute. |
+| `context` | `object` | The current context. |
+| `attribute` | `Attribute | AttributeSequence` | The current attribute. |
 
 #### Returns
 

@@ -27,7 +27,7 @@ export default class DicomSelection extends Selection {
     
     /**
      * Add a selection item for the specified DICOM Tag.
-     * @param {*} tag The specified DICOM Tag.
+     * @param {Tag} tag The specified DICOM Tag.
      */
     addTag(tag) {
 
@@ -43,7 +43,7 @@ export default class DicomSelection extends Selection {
 
     /**
      * Determine if the selection item has the current DICOM Tag.
-     * @param {*} tag The specified DICOM Tag.
+     * @param {Tag} tag The specified DICOM Tag.
      * @returns TRUE if the selection item contains the DICOM Tag, FALSE otherwise.
      */
     hasTag(tag) {
@@ -52,8 +52,8 @@ export default class DicomSelection extends Selection {
 
     /**
      * Match the specified attribute.
-     * @param {*} context 
-     * @param {*} attribute 
+     * @param {object} context 
+     * @param {Attribute | AttributeSequence} attribute 
      */
     matchAttribute(context, attribute) {
 

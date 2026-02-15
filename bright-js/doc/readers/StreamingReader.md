@@ -33,7 +33,7 @@ Parse the content-type from the response.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `response` | `*` | The response. |
+| `response` | `Response` | The response. |
 
 #### Returns
 
@@ -51,7 +51,7 @@ Read a DICOM instance from the response content of specified URL.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `url` | `*` | The specified URL to a DICOM instance. |
+| `url` | `string` | The specified URL to a DICOM instance. |
 
 #### Returns
 
@@ -69,7 +69,7 @@ Read a DICOM instance from the specified data.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `data` | `*` | The specified data. |
+| `data` | `Uint8Array` | The specified data. |
 
 #### Returns
 
@@ -87,7 +87,7 @@ Read a DICOM instance from the specified source of data.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `source` | `*` | The specified source of data. |
+| `source` | `string | Uint8Array` | The specified source of data. |
 
 #### Returns
 

@@ -35,7 +35,7 @@ Parses a DICOM IS (Integer String) value, considering the value multiplicity.
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `tag`   | `Tag`  | The `Tag` identiying an IS value (e.g., `"1\\2\\3"`) |
-| `vm`      | `*`  | The value multiplicity object (e.g., `{ Exact: 1 }`) |
+| `vm`      | `number | string`  | The value multiplicity object (e.g., `{ Exact: 1 }`) |
 
 #### Returns
 
@@ -54,7 +54,7 @@ Parses a DICOM DS (Decimal String) value, considering the value multiplicity.
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `value`   | `Tag`  | The `Tag` identifying an DS value (e.g., `"3.14\\2.71"`) |
-| `vm`      | `*`  | The value multiplicity object (e.g., `{ Exact: 1 }`) |
+| `vm`      | `number | string`  | The value multiplicity object (e.g., `{ Exact: 1 }`) |
 
 #### Returns
 

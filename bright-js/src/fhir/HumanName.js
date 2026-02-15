@@ -85,7 +85,7 @@ export default class HumanName extends Element {
 
     /**
      * Add an name to the multi-value given name.
-     * @param {*} given The specified given name.
+     * @param {string} given The specified given name.
      */
     addGiven(given) {
         this.addMultiValue('given', given);
@@ -107,7 +107,7 @@ export default class HumanName extends Element {
 
     /**
      * Add an prefix to the multi-value prefix.
-     * @param {*} prefix The specified prefix.
+     * @param {string} prefix The specified prefix.
      */
     addPrefix(prefix) {
         this.addMultiValue('prefix', prefix);
@@ -129,7 +129,7 @@ export default class HumanName extends Element {
 
     /**
      * Add an suffix to the multi-value suffix.
-     * @param {*} suffix The specified suffix.
+     * @param {string} suffix The specified suffix.
      */
     addSuffix(suffix) {
         this.addMultiValue('suffix', suffix);
@@ -151,7 +151,7 @@ export default class HumanName extends Element {
 
     /**
      * Coerce the specified value into a complete HumanName.
-     * @param {*} value The specified value.
+     * @param {HumanName | string} value The specified value.
      */
     static coerce(value) {
 

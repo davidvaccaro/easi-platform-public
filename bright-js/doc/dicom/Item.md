@@ -20,7 +20,7 @@ Constructs a DICOM Part-10 Sequence Item.
 
 | Name         | Type | Description                         |
 |--------------|------|-------------------------------------|
-| valueLength  | `*`  | The length of the item's data field. |
+| valueLength  | `number`  | The length of the item's data field. |
 
 ---
 

@@ -42,8 +42,8 @@ Create a new Coding instance.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `system` | `*` | The specified system. |
-| `code` | `*` | The specified system. |
+| `system` | `string` | The specified system. |
+| `code` | `string` | The specified system. |
 
 #### Returns
 

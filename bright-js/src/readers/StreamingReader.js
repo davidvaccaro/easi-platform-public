@@ -31,7 +31,7 @@ export default class StreamingReader {
 
     /**
      * Parse the content-type from the response.
-     * @param {*} response The response.
+     * @param {Response} response The response.
      * @returns The contentType header parsed as an object.
      */
     parseContentType(response) {
@@ -89,7 +89,7 @@ export default class StreamingReader {
 
     /**
      * Process the data reader as a single-part DICOM data-set response.
-     * @param {*} reader The reader providing a single DICOM byte part.
+     * @param {ReadableStreamDefaultReader<Uint8Array>} reader The reader providing a single DICOM byte part.
      */
     async processSinglePart(controller, reader, contentType, contentLength, resolve, reject) {
 
@@ -154,7 +154,7 @@ export default class StreamingReader {
 
     /**
      * Process the data reader as a multi-part DICOM data-set response.
-     * @param {*} reader The reader providing multiple DICOM byte parts.
+     * @param {ReadableStreamDefaultReader<Uint8Array>} reader The reader providing multiple DICOM byte parts.
      */
     async processMultiPart(controller, reader, contentType, contentLength, resolve, reject) {
 
@@ -476,7 +476,7 @@ export default class StreamingReader {
 
     /**
      * Read a DICOM instance from the response content of specified URL.
-     * @param {*} url The specified URL to a DICOM instance.
+     * @param {string} url The specified URL to a DICOM instance.
      * @returns A Promise that resolves to the result from the DICOM parse operation.
      */
     readUrl(url) {
@@ -542,7 +542,7 @@ export default class StreamingReader {
 
     /**
      * Read a DICOM instance from the specified data.
-     * @param {*} data The specified data.
+     * @param {Uint8Array} data The specified data.
      * @returns A Promise that resolves to the result from the DICOM parse operation.
      */
     readData(data) {
@@ -582,7 +582,7 @@ export default class StreamingReader {
 
     /**
      * Read a DICOM instance from the specified source of data.
-     * @param {*} source The specified source of data.
+     * @param {string | Uint8Array} source The specified source of data.
      * @returns A Promise that resolves to the result from the DICOM parse operation.
      */
     read(source) {
@@ -593,7 +593,7 @@ export default class StreamingReader {
 
     /**
      * Sets the current parser for this reader.
-     * @param {*} parser The parser used to parse elements of the DICOM data.
+     * @param {StreamingDataParser} parser The parser used to parse elements of the DICOM data.
      */
     set parser (parser) {
         this._parser = parser;

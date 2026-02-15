@@ -27,7 +27,7 @@ export default class Dumper {
 
     /**
      * Dump a specified DICOM file.
-     * @param {*} dicomPath The file name OR full path to a specified DICOM file.
+     * @param {string} dicomPath The file name OR full path to a specified DICOM file.
      * @returns The dump of the DICOM file.
      */
     dump(dicomPath) {
@@ -84,7 +84,7 @@ export default class Dumper {
 
     /**
      * Constructos a new DICOM Dumper with the associated parser.
-     * @param {*} parser The parser used to parse dumped DICOM data.
+     * @param {DumpParser} parser The parser used to parse dumped DICOM data.
      */
     constructor(parser) {
         this.parser = parser;

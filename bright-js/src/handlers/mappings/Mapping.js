@@ -23,8 +23,8 @@ export default class Mapping {
 
     /**
      * Add a maping from a key to an object property.
-     * @param {*} key The specified key.
-     * @param {*} property The property name or path to a property within an object hierarchy.
+     * @param {string} key The specified key.
+     * @param {string} property The property name or path to a property within an object hierarchy.
      */
     add(key, property) {
         this[key] = property;
@@ -32,7 +32,7 @@ export default class Mapping {
 
     /**
      * Determine if the mapping has the current key.
-     * @param {*} key The specified key.
+     * @param {string} key The specified key.
      * @returns TRUE if the mapping maps the key, FALSE otherwise.
      */
     has(key){
@@ -41,23 +41,23 @@ export default class Mapping {
     
     /**
      * Start the mapping session.
-     * @param {*} context The session context.
+     * @param {object} context The session context.
      */
     start(context) {
     }
 
     /**
      * End the mapping session.
-     * @param {*} context The session context.
+     * @param {object} context The session context.
      */
     end(context) {
     }
 
     /**
      * Map the key and value to the destination property.
-     * @param {*} context The session context.
-     * @param {*} key The specified key. 
-     * @param {*} value The value to set to the destination mapped attribute.
+     * @param {object} context The session context.
+     * @param {string} key The specified key. 
+     * @param {unknown} value The value to set to the destination mapped attribute.
      */
     map(context, key, value) {
 

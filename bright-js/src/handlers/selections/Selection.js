@@ -23,14 +23,14 @@ export default class Selection {
 
     /**
      * Start the selection session.
-     * @param {*} context The session context.
+     * @param {object} context The session context.
      */
     start(context) {
     }
 
     /**
      * End the selection session.
-     * @param {*} context The session context.
+     * @param {object} context The session context.
      */
     end(context) {
     }

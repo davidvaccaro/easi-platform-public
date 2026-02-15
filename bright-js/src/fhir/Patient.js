@@ -71,7 +71,7 @@ export default class Patient extends DomainResource {
 
     /**
      * Adds the name value.
-     * @param {*} name The name value to add.
+     * @param {HumanName | string} name The name value to add.
      */
     addName(name) {
         this.addMultiValue('name', HumanName.coerce(name));
@@ -93,7 +93,7 @@ export default class Patient extends DomainResource {
 
     /**
      * Adds the telcom value.
-     * @param {*} telcom The telcom value to add.
+     * @param {ContactPoint | object | string} telcom The telcom value to add.
      */
     addTelcom(telcom) {
         this.addMultiValue('telcom', ContactPoint.coerce(telcom));

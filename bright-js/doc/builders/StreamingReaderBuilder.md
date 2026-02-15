@@ -35,7 +35,7 @@ Set the current parser.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `parser` | `*` | The parser used to parsed elements. |
+| `parser` | `StreamingDicomDataParser | StreamingJsonDataParser` | The parser used to parsed elements. |
 
 #### Returns
 
@@ -53,7 +53,7 @@ Set the current handler.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `handler` | `*` | The handler used to handle parsed elements. |
+| `handler` | `StreamingDicomInstanceHandler | StreamingJsonMetadataInstanceHandler | StreamingDicomMappingHandler | StreamingDicomSelectingHandler` | The handler used to handle parsed elements. |
 
 #### Returns
 
@@ -71,7 +71,7 @@ Sets the "onPart" option for the stream-read session.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `onPart` | `*` | The "onPart" function handler called to resolve each part of a multi-part stream. |
+| `onPart` | `Function` | The "onPart" function handler called to resolve each part of a multi-part stream. |
 
 #### Returns
 
@@ -87,7 +87,7 @@ Sets the the status indicating that this parser is perfomring "strict" parsing.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `isStrict` | `*` | Indicates that the parsing should be performed "strictly" |
+| `isStrict` | `boolean` | Indicates that the parsing should be performed "strictly" |
 
 #### Returns
 

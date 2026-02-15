@@ -23,7 +23,7 @@ export default class DateUtils {
 
     /**
      * Format the specified Date value to a YYYYMMDD string value.
-     * @param {*} value The specified Date value.
+     * @param {Date} value The specified Date value.
      * @returns The formatted string value.
      */
     static formatToYYYYMMDD(value) {

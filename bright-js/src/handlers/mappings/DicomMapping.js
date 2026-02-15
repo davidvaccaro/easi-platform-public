@@ -25,8 +25,8 @@ export default class DicomMapping extends Mapping {
     
     /**
      * Add a mapping for the specified DICOM Tag.
-     * @param {*} tag The specified DICOM Tag.
-     * @param {*} property The property The property name or path to a property within an object hierarchy.
+     * @param {Tag} tag The specified DICOM Tag.
+     * @param {string} property The property The property name or path to a property within an object hierarchy.
      */
     addTag(tag, property) {
 
@@ -37,7 +37,7 @@ export default class DicomMapping extends Mapping {
 
     /**
      * Determine if the mapping has the current DICOM Tag.
-     * @param {*} tag The specified DICOM Tag.
+     * @param {Tag} tag The specified DICOM Tag.
      * @returns TRUE if the mapping maps the DICOM Tag, FALSE otherwise.
      */
     hasTag(tag) {
@@ -46,8 +46,8 @@ export default class DicomMapping extends Mapping {
 
     /**
      * Map the attribute to the destination property.
-     * @param {*} context 
-     * @param {*} attribute 
+     * @param {object} context 
+     * @param {Attribute} attribute 
      */
     mapAttribute(context, attribute) {
 

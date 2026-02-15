@@ -28,7 +28,7 @@ export default class Preamble extends DataElement {
 
     /**
      * Constructs a DICOM Part-10 File Meta Information "Preamble" from a specified raw data buffer.
-     * @param {*} data The specified raw data buffer.
+     * @param {Uint8Array} data The specified raw data buffer.
      */
     constructor(data) {
 

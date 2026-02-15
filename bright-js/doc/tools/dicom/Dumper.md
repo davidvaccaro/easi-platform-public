@@ -20,7 +20,7 @@ new Dumper(parser)
 
 | Parameter | Type    | Default | Description |
 |-----------|---------|---------|-------------|
-| `parser` | `*` | `—` | The parser used to parse dumped DICOM data. |
+| `parser` | `DumpParser` | `—` | The parser used to parse dumped DICOM data. |
 
 ## Properties
 
@@ -38,7 +38,7 @@ Dump a specified DICOM file.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `dicomPath` | `*` | The file name OR full path to a specified DICOM file. |
+| `dicomPath` | `string` | The file name OR full path to a specified DICOM file. |
 
 #### Returns
 

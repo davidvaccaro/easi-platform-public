@@ -23,7 +23,7 @@ export default class TagSet {
 
     /**
      * Find an tag within the tag set by tag identifier.
-     * @param {*} tag The DICOM tag to search by.
+     * @param {Tag} tag The DICOM tag to search by.
      * @returns The tag if found or NULL otherwise.
      */
     find(tag) {
@@ -32,8 +32,8 @@ export default class TagSet {
 
     /**
      * Determine if an tag exists within the tag set.
-     * @param {*} tag The DICOM tag to test.
-     * @returns {*} TRUE if an tag exists in the tag set, FALSE otherwise.
+     * @param {Tag} tag The DICOM tag to test.
+     * @returns {boolean} TRUE if an tag exists in the tag set, FALSE otherwise.
      */
     has(tag) {
         return (this.find(tag) != null);
@@ -41,7 +41,7 @@ export default class TagSet {
 
     /**
      * Adds a new tag to the set of tags.
-     * @param {*} tag The attribute to add.
+     * @param {Tag} tag The attribute to add.
      */
     add(tag) {
 
