@@ -25,6 +25,73 @@ import { GeneralErrorCodes } from '../environment/Exception.js';
 export default class Data {
 
     /**
+     * Refreshes the public data view from the current internal range.
+     */
+    _refreshDataView() {
+        this.data = this._buffer.subarray(this._start, this._end);
+    }
+
+    /**
+     * Replaces the current internal data with the specified data.
+     * @param {Uint8Array | Array<number>} raw The new raw data.
+     */
+    _setData(raw) {
+        this._buffer = (raw instanceof Uint8Array) ? raw : new Uint8Array(raw);
+        this._start = 0;
+        this._end = this._buffer.length;
+        this._refreshDataView();
+    }
+
+    /**
+     * Ensure there is enough space in the internal buffer for appended data.
+     * @param {number} additionalLength The number of additional bytes needed.
+     */
+    _ensureCapacity(additionalLength) {
+
+        if (additionalLength <= 0)
+            return;
+
+        // Determine the currently available capacity at the write tail.
+        var available = (this._buffer.length - this._end);
+        if (available >= additionalLength)
+            return;
+
+        // Determine current active data length.
+        var activeLength = (this._end - this._start);
+
+        // If compacting the current active data to offset 0 provides enough room, do that first.
+        if ((this._start > 0) && ((this._buffer.length - activeLength) >= additionalLength)) {
+            this._buffer.set(this._buffer.subarray(this._start, this._end), 0);
+            this._start = 0;
+            this._end = activeLength;
+            this._refreshDataView();
+            return;
+        }
+
+        // Grow capacity exponentially to keep append amortized O(1).
+        var required = (activeLength + additionalLength);
+        var newCapacity = this._buffer.length;
+        if (newCapacity < 16) {
+            newCapacity = 16;
+        }
+        while (newCapacity < required) {
+            newCapacity *= 2;
+        }
+
+        // Allocate and copy active data to offset 0.
+        var grownBuffer = new Uint8Array(newCapacity);
+        if (activeLength > 0) {
+            grownBuffer.set(this._buffer.subarray(this._start, this._end), 0);
+        }
+
+        this._buffer = grownBuffer;
+        this._start = 0;
+        this._end = activeLength;
+        this._refreshDataView();
+
+    }
+
+    /**
      * Accesses the data buffer.
      * @returns The data buffer.
      */
@@ -56,31 +123,24 @@ export default class Data {
         if (raw == null)
             throw new Exception("Invalid raw data. Cannot append undefind or null data.", GeneralErrorCodes.InvalidParameter);
 
-        // Establish the new data
-        var newData = null;
+        // Normalize the appended data.
+        var newData = (raw instanceof Uint8Array) ? raw : new Uint8Array(raw);
 
-        // Prepare the new data (with a endian-swap if needed)
-        newData = raw;
+        // Handle zero-length append as a NOOP.
+        if (newData.length == 0)
+            return;
 
+        // Fast path for initial append to preserve previous direct-reference behavior for Uint8Array.
         if (this.length() == 0) {
-
-            // set the new data buffer
-            this.data = (typeof newData === 'Uint8Array') ? newData : new Uint8Array(newData);
-
+            this._setData(newData);
+            return;
         }
-        else if (newData != null) {
 
-            // Create a buffer large enough to accomadate the prior data and the new chunk
-            var appendedArray = new Uint8Array(this.data.length + newData.length);
-            
-            // Append the current data and the new data
-            appendedArray.set(this.data);
-            appendedArray.set(newData, this.data.length);
-
-            // Set the new data buffer
-            this.data = appendedArray;
-
-        }
+        // Ensure there is enough writable space, then append at the internal write tail.
+        this._ensureCapacity(newData.length);
+        this._buffer.set(newData, this._end);
+        this._end += newData.length;
+        this._refreshDataView();
 
     }
 
@@ -91,11 +151,20 @@ export default class Data {
      */
     consume(count) {
 
-        // Read the "consumed" sub-data
+        // Read the "consumed" sub-data and the remaining data.
         var consumed = this.data.subarray(0, count);
+        var remaining = this.data.subarray(count, this.data.length);
 
-        // Consume the sub-data bytes
-        this.data = this.data.subarray(count, this.data.length);
+        // Update the active range.
+        if (remaining.length == 0) {
+            this._start = 0;
+            this._end = 0;
+        }
+        else {
+            this._start += (remaining.byteOffset - this.data.byteOffset);
+            this._end = (this._start + remaining.length);
+        }
+        this._refreshDataView();
 
         // Return the "consumed" data
         return consumed;
@@ -132,7 +201,18 @@ export default class Data {
      * @param {number} count The count of bytes to skip from the start of the current buffer.
      */
     skip(count) {
-        this.data = this.data.subarray(count);
+        var remaining = this.data.subarray(count);
+
+        // Update the active range.
+        if (remaining.length == 0) {
+            this._start = 0;
+            this._end = 0;
+        }
+        else {
+            this._start += (remaining.byteOffset - this.data.byteOffset);
+            this._end = (this._start + remaining.length);
+        }
+        this._refreshDataView();
     }    
 
     /**
@@ -191,8 +271,8 @@ export default class Data {
      */
     clear() {
 
-        // Clear the buffer
-        this.data = new Uint8Array(0);
+        // Clear the buffer.
+        this._setData(new Uint8Array(0));
 
     }
 
@@ -226,8 +306,11 @@ export default class Data {
      */
     constructor() {
 
-        // Init the buffer
-        this.clear();
+        // Initialize the internal buffer state.
+        this._buffer = new Uint8Array(0);
+        this._start = 0;
+        this._end = 0;
+        this._refreshDataView();
 
     }
 

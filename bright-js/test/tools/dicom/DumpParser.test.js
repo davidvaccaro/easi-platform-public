@@ -24,7 +24,7 @@ test('Test: DumpParser Parse', () => {
         && 
         (parser.result.metaSet.attributes.length == 7) 
         && 
-        (parser.result.dataSet.attributes.length == 259)
+        (parser.result.dataSet.attributes.length == 252)
     ).toBe(true);
     
 });

@@ -102,16 +102,39 @@ export default class StreamingDicomInstanceHandler {
 
     onStartSequence(context, sequence) {
 
-        // If there is a data-set
-        if (context.instance.dataSet != null) {
+        // If there is a parent sequence, add this sequence to the current item
+        if (context.sequences.length > 0) {
+
+            // Access the top of the sequence stack
+            var parentSequence = context.sequences[context.sequences.length - 1];
+
+            // Access the current item in the parent sequence
+            var parentItem = parentSequence.items[parentSequence.items.length - 1];
+
+            // Add to the current item when available
+            if (parentItem != null) {
+                parentItem.add(sequence);
+            }
+            else if (context.instance.dataSet != null) {
+                context.instance.dataSet.add(sequence);
+            }
+
+        }
+        else if (context.instance.dataSet != null) {
 
             // Add to the dataset
             context.instance.dataSet.add(sequence);
 
-            // Push onto the sequence stack
-            context.sequences.push(sequence);
+        }
+        else if (context.instance.metaSet != null) {
+
+            // Add to the meta-set
+            context.instance.metaSet.add(sequence);
 
         }
+
+        // Push onto the sequence stack
+        context.sequences.push(sequence);
 
     }
 

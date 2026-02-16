@@ -1096,7 +1096,7 @@ export default class StreamingDicomDataParser {
                             else {
 
                                 // If all the item data has been processed, mark it as complete
-                                if ((this.totalBytesConsumed - item.start) == item.element.valueLength) {
+                                if ((this.totalBytesConsumed - item.start) >= item.element.valueLength) {
 
                                     // End the element
                                     if (item.element instanceof Item) {
@@ -1114,7 +1114,7 @@ export default class StreamingDicomDataParser {
                                         if (sequence.element.valueLength != Constants.UndefinedLength) {
 
                                             // If all sequence data has been processed, mark it as complete
-                                            if ((this.totalBytesConsumed - sequence.start) == sequence.element.valueLength) {
+                                            if ((this.totalBytesConsumed - sequence.start) >= sequence.element.valueLength) {
 
                                                 // Set the complete flag
                                                 sequence.element.isComplete = true;
@@ -1323,8 +1323,8 @@ export default class StreamingDicomDataParser {
             // Handle DICOM sequence data-element versus normal data-element
             if (this.dataElement instanceof AttributeSequence) {
 
-                // Capture the sequence start
-                var sequenceStart = this.totalBytesConsumed;
+                // Capture the absolute start of the sequence value
+                var sequenceStart = this.totalBytesConsumed + bytesConsumed;
 
                 // Peak the next tag details
                 var details = this.peekTagDetails();

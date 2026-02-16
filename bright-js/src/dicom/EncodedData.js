@@ -43,7 +43,7 @@ export default class EncodedData extends Data {
             && (newTransferSyntax != TransferSyntax.NONE)
             && (this.transferSyntax != TransferSyntax.NONE)
             && (this.transferSyntax.IsLittleEndian != newTransferSyntax.IsLittleEndian)) {
-            this.data = Utilities.swapBytes(this.data);
+            this._setData(Utilities.swapBytes(this.access()));
         }
 
         // Set the transfer-syntax
@@ -70,25 +70,8 @@ export default class EncodedData extends Data {
         else
             newData = raw;
 
-        if (this.length() == 0) {
-
-            // set the new data buffer
-            this.data = (typeof newData === 'Uint8Array') ? newData : new Uint8Array(newData);
-
-        }
-        else if (newData != null) {
-
-            // Create a buffer large enough to accomadate the prior data and the new chunk
-            var appendedArray = new Uint8Array(this.data.length + newData.length);
-            
-            // Append the current data and the new data
-            appendedArray.set(this.data);
-            appendedArray.set(newData, this.data.length);
-
-            // Set the new data buffer
-            this.data = appendedArray;
-
-        }
+        // Append through the base Data implementation (capacity-managed).
+        super.append(newData);
 
     }
 
