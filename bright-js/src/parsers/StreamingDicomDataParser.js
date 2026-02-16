@@ -346,7 +346,7 @@ export default class StreamingDicomDataParser {
 
                 // Validate the use of undefined-length value length
                 // VRs of SV, UC, UR, UV and UT may not have an Undefined Length, i.e., a Value Length of FFFFFFFFH.
-                if ((valueLength == Constants.UndefinedLength) && (result.valueRepresentation.IsExplicit == true)
+                if ((valueLength == Constants.UndefinedLength) && (this.data.transferSyntax.IsExplicit == true)
                     &&
                     (
                         (result.valueRepresentation == ValueRepresentations.SV)
@@ -505,7 +505,7 @@ export default class StreamingDicomDataParser {
 
         // Ensure that the parser has performed the initiel reset
         if (this.data == null) {
-            this.data.reset();
+            this.reset();
         }
 
         // Append the new chunk of data
@@ -858,7 +858,7 @@ export default class StreamingDicomDataParser {
                 var bytesRemaining = ((this.partStart + this.metaSetGroupLength) - this.totalBytesConsumed);
 
                 // If there is enough bytes to complete the part, SKIP consume it
-                if (this.data.length() > bytesRemaining) {
+                if (this.data.length() >= bytesRemaining) {
 
                     // Consume the bytes
                     this.data.consume(bytesRemaining);
@@ -1002,6 +1002,11 @@ export default class StreamingDicomDataParser {
                                 // Peak the next tag details
                                 var details = this.peekTagDetails();
 
+                                // Handle failure
+                                if (details == null) {
+                                    return Status.FAIL;
+                                }
+
                                 // If MORE data is needed, return false
                                 if (details == false) {
                                     return Status.CONTINUE;
@@ -1017,6 +1022,11 @@ export default class StreamingDicomDataParser {
 
                                     // Peak the next tag details
                                     var nextDetails = this.peekTagDetails(details.bytesPeeked);
+
+                                    // Handle failure
+                                    if (nextDetails == null) {
+                                        return Status.FAIL;
+                                    }
 
                                     // If MORE data is needed, return false
                                     if (nextDetails == false) {
@@ -1041,7 +1051,7 @@ export default class StreamingDicomDataParser {
 
                                         // Push the next item
                                         var count = this.dataElements.push({ 
-                                            start: nextDetails.bytesPeeked, 
+                                            start: this.totalBytesConsumed, 
                                             element: new Item(nextDetails.valueLength),
                                             status: sequence.status 
                                         });
@@ -1256,6 +1266,12 @@ export default class StreamingDicomDataParser {
             // Peak the next tag details
             var details = this.peekTagDetails();
 
+            // Handle failure
+            if (details == null) {
+                this.status = Status.FAIL;
+                return false;
+            }
+
             // If MORE data is needed, return false
             if (details == false) {
                 return false;
@@ -1312,6 +1328,12 @@ export default class StreamingDicomDataParser {
 
                 // Peak the next tag details
                 var details = this.peekTagDetails();
+
+                // Handle failure
+                if (details == null) {
+                    this.status = Status.FAIL
+                    return false;
+                }
 
                 // If MORE data is needed, return false
                 if (details == false) {
@@ -1460,7 +1482,7 @@ export default class StreamingDicomDataParser {
         this.totalBytesConsumed += bytesConsumed;
 
         // Return TRUE if there are more bytes to process
-        return (((this.status != Status.JUMP) && (this.status != Status.STOP) && (this.Status != Status.FAIL)) && (this.data.isEmpty == false));
+        return (((this.status != Status.JUMP) && (this.status != Status.STOP) && (this.status != Status.FAIL)) && (this.data.isEmpty == false));
 
     }
 
