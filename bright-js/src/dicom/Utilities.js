@@ -24,6 +24,18 @@ import Runtime from "../environment/Runtime.js";
 export default class Utilities {
 
     /**
+     * Constants for item indicators
+     */
+    static littleEndianItem = [254, 255, 0, 224];
+    static bigEndianItem = [255, 254, 224, 0];
+
+    /**
+     * Constants for end sequence indicators
+     */
+    static littleEndianEndSequence = [254, 255, 221, 224, 0, 0, 0, 0];
+    static bigEndianEndSequence = [255, 254, 224, 221, 0, 0, 0, 0];
+
+    /**
      * Convert the specified byte array (2 or 4 bytes) to an unsigned integer value.
      * @param {Uint8Array} bytes The specified byte array.
      * @returns The unsigned integer value of the byte array.
@@ -83,20 +95,20 @@ export default class Utilities {
      */
     static getItem() {
         if (Runtime.isLittleEndian == true) {
-            return [254, 255, 0, 224];
+            return Utilities.littleEndianItem;
         }
-        return [255, 254, 224, 0];
+        return Utilities.bigEndianItem;
     }
 
     /**
      * Get the byte buffer containing the DICOM End Sequence.
      * @returns The End Sequence byte buffer.
-     */
+     */    
     static getEndSequence() {
         if (Runtime.isLittleEndian == true) {
-            return [254, 255, 221, 224, 0, 0, 0, 0];
+            return Utilities.littleEndianEndSequence;
         }
-        return [255, 254, 224, 221, 0, 0, 0, 0];
+        return Utilities.bigEndianEndSequence;
     }
 
     /**

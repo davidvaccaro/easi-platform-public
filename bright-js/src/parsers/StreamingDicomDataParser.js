@@ -52,7 +52,7 @@ import Prefix from '../dicom/Prefix.js';
 //   - PixelData
 //
 
-var DicomPartType = {
+const DicomPartType = {
     Preamble: 'Preamble',
     Prefix: 'Prefix',
     MetaSet: 'MetaSet',
@@ -60,7 +60,7 @@ var DicomPartType = {
 };
 
 // Populate the part specification (Part-10)
-var DicomPart10Specification = [ 
+const DicomPart10Specification = [ 
     DicomPartType.DataSet,
     DicomPartType.MetaSet, 
     DicomPartType.Prefix, 
@@ -68,7 +68,7 @@ var DicomPart10Specification = [
 ];
 
 // Populate the part specification (Part-5)
-var DicomDataSetSpecification = [ 
+const DicomDataSetSpecification = [ 
     DicomPartType.DataSet
 ];
 
@@ -170,10 +170,10 @@ export default class StreamingDicomDataParser {
             if ((tag == Tag.Item) || (tag == Tag.ItemDelimitationItem) || (tag == Tag.SequenceDelimitationItem)) {
 
                 // Initialize the value-length
-                var valueLength = null;
+                let valueLength = null;
 
                 // Peek the next 4-byte value length
-                var length = this.data.peek(bytesPeeked, Constants.ValueLength32);
+                let length = this.data.peek(bytesPeeked, Constants.ValueLength32);
 
                 if ((length == null) || (length.length != Constants.ValueLength32))
                     return false;
@@ -198,7 +198,7 @@ export default class StreamingDicomDataParser {
             else {
 
                 // Initialize the value-length
-                var valueLength = null;
+                let valueLength = null;
 
                 // Handle "Explicit" versus "Implicit" data-element processing
                 // Explicit: 
@@ -234,13 +234,13 @@ export default class StreamingDicomDataParser {
                     if (valueRepresentation == null)
                         valueRepresentation = tag.VR;
 
-                    // Establish the tag value representation (for Private Tags)
-                    if ((tag.VR == null) && (tag.IsPrivate == true))
-                        tag.VR = valueRepresentation;
-
                     // If there is NO value-representation, process exception
                     if (valueRepresentation == null)
                         throw new Exception("Invalid Value Representation!", DicomErrorCodes.InvalidValueRepresentation);
+
+                    // Establish the tag value representation (for Private Tags)
+                    if ((tag.VR == null) && (tag.IsPrivate == true))
+                        tag.VR = valueRepresentation;
 
                     // Handle the VRs with "reserved" bytes
                     if ((valueRepresentation == ValueRepresentations.OB)
@@ -273,7 +273,7 @@ export default class StreamingDicomDataParser {
                         bytesPeeked += Constants.ReservedLength;
 
                         // Peek the next 4-byte value length
-                        var length = this.data.peek(bytesPeeked, Constants.ValueLength32);
+                        let length = this.data.peek(bytesPeeked, Constants.ValueLength32);
 
                         if ((length == null) || (length.length != Constants.ValueLength32))
                             return false;
@@ -288,7 +288,7 @@ export default class StreamingDicomDataParser {
                     else {
 
                         // Peek the next 2-byte value length
-                        var length = this.data.peek(bytesPeeked, Constants.ValueLength16);
+                        let length = this.data.peek(bytesPeeked, Constants.ValueLength16);
 
                         if ((length == null) || (length.length != Constants.ValueLength16))
                             return false;
@@ -314,7 +314,7 @@ export default class StreamingDicomDataParser {
                 else {
 
                     // Peek the next 4-byte value length
-                    var length = this.data.peek(bytesPeeked, Constants.ValueLength32);
+                    let length = this.data.peek(bytesPeeked, Constants.ValueLength32);
 
                     if ((length == null) || (length.length != Constants.ValueLength32))
                         return false;
