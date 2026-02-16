@@ -91,6 +91,7 @@ export default class SOPClass {
     static get UltrasoundImageStorageRetired() { return SOPClasses['1.2.840.10008.5.1.4.1.1.6'] }
     static get UltrasoundImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.6.1'] }
     static get EnhancedUSVolumeStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.6.2'] }
+    static get PhotoacousticImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.6.3'] }
     static get SecondaryCaptureImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.7'] }
     static get MultiFrameSingleBitSecondaryCaptureImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.7.1'] }
     static get MultiFrameGrayscaleByteSecondaryCaptureImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.7.2'] }
@@ -102,6 +103,7 @@ export default class SOPClass {
     static get TwelveLeadECGWaveformStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.1.1'] }
     static get GeneralECGWaveformStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.1.2'] }
     static get AmbulatoryECGWaveformStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.1.3'] }
+    static get General32bitECGWaveformStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.1.4'] }
     static get HemodynamicWaveformStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.2.1'] }
     static get CardiacElectrophysiologyWaveformStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.3.1'] }
     static get BasicVoiceAudioWaveformStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.4.1'] }
@@ -114,6 +116,8 @@ export default class SOPClass {
     static get ElectrooculogramWaveformStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.7.3'] }
     static get SleepElectroencephalogramWaveformStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.7.4'] }
     static get BodyPositionWaveformStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.8.1'] }
+    static get WaveformAnnotationSRStorageWaveform() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.100.1'] }
+    static get WaveformAcquisitionPresentationStateStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.9.100.2'] }
     static get StandaloneModalityLUTStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.10'] }
     static get StandaloneVOILUTStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.11'] }
     static get GrayscaleSoftcopyPresentationStateStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.11.1'] }
@@ -127,6 +131,7 @@ export default class SOPClass {
     static get VolumeRenderingVolumetricPresentationStateStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.11.9'] }
     static get SegmentedVolumeRenderingVolumetricPresentationStateStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.11.10'] }
     static get MultipleVolumeRenderingVolumetricPresentationStateStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.11.11'] }
+    static get VariableModalityLUTSoftcopyPresentationStateStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.11.12'] }
     static get XRayAngiographicImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.12.1'] }
     static get EnhancedXAImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.12.1.1'] }
     static get XRayRadiofluoroscopicImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.12.2'] }
@@ -148,6 +153,8 @@ export default class SOPClass {
     static get SegmentationStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.66.4'] }
     static get SurfaceSegmentationStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.66.5'] }
     static get TractographyResultsStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.66.6'] }
+    static get LabelMapSegmentationStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.66.7'] }
+    static get HeightMapSegmentationStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.66.8'] }
     static get RealWorldValueMappingStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.67'] }
     static get SurfaceScanMeshStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.68.1'] }
     static get SurfaceScanPointCloudStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.68.2'] }
@@ -170,6 +177,8 @@ export default class SOPClass {
     static get OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.77.1.5.8'] }
     static get VLWholeSlideMicroscopyImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.77.1.6'] }
     static get DermoscopicPhotographyImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.77.1.7'] }
+    static get ConfocalMicroscopyImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.77.1.8'] }
+    static get ConfocalMicroscopyTiledPyramidalImageStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.77.1.9'] }
     static get LensometryMeasurementsStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.78.1'] }
     static get AutorefractionMeasurementsStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.78.2'] }
     static get KeratometryMeasurementsStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.78.3'] }
@@ -205,6 +214,7 @@ export default class SOPClass {
     static get PlannedImagingAgentAdministrationSRStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.88.74'] }
     static get PerformedImagingAgentAdministrationSRStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.88.75'] }
     static get EnhancedXRayRadiationDoseSRStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.88.76'] }
+    static get WaveformAnnotationSRStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.88.77'] }
     static get ContentAssessmentResultsStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.90.1'] }
     static get MicroscopyBulkSimpleAnnotationsStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.91.1'] }
     static get EncapsulatedPDFStorage() { return SOPClasses['1.2.840.10008.5.1.4.1.1.104.1'] }
@@ -395,6 +405,7 @@ export var SOPClasses = {
 	'1.2.840.10008.5.1.4.1.1.6': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.6', Name: 'Ultrasound Image Storage (Retired)', IsRetired: true }),
 	'1.2.840.10008.5.1.4.1.1.6.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.6.1', Name: 'Ultrasound Image Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.6.2': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.6.2', Name: 'Enhanced US Volume Storage', IsRetired: false }),
+	'1.2.840.10008.5.1.4.1.1.6.3': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.6.3', Name: 'Photoacoustic Image Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.7': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.7', Name: 'Secondary Capture Image Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.7.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.7.1', Name: 'Multi-frame Single Bit Secondary Capture Image Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.7.2': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.7.2', Name: 'Multi-frame Grayscale Byte Secondary Capture Image Storage', IsRetired: false }),
@@ -406,6 +417,7 @@ export var SOPClasses = {
 	'1.2.840.10008.5.1.4.1.1.9.1.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.1.1', Name: '12-lead ECG Waveform Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.9.1.2': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.1.2', Name: 'General ECG Waveform Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.9.1.3': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.1.3', Name: 'Ambulatory ECG Waveform Storage', IsRetired: false }),
+	'1.2.840.10008.5.1.4.1.1.9.1.4': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.1.4', Name: 'General 32-bit ECG Waveform Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.9.2.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.2.1', Name: 'Hemodynamic Waveform Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.9.3.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.3.1', Name: 'Cardiac Electrophysiology Waveform Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.9.4.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.4.1', Name: 'Basic Voice Audio Waveform Storage', IsRetired: false }),
@@ -418,6 +430,8 @@ export var SOPClasses = {
 	'1.2.840.10008.5.1.4.1.1.9.7.3': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.7.3', Name: 'Electrooculogram Waveform Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.9.7.4': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.7.4', Name: 'Sleep Electroencephalogram Waveform Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.9.8.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.8.1', Name: 'Body Position Waveform Storage', IsRetired: false }),
+	'1.2.840.10008.5.1.4.1.1.9.100.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.100.1', Name: 'Waveform Annotation SR Storage', IsRetired: false }),
+	'1.2.840.10008.5.1.4.1.1.9.100.2': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.9.100.2', Name: 'Waveform Acquisition Presentation State Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.10': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.10', Name: 'Standalone Modality LUT Storage (Retired)', IsRetired: true }),
 	'1.2.840.10008.5.1.4.1.1.11': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.11', Name: 'Standalone VOI LUT Storage (Retired)', IsRetired: true }),
 	'1.2.840.10008.5.1.4.1.1.11.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.11.1', Name: 'Grayscale Softcopy Presentation State Storage', IsRetired: false }),
@@ -431,6 +445,7 @@ export var SOPClasses = {
 	'1.2.840.10008.5.1.4.1.1.11.9': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.11.9', Name: 'Volume Rendering Volumetric Presentation State Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.11.10': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.11.10', Name: 'Segmented Volume Rendering Volumetric Presentation State Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.11.11': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.11.11', Name: 'Multiple Volume Rendering Volumetric Presentation State Storage', IsRetired: false }),
+	'1.2.840.10008.5.1.4.1.1.11.12': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.11.12', Name: 'Variable Modality LUT Softcopy Presentation State Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.12.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.12.1', Name: 'X-Ray Angiographic Image Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.12.1.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.12.1.1', Name: 'Enhanced XA Image Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.12.2': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.12.2', Name: 'X-Ray Radiofluoroscopic Image Storage', IsRetired: false }),
@@ -452,6 +467,8 @@ export var SOPClasses = {
 	'1.2.840.10008.5.1.4.1.1.66.4': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.66.4', Name: 'Segmentation Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.66.5': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.66.5', Name: 'Surface Segmentation Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.66.6': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.66.6', Name: 'Tractography Results Storage', IsRetired: false }),
+	'1.2.840.10008.5.1.4.1.1.66.7': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.66.7', Name: 'Label Map Segmentation Storage', IsRetired: false }),
+	'1.2.840.10008.5.1.4.1.1.66.8': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.66.8', Name: 'Height Map Segmentation Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.67': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.67', Name: 'Real World Value Mapping Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.68.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.68.1', Name: 'Surface Scan Mesh Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.68.2': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.68.2', Name: 'Surface Scan Point Cloud Storage', IsRetired: false }),
@@ -474,6 +491,8 @@ export var SOPClasses = {
 	'1.2.840.10008.5.1.4.1.1.77.1.5.8': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.77.1.5.8', Name: 'Ophthalmic Optical Coherence Tomography B-scan Volume Analysis Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.77.1.6': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.77.1.6', Name: 'VL Whole Slide Microscopy Image Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.77.1.7': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.77.1.7', Name: 'Dermoscopic Photography Image Storage', IsRetired: false }),
+	'1.2.840.10008.5.1.4.1.1.77.1.8': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.77.1.8', Name: 'Confocal Microscopy Image Storage', IsRetired: false }),
+	'1.2.840.10008.5.1.4.1.1.77.1.9': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.77.1.9', Name: 'Confocal Microscopy Tiled Pyramidal Image Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.78.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.78.1', Name: 'Lensometry Measurements Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.78.2': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.78.2', Name: 'Autorefraction Measurements Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.78.3': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.78.3', Name: 'Keratometry Measurements Storage', IsRetired: false }),
@@ -509,6 +528,7 @@ export var SOPClasses = {
 	'1.2.840.10008.5.1.4.1.1.88.74': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.88.74', Name: 'Planned Imaging Agent Administration SR Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.88.75': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.88.75', Name: 'Performed Imaging Agent Administration SR Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.88.76': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.88.76', Name: 'Enhanced X-Ray Radiation Dose SR Storage', IsRetired: false }),
+	'1.2.840.10008.5.1.4.1.1.88.77': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.88.77', Name: 'Waveform Annotation SR Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.90.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.90.1', Name: 'Content Assessment Results Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.91.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.91.1', Name: 'Microscopy Bulk Simple Annotations Storage', IsRetired: false }),
 	'1.2.840.10008.5.1.4.1.1.104.1': new SOPClass({ ID: '1.2.840.10008.5.1.4.1.1.104.1', Name: 'Encapsulated PDF Storage', IsRetired: false }),

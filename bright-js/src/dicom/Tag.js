@@ -249,6 +249,7 @@ export default class Tag {
 	}
 
     // INSERT ACCESSORS	
+
     static get FileMetaInformationGroupLength() { return Tags['00020000'] }
     static get FileMetaInformationVersion() { return Tags['00020001'] }
     static get MediaStorageSOPClassUID() { return Tags['00020002'] }
@@ -306,6 +307,8 @@ export default class Tag {
     static get PyramidUID() { return Tags['00080019'] }
     static get RelatedGeneralSOPClassUID() { return Tags['0008001A'] }
     static get OriginalSpecializedSOPClassUID() { return Tags['0008001B'] }
+    static get SyntheticData() { return Tags['0008001C'] }
+    static get SensitiveContentCodeSequence() { return Tags['0008001D'] }
     static get StudyDate() { return Tags['00080020'] }
     static get SeriesDate() { return Tags['00080021'] }
     static get AcquisitionDate() { return Tags['00080022'] }
@@ -461,6 +464,7 @@ export default class Tag {
     static get ReferencedResultsSequence() { return Tags['00081100'] }
     static get ReferencedStudySequence() { return Tags['00081110'] }
     static get ReferencedPerformedProcedureStepSequence() { return Tags['00081111'] }
+    static get ReferencedInstancesBySOPClassSequence() { return Tags['00081112'] }
     static get ReferencedSeriesSequence() { return Tags['00081115'] }
     static get ReferencedPatientSequence() { return Tags['00081120'] }
     static get ReferencedVisitSequence() { return Tags['00081125'] }
@@ -471,6 +475,8 @@ export default class Tag {
     static get ReferencedCurveSequence() { return Tags['00081145'] }
     static get ReferencedInstanceSequence() { return Tags['0008114A'] }
     static get ReferencedRealWorldValueMappingInstanceSequence() { return Tags['0008114B'] }
+    static get ReferencedSegmentationSequence() { return Tags['0008114C'] }
+    static get ReferencedSurfaceSegmentationSequence() { return Tags['0008114D'] }
     static get ReferencedSOPClassUID() { return Tags['00081150'] }
     static get ReferencedSOPInstanceUID() { return Tags['00081155'] }
     static get DefinitionSourceSequence() { return Tags['00081156'] }
@@ -488,8 +494,13 @@ export default class Tag {
     static get FailedSOPSequence() { return Tags['00081198'] }
     static get ReferencedSOPSequence() { return Tags['00081199'] }
     static get OtherFailuresSequence() { return Tags['0008119A'] }
+    static get FailedStudySequence() { return Tags['0008119B'] }
     static get StudiesContainingOtherReferencedInstancesSequence() { return Tags['00081200'] }
     static get RelatedSeriesSequence() { return Tags['00081250'] }
+    static get PrincipalDiagnosisCodeSequence() { return Tags['00081301'] }
+    static get PrimaryDiagnosisCodeSequence() { return Tags['00081302'] }
+    static get SecondaryDiagnosesCodeSequence() { return Tags['00081303'] }
+    static get HistologicalDiagnosesCodeSequence() { return Tags['00081304'] }
     static get LossyImageCompressionRetired() { return Tags['00082110'] }
     static get DerivationDescription() { return Tags['00082111'] }
     static get SourceImageSequence() { return Tags['00082112'] }
@@ -553,6 +564,12 @@ export default class Tag {
     static get RecommendedDisplayFrameRateInFloat() { return Tags['00089459'] }
     static get SkipFrameRangeFlag() { return Tags['00089460'] }
     static get PatientName() { return Tags['00100010'] }
+    static get PersonNamesToUseSequence() { return Tags['00100011'] }
+    static get NameToUse() { return Tags['00100012'] }
+    static get NameToUseComment() { return Tags['00100013'] }
+    static get ThirdPersonPronounsSequence() { return Tags['00100014'] }
+    static get PronounCodeSequence() { return Tags['00100015'] }
+    static get PronounComment() { return Tags['00100016'] }
     static get PatientID() { return Tags['00100020'] }
     static get IssuerOfPatientID() { return Tags['00100021'] }
     static get TypeOfPatientID() { return Tags['00100022'] }
@@ -566,6 +583,13 @@ export default class Tag {
     static get PatientDeathDateInAlternativeCalendar() { return Tags['00100034'] }
     static get PatientAlternativeCalendar() { return Tags['00100035'] }
     static get PatientSex() { return Tags['00100040'] }
+    static get GenderIdentitySequence() { return Tags['00100041'] }
+    static get SexParametersForClinicalUseCategoryComment() { return Tags['00100042'] }
+    static get SexParametersForClinicalUseCategorySequence() { return Tags['00100043'] }
+    static get GenderIdentityCodeSequence() { return Tags['00100044'] }
+    static get GenderIdentityComment() { return Tags['00100045'] }
+    static get SexParametersForClinicalUseCategoryCodeSequence() { return Tags['00100046'] }
+    static get SexParametersForClinicalUseCategoryReference() { return Tags['00100047'] }
     static get PatientInsurancePlanCodeSequence() { return Tags['00100050'] }
     static get PatientPrimaryLanguageCodeSequence() { return Tags['00100101'] }
     static get PatientPrimaryLanguageModifierCodeSequence() { return Tags['00100102'] }
@@ -608,6 +632,8 @@ export default class Tag {
     static get PatientTelephoneNumbers() { return Tags['00102154'] }
     static get PatientTelecomInformation() { return Tags['00102155'] }
     static get EthnicGroup() { return Tags['00102160'] }
+    static get EthnicGroupCodeSequence() { return Tags['00102161'] }
+    static get EthnicGroups() { return Tags['00102162'] }
     static get Occupation() { return Tags['00102180'] }
     static get SmokingStatus() { return Tags['001021A0'] }
     static get AdditionalPatientHistory() { return Tags['001021B0'] }
@@ -631,21 +657,28 @@ export default class Tag {
     static get ClinicalTrialSponsorName() { return Tags['00120010'] }
     static get ClinicalTrialProtocolID() { return Tags['00120020'] }
     static get ClinicalTrialProtocolName() { return Tags['00120021'] }
+    static get IssuerOfClinicalTrialProtocolID() { return Tags['00120022'] }
+    static get OtherClinicalTrialProtocolIDsSequence() { return Tags['00120023'] }
     static get ClinicalTrialSiteID() { return Tags['00120030'] }
     static get ClinicalTrialSiteName() { return Tags['00120031'] }
+    static get IssuerOfClinicalTrialSiteID() { return Tags['00120032'] }
     static get ClinicalTrialSubjectID() { return Tags['00120040'] }
+    static get IssuerOfClinicalTrialSubjectID() { return Tags['00120041'] }
     static get ClinicalTrialSubjectReadingID() { return Tags['00120042'] }
+    static get IssuerOfClinicalTrialSubjectReadingID() { return Tags['00120043'] }
     static get ClinicalTrialTimePointID() { return Tags['00120050'] }
     static get ClinicalTrialTimePointDescription() { return Tags['00120051'] }
     static get LongitudinalTemporalOffsetFromEvent() { return Tags['00120052'] }
     static get LongitudinalTemporalEventType() { return Tags['00120053'] }
     static get ClinicalTrialTimePointTypeCodeSequence() { return Tags['00120054'] }
+    static get IssuerOfClinicalTrialTimePointID() { return Tags['00120055'] }
     static get ClinicalTrialCoordinatingCenterName() { return Tags['00120060'] }
     static get PatientIdentityRemoved() { return Tags['00120062'] }
     static get DeidentificationMethod() { return Tags['00120063'] }
     static get DeidentificationMethodCodeSequence() { return Tags['00120064'] }
     static get ClinicalTrialSeriesID() { return Tags['00120071'] }
     static get ClinicalTrialSeriesDescription() { return Tags['00120072'] }
+    static get IssuerOfClinicalTrialSeriesID() { return Tags['00120073'] }
     static get ClinicalTrialProtocolEthicsCommitteeName() { return Tags['00120081'] }
     static get ClinicalTrialProtocolEthicsCommitteeApprovalNumber() { return Tags['00120082'] }
     static get ConsentForClinicalTrialUseSequence() { return Tags['00120083'] }
@@ -821,6 +854,18 @@ export default class Tag {
     static get ImageQualityIndicatorType() { return Tags['001440A0'] }
     static get ImageQualityIndicatorMaterial() { return Tags['001440A1'] }
     static get ImageQualityIndicatorSize() { return Tags['001440A2'] }
+    static get WaveDimensionsDefinitionSequence() { return Tags['00144101'] }
+    static get WaveDimensionNumber() { return Tags['00144102'] }
+    static get WaveDimensionDescription() { return Tags['00144103'] }
+    static get WaveDimensionUnit() { return Tags['00144104'] }
+    static get WaveDimensionValueType() { return Tags['00144105'] }
+    static get WaveDimensionValuesSequence() { return Tags['00144106'] }
+    static get ReferencedWaveDimension() { return Tags['00144107'] }
+    static get IntegerNumericValue() { return Tags['00144108'] }
+    static get ByteNumericValue() { return Tags['00144109'] }
+    static get ShortNumericValue() { return Tags['0014410A'] }
+    static get SinglePrecisionFloatingPointNumericValue() { return Tags['0014410B'] }
+    static get DoublePrecisionFloatingPointNumericValue() { return Tags['0014410C'] }
     static get LINACEnergy() { return Tags['00145002'] }
     static get LINACOutput() { return Tags['00145004'] }
     static get ActiveAperture() { return Tags['00145100'] }
@@ -855,6 +900,98 @@ export default class Tag {
     static get WedgeChamferHeight() { return Tags['0014511D'] }
     static get WedgeCurve() { return Tags['0014511E'] }
     static get RadiusAlongWedge() { return Tags['0014511F'] }
+    static get ThermalCameraSettingsSequence() { return Tags['00146001'] }
+    static get AcquisitionFrameRate() { return Tags['00146002'] }
+    static get IntegrationTime() { return Tags['00146003'] }
+    static get NumberOfCalibrationFrames() { return Tags['00146004'] }
+    static get NumberOfRowsInFullAcquisitionImage() { return Tags['00146005'] }
+    static get NumberOfColumnsInFullAcquisitionImage() { return Tags['00146006'] }
+    static get ThermalSourceSettingsSequence() { return Tags['00146007'] }
+    static get SourceHorizontalPitch() { return Tags['00146008'] }
+    static get SourceVerticalPitch() { return Tags['00146009'] }
+    static get SourceHorizontalScanSpeed() { return Tags['0014600A'] }
+    static get ThermalSourceModulationFrequency() { return Tags['0014600B'] }
+    static get InductionSourceSettingSequence() { return Tags['0014600C'] }
+    static get CoilFrequency() { return Tags['0014600D'] }
+    static get CurrentAmplitudeAcrossCoil() { return Tags['0014600E'] }
+    static get FlashSourceSettingSequence() { return Tags['0014600F'] }
+    static get FlashDuration() { return Tags['00146010'] }
+    static get FlashFrameNumber() { return Tags['00146011'] }
+    static get LaserSourceSettingSequence() { return Tags['00146012'] }
+    static get HorizontalLaserSpotDimension() { return Tags['00146013'] }
+    static get VerticalLaserSpotDimension() { return Tags['00146014'] }
+    static get LaserWavelength() { return Tags['00146015'] }
+    static get LaserPower() { return Tags['00146016'] }
+    static get ForcedGasSettingSequence() { return Tags['00146017'] }
+    static get VibrationSourceSettingSequence() { return Tags['00146018'] }
+    static get VibrationExcitationFrequency() { return Tags['00146019'] }
+    static get VibrationExcitationVoltage() { return Tags['0014601A'] }
+    static get ThermographyDataCaptureMethod() { return Tags['0014601B'] }
+    static get ThermalTechnique() { return Tags['0014601C'] }
+    static get ThermalCameraCoreSequence() { return Tags['0014601D'] }
+    static get DetectorWavelengthRange() { return Tags['0014601E'] }
+    static get ThermalCameraCalibrationType() { return Tags['0014601F'] }
+    static get AcquisitionImageCounter() { return Tags['00146020'] }
+    static get FrontPanelTemperature() { return Tags['00146021'] }
+    static get AirGapTemperature() { return Tags['00146022'] }
+    static get VerticalPixelSize() { return Tags['00146023'] }
+    static get HorizontalPixelSize() { return Tags['00146024'] }
+    static get DataStreamingProtocol() { return Tags['00146025'] }
+    static get LensSequence() { return Tags['00146026'] }
+    static get FieldOfView() { return Tags['00146027'] }
+    static get LensFilterManufacturer() { return Tags['00146028'] }
+    static get CutoffFilterType() { return Tags['00146029'] }
+    static get LensFilterCutOffWavelength() { return Tags['0014602A'] }
+    static get ThermalSourceSequence() { return Tags['0014602B'] }
+    static get ThermalSourceMotionState() { return Tags['0014602C'] }
+    static get ThermalSourceMotionType() { return Tags['0014602D'] }
+    static get InductionHeatingSequence() { return Tags['0014602E'] }
+    static get CoilConfigurationID() { return Tags['0014602F'] }
+    static get NumberOfTurnsInCoil() { return Tags['00146030'] }
+    static get ShapeOfIndividualTurn() { return Tags['00146031'] }
+    static get SizeOfIndividualTurn() { return Tags['00146032'] }
+    static get DistanceBetweenTurns() { return Tags['00146033'] }
+    static get FlashHeatingSequence() { return Tags['00146034'] }
+    static get NumberOfLamps() { return Tags['00146035'] }
+    static get FlashSynchronizationProtocol() { return Tags['00146036'] }
+    static get FlashModificationStatus() { return Tags['00146037'] }
+    static get LaserHeatingSequence() { return Tags['00146038'] }
+    static get LaserManufacturer() { return Tags['00146039'] }
+    static get LaserModelNumber() { return Tags['0014603A'] }
+    static get LaserTypeDescription() { return Tags['0014603B'] }
+    static get ForcedGasHeatingSequence() { return Tags['0014603C'] }
+    static get GasUsedForHeatingCoolingPart() { return Tags['0014603D'] }
+    static get VibrationSonicHeatingSequence() { return Tags['0014603E'] }
+    static get ProbeManufacturer() { return Tags['0014603F'] }
+    static get ProbeModelNumber() { return Tags['00146040'] }
+    static get ApertureSize() { return Tags['00146041'] }
+    static get ProbeResonantFrequency() { return Tags['00146042'] }
+    static get HeatSourceDescription() { return Tags['00146043'] }
+    static get SurfacePreparationWithOpticalCoating() { return Tags['00146044'] }
+    static get OpticalCoatingType() { return Tags['00146045'] }
+    static get ThermalConductivityOfExposedSurface() { return Tags['00146046'] }
+    static get MaterialDensity() { return Tags['00146047'] }
+    static get SpecificHeatOfInspectionSurface() { return Tags['00146048'] }
+    static get EmissivityOfInspectionSurface() { return Tags['00146049'] }
+    static get ElectromagneticClassificationOfInspectionSurface() { return Tags['0014604A'] }
+    static get MovingWindowSize() { return Tags['0014604C'] }
+    static get MovingWindowType() { return Tags['0014604D'] }
+    static get MovingWindowWeights() { return Tags['0014604E'] }
+    static get MovingWindowPitch() { return Tags['0014604F'] }
+    static get MovingWindowPaddingScheme() { return Tags['00146050'] }
+    static get MovingWindowPaddingLength() { return Tags['00146051'] }
+    static get SpatialFilteringParametersSequence() { return Tags['00146052'] }
+    static get SpatialFilteringScheme() { return Tags['00146053'] }
+    static get HorizontalMovingWindowSize() { return Tags['00146056'] }
+    static get VerticalMovingWindowSize() { return Tags['00146057'] }
+    static get PolynomialFittingSequence() { return Tags['00146059'] }
+    static get FittingDataType() { return Tags['0014605A'] }
+    static get OperationOnTimeAxisBeforeFitting() { return Tags['0014605B'] }
+    static get OperationOnPixelIntensityBeforeFitting() { return Tags['0014605C'] }
+    static get OrderOfPolynomial() { return Tags['0014605D'] }
+    static get IndependentVariableForPolynomialFit() { return Tags['0014605E'] }
+    static get PolynomialCoefficients() { return Tags['0014605F'] }
+    static get ThermographyPixelDataUnit() { return Tags['00146060'] }
     static get WhitePoint() { return Tags['00160001'] }
     static get PrimaryChromaticities() { return Tags['00160002'] }
     static get BatteryLevel() { return Tags['00160003'] }
@@ -1158,6 +1295,8 @@ export default class Tag {
     static get TimeOfLastCalibration() { return Tags['00181201'] }
     static get DateTimeOfLastCalibration() { return Tags['00181202'] }
     static get CalibrationDateTime() { return Tags['00181203'] }
+    static get DateOfManufacture() { return Tags['00181204'] }
+    static get DateOfInstallation() { return Tags['00181205'] }
     static get ConvolutionKernel() { return Tags['00181210'] }
     static get UpperLowerPixelValues() { return Tags['00181240'] }
     static get ActualFrameDuration() { return Tags['00181242'] }
@@ -1775,6 +1914,27 @@ export default class Tag {
     static get TransducerBeamSteeringCodeSequence() { return Tags['0018980E'] }
     static get TransducerApplicationCodeSequence() { return Tags['0018980F'] }
     static get ZeroVelocityPixelValue() { return Tags['00189810'] }
+    static get PhotoacousticExcitationCharacteristicsSequence() { return Tags['00189821'] }
+    static get ExcitationSpectralWidth() { return Tags['00189822'] }
+    static get ExcitationEnergy() { return Tags['00189823'] }
+    static get ExcitationPulseDuration() { return Tags['00189824'] }
+    static get ExcitationWavelengthSequence() { return Tags['00189825'] }
+    static get ExcitationWavelength() { return Tags['00189826'] }
+    static get IlluminationTranslationFlag() { return Tags['00189828'] }
+    static get AcousticCouplingMediumFlag() { return Tags['00189829'] }
+    static get AcousticCouplingMediumCodeSequence() { return Tags['0018982A'] }
+    static get AcousticCouplingMediumTemperature() { return Tags['0018982B'] }
+    static get TransducerResponseSequence() { return Tags['0018982C'] }
+    static get CenterFrequency() { return Tags['0018982D'] }
+    static get FractionalBandwidth() { return Tags['0018982E'] }
+    static get LowerCutoffFrequency() { return Tags['0018982F'] }
+    static get UpperCutoffFrequency() { return Tags['00189830'] }
+    static get TransducerTechnologySequence() { return Tags['00189831'] }
+    static get SoundSpeedCorrectionMechanismCodeSequence() { return Tags['00189832'] }
+    static get ObjectSoundSpeed() { return Tags['00189833'] }
+    static get AcousticCouplingMediumSoundSpeed() { return Tags['00189834'] }
+    static get PhotoacousticImageFrameTypeSequence() { return Tags['00189835'] }
+    static get ImageDataTypeCodeSequence() { return Tags['00189836'] }
     static get ReferenceLocationLabel() { return Tags['00189900'] }
     static get ReferenceLocationDescription() { return Tags['00189901'] }
     static get ReferenceBasisCodeSequence() { return Tags['00189902'] }
@@ -1974,6 +2134,7 @@ export default class Tag {
     static get HorizontalFieldOfView() { return Tags['0022000C'] }
     static get PupilDilated() { return Tags['0022000D'] }
     static get DegreeOfDilation() { return Tags['0022000E'] }
+    static get VertexDistance() { return Tags['0022000F'] }
     static get StereoBaselineAngle() { return Tags['00220010'] }
     static get StereoBaselineDisplacement() { return Tags['00220011'] }
     static get StereoHorizontalPixelOffset() { return Tags['00220012'] }
@@ -2121,10 +2282,16 @@ export default class Tag {
     static get ScanPatternTypeCodeSequence() { return Tags['00221618'] }
     static get ReferencedSurfaceMeshIdentificationSequence() { return Tags['00221620'] }
     static get OphthalmicVolumetricPropertiesFlag() { return Tags['00221622'] }
+    static get OphthalmicAnatomicReferencePointFrameCoordinate() { return Tags['00221623'] }
     static get OphthalmicAnatomicReferencePointXCoordinate() { return Tags['00221624'] }
     static get OphthalmicAnatomicReferencePointYCoordinate() { return Tags['00221626'] }
+    static get OphthalmicEnFaceVolumeDescriptorSequence() { return Tags['00221627'] }
     static get OphthalmicEnFaceImageQualityRatingSequence() { return Tags['00221628'] }
+    static get OphthalmicEnFaceVolumeDescriptorScope() { return Tags['00221629'] }
     static get QualityThreshold() { return Tags['00221630'] }
+    static get OphthalmicAnatomicReferencePointSequence() { return Tags['00221632'] }
+    static get OphthalmicAnatomicReferencePointLocalizationType() { return Tags['00221633'] }
+    static get PrimaryAnatomicStructureItemIndex() { return Tags['00221634'] }
     static get OCTBscanAnalysisAcquisitionParametersSequence() { return Tags['00221640'] }
     static get NumberOfBscansPerFrame() { return Tags['00221642'] }
     static get BscanSlabThickness() { return Tags['00221643'] }
@@ -2383,6 +2550,7 @@ export default class Tag {
     static get LossyImageCompressionRatio() { return Tags['00282112'] }
     static get LossyImageCompressionMethod() { return Tags['00282114'] }
     static get ModalityLUTSequence() { return Tags['00283000'] }
+    static get VariableModalityLUTSequence() { return Tags['00283001'] }
     static get LUTDescriptor() { return Tags['00283002'] }
     static get LUTExplanation() { return Tags['00283003'] }
     static get ModalityLUTType() { return Tags['00283004'] }
@@ -2601,12 +2769,12 @@ export default class Tag {
     static get WaveformAmplifierType() { return Tags['003A0317'] }
     static get FilterLowFrequencyCharacteristicsSequence() { return Tags['003A0318'] }
     static get FilterHighFrequencyCharacteristicsSequence() { return Tags['003A0319'] }
-    static get SummarizedFilterLookupTable() { return Tags['003A0320'] }
+    static get SummarizedFilterLookupTableSequence() { return Tags['003A0320'] }
     static get NotchFilterCharacteristicsSequence() { return Tags['003A0321'] }
     static get WaveformFilterType() { return Tags['003A0322'] }
     static get AnalogFilterCharacteristicsSequence() { return Tags['003A0323'] }
     static get AnalogFilterRollOff() { return Tags['003A0324'] }
-    static get AnalogFilterType() { return Tags['003A0325'] }
+    static get AnalogFilterTypeCodeSequence() { return Tags['003A0325'] }
     static get DigitalFilterCharacteristicsSequence() { return Tags['003A0326'] }
     static get DigitalFilterOrder() { return Tags['003A0327'] }
     static get DigitalFilterTypeCodeSequence() { return Tags['003A0328'] }
@@ -2818,6 +2986,8 @@ export default class Tag {
     static get VerificationDateTime() { return Tags['0040A030'] }
     static get ObservationDateTime() { return Tags['0040A032'] }
     static get ObservationStartDateTime() { return Tags['0040A033'] }
+    static get EffectiveStartDateTime() { return Tags['0040A034'] }
+    static get EffectiveStopDateTime() { return Tags['0040A035'] }
     static get ValueType() { return Tags['0040A040'] }
     static get ConceptNameCodeSequence() { return Tags['0040A043'] }
     static get MeasurementPrecisionDescriptionTrial() { return Tags['0040A047'] }
@@ -2923,6 +3093,25 @@ export default class Tag {
     static get CellValuesSequence() { return Tags['0040A808'] }
     static get UniformResourceLocatorTrial() { return Tags['0040A992'] }
     static get WaveformAnnotationSequence() { return Tags['0040B020'] }
+    static get StructuredWaveformAnnotationSequence() { return Tags['0040B030'] }
+    static get WaveformAnnotationDisplaySelectionSequence() { return Tags['0040B031'] }
+    static get ReferencedMontageIndex() { return Tags['0040B032'] }
+    static get WaveformTextualAnnotationSequence() { return Tags['0040B033'] }
+    static get AnnotationDateTime() { return Tags['0040B034'] }
+    static get DisplayedWaveformSegmentSequence() { return Tags['0040B035'] }
+    static get SegmentDefinitionDateTime() { return Tags['0040B036'] }
+    static get MontageActivationSequence() { return Tags['0040B037'] }
+    static get MontageActivationTimeOffset() { return Tags['0040B038'] }
+    static get WaveformMontageSequence() { return Tags['0040B039'] }
+    static get ReferencedMontageChannelNumber() { return Tags['0040B03A'] }
+    static get MontageName() { return Tags['0040B03B'] }
+    static get MontageChannelSequence() { return Tags['0040B03C'] }
+    static get MontageIndex() { return Tags['0040B03D'] }
+    static get MontageChannelNumber() { return Tags['0040B03E'] }
+    static get MontageChannelLabel() { return Tags['0040B03F'] }
+    static get MontageChannelSourceCodeSequence() { return Tags['0040B040'] }
+    static get ContributingChannelSourcesSequence() { return Tags['0040B041'] }
+    static get ChannelWeight() { return Tags['0040B042'] }
     static get TemplateIdentifier() { return Tags['0040DB00'] }
     static get TemplateVersion() { return Tags['0040DB06'] }
     static get TemplateLocalVersion() { return Tags['0040DB07'] }
@@ -2975,6 +3164,7 @@ export default class Tag {
     static get ReferencedAssertionUID() { return Tags['00440108'] }
     static get ApprovalSubjectSequence() { return Tags['00440109'] }
     static get OrganizationalRoleCodeSequence() { return Tags['0044010A'] }
+    static get RTAssertionsSequence() { return Tags['00440110'] }
     static get LensDescription() { return Tags['00460012'] }
     static get RightLensSequence() { return Tags['00460014'] }
     static get LeftLensSequence() { return Tags['00460015'] }
@@ -3086,6 +3276,10 @@ export default class Tag {
     static get CondenserLensPower() { return Tags['00480111'] }
     static get ObjectiveLensPower() { return Tags['00480112'] }
     static get ObjectiveLensNumericalAperture() { return Tags['00480113'] }
+    static get ConfocalMode() { return Tags['00480114'] }
+    static get TissueLocation() { return Tags['00480115'] }
+    static get ConfocalMicroscopyImageFrameTypeSequence() { return Tags['00480116'] }
+    static get ImageAcquisitionDepth() { return Tags['00480117'] }
     static get PaletteColorLookupTableSequence() { return Tags['00480120'] }
     static get ReferencedImageNavigationSequence() { return Tags['00480200'] }
     static get TopLeftHandCornerOfLocalizerArea() { return Tags['00480201'] }
@@ -3097,6 +3291,7 @@ export default class Tag {
     static get PixelOriginInterpretation() { return Tags['00480301'] }
     static get NumberOfOpticalPaths() { return Tags['00480302'] }
     static get TotalPixelMatrixFocalPlanes() { return Tags['00480303'] }
+    static get TilesOverlap() { return Tags['00480304'] }
     static get CalibrationImage() { return Tags['00500004'] }
     static get DeviceSequence() { return Tags['00500010'] }
     static get ContainerComponentTypeCodeSequence() { return Tags['00500012'] }
@@ -3261,6 +3456,7 @@ export default class Tag {
     static get SurfaceSequence() { return Tags['00660002'] }
     static get SurfaceNumber() { return Tags['00660003'] }
     static get SurfaceComments() { return Tags['00660004'] }
+    static get SurfaceOffset() { return Tags['00660005'] }
     static get SurfaceProcessing() { return Tags['00660009'] }
     static get SurfaceProcessingRatio() { return Tags['0066000A'] }
     static get SurfaceProcessingDescription() { return Tags['0066000B'] }
@@ -4121,6 +4317,7 @@ export default class Tag {
     static get EnergyDerivationCodeSequence() { return Tags['30020133'] }
     static get MaximumCumulativeMetersetExposure() { return Tags['30020134'] }
     static get AcquisitionInitiationSequence() { return Tags['30020135'] }
+    static get RTConeBeamImagingGeometrySequence() { return Tags['30020136'] }
     static get DVHType() { return Tags['30040001'] }
     static get DoseUnits() { return Tags['30040002'] }
     static get DoseType() { return Tags['30040004'] }
@@ -4133,6 +4330,12 @@ export default class Tag {
     static get RTDoseROISequence() { return Tags['30040010'] }
     static get DoseValue() { return Tags['30040012'] }
     static get TissueHeterogeneityCorrection() { return Tags['30040014'] }
+    static get RecommendedIsodoseLevelSequence() { return Tags['30040016'] }
+    static get DoseUnitCodeSequence() { return Tags['30040020'] }
+    static get RTDoseInterpretedTypeCodeSequence() { return Tags['30040021'] }
+    static get RTDoseInterpretedTypeCodeModifierSequence() { return Tags['30040022'] }
+    static get DoseRadiobiologicalInterpretationSequence() { return Tags['30040023'] }
+    static get RTDoseIntentCodeSequence() { return Tags['30040024'] }
     static get DVHNormalizationPoint() { return Tags['30040040'] }
     static get DVHNormalizationDoseValue() { return Tags['30040042'] }
     static get DVHSequence() { return Tags['30040050'] }
@@ -4145,6 +4348,11 @@ export default class Tag {
     static get DVHMinimumDose() { return Tags['30040070'] }
     static get DVHMaximumDose() { return Tags['30040072'] }
     static get DVHMeanDose() { return Tags['30040074'] }
+    static get DoseCalculationModelSequence() { return Tags['30040080'] }
+    static get DoseCalculationAlgorithmSequence() { return Tags['30040081'] }
+    static get CommissioningStatus() { return Tags['30040082'] }
+    static get DoseCalculationModelParameterSequence() { return Tags['30040083'] }
+    static get DoseDepositionCalculationMedium() { return Tags['30040084'] }
     static get StructureSetLabel() { return Tags['30060002'] }
     static get StructureSetName() { return Tags['30060004'] }
     static get StructureSetDescription() { return Tags['30060006'] }
@@ -4162,6 +4370,8 @@ export default class Tag {
     static get ROIDescription() { return Tags['30060028'] }
     static get ROIDisplayColor() { return Tags['3006002A'] }
     static get ROIVolume() { return Tags['3006002C'] }
+    static get ROIDateTime() { return Tags['3006002D'] }
+    static get ROIObservationDateTime() { return Tags['3006002E'] }
     static get RTRelatedROISequence() { return Tags['30060030'] }
     static get RTROIRelationship() { return Tags['30060033'] }
     static get ROIGenerationAlgorithm() { return Tags['30060036'] }
@@ -4176,6 +4386,11 @@ export default class Tag {
     static get ContourNumber() { return Tags['30060048'] }
     static get AttachedContours() { return Tags['30060049'] }
     static get SourcePixelPlanesCharacteristicsSequence() { return Tags['3006004A'] }
+    static get SourceSeriesSequence() { return Tags['3006004B'] }
+    static get SourceSeriesInformationSequence() { return Tags['3006004C'] }
+    static get ROICreatorSequence() { return Tags['3006004D'] }
+    static get ROIInterpreterSequence() { return Tags['3006004E'] }
+    static get ROIObservationContextCodeSequence() { return Tags['3006004F'] }
     static get ContourData() { return Tags['30060050'] }
     static get RTROIObservationsSequence() { return Tags['30060080'] }
     static get ObservationNumber() { return Tags['30060082'] }
@@ -4346,6 +4561,7 @@ export default class Tag {
     static get TableTopVerticalPositionTolerance() { return Tags['300A0051'] }
     static get TableTopLongitudinalPositionTolerance() { return Tags['300A0052'] }
     static get TableTopLateralPositionTolerance() { return Tags['300A0053'] }
+    static get TableTopPositionAlignmentUID() { return Tags['300A0054'] }
     static get RTPlanRelationship() { return Tags['300A0055'] }
     static get FractionGroupSequence() { return Tags['300A0070'] }
     static get FractionGroupNumber() { return Tags['300A0071'] }
@@ -4600,6 +4816,7 @@ export default class Tag {
     static get CompensatorMillingToolDiameter() { return Tags['300A02E8'] }
     static get IonRangeCompensatorSequence() { return Tags['300A02EA'] }
     static get CompensatorDescription() { return Tags['300A02EB'] }
+    static get CompensatorSurfaceRepresentationFlag() { return Tags['300A02EC'] }
     static get RadiationMassNumber() { return Tags['300A0302'] }
     static get RadiationAtomicNumber() { return Tags['300A0304'] }
     static get RadiationChargeState() { return Tags['300A0306'] }
@@ -4660,6 +4877,8 @@ export default class Tag {
     static get ScanningSpotSize() { return Tags['300A0398'] }
     static get ScanSpotSizesDelivered() { return Tags['300A0399'] }
     static get NumberOfPaintings() { return Tags['300A039A'] }
+    static get ScanSpotGantryAngles() { return Tags['300A039B'] }
+    static get ScanSpotPatientSupportAngles() { return Tags['300A039C'] }
     static get IonToleranceTableSequence() { return Tags['300A03A0'] }
     static get IonBeamSequence() { return Tags['300A03A2'] }
     static get IonBeamLimitingDeviceSequence() { return Tags['300A03A4'] }
@@ -4842,6 +5061,7 @@ export default class Tag {
     static get RTBeamModifierDefinitionDistance() { return Tags['300A0688'] }
     static get BeamAreaLimitSequence() { return Tags['300A0689'] }
     static get ReferencedRTPrescriptionSequence() { return Tags['300A068A'] }
+    static get DoseValueInterpretation() { return Tags['300A068B'] }
     static get TreatmentSessionUID() { return Tags['300A0700'] }
     static get RTRadiationUsage() { return Tags['300A0701'] }
     static get ReferencedRTRadiationSetSequence() { return Tags['300A0702'] }
@@ -4910,6 +5130,9 @@ export default class Tag {
     static get PatientSupportDisplacementSequence() { return Tags['300A079C'] }
     static get DisplacementReferenceLocationCodeSequence() { return Tags['300A079D'] }
     static get RTRadiationSetDeliveryUsage() { return Tags['300A079E'] }
+    static get PatientTreatmentPreparationSequence() { return Tags['300A079F'] }
+    static get PatientToEquipmentRelationshipSequence() { return Tags['300A07A0'] }
+    static get ImagingEquipmentToTreatmentDeliveryDeviceRelationshipSequence() { return Tags['300A07A1'] }
     static get ReferencedRTPlanSequence() { return Tags['300C0002'] }
     static get ReferencedBeamSequence() { return Tags['300C0004'] }
     static get ReferencedBeamNumber() { return Tags['300C0006'] }
@@ -4959,6 +5182,7 @@ export default class Tag {
     static get BeamHoldTransition() { return Tags['300C0126'] }
     static get BeamHoldTransitionDateTime() { return Tags['300C0127'] }
     static get BeamHoldOriginatingDeviceSequence() { return Tags['300C0128'] }
+    static get BeamHoldTransitionTriggerSource() { return Tags['300C0129'] }
     static get ApprovalStatus() { return Tags['300E0002'] }
     static get ReviewDate() { return Tags['300E0004'] }
     static get ReviewTime() { return Tags['300E0005'] }
@@ -5330,7 +5554,10 @@ export default class Tag {
     static get RelationshipGroupLengthRetired() { return Tags['00200000'] }
     static get ImagePresentationGroupLengthRetired() { return Tags['00280000'] }
     static get GenericGroupLengthRetired() { return Tags['00540000'] }
-    static get PixelDataGroupLengthRetired() { return Tags['7FE00000'] }	
+    static get PixelDataGroupLengthRetired() { return Tags['7FE00000'] }
+    static get SummarizedFilterLookupTable() { return Tags['003A0320'] }
+    static get AnalogFilterType() { return Tags['003A0325'] }
+
     // INSERT ACCESSORS	
 
 };
@@ -5354,7 +5581,7 @@ export var PhotometricInterpretationType = {
     INVALID: Symbol('INVALID')
 };
 
-// BELOW CODE GENERATED ON: 3/23/2023 11:09:45 AM
+// BELOW CODE GENERATED ON: 2/16/2026 3:17:54 PM
 
 export var Tags = {
 	'00020000': new Tag({ ID: '00020000', Tag: '(0002, 0000)', Group: 2, Element: 0, VR: ValueRepresentation.UL,  VM: { Exact: 1 }, Name: 'File Meta Information Group Length', IsRetired: false }),
@@ -5414,6 +5641,8 @@ export var Tags = {
 	'00080019': new Tag({ ID: '00080019', Tag: '(0008, 0019)', Group: 8, Element: 25, VR: ValueRepresentation.UI,  VM: { Exact: 1 }, Name: 'Pyramid UID', IsRetired: false }),
 	'0008001A': new Tag({ ID: '0008001A', Tag: '(0008, 001A)', Group: 8, Element: 26, VR: ValueRepresentation.UI,  VM: { Min: 1, Max: -1 }, Name: 'Related General SOP Class UID', IsRetired: false }),
 	'0008001B': new Tag({ ID: '0008001B', Tag: '(0008, 001B)', Group: 8, Element: 27, VR: ValueRepresentation.UI,  VM: { Exact: 1 }, Name: 'Original Specialized SOP Class UID', IsRetired: false }),
+	'0008001C': new Tag({ ID: '0008001C', Tag: '(0008, 001C)', Group: 8, Element: 28, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Synthetic Data', IsRetired: false }),
+	'0008001D': new Tag({ ID: '0008001D', Tag: '(0008, 001D)', Group: 8, Element: 29, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Sensitive Content Code Sequence', IsRetired: false }),
 	'00080020': new Tag({ ID: '00080020', Tag: '(0008, 0020)', Group: 8, Element: 32, VR: ValueRepresentation.DA,  VM: { Exact: 1 }, Name: 'Study Date', IsRetired: false }),
 	'00080021': new Tag({ ID: '00080021', Tag: '(0008, 0021)', Group: 8, Element: 33, VR: ValueRepresentation.DA,  VM: { Exact: 1 }, Name: 'Series Date', IsRetired: false }),
 	'00080022': new Tag({ ID: '00080022', Tag: '(0008, 0022)', Group: 8, Element: 34, VR: ValueRepresentation.DA,  VM: { Exact: 1 }, Name: 'Acquisition Date', IsRetired: false }),
@@ -5569,6 +5798,7 @@ export var Tags = {
 	'00081100': new Tag({ ID: '00081100', Tag: '(0008, 1100)', Group: 8, Element: 4352, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Results Sequence', IsRetired: true }),
 	'00081110': new Tag({ ID: '00081110', Tag: '(0008, 1110)', Group: 8, Element: 4368, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Study Sequence', IsRetired: false }),
 	'00081111': new Tag({ ID: '00081111', Tag: '(0008, 1111)', Group: 8, Element: 4369, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Performed Procedure Step Sequence', IsRetired: false }),
+	'00081112': new Tag({ ID: '00081112', Tag: '(0008, 1112)', Group: 8, Element: 4370, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Instances by SOP Class Sequence', IsRetired: false }),
 	'00081115': new Tag({ ID: '00081115', Tag: '(0008, 1115)', Group: 8, Element: 4373, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Series Sequence', IsRetired: false }),
 	'00081120': new Tag({ ID: '00081120', Tag: '(0008, 1120)', Group: 8, Element: 4384, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Patient Sequence', IsRetired: false }),
 	'00081125': new Tag({ ID: '00081125', Tag: '(0008, 1125)', Group: 8, Element: 4389, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Visit Sequence', IsRetired: false }),
@@ -5579,6 +5809,8 @@ export var Tags = {
 	'00081145': new Tag({ ID: '00081145', Tag: '(0008, 1145)', Group: 8, Element: 4421, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Curve Sequence', IsRetired: true }),
 	'0008114A': new Tag({ ID: '0008114A', Tag: '(0008, 114A)', Group: 8, Element: 4426, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Instance Sequence', IsRetired: false }),
 	'0008114B': new Tag({ ID: '0008114B', Tag: '(0008, 114B)', Group: 8, Element: 4427, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Real World Value Mapping Instance Sequence', IsRetired: false }),
+	'0008114C': new Tag({ ID: '0008114C', Tag: '(0008, 114C)', Group: 8, Element: 4428, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Segmentation Sequence', IsRetired: false }),
+	'0008114D': new Tag({ ID: '0008114D', Tag: '(0008, 114D)', Group: 8, Element: 4429, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Surface Segmentation Sequence', IsRetired: false }),
 	'00081150': new Tag({ ID: '00081150', Tag: '(0008, 1150)', Group: 8, Element: 4432, VR: ValueRepresentation.UI,  VM: { Exact: 1 }, Name: 'Referenced SOP Class UID', IsRetired: false }),
 	'00081155': new Tag({ ID: '00081155', Tag: '(0008, 1155)', Group: 8, Element: 4437, VR: ValueRepresentation.UI,  VM: { Exact: 1 }, Name: 'Referenced SOP Instance UID', IsRetired: false }),
 	'00081156': new Tag({ ID: '00081156', Tag: '(0008, 1156)', Group: 8, Element: 4438, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Definition Source Sequence', IsRetired: false }),
@@ -5596,8 +5828,13 @@ export var Tags = {
 	'00081198': new Tag({ ID: '00081198', Tag: '(0008, 1198)', Group: 8, Element: 4504, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Failed SOP Sequence', IsRetired: false }),
 	'00081199': new Tag({ ID: '00081199', Tag: '(0008, 1199)', Group: 8, Element: 4505, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced SOP Sequence', IsRetired: false }),
 	'0008119A': new Tag({ ID: '0008119A', Tag: '(0008, 119A)', Group: 8, Element: 4506, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Other Failures Sequence', IsRetired: false }),
+	'0008119B': new Tag({ ID: '0008119B', Tag: '(0008, 119B)', Group: 8, Element: 4507, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Failed Study Sequence', IsRetired: false }),
 	'00081200': new Tag({ ID: '00081200', Tag: '(0008, 1200)', Group: 8, Element: 4608, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Studies Containing Other Referenced Instances Sequence', IsRetired: false }),
 	'00081250': new Tag({ ID: '00081250', Tag: '(0008, 1250)', Group: 8, Element: 4688, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Related Series Sequence', IsRetired: false }),
+	'00081301': new Tag({ ID: '00081301', Tag: '(0008, 1301)', Group: 8, Element: 4865, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Principal Diagnosis Code Sequence', IsRetired: false }),
+	'00081302': new Tag({ ID: '00081302', Tag: '(0008, 1302)', Group: 8, Element: 4866, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Primary Diagnosis Code Sequence', IsRetired: false }),
+	'00081303': new Tag({ ID: '00081303', Tag: '(0008, 1303)', Group: 8, Element: 4867, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Secondary Diagnoses Code Sequence', IsRetired: false }),
+	'00081304': new Tag({ ID: '00081304', Tag: '(0008, 1304)', Group: 8, Element: 4868, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Histological Diagnoses Code Sequence', IsRetired: false }),
 	'00082110': new Tag({ ID: '00082110', Tag: '(0008, 2110)', Group: 8, Element: 8464, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Lossy Image Compression (Retired)', IsRetired: true }),
 	'00082111': new Tag({ ID: '00082111', Tag: '(0008, 2111)', Group: 8, Element: 8465, VR: ValueRepresentation.ST,  VM: { Exact: 1 }, Name: 'Derivation Description', IsRetired: false }),
 	'00082112': new Tag({ ID: '00082112', Tag: '(0008, 2112)', Group: 8, Element: 8466, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Source Image Sequence', IsRetired: false }),
@@ -5661,6 +5898,12 @@ export var Tags = {
 	'00089459': new Tag({ ID: '00089459', Tag: '(0008, 9459)', Group: 8, Element: 37977, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Recommended Display Frame Rate in Float', IsRetired: false }),
 	'00089460': new Tag({ ID: '00089460', Tag: '(0008, 9460)', Group: 8, Element: 37984, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Skip Frame Range Flag', IsRetired: false }),
 	'00100010': new Tag({ ID: '00100010', Tag: '(0010, 0010)', Group: 16, Element: 16, VR: ValueRepresentation.PN,  VM: { Exact: 1 }, Name: 'Patients Name', IsRetired: false }),
+	'00100011': new Tag({ ID: '00100011', Tag: '(0010, 0011)', Group: 16, Element: 17, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Person Names to Use Sequence', IsRetired: false }),
+	'00100012': new Tag({ ID: '00100012', Tag: '(0010, 0012)', Group: 16, Element: 18, VR: ValueRepresentation.LT,  VM: { Exact: 1 }, Name: 'Name to Use', IsRetired: false }),
+	'00100013': new Tag({ ID: '00100013', Tag: '(0010, 0013)', Group: 16, Element: 19, VR: ValueRepresentation.UT,  VM: { Exact: 1 }, Name: 'Name to Use Comment', IsRetired: false }),
+	'00100014': new Tag({ ID: '00100014', Tag: '(0010, 0014)', Group: 16, Element: 20, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Third Person Pronouns Sequence', IsRetired: false }),
+	'00100015': new Tag({ ID: '00100015', Tag: '(0010, 0015)', Group: 16, Element: 21, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Pronoun Code Sequence', IsRetired: false }),
+	'00100016': new Tag({ ID: '00100016', Tag: '(0010, 0016)', Group: 16, Element: 22, VR: ValueRepresentation.UT,  VM: { Exact: 1 }, Name: 'Pronoun Comment', IsRetired: false }),
 	'00100020': new Tag({ ID: '00100020', Tag: '(0010, 0020)', Group: 16, Element: 32, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Patient ID', IsRetired: false }),
 	'00100021': new Tag({ ID: '00100021', Tag: '(0010, 0021)', Group: 16, Element: 33, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Issuer of Patient ID', IsRetired: false }),
 	'00100022': new Tag({ ID: '00100022', Tag: '(0010, 0022)', Group: 16, Element: 34, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Type of Patient ID', IsRetired: false }),
@@ -5674,6 +5917,13 @@ export var Tags = {
 	'00100034': new Tag({ ID: '00100034', Tag: '(0010, 0034)', Group: 16, Element: 52, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Patients Death Date in Alternative Calendar', IsRetired: false }),
 	'00100035': new Tag({ ID: '00100035', Tag: '(0010, 0035)', Group: 16, Element: 53, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Patients Alternative Calendar', IsRetired: false }),
 	'00100040': new Tag({ ID: '00100040', Tag: '(0010, 0040)', Group: 16, Element: 64, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Patients Sex', IsRetired: false }),
+	'00100041': new Tag({ ID: '00100041', Tag: '(0010, 0041)', Group: 16, Element: 65, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Gender Identity Sequence', IsRetired: false }),
+	'00100042': new Tag({ ID: '00100042', Tag: '(0010, 0042)', Group: 16, Element: 66, VR: ValueRepresentation.UT,  VM: { Exact: 1 }, Name: 'Sex Parameters for Clinical Use Category Comment', IsRetired: false }),
+	'00100043': new Tag({ ID: '00100043', Tag: '(0010, 0043)', Group: 16, Element: 67, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Sex Parameters for Clinical Use Category Sequence', IsRetired: false }),
+	'00100044': new Tag({ ID: '00100044', Tag: '(0010, 0044)', Group: 16, Element: 68, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Gender Identity Code Sequence', IsRetired: false }),
+	'00100045': new Tag({ ID: '00100045', Tag: '(0010, 0045)', Group: 16, Element: 69, VR: ValueRepresentation.UT,  VM: { Exact: 1 }, Name: 'Gender Identity Comment', IsRetired: false }),
+	'00100046': new Tag({ ID: '00100046', Tag: '(0010, 0046)', Group: 16, Element: 70, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Sex Parameters for Clinical Use Category Code Sequence', IsRetired: false }),
+	'00100047': new Tag({ ID: '00100047', Tag: '(0010, 0047)', Group: 16, Element: 71, VR: ValueRepresentation.UR,  VM: { Min: 1, Max: -1 }, Name: 'Sex Parameters for Clinical Use Category Reference', IsRetired: false }),
 	'00100050': new Tag({ ID: '00100050', Tag: '(0010, 0050)', Group: 16, Element: 80, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Patients Insurance Plan Code Sequence', IsRetired: false }),
 	'00100101': new Tag({ ID: '00100101', Tag: '(0010, 0101)', Group: 16, Element: 257, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Patients Primary Language Code Sequence', IsRetired: false }),
 	'00100102': new Tag({ ID: '00100102', Tag: '(0010, 0102)', Group: 16, Element: 258, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Patients Primary Language Modifier Code Sequence', IsRetired: false }),
@@ -5715,7 +5965,9 @@ export var Tags = {
 	'00102152': new Tag({ ID: '00102152', Tag: '(0010, 2152)', Group: 16, Element: 8530, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Region of Residence', IsRetired: false }),
 	'00102154': new Tag({ ID: '00102154', Tag: '(0010, 2154)', Group: 16, Element: 8532, VR: ValueRepresentation.SH,  VM: { Min: 1, Max: -1 }, Name: 'Patients Telephone Numbers', IsRetired: false }),
 	'00102155': new Tag({ ID: '00102155', Tag: '(0010, 2155)', Group: 16, Element: 8533, VR: ValueRepresentation.LT,  VM: { Exact: 1 }, Name: 'Patients Telecom Information', IsRetired: false }),
-	'00102160': new Tag({ ID: '00102160', Tag: '(0010, 2160)', Group: 16, Element: 8544, VR: ValueRepresentation.SH,  VM: { Exact: 1 }, Name: 'Ethnic Group', IsRetired: false }),
+	'00102160': new Tag({ ID: '00102160', Tag: '(0010, 2160)', Group: 16, Element: 8544, VR: ValueRepresentation.SH,  VM: { Exact: 1 }, Name: 'Ethnic Group', IsRetired: true }),
+	'00102161': new Tag({ ID: '00102161', Tag: '(0010, 2161)', Group: 16, Element: 8545, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Ethnic Group Code Sequence', IsRetired: false }),
+	'00102162': new Tag({ ID: '00102162', Tag: '(0010, 2162)', Group: 16, Element: 8546, VR: ValueRepresentation.UC,  VM: { Min: 1, Max: -1 }, Name: 'Ethnic Groups', IsRetired: false }),
 	'00102180': new Tag({ ID: '00102180', Tag: '(0010, 2180)', Group: 16, Element: 8576, VR: ValueRepresentation.SH,  VM: { Exact: 1 }, Name: 'Occupation', IsRetired: false }),
 	'001021A0': new Tag({ ID: '001021A0', Tag: '(0010, 21A0)', Group: 16, Element: 8608, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Smoking Status', IsRetired: false }),
 	'001021B0': new Tag({ ID: '001021B0', Tag: '(0010, 21B0)', Group: 16, Element: 8624, VR: ValueRepresentation.LT,  VM: { Exact: 1 }, Name: 'Additional Patient History', IsRetired: false }),
@@ -5739,21 +5991,28 @@ export var Tags = {
 	'00120010': new Tag({ ID: '00120010', Tag: '(0012, 0010)', Group: 18, Element: 16, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Sponsor Name', IsRetired: false }),
 	'00120020': new Tag({ ID: '00120020', Tag: '(0012, 0020)', Group: 18, Element: 32, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Protocol ID', IsRetired: false }),
 	'00120021': new Tag({ ID: '00120021', Tag: '(0012, 0021)', Group: 18, Element: 33, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Protocol Name', IsRetired: false }),
+	'00120022': new Tag({ ID: '00120022', Tag: '(0012, 0022)', Group: 18, Element: 34, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Issuer of Clinical Trial Protocol ID', IsRetired: false }),
+	'00120023': new Tag({ ID: '00120023', Tag: '(0012, 0023)', Group: 18, Element: 35, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Other Clinical Trial Protocol IDs Sequence', IsRetired: false }),
 	'00120030': new Tag({ ID: '00120030', Tag: '(0012, 0030)', Group: 18, Element: 48, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Site ID', IsRetired: false }),
 	'00120031': new Tag({ ID: '00120031', Tag: '(0012, 0031)', Group: 18, Element: 49, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Site Name', IsRetired: false }),
+	'00120032': new Tag({ ID: '00120032', Tag: '(0012, 0032)', Group: 18, Element: 50, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Issuer of Clinical Trial Site ID', IsRetired: false }),
 	'00120040': new Tag({ ID: '00120040', Tag: '(0012, 0040)', Group: 18, Element: 64, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Subject ID', IsRetired: false }),
+	'00120041': new Tag({ ID: '00120041', Tag: '(0012, 0041)', Group: 18, Element: 65, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Issuer of Clinical Trial Subject ID', IsRetired: false }),
 	'00120042': new Tag({ ID: '00120042', Tag: '(0012, 0042)', Group: 18, Element: 66, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Subject Reading ID', IsRetired: false }),
+	'00120043': new Tag({ ID: '00120043', Tag: '(0012, 0043)', Group: 18, Element: 67, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Issuer of Clinical Trial Subject Reading ID', IsRetired: false }),
 	'00120050': new Tag({ ID: '00120050', Tag: '(0012, 0050)', Group: 18, Element: 80, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Time Point ID', IsRetired: false }),
 	'00120051': new Tag({ ID: '00120051', Tag: '(0012, 0051)', Group: 18, Element: 81, VR: ValueRepresentation.ST,  VM: { Exact: 1 }, Name: 'Clinical Trial Time Point Description', IsRetired: false }),
 	'00120052': new Tag({ ID: '00120052', Tag: '(0012, 0052)', Group: 18, Element: 82, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Longitudinal Temporal Offset from Event', IsRetired: false }),
 	'00120053': new Tag({ ID: '00120053', Tag: '(0012, 0053)', Group: 18, Element: 83, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Longitudinal Temporal Event Type', IsRetired: false }),
 	'00120054': new Tag({ ID: '00120054', Tag: '(0012, 0054)', Group: 18, Element: 84, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Clinical Trial Time Point Type Code Sequence', IsRetired: false }),
+	'00120055': new Tag({ ID: '00120055', Tag: '(0012, 0055)', Group: 18, Element: 85, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Issuer of Clinical Trial Time Point ID', IsRetired: false }),
 	'00120060': new Tag({ ID: '00120060', Tag: '(0012, 0060)', Group: 18, Element: 96, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Coordinating Center Name', IsRetired: false }),
 	'00120062': new Tag({ ID: '00120062', Tag: '(0012, 0062)', Group: 18, Element: 98, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Patient Identity Removed', IsRetired: false }),
 	'00120063': new Tag({ ID: '00120063', Tag: '(0012, 0063)', Group: 18, Element: 99, VR: ValueRepresentation.LO,  VM: { Min: 1, Max: -1 }, Name: 'De-identification Method', IsRetired: false }),
 	'00120064': new Tag({ ID: '00120064', Tag: '(0012, 0064)', Group: 18, Element: 100, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'De-identification Method Code Sequence', IsRetired: false }),
 	'00120071': new Tag({ ID: '00120071', Tag: '(0012, 0071)', Group: 18, Element: 113, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Series ID', IsRetired: false }),
 	'00120072': new Tag({ ID: '00120072', Tag: '(0012, 0072)', Group: 18, Element: 114, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Series Description', IsRetired: false }),
+	'00120073': new Tag({ ID: '00120073', Tag: '(0012, 0073)', Group: 18, Element: 115, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Issuer of Clinical Trial Series ID', IsRetired: false }),
 	'00120081': new Tag({ ID: '00120081', Tag: '(0012, 0081)', Group: 18, Element: 129, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Protocol Ethics Committee Name', IsRetired: false }),
 	'00120082': new Tag({ ID: '00120082', Tag: '(0012, 0082)', Group: 18, Element: 130, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Clinical Trial Protocol Ethics Committee Approval Number', IsRetired: false }),
 	'00120083': new Tag({ ID: '00120083', Tag: '(0012, 0083)', Group: 18, Element: 131, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Consent for Clinical Trial Use Sequence', IsRetired: false }),
@@ -5929,6 +6188,18 @@ export var Tags = {
 	'001440A0': new Tag({ ID: '001440A0', Tag: '(0014, 40A0)', Group: 20, Element: 16544, VR: ValueRepresentation.LO,  VM: { Min: 1, Max: -1 }, Name: 'Image Quality Indicator Type', IsRetired: false }),
 	'001440A1': new Tag({ ID: '001440A1', Tag: '(0014, 40A1)', Group: 20, Element: 16545, VR: ValueRepresentation.LO,  VM: { Min: 1, Max: -1 }, Name: 'Image Quality Indicator Material', IsRetired: false }),
 	'001440A2': new Tag({ ID: '001440A2', Tag: '(0014, 40A2)', Group: 20, Element: 16546, VR: ValueRepresentation.LO,  VM: { Min: 1, Max: -1 }, Name: 'Image Quality Indicator Size', IsRetired: false }),
+	'00144101': new Tag({ ID: '00144101', Tag: '(0014, 4101)', Group: 20, Element: 16641, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Wave Dimensions Definition Sequence', IsRetired: false }),
+	'00144102': new Tag({ ID: '00144102', Tag: '(0014, 4102)', Group: 20, Element: 16642, VR: ValueRepresentation.US,  VM: { Exact: 1 }, Name: 'Wave Dimension Number', IsRetired: false }),
+	'00144103': new Tag({ ID: '00144103', Tag: '(0014, 4103)', Group: 20, Element: 16643, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Wave Dimension Description', IsRetired: false }),
+	'00144104': new Tag({ ID: '00144104', Tag: '(0014, 4104)', Group: 20, Element: 16644, VR: ValueRepresentation.US,  VM: { Exact: 1 }, Name: 'Wave Dimension Unit', IsRetired: false }),
+	'00144105': new Tag({ ID: '00144105', Tag: '(0014, 4105)', Group: 20, Element: 16645, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Wave Dimension Value Type', IsRetired: false }),
+	'00144106': new Tag({ ID: '00144106', Tag: '(0014, 4106)', Group: 20, Element: 16646, VR: ValueRepresentation.SQ,  VM: { Min: 1, Max: -1 }, Name: 'Wave Dimension Values Sequence', IsRetired: false }),
+	'00144107': new Tag({ ID: '00144107', Tag: '(0014, 4107)', Group: 20, Element: 16647, VR: ValueRepresentation.US,  VM: { Exact: 1 }, Name: 'Referenced Wave Dimension', IsRetired: false }),
+	'00144108': new Tag({ ID: '00144108', Tag: '(0014, 4108)', Group: 20, Element: 16648, VR: ValueRepresentation.SL,  VM: { Exact: 1 }, Name: 'Integer Numeric Value', IsRetired: false }),
+	'00144109': new Tag({ ID: '00144109', Tag: '(0014, 4109)', Group: 20, Element: 16649, VR: ValueRepresentation.OB,  VM: { Exact: 1 }, Name: 'Byte Numeric Value', IsRetired: false }),
+	'0014410A': new Tag({ ID: '0014410A', Tag: '(0014, 410A)', Group: 20, Element: 16650, VR: ValueRepresentation.OW,  VM: { Exact: 1 }, Name: 'Short Numeric Value', IsRetired: false }),
+	'0014410B': new Tag({ ID: '0014410B', Tag: '(0014, 410B)', Group: 20, Element: 16651, VR: ValueRepresentation.OF,  VM: { Exact: 1 }, Name: 'Single Precision Floating Point Numeric Value', IsRetired: false }),
+	'0014410C': new Tag({ ID: '0014410C', Tag: '(0014, 410C)', Group: 20, Element: 16652, VR: ValueRepresentation.OD,  VM: { Exact: 1 }, Name: 'Double Precision Floating Point Numeric Value', IsRetired: false }),
 	'00145002': new Tag({ ID: '00145002', Tag: '(0014, 5002)', Group: 20, Element: 20482, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'LINAC Energy', IsRetired: false }),
 	'00145004': new Tag({ ID: '00145004', Tag: '(0014, 5004)', Group: 20, Element: 20484, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'LINAC Output', IsRetired: false }),
 	'00145100': new Tag({ ID: '00145100', Tag: '(0014, 5100)', Group: 20, Element: 20736, VR: ValueRepresentation.US,  VM: { Exact: 1 }, Name: 'Active Aperture', IsRetired: false }),
@@ -5963,6 +6234,98 @@ export var Tags = {
 	'0014511D': new Tag({ ID: '0014511D', Tag: '(0014, 511D)', Group: 20, Element: 20765, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Wedge Chamfer Height', IsRetired: false }),
 	'0014511E': new Tag({ ID: '0014511E', Tag: '(0014, 511E)', Group: 20, Element: 20766, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Wedge Curve', IsRetired: false }),
 	'0014511F': new Tag({ ID: '0014511F', Tag: '(0014, 511F)', Group: 20, Element: 20767, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Radius Along the Wedge', IsRetired: false }),
+	'00146001': new Tag({ ID: '00146001', Tag: '(0014, 6001)', Group: 20, Element: 24577, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Thermal Camera Settings Sequence', IsRetired: false }),
+	'00146002': new Tag({ ID: '00146002', Tag: '(0014, 6002)', Group: 20, Element: 24578, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Acquisition Frame Rate', IsRetired: false }),
+	'00146003': new Tag({ ID: '00146003', Tag: '(0014, 6003)', Group: 20, Element: 24579, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Integration Time', IsRetired: false }),
+	'00146004': new Tag({ ID: '00146004', Tag: '(0014, 6004)', Group: 20, Element: 24580, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Number of Calibration Frames', IsRetired: false }),
+	'00146005': new Tag({ ID: '00146005', Tag: '(0014, 6005)', Group: 20, Element: 24581, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Number of Rows in Full Acquisition Image', IsRetired: false }),
+	'00146006': new Tag({ ID: '00146006', Tag: '(0014, 6006)', Group: 20, Element: 24582, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Number Of Columns in Full Acquisition Image', IsRetired: false }),
+	'00146007': new Tag({ ID: '00146007', Tag: '(0014, 6007)', Group: 20, Element: 24583, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Thermal Source Settings Sequence', IsRetired: false }),
+	'00146008': new Tag({ ID: '00146008', Tag: '(0014, 6008)', Group: 20, Element: 24584, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Source Horizontal Pitch', IsRetired: false }),
+	'00146009': new Tag({ ID: '00146009', Tag: '(0014, 6009)', Group: 20, Element: 24585, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Source Vertical Pitch', IsRetired: false }),
+	'0014600A': new Tag({ ID: '0014600A', Tag: '(0014, 600A)', Group: 20, Element: 24586, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Source Horizontal Scan Speed', IsRetired: false }),
+	'0014600B': new Tag({ ID: '0014600B', Tag: '(0014, 600B)', Group: 20, Element: 24587, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Thermal Source Modulation Frequency', IsRetired: false }),
+	'0014600C': new Tag({ ID: '0014600C', Tag: '(0014, 600C)', Group: 20, Element: 24588, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Induction Source Setting Sequence', IsRetired: false }),
+	'0014600D': new Tag({ ID: '0014600D', Tag: '(0014, 600D)', Group: 20, Element: 24589, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Coil Frequency', IsRetired: false }),
+	'0014600E': new Tag({ ID: '0014600E', Tag: '(0014, 600E)', Group: 20, Element: 24590, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Current Amplitude Across Coil', IsRetired: false }),
+	'0014600F': new Tag({ ID: '0014600F', Tag: '(0014, 600F)', Group: 20, Element: 24591, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Flash Source Setting Sequence', IsRetired: false }),
+	'00146010': new Tag({ ID: '00146010', Tag: '(0014, 6010)', Group: 20, Element: 24592, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Flash Duration', IsRetired: false }),
+	'00146011': new Tag({ ID: '00146011', Tag: '(0014, 6011)', Group: 20, Element: 24593, VR: ValueRepresentation.DS,  VM: { Min: 1, Max: -1 }, Name: 'Flash Frame Number', IsRetired: false }),
+	'00146012': new Tag({ ID: '00146012', Tag: '(0014, 6012)', Group: 20, Element: 24594, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Laser Source Setting Sequence', IsRetired: false }),
+	'00146013': new Tag({ ID: '00146013', Tag: '(0014, 6013)', Group: 20, Element: 24595, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Horizontal Laser Spot Dimension', IsRetired: false }),
+	'00146014': new Tag({ ID: '00146014', Tag: '(0014, 6014)', Group: 20, Element: 24596, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Vertical Laser Spot Dimension', IsRetired: false }),
+	'00146015': new Tag({ ID: '00146015', Tag: '(0014, 6015)', Group: 20, Element: 24597, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Laser Wavelength', IsRetired: false }),
+	'00146016': new Tag({ ID: '00146016', Tag: '(0014, 6016)', Group: 20, Element: 24598, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Laser Power', IsRetired: false }),
+	'00146017': new Tag({ ID: '00146017', Tag: '(0014, 6017)', Group: 20, Element: 24599, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Forced Gas Setting Sequence', IsRetired: false }),
+	'00146018': new Tag({ ID: '00146018', Tag: '(0014, 6018)', Group: 20, Element: 24600, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Vibration Source Setting Sequence', IsRetired: false }),
+	'00146019': new Tag({ ID: '00146019', Tag: '(0014, 6019)', Group: 20, Element: 24601, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Vibration Excitation Frequency', IsRetired: false }),
+	'0014601A': new Tag({ ID: '0014601A', Tag: '(0014, 601A)', Group: 20, Element: 24602, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Vibration Excitation Voltage', IsRetired: false }),
+	'0014601B': new Tag({ ID: '0014601B', Tag: '(0014, 601B)', Group: 20, Element: 24603, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Thermography Data Capture Method', IsRetired: false }),
+	'0014601C': new Tag({ ID: '0014601C', Tag: '(0014, 601C)', Group: 20, Element: 24604, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Thermal Technique', IsRetired: false }),
+	'0014601D': new Tag({ ID: '0014601D', Tag: '(0014, 601D)', Group: 20, Element: 24605, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Thermal Camera Core Sequence', IsRetired: false }),
+	'0014601E': new Tag({ ID: '0014601E', Tag: '(0014, 601E)', Group: 20, Element: 24606, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Detector Wavelength Range', IsRetired: false }),
+	'0014601F': new Tag({ ID: '0014601F', Tag: '(0014, 601F)', Group: 20, Element: 24607, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Thermal Camera Calibration Type', IsRetired: false }),
+	'00146020': new Tag({ ID: '00146020', Tag: '(0014, 6020)', Group: 20, Element: 24608, VR: ValueRepresentation.UV,  VM: { Exact: 1 }, Name: 'Acquisition Image Counter', IsRetired: false }),
+	'00146021': new Tag({ ID: '00146021', Tag: '(0014, 6021)', Group: 20, Element: 24609, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Front Panel Temperature', IsRetired: false }),
+	'00146022': new Tag({ ID: '00146022', Tag: '(0014, 6022)', Group: 20, Element: 24610, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Air Gap Temperature', IsRetired: false }),
+	'00146023': new Tag({ ID: '00146023', Tag: '(0014, 6023)', Group: 20, Element: 24611, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Vertical Pixel Size', IsRetired: false }),
+	'00146024': new Tag({ ID: '00146024', Tag: '(0014, 6024)', Group: 20, Element: 24612, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Horizontal Pixel Size', IsRetired: false }),
+	'00146025': new Tag({ ID: '00146025', Tag: '(0014, 6025)', Group: 20, Element: 24613, VR: ValueRepresentation.ST,  VM: { Min: 1, Max: -1 }, Name: 'Data Streaming Protocol', IsRetired: false }),
+	'00146026': new Tag({ ID: '00146026', Tag: '(0014, 6026)', Group: 20, Element: 24614, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Lens Sequence', IsRetired: false }),
+	'00146027': new Tag({ ID: '00146027', Tag: '(0014, 6027)', Group: 20, Element: 24615, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Field of View', IsRetired: false }),
+	'00146028': new Tag({ ID: '00146028', Tag: '(0014, 6028)', Group: 20, Element: 24616, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Lens Filter Manufacturer', IsRetired: false }),
+	'00146029': new Tag({ ID: '00146029', Tag: '(0014, 6029)', Group: 20, Element: 24617, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Cutoff Filter Type', IsRetired: false }),
+	'0014602A': new Tag({ ID: '0014602A', Tag: '(0014, 602A)', Group: 20, Element: 24618, VR: ValueRepresentation.DS,  VM: { Min: 1, Max: -1 }, Name: 'Lens Filter Cut-Off Wavelength', IsRetired: false }),
+	'0014602B': new Tag({ ID: '0014602B', Tag: '(0014, 602B)', Group: 20, Element: 24619, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Thermal Source Sequence', IsRetired: false }),
+	'0014602C': new Tag({ ID: '0014602C', Tag: '(0014, 602C)', Group: 20, Element: 24620, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Thermal Source Motion State', IsRetired: false }),
+	'0014602D': new Tag({ ID: '0014602D', Tag: '(0014, 602D)', Group: 20, Element: 24621, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Thermal Source Motion Type', IsRetired: false }),
+	'0014602E': new Tag({ ID: '0014602E', Tag: '(0014, 602E)', Group: 20, Element: 24622, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Induction Heating Sequence', IsRetired: false }),
+	'0014602F': new Tag({ ID: '0014602F', Tag: '(0014, 602F)', Group: 20, Element: 24623, VR: ValueRepresentation.ST,  VM: { Exact: 1 }, Name: 'Coil Configuration ID', IsRetired: false }),
+	'00146030': new Tag({ ID: '00146030', Tag: '(0014, 6030)', Group: 20, Element: 24624, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Number of Turns in Coil', IsRetired: false }),
+	'00146031': new Tag({ ID: '00146031', Tag: '(0014, 6031)', Group: 20, Element: 24625, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Shape of Individual Turn', IsRetired: false }),
+	'00146032': new Tag({ ID: '00146032', Tag: '(0014, 6032)', Group: 20, Element: 24626, VR: ValueRepresentation.DS,  VM: { Min: 1, Max: -1 }, Name: 'Size of Individual Turn', IsRetired: false }),
+	'00146033': new Tag({ ID: '00146033', Tag: '(0014, 6033)', Group: 20, Element: 24627, VR: ValueRepresentation.DS,  VM: { Min: 1, Max: -1 }, Name: 'Distance Between Turns', IsRetired: false }),
+	'00146034': new Tag({ ID: '00146034', Tag: '(0014, 6034)', Group: 20, Element: 24628, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Flash Heating Sequence', IsRetired: false }),
+	'00146035': new Tag({ ID: '00146035', Tag: '(0014, 6035)', Group: 20, Element: 24629, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Number of Lamps', IsRetired: false }),
+	'00146036': new Tag({ ID: '00146036', Tag: '(0014, 6036)', Group: 20, Element: 24630, VR: ValueRepresentation.ST,  VM: { Exact: 1 }, Name: 'Flash Synchronization Protocol', IsRetired: false }),
+	'00146037': new Tag({ ID: '00146037', Tag: '(0014, 6037)', Group: 20, Element: 24631, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Flash Modification Status', IsRetired: false }),
+	'00146038': new Tag({ ID: '00146038', Tag: '(0014, 6038)', Group: 20, Element: 24632, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Laser Heating Sequence', IsRetired: false }),
+	'00146039': new Tag({ ID: '00146039', Tag: '(0014, 6039)', Group: 20, Element: 24633, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Laser Manufacturer', IsRetired: false }),
+	'0014603A': new Tag({ ID: '0014603A', Tag: '(0014, 603A)', Group: 20, Element: 24634, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Laser Model Number', IsRetired: false }),
+	'0014603B': new Tag({ ID: '0014603B', Tag: '(0014, 603B)', Group: 20, Element: 24635, VR: ValueRepresentation.ST,  VM: { Exact: 1 }, Name: 'Laser Type Description', IsRetired: false }),
+	'0014603C': new Tag({ ID: '0014603C', Tag: '(0014, 603C)', Group: 20, Element: 24636, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Forced Gas Heating Sequence', IsRetired: false }),
+	'0014603D': new Tag({ ID: '0014603D', Tag: '(0014, 603D)', Group: 20, Element: 24637, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Gas Used for Heating/Cooling Part', IsRetired: false }),
+	'0014603E': new Tag({ ID: '0014603E', Tag: '(0014, 603E)', Group: 20, Element: 24638, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Vibration/Sonic Heating Sequence', IsRetired: false }),
+	'0014603F': new Tag({ ID: '0014603F', Tag: '(0014, 603F)', Group: 20, Element: 24639, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Probe Manufacturer', IsRetired: false }),
+	'00146040': new Tag({ ID: '00146040', Tag: '(0014, 6040)', Group: 20, Element: 24640, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Probe Model Number', IsRetired: false }),
+	'00146041': new Tag({ ID: '00146041', Tag: '(0014, 6041)', Group: 20, Element: 24641, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Aperture Size', IsRetired: false }),
+	'00146042': new Tag({ ID: '00146042', Tag: '(0014, 6042)', Group: 20, Element: 24642, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Probe Resonant Frequency', IsRetired: false }),
+	'00146043': new Tag({ ID: '00146043', Tag: '(0014, 6043)', Group: 20, Element: 24643, VR: ValueRepresentation.UT,  VM: { Exact: 1 }, Name: 'Heat Source Description', IsRetired: false }),
+	'00146044': new Tag({ ID: '00146044', Tag: '(0014, 6044)', Group: 20, Element: 24644, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Surface Preparation with Optical Coating', IsRetired: false }),
+	'00146045': new Tag({ ID: '00146045', Tag: '(0014, 6045)', Group: 20, Element: 24645, VR: ValueRepresentation.ST,  VM: { Exact: 1 }, Name: 'Optical Coating Type', IsRetired: false }),
+	'00146046': new Tag({ ID: '00146046', Tag: '(0014, 6046)', Group: 20, Element: 24646, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Thermal Conductivity of Exposed Surface', IsRetired: false }),
+	'00146047': new Tag({ ID: '00146047', Tag: '(0014, 6047)', Group: 20, Element: 24647, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Material Density', IsRetired: false }),
+	'00146048': new Tag({ ID: '00146048', Tag: '(0014, 6048)', Group: 20, Element: 24648, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Specific Heat of Inspection Surface', IsRetired: false }),
+	'00146049': new Tag({ ID: '00146049', Tag: '(0014, 6049)', Group: 20, Element: 24649, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Emissivity of Inspection Surface', IsRetired: false }),
+	'0014604A': new Tag({ ID: '0014604A', Tag: '(0014, 604A)', Group: 20, Element: 24650, VR: ValueRepresentation.CS,  VM: { Min: 1, Max: -1 }, Name: 'Electromagnetic Classification of Inspection Surface', IsRetired: false }),
+	'0014604C': new Tag({ ID: '0014604C', Tag: '(0014, 604C)', Group: 20, Element: 24652, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Moving Window Size', IsRetired: false }),
+	'0014604D': new Tag({ ID: '0014604D', Tag: '(0014, 604D)', Group: 20, Element: 24653, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Moving Window Type', IsRetired: false }),
+	'0014604E': new Tag({ ID: '0014604E', Tag: '(0014, 604E)', Group: 20, Element: 24654, VR: ValueRepresentation.DS,  VM: { Min: 1, Max: -1 }, Name: 'Moving Window Weights', IsRetired: false }),
+	'0014604F': new Tag({ ID: '0014604F', Tag: '(0014, 604F)', Group: 20, Element: 24655, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Moving Window Pitch', IsRetired: false }),
+	'00146050': new Tag({ ID: '00146050', Tag: '(0014, 6050)', Group: 20, Element: 24656, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Moving Window Padding Scheme', IsRetired: false }),
+	'00146051': new Tag({ ID: '00146051', Tag: '(0014, 6051)', Group: 20, Element: 24657, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Moving Window Padding Length', IsRetired: false }),
+	'00146052': new Tag({ ID: '00146052', Tag: '(0014, 6052)', Group: 20, Element: 24658, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Spatial Filtering Parameters Sequence', IsRetired: false }),
+	'00146053': new Tag({ ID: '00146053', Tag: '(0014, 6053)', Group: 20, Element: 24659, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Spatial Filtering Scheme', IsRetired: false }),
+	'00146056': new Tag({ ID: '00146056', Tag: '(0014, 6056)', Group: 20, Element: 24662, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Horizontal Moving Window Size', IsRetired: false }),
+	'00146057': new Tag({ ID: '00146057', Tag: '(0014, 6057)', Group: 20, Element: 24663, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Vertical Moving Window Size', IsRetired: false }),
+	'00146059': new Tag({ ID: '00146059', Tag: '(0014, 6059)', Group: 20, Element: 24665, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Polynomial Fitting Sequence', IsRetired: false }),
+	'0014605A': new Tag({ ID: '0014605A', Tag: '(0014, 605A)', Group: 20, Element: 24666, VR: ValueRepresentation.CS,  VM: { Min: 1, Max: -1 }, Name: 'Fitting Data Type', IsRetired: false }),
+	'0014605B': new Tag({ ID: '0014605B', Tag: '(0014, 605B)', Group: 20, Element: 24667, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Operation on Time Axis Before Fitting', IsRetired: false }),
+	'0014605C': new Tag({ ID: '0014605C', Tag: '(0014, 605C)', Group: 20, Element: 24668, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Operation on Pixel Intensity Before Fitting', IsRetired: false }),
+	'0014605D': new Tag({ ID: '0014605D', Tag: '(0014, 605D)', Group: 20, Element: 24669, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Order of Polynomial', IsRetired: false }),
+	'0014605E': new Tag({ ID: '0014605E', Tag: '(0014, 605E)', Group: 20, Element: 24670, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Independent Variable for Polynomial Fit', IsRetired: false }),
+	'0014605F': new Tag({ ID: '0014605F', Tag: '(0014, 605F)', Group: 20, Element: 24671, VR: ValueRepresentation.DS,  VM: { Min: 1, Max: -1 }, Name: 'PolynomialCoefficients', IsRetired: false }),
+	'00146060': new Tag({ ID: '00146060', Tag: '(0014, 6060)', Group: 20, Element: 24672, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Thermography Pixel Data Unit', IsRetired: false }),
 	'00160001': new Tag({ ID: '00160001', Tag: '(0016, 0001)', Group: 22, Element: 1, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'White Point', IsRetired: false }),
 	'00160002': new Tag({ ID: '00160002', Tag: '(0016, 0002)', Group: 22, Element: 2, VR: ValueRepresentation.DS,  VM: { Exact: 3 }, Name: 'Primary Chromaticities', IsRetired: false }),
 	'00160003': new Tag({ ID: '00160003', Tag: '(0016, 0003)', Group: 22, Element: 3, VR: ValueRepresentation.UT,  VM: { Exact: 1 }, Name: 'Battery Level', IsRetired: false }),
@@ -6267,6 +6630,8 @@ export var Tags = {
 	'00181201': new Tag({ ID: '00181201', Tag: '(0018, 1201)', Group: 24, Element: 4609, VR: ValueRepresentation.TM,  VM: { Min: 1, Max: -1 }, Name: 'Time of Last Calibration', IsRetired: false }),
 	'00181202': new Tag({ ID: '00181202', Tag: '(0018, 1202)', Group: 24, Element: 4610, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'DateTime of Last Calibration', IsRetired: false }),
 	'00181203': new Tag({ ID: '00181203', Tag: '(0018, 1203)', Group: 24, Element: 4611, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'Calibration DateTime', IsRetired: false }),
+	'00181204': new Tag({ ID: '00181204', Tag: '(0018, 1204)', Group: 24, Element: 4612, VR: ValueRepresentation.DA,  VM: { Exact: 1 }, Name: 'Date of Manufacture', IsRetired: false }),
+	'00181205': new Tag({ ID: '00181205', Tag: '(0018, 1205)', Group: 24, Element: 4613, VR: ValueRepresentation.DA,  VM: { Exact: 1 }, Name: 'Date of Installation', IsRetired: false }),
 	'00181210': new Tag({ ID: '00181210', Tag: '(0018, 1210)', Group: 24, Element: 4624, VR: ValueRepresentation.SH,  VM: { Min: 1, Max: -1 }, Name: 'Convolution Kernel', IsRetired: false }),
 	'00181240': new Tag({ ID: '00181240', Tag: '(0018, 1240)', Group: 24, Element: 4672, VR: ValueRepresentation.IS,  VM: { Min: 1, Max: -1 }, Name: 'Upper/Lower Pixel Values', IsRetired: true }),
 	'00181242': new Tag({ ID: '00181242', Tag: '(0018, 1242)', Group: 24, Element: 4674, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'Actual Frame Duration', IsRetired: false }),
@@ -6884,6 +7249,27 @@ export var Tags = {
 	'0018980E': new Tag({ ID: '0018980E', Tag: '(0018, 980E)', Group: 24, Element: 38926, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Transducer Beam Steering Code Sequence', IsRetired: false }),
 	'0018980F': new Tag({ ID: '0018980F', Tag: '(0018, 980F)', Group: 24, Element: 38927, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Transducer Application Code Sequence', IsRetired: false }),
 	'00189810': new Tag({ ID: '00189810', Tag: '(0018, 9810)', Group: 24, Element: 38928, VR: ValueRepresentation.US, VR2: ValueRepresentation.SS, VM: { Exact: 1 }, Name: 'Zero Velocity Pixel Value', IsRetired: false }),
+	'00189821': new Tag({ ID: '00189821', Tag: '(0018, 9821)', Group: 24, Element: 38945, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Photoacoustic Excitation Characteristics Sequence', IsRetired: false }),
+	'00189822': new Tag({ ID: '00189822', Tag: '(0018, 9822)', Group: 24, Element: 38946, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Excitation Spectral Width', IsRetired: false }),
+	'00189823': new Tag({ ID: '00189823', Tag: '(0018, 9823)', Group: 24, Element: 38947, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Excitation Energy', IsRetired: false }),
+	'00189824': new Tag({ ID: '00189824', Tag: '(0018, 9824)', Group: 24, Element: 38948, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Excitation Pulse Duration', IsRetired: false }),
+	'00189825': new Tag({ ID: '00189825', Tag: '(0018, 9825)', Group: 24, Element: 38949, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Excitation Wavelength Sequence', IsRetired: false }),
+	'00189826': new Tag({ ID: '00189826', Tag: '(0018, 9826)', Group: 24, Element: 38950, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Excitation Wavelength', IsRetired: false }),
+	'00189828': new Tag({ ID: '00189828', Tag: '(0018, 9828)', Group: 24, Element: 38952, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Illumination Translation Flag', IsRetired: false }),
+	'00189829': new Tag({ ID: '00189829', Tag: '(0018, 9829)', Group: 24, Element: 38953, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Acoustic Coupling Medium Flag', IsRetired: false }),
+	'0018982A': new Tag({ ID: '0018982A', Tag: '(0018, 982A)', Group: 24, Element: 38954, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Acoustic Coupling Medium Code Sequence', IsRetired: false }),
+	'0018982B': new Tag({ ID: '0018982B', Tag: '(0018, 982B)', Group: 24, Element: 38955, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Acoustic Coupling Medium Temperature', IsRetired: false }),
+	'0018982C': new Tag({ ID: '0018982C', Tag: '(0018, 982C)', Group: 24, Element: 38956, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Transducer Response Sequence', IsRetired: false }),
+	'0018982D': new Tag({ ID: '0018982D', Tag: '(0018, 982D)', Group: 24, Element: 38957, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Center Frequency', IsRetired: false }),
+	'0018982E': new Tag({ ID: '0018982E', Tag: '(0018, 982E)', Group: 24, Element: 38958, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Fractional Bandwidth', IsRetired: false }),
+	'0018982F': new Tag({ ID: '0018982F', Tag: '(0018, 982F)', Group: 24, Element: 38959, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Lower Cutoff Frequency', IsRetired: false }),
+	'00189830': new Tag({ ID: '00189830', Tag: '(0018, 9830)', Group: 24, Element: 38960, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Upper Cutoff Frequency', IsRetired: false }),
+	'00189831': new Tag({ ID: '00189831', Tag: '(0018, 9831)', Group: 24, Element: 38961, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Transducer Technology Sequence', IsRetired: false }),
+	'00189832': new Tag({ ID: '00189832', Tag: '(0018, 9832)', Group: 24, Element: 38962, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Sound Speed Correction Mechanism Code Sequence', IsRetired: false }),
+	'00189833': new Tag({ ID: '00189833', Tag: '(0018, 9833)', Group: 24, Element: 38963, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Object Sound Speed', IsRetired: false }),
+	'00189834': new Tag({ ID: '00189834', Tag: '(0018, 9834)', Group: 24, Element: 38964, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Acoustic Coupling Medium Sound Speed', IsRetired: false }),
+	'00189835': new Tag({ ID: '00189835', Tag: '(0018, 9835)', Group: 24, Element: 38965, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Photoacoustic Image Frame Type Sequence', IsRetired: false }),
+	'00189836': new Tag({ ID: '00189836', Tag: '(0018, 9836)', Group: 24, Element: 38966, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Image Data Type Code Sequence', IsRetired: false }),
 	'00189900': new Tag({ ID: '00189900', Tag: '(0018, 9900)', Group: 24, Element: 39168, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Reference Location Label', IsRetired: false }),
 	'00189901': new Tag({ ID: '00189901', Tag: '(0018, 9901)', Group: 24, Element: 39169, VR: ValueRepresentation.UT,  VM: { Exact: 1 }, Name: 'Reference Location Description', IsRetired: false }),
 	'00189902': new Tag({ ID: '00189902', Tag: '(0018, 9902)', Group: 24, Element: 39170, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Reference Basis Code Sequence', IsRetired: false }),
@@ -7083,6 +7469,7 @@ export var Tags = {
 	'0022000C': new Tag({ ID: '0022000C', Tag: '(0022, 000C)', Group: 34, Element: 12, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Horizontal Field of View', IsRetired: false }),
 	'0022000D': new Tag({ ID: '0022000D', Tag: '(0022, 000D)', Group: 34, Element: 13, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Pupil Dilated', IsRetired: false }),
 	'0022000E': new Tag({ ID: '0022000E', Tag: '(0022, 000E)', Group: 34, Element: 14, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Degree of Dilation', IsRetired: false }),
+	'0022000F': new Tag({ ID: '0022000F', Tag: '(0022, 000F)', Group: 34, Element: 15, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Vertex Distance', IsRetired: false }),
 	'00220010': new Tag({ ID: '00220010', Tag: '(0022, 0010)', Group: 34, Element: 16, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Stereo Baseline Angle', IsRetired: false }),
 	'00220011': new Tag({ ID: '00220011', Tag: '(0022, 0011)', Group: 34, Element: 17, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Stereo Baseline Displacement', IsRetired: false }),
 	'00220012': new Tag({ ID: '00220012', Tag: '(0022, 0012)', Group: 34, Element: 18, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Stereo Horizontal Pixel Offset', IsRetired: false }),
@@ -7230,10 +7617,16 @@ export var Tags = {
 	'00221618': new Tag({ ID: '00221618', Tag: '(0022, 1618)', Group: 34, Element: 5656, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Scan Pattern Type Code Sequence', IsRetired: false }),
 	'00221620': new Tag({ ID: '00221620', Tag: '(0022, 1620)', Group: 34, Element: 5664, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Surface Mesh Identification Sequence', IsRetired: false }),
 	'00221622': new Tag({ ID: '00221622', Tag: '(0022, 1622)', Group: 34, Element: 5666, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Ophthalmic Volumetric Properties Flag', IsRetired: false }),
+	'00221623': new Tag({ ID: '00221623', Tag: '(0022, 1623)', Group: 34, Element: 5667, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Ophthalmic Anatomic Reference Point Frame Coordinate', IsRetired: false }),
 	'00221624': new Tag({ ID: '00221624', Tag: '(0022, 1624)', Group: 34, Element: 5668, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Ophthalmic Anatomic Reference Point X-Coordinate', IsRetired: false }),
 	'00221626': new Tag({ ID: '00221626', Tag: '(0022, 1626)', Group: 34, Element: 5670, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Ophthalmic Anatomic Reference Point Y-Coordinate', IsRetired: false }),
+	'00221627': new Tag({ ID: '00221627', Tag: '(0022, 1627)', Group: 34, Element: 5671, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Ophthalmic En Face Volume Descriptor Sequence', IsRetired: false }),
 	'00221628': new Tag({ ID: '00221628', Tag: '(0022, 1628)', Group: 34, Element: 5672, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Ophthalmic En Face Image Quality Rating Sequence', IsRetired: false }),
+	'00221629': new Tag({ ID: '00221629', Tag: '(0022, 1629)', Group: 34, Element: 5673, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Ophthalmic En Face Volume Descriptor Scope', IsRetired: false }),
 	'00221630': new Tag({ ID: '00221630', Tag: '(0022, 1630)', Group: 34, Element: 5680, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Quality Threshold', IsRetired: false }),
+	'00221632': new Tag({ ID: '00221632', Tag: '(0022, 1632)', Group: 34, Element: 5682, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Ophthalmic Anatomic Reference Point Sequence', IsRetired: false }),
+	'00221633': new Tag({ ID: '00221633', Tag: '(0022, 1633)', Group: 34, Element: 5683, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Ophthalmic Anatomic Reference Point Localization Type', IsRetired: false }),
+	'00221634': new Tag({ ID: '00221634', Tag: '(0022, 1634)', Group: 34, Element: 5684, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'Primary Anatomic Structure Item Index', IsRetired: false }),
 	'00221640': new Tag({ ID: '00221640', Tag: '(0022, 1640)', Group: 34, Element: 5696, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'OCT B-scan Analysis Acquisition Parameters Sequence', IsRetired: false }),
 	'00221642': new Tag({ ID: '00221642', Tag: '(0022, 1642)', Group: 34, Element: 5698, VR: ValueRepresentation.UL,  VM: { Exact: 1 }, Name: 'Number of B-scans Per Frame', IsRetired: false }),
 	'00221643': new Tag({ ID: '00221643', Tag: '(0022, 1643)', Group: 34, Element: 5699, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'B-scan Slab Thickness', IsRetired: false }),
@@ -7492,6 +7885,7 @@ export var Tags = {
 	'00282112': new Tag({ ID: '00282112', Tag: '(0028, 2112)', Group: 40, Element: 8466, VR: ValueRepresentation.DS,  VM: { Min: 1, Max: -1 }, Name: 'Lossy Image Compression Ratio', IsRetired: false }),
 	'00282114': new Tag({ ID: '00282114', Tag: '(0028, 2114)', Group: 40, Element: 8468, VR: ValueRepresentation.CS,  VM: { Min: 1, Max: -1 }, Name: 'Lossy Image Compression Method', IsRetired: false }),
 	'00283000': new Tag({ ID: '00283000', Tag: '(0028, 3000)', Group: 40, Element: 12288, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Modality LUT Sequence', IsRetired: false }),
+	'00283001': new Tag({ ID: '00283001', Tag: '(0028, 3001)', Group: 40, Element: 12289, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Variable Modality LUT Sequence', IsRetired: false }),
 	'00283002': new Tag({ ID: '00283002', Tag: '(0028, 3002)', Group: 40, Element: 12290, VR: ValueRepresentation.US, VR2: ValueRepresentation.SS, VM: { Exact: 3 }, Name: 'LUT Descriptor', IsRetired: false }),
 	'00283003': new Tag({ ID: '00283003', Tag: '(0028, 3003)', Group: 40, Element: 12291, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'LUT Explanation', IsRetired: false }),
 	'00283004': new Tag({ ID: '00283004', Tag: '(0028, 3004)', Group: 40, Element: 12292, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Modality LUT Type', IsRetired: false }),
@@ -7632,7 +8026,7 @@ export var Tags = {
 	'0034000B': new Tag({ ID: '0034000B', Tag: '(0034, 000B)', Group: 52, Element: 11, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Camera Position Group Sequence', IsRetired: false }),
 	'0034000C': new Tag({ ID: '0034000C', Tag: '(0034, 000C)', Group: 52, Element: 12, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Includes Information', IsRetired: false }),
 	'0034000D': new Tag({ ID: '0034000D', Tag: '(0034, 000D)', Group: 52, Element: 13, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Time of Frame Group Sequence', IsRetired: false }),
-	'00380004': new Tag({ ID: '00380004', Tag: '(0038, 0004)', Group: 56, Element: 4, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Patient Alias Sequence', IsRetired: false }),
+	'00380004': new Tag({ ID: '00380004', Tag: '(0038, 0004)', Group: 56, Element: 4, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Patient Alias Sequence', IsRetired: true }),
 	'00380008': new Tag({ ID: '00380008', Tag: '(0038, 0008)', Group: 56, Element: 8, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Visit Status ID', IsRetired: false }),
 	'00380010': new Tag({ ID: '00380010', Tag: '(0038, 0010)', Group: 56, Element: 16, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Admission ID', IsRetired: false }),
 	'00380011': new Tag({ ID: '00380011', Tag: '(0038, 0011)', Group: 56, Element: 17, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Issuer of Admission ID', IsRetired: true }),
@@ -7927,6 +8321,8 @@ export var Tags = {
 	'0040A030': new Tag({ ID: '0040A030', Tag: '(0040, A030)', Group: 64, Element: 41008, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'Verification DateTime', IsRetired: false }),
 	'0040A032': new Tag({ ID: '0040A032', Tag: '(0040, A032)', Group: 64, Element: 41010, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'Observation DateTime', IsRetired: false }),
 	'0040A033': new Tag({ ID: '0040A033', Tag: '(0040, A033)', Group: 64, Element: 41011, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'Observation Start DateTime', IsRetired: false }),
+	'0040A034': new Tag({ ID: '0040A034', Tag: '(0040, A034)', Group: 64, Element: 41012, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'Effective Start DateTime', IsRetired: false }),
+	'0040A035': new Tag({ ID: '0040A035', Tag: '(0040, A035)', Group: 64, Element: 41013, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'Effective Stop DateTime', IsRetired: false }),
 	'0040A040': new Tag({ ID: '0040A040', Tag: '(0040, A040)', Group: 64, Element: 41024, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Value Type', IsRetired: false }),
 	'0040A043': new Tag({ ID: '0040A043', Tag: '(0040, A043)', Group: 64, Element: 41027, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Concept Name Code Sequence', IsRetired: false }),
 	'0040A047': new Tag({ ID: '0040A047', Tag: '(0040, A047)', Group: 64, Element: 41031, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Measurement Precision Description (Trial)', IsRetired: true }),
@@ -8032,6 +8428,25 @@ export var Tags = {
 	'0040A808': new Tag({ ID: '0040A808', Tag: '(0040, A808)', Group: 64, Element: 43016, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Cell Values Sequence', IsRetired: false }),
 	'0040A992': new Tag({ ID: '0040A992', Tag: '(0040, A992)', Group: 64, Element: 43410, VR: ValueRepresentation.ST,  VM: { Exact: 1 }, Name: 'Uniform Resource Locator (Trial)', IsRetired: true }),
 	'0040B020': new Tag({ ID: '0040B020', Tag: '(0040, B020)', Group: 64, Element: 45088, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Waveform Annotation Sequence', IsRetired: false }),
+	'0040B030': new Tag({ ID: '0040B030', Tag: '(0040, B030)', Group: 64, Element: 45104, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Structured Waveform Annotation Sequence', IsRetired: false }),
+	'0040B031': new Tag({ ID: '0040B031', Tag: '(0040, B031)', Group: 64, Element: 45105, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Waveform Annotation Display Selection Sequence', IsRetired: false }),
+	'0040B032': new Tag({ ID: '0040B032', Tag: '(0040, B032)', Group: 64, Element: 45106, VR: ValueRepresentation.US,  VM: { Exact: 1 }, Name: 'Referenced Montage Index', IsRetired: false }),
+	'0040B033': new Tag({ ID: '0040B033', Tag: '(0040, B033)', Group: 64, Element: 45107, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Waveform Textual Annotation Sequence', IsRetired: false }),
+	'0040B034': new Tag({ ID: '0040B034', Tag: '(0040, B034)', Group: 64, Element: 45108, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'Annotation DateTime', IsRetired: false }),
+	'0040B035': new Tag({ ID: '0040B035', Tag: '(0040, B035)', Group: 64, Element: 45109, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Displayed Waveform Segment Sequence', IsRetired: false }),
+	'0040B036': new Tag({ ID: '0040B036', Tag: '(0040, B036)', Group: 64, Element: 45110, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'Segment Definition DateTime', IsRetired: false }),
+	'0040B037': new Tag({ ID: '0040B037', Tag: '(0040, B037)', Group: 64, Element: 45111, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Montage Activation Sequence', IsRetired: false }),
+	'0040B038': new Tag({ ID: '0040B038', Tag: '(0040, B038)', Group: 64, Element: 45112, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Montage Activation Time Offset', IsRetired: false }),
+	'0040B039': new Tag({ ID: '0040B039', Tag: '(0040, B039)', Group: 64, Element: 45113, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Waveform Montage Sequence', IsRetired: false }),
+	'0040B03A': new Tag({ ID: '0040B03A', Tag: '(0040, B03A)', Group: 64, Element: 45114, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'Referenced Montage Channel Number', IsRetired: false }),
+	'0040B03B': new Tag({ ID: '0040B03B', Tag: '(0040, B03B)', Group: 64, Element: 45115, VR: ValueRepresentation.LT,  VM: { Exact: 1 }, Name: 'Montage Name', IsRetired: false }),
+	'0040B03C': new Tag({ ID: '0040B03C', Tag: '(0040, B03C)', Group: 64, Element: 45116, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Montage Channel Sequence', IsRetired: false }),
+	'0040B03D': new Tag({ ID: '0040B03D', Tag: '(0040, B03D)', Group: 64, Element: 45117, VR: ValueRepresentation.US,  VM: { Exact: 1 }, Name: 'Montage Index', IsRetired: false }),
+	'0040B03E': new Tag({ ID: '0040B03E', Tag: '(0040, B03E)', Group: 64, Element: 45118, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'Montage Channel Number', IsRetired: false }),
+	'0040B03F': new Tag({ ID: '0040B03F', Tag: '(0040, B03F)', Group: 64, Element: 45119, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Montage Channel Label', IsRetired: false }),
+	'0040B040': new Tag({ ID: '0040B040', Tag: '(0040, B040)', Group: 64, Element: 45120, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Montage Channel Source Code Sequence', IsRetired: false }),
+	'0040B041': new Tag({ ID: '0040B041', Tag: '(0040, B041)', Group: 64, Element: 45121, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Contributing Channel Sources Sequence', IsRetired: false }),
+	'0040B042': new Tag({ ID: '0040B042', Tag: '(0040, B042)', Group: 64, Element: 45122, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Channel Weight', IsRetired: false }),
 	'0040DB00': new Tag({ ID: '0040DB00', Tag: '(0040, DB00)', Group: 64, Element: 56064, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Template Identifier', IsRetired: false }),
 	'0040DB06': new Tag({ ID: '0040DB06', Tag: '(0040, DB06)', Group: 64, Element: 56070, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'Template Version', IsRetired: true }),
 	'0040DB07': new Tag({ ID: '0040DB07', Tag: '(0040, DB07)', Group: 64, Element: 56071, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'Template Local Version', IsRetired: true }),
@@ -8084,6 +8499,7 @@ export var Tags = {
 	'00440108': new Tag({ ID: '00440108', Tag: '(0044, 0108)', Group: 68, Element: 264, VR: ValueRepresentation.UI,  VM: { Exact: 1 }, Name: 'Referenced Assertion UID', IsRetired: false }),
 	'00440109': new Tag({ ID: '00440109', Tag: '(0044, 0109)', Group: 68, Element: 265, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Approval Subject Sequence', IsRetired: false }),
 	'0044010A': new Tag({ ID: '0044010A', Tag: '(0044, 010A)', Group: 68, Element: 266, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Organizational Role Code Sequence', IsRetired: false }),
+	'00440110': new Tag({ ID: '00440110', Tag: '(0044, 0110)', Group: 68, Element: 272, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'RT Assertions Sequence', IsRetired: false }),
 	'00460012': new Tag({ ID: '00460012', Tag: '(0046, 0012)', Group: 70, Element: 18, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Lens Description', IsRetired: false }),
 	'00460014': new Tag({ ID: '00460014', Tag: '(0046, 0014)', Group: 70, Element: 20, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Right Lens Sequence', IsRetired: false }),
 	'00460015': new Tag({ ID: '00460015', Tag: '(0046, 0015)', Group: 70, Element: 21, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Left Lens Sequence', IsRetired: false }),
@@ -8195,6 +8611,10 @@ export var Tags = {
 	'00480111': new Tag({ ID: '00480111', Tag: '(0048, 0111)', Group: 72, Element: 273, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Condenser Lens Power', IsRetired: false }),
 	'00480112': new Tag({ ID: '00480112', Tag: '(0048, 0112)', Group: 72, Element: 274, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Objective Lens Power', IsRetired: false }),
 	'00480113': new Tag({ ID: '00480113', Tag: '(0048, 0113)', Group: 72, Element: 275, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Objective Lens Numerical Aperture', IsRetired: false }),
+	'00480114': new Tag({ ID: '00480114', Tag: '(0048, 0114)', Group: 72, Element: 276, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Confocal Mode', IsRetired: false }),
+	'00480115': new Tag({ ID: '00480115', Tag: '(0048, 0115)', Group: 72, Element: 277, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Tissue Location', IsRetired: false }),
+	'00480116': new Tag({ ID: '00480116', Tag: '(0048, 0116)', Group: 72, Element: 278, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Confocal Microscopy Image Frame Type Sequence', IsRetired: false }),
+	'00480117': new Tag({ ID: '00480117', Tag: '(0048, 0117)', Group: 72, Element: 279, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Image Acquisition Depth', IsRetired: false }),
 	'00480120': new Tag({ ID: '00480120', Tag: '(0048, 0120)', Group: 72, Element: 288, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Palette Color Lookup Table Sequence', IsRetired: false }),
 	'00480200': new Tag({ ID: '00480200', Tag: '(0048, 0200)', Group: 72, Element: 512, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Image Navigation Sequence', IsRetired: true }),
 	'00480201': new Tag({ ID: '00480201', Tag: '(0048, 0201)', Group: 72, Element: 513, VR: ValueRepresentation.US,  VM: { Exact: 2 }, Name: 'Top Left Hand Corner of Localizer Area', IsRetired: true }),
@@ -8206,6 +8626,7 @@ export var Tags = {
 	'00480301': new Tag({ ID: '00480301', Tag: '(0048, 0301)', Group: 72, Element: 769, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Pixel Origin Interpretation', IsRetired: false }),
 	'00480302': new Tag({ ID: '00480302', Tag: '(0048, 0302)', Group: 72, Element: 770, VR: ValueRepresentation.UL,  VM: { Exact: 1 }, Name: 'Number of Optical Paths', IsRetired: false }),
 	'00480303': new Tag({ ID: '00480303', Tag: '(0048, 0303)', Group: 72, Element: 771, VR: ValueRepresentation.UL,  VM: { Exact: 1 }, Name: 'Total Pixel Matrix Focal Planes', IsRetired: false }),
+	'00480304': new Tag({ ID: '00480304', Tag: '(0048, 0304)', Group: 72, Element: 772, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Tiles Overlap', IsRetired: false }),
 	'00500004': new Tag({ ID: '00500004', Tag: '(0050, 0004)', Group: 80, Element: 4, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Calibration Image', IsRetired: false }),
 	'00500010': new Tag({ ID: '00500010', Tag: '(0050, 0010)', Group: 80, Element: 16, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Device Sequence', IsRetired: false }),
 	'00500012': new Tag({ ID: '00500012', Tag: '(0050, 0012)', Group: 80, Element: 18, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Container Component Type Code Sequence', IsRetired: false }),
@@ -8370,6 +8791,7 @@ export var Tags = {
 	'00660002': new Tag({ ID: '00660002', Tag: '(0066, 0002)', Group: 102, Element: 2, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Surface Sequence', IsRetired: false }),
 	'00660003': new Tag({ ID: '00660003', Tag: '(0066, 0003)', Group: 102, Element: 3, VR: ValueRepresentation.UL,  VM: { Exact: 1 }, Name: 'Surface Number', IsRetired: false }),
 	'00660004': new Tag({ ID: '00660004', Tag: '(0066, 0004)', Group: 102, Element: 4, VR: ValueRepresentation.LT,  VM: { Exact: 1 }, Name: 'Surface Comments', IsRetired: false }),
+	'00660005': new Tag({ ID: '00660005', Tag: '(0066, 0005)', Group: 102, Element: 5, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Surface Offset', IsRetired: false }),
 	'00660009': new Tag({ ID: '00660009', Tag: '(0066, 0009)', Group: 102, Element: 9, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Surface Processing', IsRetired: false }),
 	'0066000A': new Tag({ ID: '0066000A', Tag: '(0066, 000A)', Group: 102, Element: 10, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Surface Processing Ratio', IsRetired: false }),
 	'0066000B': new Tag({ ID: '0066000B', Tag: '(0066, 000B)', Group: 102, Element: 11, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Surface Processing Description', IsRetired: false }),
@@ -8687,8 +9109,8 @@ export var Tags = {
 	'00701804': new Tag({ ID: '00701804', Tag: '(0070, 1804)', Group: 112, Element: 6148, VR: ValueRepresentation.US,  VM: { Exact: 1 }, Name: 'Volumetric Presentation Input Index', IsRetired: false }),
 	'00701805': new Tag({ ID: '00701805', Tag: '(0070, 1805)', Group: 112, Element: 6149, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Presentation State Compositor Component Sequence', IsRetired: false }),
 	'00701806': new Tag({ ID: '00701806', Tag: '(0070, 1806)', Group: 112, Element: 6150, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Weighting Transfer Function Sequence', IsRetired: false }),
-	'00701807': new Tag({ ID: '00701807', Tag: '(0070, 1807)', Group: 112, Element: 6151, VR: ValueRepresentation.US,  VM: { Exact: 3 }, Name: 'Weighting Lookup Table Descriptor', IsRetired: false }),
-	'00701808': new Tag({ ID: '00701808', Tag: '(0070, 1808)', Group: 112, Element: 6152, VR: ValueRepresentation.OB,  VM: { Exact: 1 }, Name: 'Weighting Lookup Table Data', IsRetired: false }),
+	'00701807': new Tag({ ID: '00701807', Tag: '(0070, 1807)', Group: 112, Element: 6151, VR: ValueRepresentation.US,  VM: { Exact: 3 }, Name: 'Weighting Lookup Table Descriptor', IsRetired: true }),
+	'00701808': new Tag({ ID: '00701808', Tag: '(0070, 1808)', Group: 112, Element: 6152, VR: ValueRepresentation.OB,  VM: { Exact: 1 }, Name: 'Weighting Lookup Table Data', IsRetired: true }),
 	'00701901': new Tag({ ID: '00701901', Tag: '(0070, 1901)', Group: 112, Element: 6401, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Volumetric Annotation Sequence', IsRetired: false }),
 	'00701903': new Tag({ ID: '00701903', Tag: '(0070, 1903)', Group: 112, Element: 6403, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Structured Context Sequence', IsRetired: false }),
 	'00701904': new Tag({ ID: '00701904', Tag: '(0070, 1904)', Group: 112, Element: 6404, VR: ValueRepresentation.UI,  VM: { Exact: 1 }, Name: 'Referenced Content Item', IsRetired: false }),
@@ -9231,6 +9653,7 @@ export var Tags = {
 	'30020133': new Tag({ ID: '30020133', Tag: '(3002, 0133)', Group: 12290, Element: 307, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Energy Derivation Code Sequence', IsRetired: false }),
 	'30020134': new Tag({ ID: '30020134', Tag: '(3002, 0134)', Group: 12290, Element: 308, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'Maximum Cumulative Meterset Exposure', IsRetired: false }),
 	'30020135': new Tag({ ID: '30020135', Tag: '(3002, 0135)', Group: 12290, Element: 309, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Acquisition Initiation Sequence', IsRetired: false }),
+	'30020136': new Tag({ ID: '30020136', Tag: '(3002, 0136)', Group: 12290, Element: 310, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'RT Cone-Beam Imaging Geometry Sequence', IsRetired: false }),
 	'30040001': new Tag({ ID: '30040001', Tag: '(3004, 0001)', Group: 12292, Element: 1, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'DVH Type', IsRetired: false }),
 	'30040002': new Tag({ ID: '30040002', Tag: '(3004, 0002)', Group: 12292, Element: 2, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Dose Units', IsRetired: false }),
 	'30040004': new Tag({ ID: '30040004', Tag: '(3004, 0004)', Group: 12292, Element: 4, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Dose Type', IsRetired: false }),
@@ -9241,8 +9664,14 @@ export var Tags = {
 	'3004000C': new Tag({ ID: '3004000C', Tag: '(3004, 000C)', Group: 12292, Element: 12, VR: ValueRepresentation.DS,  VM: { Min: 2, Max: -1 }, Name: 'Grid Frame Offset Vector', IsRetired: false }),
 	'3004000E': new Tag({ ID: '3004000E', Tag: '(3004, 000E)', Group: 12292, Element: 14, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Dose Grid Scaling', IsRetired: false }),
 	'30040010': new Tag({ ID: '30040010', Tag: '(3004, 0010)', Group: 12292, Element: 16, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'RT Dose ROI Sequence', IsRetired: true }),
-	'30040012': new Tag({ ID: '30040012', Tag: '(3004, 0012)', Group: 12292, Element: 18, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Dose Value', IsRetired: true }),
+	'30040012': new Tag({ ID: '30040012', Tag: '(3004, 0012)', Group: 12292, Element: 18, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Dose Value', IsRetired: false }),
 	'30040014': new Tag({ ID: '30040014', Tag: '(3004, 0014)', Group: 12292, Element: 20, VR: ValueRepresentation.CS,  VM: { Min: 1, Max: 3 }, Name: 'Tissue Heterogeneity Correction', IsRetired: false }),
+	'30040016': new Tag({ ID: '30040016', Tag: '(3004, 0016)', Group: 12292, Element: 22, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Recommended Isodose Level Sequence', IsRetired: false }),
+	'30040020': new Tag({ ID: '30040020', Tag: '(3004, 0020)', Group: 12292, Element: 32, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Dose Unit Code Sequence', IsRetired: false }),
+	'30040021': new Tag({ ID: '30040021', Tag: '(3004, 0021)', Group: 12292, Element: 33, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'RT Dose Interpreted Type Code Sequence', IsRetired: false }),
+	'30040022': new Tag({ ID: '30040022', Tag: '(3004, 0022)', Group: 12292, Element: 34, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'RT Dose Interpreted Type Code Modifier Sequence', IsRetired: false }),
+	'30040023': new Tag({ ID: '30040023', Tag: '(3004, 0023)', Group: 12292, Element: 35, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Dose Radiobiological Interpretation Sequence', IsRetired: false }),
+	'30040024': new Tag({ ID: '30040024', Tag: '(3004, 0024)', Group: 12292, Element: 36, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'RT Dose Intent Code Sequence', IsRetired: false }),
 	'30040040': new Tag({ ID: '30040040', Tag: '(3004, 0040)', Group: 12292, Element: 64, VR: ValueRepresentation.DS,  VM: { Exact: 3 }, Name: 'DVH Normalization Point', IsRetired: false }),
 	'30040042': new Tag({ ID: '30040042', Tag: '(3004, 0042)', Group: 12292, Element: 66, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'DVH Normalization Dose Value', IsRetired: false }),
 	'30040050': new Tag({ ID: '30040050', Tag: '(3004, 0050)', Group: 12292, Element: 80, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'DVH Sequence', IsRetired: false }),
@@ -9255,6 +9684,11 @@ export var Tags = {
 	'30040070': new Tag({ ID: '30040070', Tag: '(3004, 0070)', Group: 12292, Element: 112, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'DVH Minimum Dose', IsRetired: false }),
 	'30040072': new Tag({ ID: '30040072', Tag: '(3004, 0072)', Group: 12292, Element: 114, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'DVH Maximum Dose', IsRetired: false }),
 	'30040074': new Tag({ ID: '30040074', Tag: '(3004, 0074)', Group: 12292, Element: 116, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'DVH Mean Dose', IsRetired: false }),
+	'30040080': new Tag({ ID: '30040080', Tag: '(3004, 0080)', Group: 12292, Element: 128, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Dose Calculation Model Sequence', IsRetired: false }),
+	'30040081': new Tag({ ID: '30040081', Tag: '(3004, 0081)', Group: 12292, Element: 129, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Dose Calculation Algorithm Sequence', IsRetired: false }),
+	'30040082': new Tag({ ID: '30040082', Tag: '(3004, 0082)', Group: 12292, Element: 130, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Commissioning Status', IsRetired: false }),
+	'30040083': new Tag({ ID: '30040083', Tag: '(3004, 0083)', Group: 12292, Element: 131, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Dose Calculation Model Parameter Sequence', IsRetired: false }),
+	'30040084': new Tag({ ID: '30040084', Tag: '(3004, 0084)', Group: 12292, Element: 132, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Dose Deposition Calculation Medium', IsRetired: false }),
 	'30060002': new Tag({ ID: '30060002', Tag: '(3006, 0002)', Group: 12294, Element: 2, VR: ValueRepresentation.SH,  VM: { Exact: 1 }, Name: 'Structure Set Label', IsRetired: false }),
 	'30060004': new Tag({ ID: '30060004', Tag: '(3006, 0004)', Group: 12294, Element: 4, VR: ValueRepresentation.LO,  VM: { Exact: 1 }, Name: 'Structure Set Name', IsRetired: false }),
 	'30060006': new Tag({ ID: '30060006', Tag: '(3006, 0006)', Group: 12294, Element: 6, VR: ValueRepresentation.ST,  VM: { Exact: 1 }, Name: 'Structure Set Description', IsRetired: false }),
@@ -9272,6 +9706,8 @@ export var Tags = {
 	'30060028': new Tag({ ID: '30060028', Tag: '(3006, 0028)', Group: 12294, Element: 40, VR: ValueRepresentation.ST,  VM: { Exact: 1 }, Name: 'ROI Description', IsRetired: false }),
 	'3006002A': new Tag({ ID: '3006002A', Tag: '(3006, 002A)', Group: 12294, Element: 42, VR: ValueRepresentation.IS,  VM: { Exact: 3 }, Name: 'ROI Display Color', IsRetired: false }),
 	'3006002C': new Tag({ ID: '3006002C', Tag: '(3006, 002C)', Group: 12294, Element: 44, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'ROI Volume', IsRetired: false }),
+	'3006002D': new Tag({ ID: '3006002D', Tag: '(3006, 002D)', Group: 12294, Element: 45, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'ROI DateTime', IsRetired: false }),
+	'3006002E': new Tag({ ID: '3006002E', Tag: '(3006, 002E)', Group: 12294, Element: 46, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'ROI Observation DateTime', IsRetired: false }),
 	'30060030': new Tag({ ID: '30060030', Tag: '(3006, 0030)', Group: 12294, Element: 48, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'RT Related ROI Sequence', IsRetired: false }),
 	'30060033': new Tag({ ID: '30060033', Tag: '(3006, 0033)', Group: 12294, Element: 51, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'RT ROI Relationship', IsRetired: false }),
 	'30060036': new Tag({ ID: '30060036', Tag: '(3006, 0036)', Group: 12294, Element: 54, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'ROI Generation Algorithm', IsRetired: false }),
@@ -9286,6 +9722,11 @@ export var Tags = {
 	'30060048': new Tag({ ID: '30060048', Tag: '(3006, 0048)', Group: 12294, Element: 72, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'Contour Number', IsRetired: false }),
 	'30060049': new Tag({ ID: '30060049', Tag: '(3006, 0049)', Group: 12294, Element: 73, VR: ValueRepresentation.IS,  VM: { Min: 1, Max: -1 }, Name: 'Attached Contours', IsRetired: true }),
 	'3006004A': new Tag({ ID: '3006004A', Tag: '(3006, 004A)', Group: 12294, Element: 74, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Source Pixel Planes Characteristics Sequence', IsRetired: false }),
+	'3006004B': new Tag({ ID: '3006004B', Tag: '(3006, 004B)', Group: 12294, Element: 75, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Source Series Sequence', IsRetired: false }),
+	'3006004C': new Tag({ ID: '3006004C', Tag: '(3006, 004C)', Group: 12294, Element: 76, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Source Series Information Sequence', IsRetired: false }),
+	'3006004D': new Tag({ ID: '3006004D', Tag: '(3006, 004D)', Group: 12294, Element: 77, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'ROI Creator Sequence', IsRetired: false }),
+	'3006004E': new Tag({ ID: '3006004E', Tag: '(3006, 004E)', Group: 12294, Element: 78, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'ROI Interpreter Sequence', IsRetired: false }),
+	'3006004F': new Tag({ ID: '3006004F', Tag: '(3006, 004F)', Group: 12294, Element: 79, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'ROI Observation Context Code Sequence', IsRetired: false }),
 	'30060050': new Tag({ ID: '30060050', Tag: '(3006, 0050)', Group: 12294, Element: 80, VR: ValueRepresentation.DS,  VM: { Min: 3, Max: -1 }, Name: 'Contour Data', IsRetired: false }),
 	'30060080': new Tag({ ID: '30060080', Tag: '(3006, 0080)', Group: 12294, Element: 128, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'RT ROI Observations Sequence', IsRetired: false }),
 	'30060082': new Tag({ ID: '30060082', Tag: '(3006, 0082)', Group: 12294, Element: 130, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'Observation Number', IsRetired: false }),
@@ -9321,7 +9762,7 @@ export var Tags = {
 	'30080024': new Tag({ ID: '30080024', Tag: '(3008, 0024)', Group: 12296, Element: 36, VR: ValueRepresentation.DA,  VM: { Exact: 1 }, Name: 'Treatment Control Point Date', IsRetired: false }),
 	'30080025': new Tag({ ID: '30080025', Tag: '(3008, 0025)', Group: 12296, Element: 37, VR: ValueRepresentation.TM,  VM: { Exact: 1 }, Name: 'Treatment Control Point Time', IsRetired: false }),
 	'3008002A': new Tag({ ID: '3008002A', Tag: '(3008, 002A)', Group: 12296, Element: 42, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Treatment Termination Status', IsRetired: false }),
-	'3008002B': new Tag({ ID: '3008002B', Tag: '(3008, 002B)', Group: 12296, Element: 43, VR: ValueRepresentation.SH,  VM: { Exact: 1 }, Name: 'Treatment Termination Code', IsRetired: false }),
+	'3008002B': new Tag({ ID: '3008002B', Tag: '(3008, 002B)', Group: 12296, Element: 43, VR: ValueRepresentation.SH,  VM: { Exact: 1 }, Name: 'Treatment Termination Code', IsRetired: true }),
 	'3008002C': new Tag({ ID: '3008002C', Tag: '(3008, 002C)', Group: 12296, Element: 44, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Treatment Verification Status', IsRetired: false }),
 	'30080030': new Tag({ ID: '30080030', Tag: '(3008, 0030)', Group: 12296, Element: 48, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Treatment Record Sequence', IsRetired: false }),
 	'30080032': new Tag({ ID: '30080032', Tag: '(3008, 0032)', Group: 12296, Element: 50, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Specified Primary Meterset', IsRetired: false }),
@@ -9456,6 +9897,7 @@ export var Tags = {
 	'300A0051': new Tag({ ID: '300A0051', Tag: '(300A, 0051)', Group: 12298, Element: 81, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Table Top Vertical Position Tolerance', IsRetired: false }),
 	'300A0052': new Tag({ ID: '300A0052', Tag: '(300A, 0052)', Group: 12298, Element: 82, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Table Top Longitudinal Position Tolerance', IsRetired: false }),
 	'300A0053': new Tag({ ID: '300A0053', Tag: '(300A, 0053)', Group: 12298, Element: 83, VR: ValueRepresentation.DS,  VM: { Exact: 1 }, Name: 'Table Top Lateral Position Tolerance', IsRetired: false }),
+	'300A0054': new Tag({ ID: '300A0054', Tag: '(300A, 0054)', Group: 12298, Element: 84, VR: ValueRepresentation.UI,  VM: { Exact: 1 }, Name: 'Table Top Position Alignment UID', IsRetired: false }),
 	'300A0055': new Tag({ ID: '300A0055', Tag: '(300A, 0055)', Group: 12298, Element: 85, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'RT Plan Relationship', IsRetired: false }),
 	'300A0070': new Tag({ ID: '300A0070', Tag: '(300A, 0070)', Group: 12298, Element: 112, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Fraction Group Sequence', IsRetired: false }),
 	'300A0071': new Tag({ ID: '300A0071', Tag: '(300A, 0071)', Group: 12298, Element: 113, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'Fraction Group Number', IsRetired: false }),
@@ -9710,6 +10152,7 @@ export var Tags = {
 	'300A02E8': new Tag({ ID: '300A02E8', Tag: '(300A, 02E8)', Group: 12298, Element: 744, VR: ValueRepresentation.FL,  VM: { Exact: 1 }, Name: 'Compensator Milling Tool Diameter', IsRetired: false }),
 	'300A02EA': new Tag({ ID: '300A02EA', Tag: '(300A, 02EA)', Group: 12298, Element: 746, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Ion Range Compensator Sequence', IsRetired: false }),
 	'300A02EB': new Tag({ ID: '300A02EB', Tag: '(300A, 02EB)', Group: 12298, Element: 747, VR: ValueRepresentation.LT,  VM: { Exact: 1 }, Name: 'Compensator Description', IsRetired: false }),
+	'300A02EC': new Tag({ ID: '300A02EC', Tag: '(300A, 02EC)', Group: 12298, Element: 748, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Compensator Surface Representation Flag', IsRetired: false }),
 	'300A0302': new Tag({ ID: '300A0302', Tag: '(300A, 0302)', Group: 12298, Element: 770, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'Radiation Mass Number', IsRetired: false }),
 	'300A0304': new Tag({ ID: '300A0304', Tag: '(300A, 0304)', Group: 12298, Element: 772, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'Radiation Atomic Number', IsRetired: false }),
 	'300A0306': new Tag({ ID: '300A0306', Tag: '(300A, 0306)', Group: 12298, Element: 774, VR: ValueRepresentation.SS,  VM: { Exact: 1 }, Name: 'Radiation Charge State', IsRetired: false }),
@@ -9770,6 +10213,8 @@ export var Tags = {
 	'300A0398': new Tag({ ID: '300A0398', Tag: '(300A, 0398)', Group: 12298, Element: 920, VR: ValueRepresentation.FL,  VM: { Exact: 2 }, Name: 'Scanning Spot Size', IsRetired: false }),
 	'300A0399': new Tag({ ID: '300A0399', Tag: '(300A, 0399)', Group: 12298, Element: 921, VR: ValueRepresentation.FL,  VM: { Min: 2, Max: -1 }, Name: 'Scan Spot Sizes Delivered', IsRetired: false }),
 	'300A039A': new Tag({ ID: '300A039A', Tag: '(300A, 039A)', Group: 12298, Element: 922, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'Number of Paintings', IsRetired: false }),
+	'300A039B': new Tag({ ID: '300A039B', Tag: '(300A, 039B)', Group: 12298, Element: 923, VR: ValueRepresentation.FL,  VM: { Min: 1, Max: -1 }, Name: 'Scan Spot Gantry Angles', IsRetired: false }),
+	'300A039C': new Tag({ ID: '300A039C', Tag: '(300A, 039C)', Group: 12298, Element: 924, VR: ValueRepresentation.FL,  VM: { Min: 1, Max: -1 }, Name: 'Scan Spot Patient Support Angles', IsRetired: false }),
 	'300A03A0': new Tag({ ID: '300A03A0', Tag: '(300A, 03A0)', Group: 12298, Element: 928, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Ion Tolerance Table Sequence', IsRetired: false }),
 	'300A03A2': new Tag({ ID: '300A03A2', Tag: '(300A, 03A2)', Group: 12298, Element: 930, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Ion Beam Sequence', IsRetired: false }),
 	'300A03A4': new Tag({ ID: '300A03A4', Tag: '(300A, 03A4)', Group: 12298, Element: 932, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Ion Beam Limiting Device Sequence', IsRetired: false }),
@@ -9952,6 +10397,7 @@ export var Tags = {
 	'300A0688': new Tag({ ID: '300A0688', Tag: '(300A, 0688)', Group: 12298, Element: 1672, VR: ValueRepresentation.FD,  VM: { Exact: 1 }, Name: 'RT Beam Modifier Definition Distance', IsRetired: false }),
 	'300A0689': new Tag({ ID: '300A0689', Tag: '(300A, 0689)', Group: 12298, Element: 1673, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Beam Area Limit Sequence', IsRetired: false }),
 	'300A068A': new Tag({ ID: '300A068A', Tag: '(300A, 068A)', Group: 12298, Element: 1674, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced RT Prescription Sequence', IsRetired: false }),
+	'300A068B': new Tag({ ID: '300A068B', Tag: '(300A, 068B)', Group: 12298, Element: 1675, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Dose Value Interpretation', IsRetired: false }),
 	'300A0700': new Tag({ ID: '300A0700', Tag: '(300A, 0700)', Group: 12298, Element: 1792, VR: ValueRepresentation.UI,  VM: { Exact: 1 }, Name: 'Treatment Session UID', IsRetired: false }),
 	'300A0701': new Tag({ ID: '300A0701', Tag: '(300A, 0701)', Group: 12298, Element: 1793, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'RT Radiation Usage', IsRetired: false }),
 	'300A0702': new Tag({ ID: '300A0702', Tag: '(300A, 0702)', Group: 12298, Element: 1794, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced RT Radiation Set Sequence', IsRetired: false }),
@@ -10021,6 +10467,9 @@ export var Tags = {
 	'300A079C': new Tag({ ID: '300A079C', Tag: '(300A, 079C)', Group: 12298, Element: 1948, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Patient Support Displacement Sequence', IsRetired: false }),
 	'300A079D': new Tag({ ID: '300A079D', Tag: '(300A, 079D)', Group: 12298, Element: 1949, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Displacement Reference Location Code Sequence', IsRetired: false }),
 	'300A079E': new Tag({ ID: '300A079E', Tag: '(300A, 079E)', Group: 12298, Element: 1950, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'RT Radiation Set Delivery Usage', IsRetired: false }),
+	'300A079F': new Tag({ ID: '300A079F', Tag: '(300A, 079F)', Group: 12298, Element: 1951, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Patient Treatment Preparation Sequence', IsRetired: false }),
+	'300A07A0': new Tag({ ID: '300A07A0', Tag: '(300A, 07A0)', Group: 12298, Element: 1952, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Patient to Equipment Relationship Sequence', IsRetired: false }),
+	'300A07A1': new Tag({ ID: '300A07A1', Tag: '(300A, 07A1)', Group: 12298, Element: 1953, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Imaging Equipment to Treatment Delivery Device Relationship Sequence', IsRetired: false }),
 	'300C0002': new Tag({ ID: '300C0002', Tag: '(300C, 0002)', Group: 12300, Element: 2, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced RT Plan Sequence', IsRetired: false }),
 	'300C0004': new Tag({ ID: '300C0004', Tag: '(300C, 0004)', Group: 12300, Element: 4, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Referenced Beam Sequence', IsRetired: false }),
 	'300C0006': new Tag({ ID: '300C0006', Tag: '(300C, 0006)', Group: 12300, Element: 6, VR: ValueRepresentation.IS,  VM: { Exact: 1 }, Name: 'Referenced Beam Number', IsRetired: false }),
@@ -10070,6 +10519,7 @@ export var Tags = {
 	'300C0126': new Tag({ ID: '300C0126', Tag: '(300C, 0126)', Group: 12300, Element: 294, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Beam Hold Transition', IsRetired: false }),
 	'300C0127': new Tag({ ID: '300C0127', Tag: '(300C, 0127)', Group: 12300, Element: 295, VR: ValueRepresentation.DT,  VM: { Exact: 1 }, Name: 'Beam Hold Transition DateTime', IsRetired: false }),
 	'300C0128': new Tag({ ID: '300C0128', Tag: '(300C, 0128)', Group: 12300, Element: 296, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Beam Hold Originating Device Sequence', IsRetired: false }),
+	'300C0129': new Tag({ ID: '300C0129', Tag: '(300C, 0129)', Group: 12300, Element: 297, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Beam Hold Transition Trigger Source', IsRetired: false }),
 	'300E0002': new Tag({ ID: '300E0002', Tag: '(300E, 0002)', Group: 12302, Element: 2, VR: ValueRepresentation.CS,  VM: { Exact: 1 }, Name: 'Approval Status', IsRetired: false }),
 	'300E0004': new Tag({ ID: '300E0004', Tag: '(300E, 0004)', Group: 12302, Element: 4, VR: ValueRepresentation.DA,  VM: { Exact: 1 }, Name: 'Review Date', IsRetired: false }),
 	'300E0005': new Tag({ ID: '300E0005', Tag: '(300E, 0005)', Group: 12302, Element: 5, VR: ValueRepresentation.TM,  VM: { Exact: 1 }, Name: 'Review Time', IsRetired: false }),
@@ -10366,7 +10816,7 @@ export var Tags = {
 	'50xx2610': new Tag({ ID: '50xx2610', Tag: '(50xx, 2610)', Group: -1, Element: 9744, VR: ValueRepresentation.US,  VM: { Exact: 1 }, Name: 'Curve Referenced Overlay Group', IsRetired: true }),
 	'50xx3000': new Tag({ ID: '50xx3000', Tag: '(50xx, 3000)', Group: -1, Element: 12288, VR: ValueRepresentation.OB, VR2: ValueRepresentation.OW, VM: { Exact: 1 }, Name: 'Curve Data', IsRetired: true }),
 	'52009229': new Tag({ ID: '52009229', Tag: '(5200, 9229)', Group: 20992, Element: 37417, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Shared Functional Groups Sequence', IsRetired: false }),
-	'52009230': new Tag({ ID: '52009230', Tag: '(5200, 9230)', Group: 20992, Element: 37424, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Per-frame Functional Groups Sequence', IsRetired: false }),
+	'52009230': new Tag({ ID: '52009230', Tag: '(5200, 9230)', Group: 20992, Element: 37424, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Per-Frame Functional Groups Sequence', IsRetired: false }),
 	'54000100': new Tag({ ID: '54000100', Tag: '(5400, 0100)', Group: 21504, Element: 256, VR: ValueRepresentation.SQ,  VM: { Exact: 1 }, Name: 'Waveform Sequence', IsRetired: false }),
 	'54000110': new Tag({ ID: '54000110', Tag: '(5400, 0110)', Group: 21504, Element: 272, VR: ValueRepresentation.OB, VR2: ValueRepresentation.OW, VM: { Exact: 1 }, Name: 'Channel Minimum Value', IsRetired: false }),
 	'54000112': new Tag({ ID: '54000112', Tag: '(5400, 0112)', Group: 21504, Element: 274, VR: ValueRepresentation.OB, VR2: ValueRepresentation.OW, VM: { Exact: 1 }, Name: 'Channel Maximum Value', IsRetired: false }),

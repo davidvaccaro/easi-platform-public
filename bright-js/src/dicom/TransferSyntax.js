@@ -82,12 +82,21 @@ export default class TransferSyntax {
     static get MPEG4HP42STEREOF() { return TransferSyntaxes['1.2.840.10008.1.2.4.106.1'] }
     static get HEVCMP51() { return TransferSyntaxes['1.2.840.10008.1.2.4.107'] }
     static get HEVCM10P51() { return TransferSyntaxes['1.2.840.10008.1.2.4.108'] }
+    static get JPEGXLLossless() { return TransferSyntaxes['1.2.840.10008.1.2.4.110'] }
+    static get JPEGXLJPEGRecompression() { return TransferSyntaxes['1.2.840.10008.1.2.4.111'] }
+    static get JPEGXL() { return TransferSyntaxes['1.2.840.10008.1.2.4.112'] }
+    static get HTJ2KLossless() { return TransferSyntaxes['1.2.840.10008.1.2.4.201'] }
+    static get HTJ2KLosslessRPCL() { return TransferSyntaxes['1.2.840.10008.1.2.4.202'] }
+    static get HTJ2K() { return TransferSyntaxes['1.2.840.10008.1.2.4.203'] }
+    static get JPIPHTJ2KReferenced() { return TransferSyntaxes['1.2.840.10008.1.2.4.204'] }
+    static get JPIPHTJ2KReferencedDeflate() { return TransferSyntaxes['1.2.840.10008.1.2.4.205'] }
     static get RLELossless() { return TransferSyntaxes['1.2.840.10008.1.2.5'] }
     static get RFC2557MIMEEncapsulation() { return TransferSyntaxes['1.2.840.10008.1.2.6.1'] }
     static get XMLEncoding() { return TransferSyntaxes['1.2.840.10008.1.2.6.2'] }
     static get SMPTEST211020UncompressedProgressiveActiveVideo() { return TransferSyntaxes['1.2.840.10008.1.2.7.1'] }
     static get SMPTEST211020UncompressedInterlacedActiveVideo() { return TransferSyntaxes['1.2.840.10008.1.2.7.2'] }
     static get SMPTEST211030PCMDigitalAudio() { return TransferSyntaxes['1.2.840.10008.1.2.7.3'] }
+    static get DeflatedImageFrameCompression() { return TransferSyntaxes['1.2.840.10008.1.2.8.1'] }
     static get Papyrus3ImplicitVRLittleEndian() { return TransferSyntaxes['1.2.840.10008.1.20'] }
     static get GEImplicitVRLittleEndianExceptBigEndianPixels() { return TransferSyntaxes['1.2.840.113619.5.2'] }
     static get PixelMedBzip2ExplicitVRLittleEndian() { return TransferSyntaxes['1.3.6.1.4.1.5962.300.1'] }
@@ -161,12 +170,21 @@ export var TransferSyntaxes = {
 	'1.2.840.10008.1.2.4.106.1': new TransferSyntax({ ID: '1.2.840.10008.1.2.4.106.1', Name: 'Fragmentable MPEG-4 AVC H.264 Stereo High Profile Level 4.2', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.Video, IsRetired: false }),
 	'1.2.840.10008.1.2.4.107': new TransferSyntax({ ID: '1.2.840.10008.1.2.4.107', Name: 'HEVC H.265 Main Profile Level 5.1', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.Video, IsRetired: false }),
 	'1.2.840.10008.1.2.4.108': new TransferSyntax({ ID: '1.2.840.10008.1.2.4.108', Name: 'HEVC H.265 Main 10 Profile Level 5.1', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.Video, IsRetired: false }),
+	'1.2.840.10008.1.2.4.110': new TransferSyntax({ ID: '1.2.840.10008.1.2.4.110', Name: 'JPEG XL Lossless', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.SingleFrame, IsRetired: false }),
+	'1.2.840.10008.1.2.4.111': new TransferSyntax({ ID: '1.2.840.10008.1.2.4.111', Name: 'JPEG XL JPEG Recompression', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.SingleFrame, IsRetired: false }),
+	'1.2.840.10008.1.2.4.112': new TransferSyntax({ ID: '1.2.840.10008.1.2.4.112', Name: 'JPEG XL', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: true, ApplicationType: TransferSyntaxApplicationType.SingleFrame, IsRetired: false }),
+	'1.2.840.10008.1.2.4.201': new TransferSyntax({ ID: '1.2.840.10008.1.2.4.201', Name: 'High-Throughput JPEG 2000 Image Compression (Lossless Only)', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.SingleFrame, IsRetired: false }),
+	'1.2.840.10008.1.2.4.202': new TransferSyntax({ ID: '1.2.840.10008.1.2.4.202', Name: 'High-Throughput JPEG 2000 with RPCL Options Image Compression (Lossless Only)', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.SingleFrame, IsRetired: false }),
+	'1.2.840.10008.1.2.4.203': new TransferSyntax({ ID: '1.2.840.10008.1.2.4.203', Name: 'High-Throughput JPEG 2000 Image Compression', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: true, ApplicationType: TransferSyntaxApplicationType.SingleFrame, IsRetired: false }),
+	'1.2.840.10008.1.2.4.204': new TransferSyntax({ ID: '1.2.840.10008.1.2.4.204', Name: 'JPIP HTJ2K Referenced', IsLittleEndian: true, IsExplicit: true, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.SingleFrame, IsRetired: false }),
+	'1.2.840.10008.1.2.4.205': new TransferSyntax({ ID: '1.2.840.10008.1.2.4.205', Name: 'JPIP HTJ2K Referenced Deflate', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: true, ApplicationType: TransferSyntaxApplicationType.SingleFrame, IsRetired: false }),
 	'1.2.840.10008.1.2.5': new TransferSyntax({ ID: '1.2.840.10008.1.2.5', Name: 'RLE Lossless', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.SingleFrame, IsRetired: false }),
 	'1.2.840.10008.1.2.6.1': new TransferSyntax({ ID: '1.2.840.10008.1.2.6.1', Name: 'RFC 2557 MIME encapsulation', IsLittleEndian: true, IsExplicit: true, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.Other, IsRetired: true }),
 	'1.2.840.10008.1.2.6.2': new TransferSyntax({ ID: '1.2.840.10008.1.2.6.2', Name: 'XML Encoding', IsLittleEndian: true, IsExplicit: true, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.XML, IsRetired: true }),
 	'1.2.840.10008.1.2.7.1': new TransferSyntax({ ID: '1.2.840.10008.1.2.7.1', Name: 'SMPTE ST 2110-20 Uncompressed Progressive Active Video', IsLittleEndian: true, IsExplicit: true, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.Video, IsRetired: false }),
 	'1.2.840.10008.1.2.7.2': new TransferSyntax({ ID: '1.2.840.10008.1.2.7.2', Name: 'SMPTE ST 2110-20 Uncompressed Interlaced Active Video', IsLittleEndian: true, IsExplicit: true, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.Video, IsRetired: false }),
 	'1.2.840.10008.1.2.7.3': new TransferSyntax({ ID: '1.2.840.10008.1.2.7.3', Name: 'SMPTE ST 2110-30 PCM Digital Audio', IsLittleEndian: true, IsExplicit: true, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.Audio, IsRetired: false }),
+	'1.2.840.10008.1.2.8.1': new TransferSyntax({ ID: '1.2.840.10008.1.2.8.1', Name: 'Deflated Image Frame Compression', IsLittleEndian: true, IsExplicit: true, IsCompressed: true, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.SingleAndMultiFrame, IsRetired: false }),
 	'1.2.840.10008.1.20': new TransferSyntax({ ID: '1.2.840.10008.1.20', Name: 'Papyrus 3 Implicit VR Little Endian', IsLittleEndian: true, IsExplicit: true, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.Other, IsRetired: true }),
 	'1.2.840.113619.5.2': new TransferSyntax({ ID: '1.2.840.113619.5.2', Name: 'GE Implicit VR Little Endian Except Big Endian Pixels', IsLittleEndian: true, IsExplicit: false, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.Other, IsRetired: false }),
 	'1.3.6.1.4.1.5962.300.1': new TransferSyntax({ ID: '1.3.6.1.4.1.5962.300.1', Name: 'PixelMed Bzip2 Explicit VR Little Endian', IsLittleEndian: true, IsExplicit: true, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.Other, IsRetired: false }),
