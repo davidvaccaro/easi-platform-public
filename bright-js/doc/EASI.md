@@ -27,6 +27,30 @@ It provides access to the primary constructs and builders of the system.
 
 Currently, it grants access to the `StreamingReaderBuilder` for creating streaming readers.
 
+## Parse/Emit Combination Matrix
+
+Use this table as the quick-start map for supported parse-input to emit-output combinations.
+
+| Parse Input Format | Emit Output Format | EASI Convenience Entry Point |
+|--------------------|--------------------|------------------------------|
+| DICOM bytes (Part-10 / native) | DICOM `Instance` / `Array<Instance>` | `EASI.newStreamingDicomInstanceReaderBuilder()` |
+| DICOM bytes (Part-10 / native) | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.newStreamingDicomSelectionReaderBuilder(selection)` |
+| DICOM bytes (Part-10 / native) | Custom mapped output model | `EASI.newStreamingDicomMappingReaderBuilder(mapping)` |
+| DICOM bytes (Part-10 / native) | FHIR `ImagingStudy` | `EASI.newStreamingDicomFHIRImagingStudyReaderBuilder()` |
+| DICOM JSON metadata | DICOM `Instance` / `Array<Instance>` | `EASI.newStreamingDicomJsonInstanceReaderBuilder()` |
+| DICOM JSON metadata | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.newStreamingDicomJsonSelectionReaderBuilder(selection)` |
+| DICOM JSON metadata | Custom mapped output model | `EASI.newStreamingDicomJsonMappingReaderBuilder(mapping)` |
+| DICOM JSON metadata | FHIR `ImagingStudy` | `EASI.newStreamingDicomJsonFHIRImagingStudyReaderBuilder()` |
+| Generic JSON text/bytes | JavaScript value/object/array | `EASI.newStreamingJsonValueReaderBuilder()` |
+| DICOM dump text | DICOM `Instance` / `Array<Instance>` | `EASI.newStreamingDicomInstanceDumpParser().parse(dumpText)` |
+| DICOM dump text | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.newStreamingDicomSelectionDumpParser(selection).parse(dumpText)` |
+| DICOM dump text | Custom mapped output model | `EASI.newStreamingDicomMappingDumpParser(mapping).parse(dumpText)` |
+| DICOM dump text | FHIR `ImagingStudy` | `EASI.newStreamingDicomFHIRImagingStudyDumpParser().parse(dumpText)` |
+| DICOM dump text | Custom emitter output | `EASI.newStreamingDumpParser(handler).parse(dumpText)` |
+
+> Reader-based scenarios use `.build().read(source)`.  
+> Dump scenarios use `.parse(dumpText)`.
+
 ---
 
 ## Static Methods

@@ -33,7 +33,7 @@ export default class Attribute extends DataElement {
         
         // If there is a value override, return it
         if (this._value != null)
-            return _value;
+            return this._value;
 
         // Access the "raw" data
         var data = this.access();

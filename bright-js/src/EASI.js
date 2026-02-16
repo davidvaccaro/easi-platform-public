@@ -20,6 +20,17 @@
 //
 
 import StreamingReaderBuilder from "./builders/StreamingReaderBuilder.js";
+import StreamingJsonDataParser from "./parsers/StreamingJsonDataParser.js";
+
+import StreamingDicomInstanceHandler from "./handlers/StreamingDicomInstanceHandler.js";
+import StreamingDicomSelectingHandler from "./handlers/StreamingDicomSelectingHandler.js";
+import StreamingDicomMappingHandler from "./handlers/StreamingDicomMappingHandler.js";
+import StreamingJsonValueHandler from "./handlers/StreamingJsonValueHandler.js";
+import StreamingJsonMetadataSelectingHandler from "./handlers/StreamingJsonMetadataSelectingHandler.js";
+import StreamingJsonMetadataMappingHandler from "./handlers/StreamingJsonMetadataMappingHandler.js";
+import DicomToFHIRImagingStudyMapping from "./handlers/mappings/DicomToFHIRImagingStudyMapping.js";
+
+import DumpParser from "./tools/dicom/DumpParser.js";
 
 export default class EASI {
 
@@ -29,6 +40,153 @@ export default class EASI {
      */
     static newStreamingReaderBuilder() {
         return new StreamingReaderBuilder();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM byte data.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomDataReaderBuilder() {
+        return EASI.newStreamingReaderBuilder()
+            .forDicomData();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM JSON metadata data.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomMetaDataReaderBuilder() {
+        return EASI.newStreamingReaderBuilder()
+            .forDicomMetaData();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM byte data -> DICOM Instance emit.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomInstanceReaderBuilder() {
+        return EASI.newStreamingDicomDataReaderBuilder()
+            .toInstances();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM JSON metadata -> DICOM Instance emit.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomJsonInstanceReaderBuilder() {
+        return EASI.newStreamingDicomMetaDataReaderBuilder()
+            .toInstances();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM byte data -> Selection emit.
+     * @param {Selection} selection The selection used to match and emit attributes.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomSelectionReaderBuilder(selection) {
+        return EASI.newStreamingReaderBuilder()
+            .toSelection(selection);
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM JSON metadata -> Selection emit.
+     * @param {Selection} selection The selection used to match and emit attributes.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomJsonSelectionReaderBuilder(selection) {
+        return EASI.newStreamingDicomMetaDataReaderBuilder()
+            .withHandler(new StreamingJsonMetadataSelectingHandler(selection));
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM byte data -> Mapping emit.
+     * @param {Mapping} mapping The mapping used to transform DICOM attributes.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomMappingReaderBuilder(mapping) {
+        return EASI.newStreamingReaderBuilder()
+            .toMapping(mapping);
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM JSON metadata -> Mapping emit.
+     * @param {Mapping} mapping The mapping used to transform DICOM attributes.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomJsonMappingReaderBuilder(mapping) {
+        return EASI.newStreamingDicomMetaDataReaderBuilder()
+            .withHandler(new StreamingJsonMetadataMappingHandler(mapping));
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM byte data -> FHIR ImagingStudy emit.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomFHIRImagingStudyReaderBuilder() {
+        return EASI.newStreamingReaderBuilder()
+            .toFHIRImagingStudies();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM JSON metadata -> FHIR ImagingStudy emit.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomJsonFHIRImagingStudyReaderBuilder() {
+        return EASI.newStreamingDicomMetaDataReaderBuilder()
+            .withHandler(new StreamingJsonMetadataMappingHandler(new DicomToFHIRImagingStudyMapping()));
+    }
+
+    /**
+     * Create a new reader builder pre-configured for JSON stream data -> JavaScript value emit.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingJsonValueReaderBuilder() {
+        return EASI.newStreamingReaderBuilder()
+            .withParser(new StreamingJsonDataParser())
+            .withHandler(new StreamingJsonValueHandler());
+    }
+
+    /**
+     * Create a new dump parser with the specified emitter/handler.
+     * @param {object} handler The handler used to emit parsed DICOM elements.
+     * @returns A new, initialized DumpParser instance.
+     */
+    static newStreamingDumpParser(handler) {
+        return new DumpParser(handler);
+    }
+
+    /**
+     * Create a new dump parser pre-configured for DICOM Instance emit.
+     * @returns A new, initialized DumpParser instance.
+     */
+    static newStreamingDicomInstanceDumpParser() {
+        return EASI.newStreamingDumpParser(new StreamingDicomInstanceHandler());
+    }
+
+    /**
+     * Create a new dump parser pre-configured for DICOM Selection emit.
+     * @param {Selection} selection The selection used to match and emit attributes.
+     * @returns A new, initialized DumpParser instance.
+     */
+    static newStreamingDicomSelectionDumpParser(selection) {
+        return EASI.newStreamingDumpParser(new StreamingDicomSelectingHandler(selection));
+    }
+
+    /**
+     * Create a new dump parser pre-configured for DICOM Mapping emit.
+     * @param {Mapping} mapping The mapping used to transform DICOM attributes.
+     * @returns A new, initialized DumpParser instance.
+     */
+    static newStreamingDicomMappingDumpParser(mapping) {
+        return EASI.newStreamingDumpParser(new StreamingDicomMappingHandler(mapping));
+    }
+
+    /**
+     * Create a new dump parser pre-configured for DICOM -> FHIR ImagingStudy emit.
+     * @returns A new, initialized DumpParser instance.
+     */
+    static newStreamingDicomFHIRImagingStudyDumpParser() {
+        return EASI.newStreamingDumpParser(new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping()));
     }
 
 };

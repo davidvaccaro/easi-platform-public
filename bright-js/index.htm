@@ -204,9 +204,9 @@
 
         $(function () {
 
-            var studyUrl = 'http://localhost:8042/dicom-web/studies/1.2.276.0.50.192168001099.7810872.14547392.111';
-            var seriesUrl = 'http://localhost:8042/dicom-web/studies/1.2.276.0.50.192168001099.7810872.14547392.111/series/1.2.276.0.50.192168001099.7810872.14547392.111';
-            var instanceUrl = 'http://localhost:8042/dicom-web/studies/1.2.276.0.50.192168001099.7810872.14547392.111/series/1.2.276.0.50.192168001099.7810872.14547392.111/instances/1.2.276.0.50.192168001099.7810872.14547392.467';
+            var studyUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110';
+            var seriesUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110/series/1.2.840.113619.2.416.274526644159878389490005373725162966144';
+            var instanceUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110/series/1.2.840.113619.2.416.274526644159878389490005373725162966144/instances/1.2.840.113619.2.416.112733676467352283670809522901727305191';
             
             // Set the top-level exception handler
             window.onerror = function (message, source, lineno, columnno, error) {
@@ -481,9 +481,10 @@
                 // Create the new selection
                 var selection = new DicomSelection();
 
-                selection.addTag(Tag.PatientID);
-                selection.addTag(Tag.PatientName);
-                selection.addTag(Tag.PatientBirthDate);
+                selection.addTag(Tag.StudyInstanceUID);
+                selection.addTag(Tag.SeriesInstanceUID);
+                selection.addTag(Tag.SOPInstanceUID);
+                selection.addTag(Tag.InstanceNumber);
 
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
@@ -514,6 +515,7 @@
                 selection.addTag(Tag.PatientID);
                 selection.addTag(Tag.PatientName);
                 selection.addTag(Tag.PatientBirthDate);
+                selection.addTag(Tag.PatientSex);
 
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
@@ -544,6 +546,7 @@
                 selection.addTag(Tag.PatientID);
                 selection.addTag(Tag.PatientName);
                 selection.addTag(Tag.PatientBirthDate);
+                selection.addTag(Tag.PatientSex);
 
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
@@ -574,6 +577,7 @@
                 selection.addTag(Tag.PatientID);
                 selection.addTag(Tag.PatientName);
                 selection.addTag(Tag.PatientBirthDate);
+                selection.addTag(Tag.PatientSex);
 
                 // Build the DICOM streaming reader
                 const reader = EASI.newStreamingReaderBuilder()
