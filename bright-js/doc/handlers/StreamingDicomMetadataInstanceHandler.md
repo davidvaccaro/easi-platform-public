@@ -1,19 +1,19 @@
-# `StreamingJsonMetadataInstanceHandler` Class
+# `StreamingDicomMetadataInstanceHandler` Class
 
-The `StreamingJsonMetadataInstanceHandler` class handles parser lifecycle callbacks to build or transform stream parse results.
+The `StreamingDicomMetadataInstanceHandler` class handles parser lifecycle callbacks to build or transform stream parse results.
 
 ---
 
 ## Inheritance
 
 ```text
-StreamingJsonMetadataInstanceHandler → (none)
+StreamingDicomMetadataInstanceHandler → (none)
 ```
 
 ## Constructor
 
 ```js
-new StreamingJsonMetadataInstanceHandler()
+new StreamingDicomMetadataInstanceHandler()
 ```
 
 ## Methods
@@ -278,10 +278,10 @@ Performs class-specific behavior.
 
 ```js
 import StreamingJsonDataParser from '../../src/parsers/StreamingJsonDataParser.js';
-import StreamingJsonMetadataInstanceHandler from '../../src/handlers/StreamingJsonMetadataInstanceHandler.js';
+import StreamingDicomMetadataInstanceHandler from '../../src/handlers/StreamingDicomMetadataInstanceHandler.js';
 
 const parser = new StreamingJsonDataParser();
-parser.handler = new StreamingJsonMetadataInstanceHandler();
+parser.handler = new StreamingDicomMetadataInstanceHandler();
 
 // Feed parser with DICOM JSON metadata chunks to build instance output.
 ```

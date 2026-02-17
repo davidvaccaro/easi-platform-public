@@ -196,7 +196,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     // Increment the bytes peeked
                     bytesPeeked ++;
 
-                    ch =  null;
+                    ch = null;
 
                 }
 
@@ -376,7 +376,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     previous = ch;
 
                     // Null the current character
-                    ch =  null;
+                    ch = null;
     
                 }
 
@@ -1013,7 +1013,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
     }
 
     /**
-     * Parse the specified chunk of DICOM data.
+     * Parse the specified chunk of JSON data.
      * @param {Uint8Array} chunk The specified chunk of DICOM data.
      * @returns TRUE if a DICOM is fully parsed, FALSE otherwise.
      */

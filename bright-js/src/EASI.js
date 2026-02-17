@@ -26,8 +26,8 @@ import StreamingDicomInstanceHandler from "./handlers/StreamingDicomInstanceHand
 import StreamingDicomSelectingHandler from "./handlers/StreamingDicomSelectingHandler.js";
 import StreamingDicomMappingHandler from "./handlers/StreamingDicomMappingHandler.js";
 import StreamingJsonValueHandler from "./handlers/StreamingJsonValueHandler.js";
-import StreamingJsonMetadataSelectingHandler from "./handlers/StreamingJsonMetadataSelectingHandler.js";
-import StreamingJsonMetadataMappingHandler from "./handlers/StreamingJsonMetadataMappingHandler.js";
+import StreamingDicomMetadataSelectingHandler from "./handlers/StreamingDicomMetadataSelectingHandler.js";
+import StreamingDicomMetadataMappingHandler from "./handlers/StreamingDicomMetadataMappingHandler.js";
 import DicomToFHIRImagingStudyMapping from "./handlers/mappings/DicomToFHIRImagingStudyMapping.js";
 
 import DumpParser from "./tools/dicom/DumpParser.js";
@@ -95,7 +95,7 @@ export default class EASI {
      */
     static newStreamingDicomJsonSelectionReaderBuilder(selection) {
         return EASI.newStreamingDicomMetaDataReaderBuilder()
-            .withHandler(new StreamingJsonMetadataSelectingHandler(selection));
+            .withHandler(new StreamingDicomMetadataSelectingHandler(selection));
     }
 
     /**
@@ -115,7 +115,7 @@ export default class EASI {
      */
     static newStreamingDicomJsonMappingReaderBuilder(mapping) {
         return EASI.newStreamingDicomMetaDataReaderBuilder()
-            .withHandler(new StreamingJsonMetadataMappingHandler(mapping));
+            .withHandler(new StreamingDicomMetadataMappingHandler(mapping));
     }
 
     /**
@@ -133,7 +133,7 @@ export default class EASI {
      */
     static newStreamingDicomJsonFHIRImagingStudyReaderBuilder() {
         return EASI.newStreamingDicomMetaDataReaderBuilder()
-            .withHandler(new StreamingJsonMetadataMappingHandler(new DicomToFHIRImagingStudyMapping()));
+            .withHandler(new StreamingDicomMetadataMappingHandler(new DicomToFHIRImagingStudyMapping()));
     }
 
     /**

@@ -29,7 +29,7 @@ import DicomToFHIRImagingStudyMapping from '../handlers/mappings/DicomToFHIRImag
 import StreamingDicomInstanceHandler from "../handlers/StreamingDicomInstanceHandler.js";
 import StreamingDicomMappingHandler from '../handlers/StreamingDicomMappingHandler.js';
 import StreamingDicomSelectingHandler from "../handlers/StreamingDicomSelectingHandler.js";
-import StreamingJsonMetadataInstanceHandler from "../handlers/StreamingJsonMetadataInstanceHandler.js";
+import StreamingDicomMetadataInstanceHandler from "../handlers/StreamingDicomMetadataInstanceHandler.js";
 
 export default class StreamingReaderBuilder {
   
@@ -45,7 +45,7 @@ export default class StreamingReaderBuilder {
       
     /**
      * Set the current handler.
-     * @param {StreamingDicomInstanceHandler | StreamingJsonMetadataInstanceHandler | StreamingDicomMappingHandler | StreamingDicomSelectingHandler} handler The handler used to handle parsed elements.
+     * @param {StreamingDicomInstanceHandler | StreamingDicomMetadataInstanceHandler | StreamingDicomMappingHandler | StreamingDicomSelectingHandler} handler The handler used to handle parsed elements.
      * @returns The reference to the current builder.
      */
     withHandler(handler) {
@@ -109,7 +109,7 @@ export default class StreamingReaderBuilder {
         if ((this.parser instanceof StreamingDicomDataParser) || (this.parser == null))
             this.handler = new StreamingDicomInstanceHandler();
         else if (this.parser instanceof StreamingJsonDataParser)
-            this.handler = new StreamingJsonMetadataInstanceHandler();
+            this.handler = new StreamingDicomMetadataInstanceHandler();
 
         return this;
 

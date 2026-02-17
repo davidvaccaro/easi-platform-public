@@ -184,7 +184,7 @@
         import StreamingDicomMappingHandler from './src/handlers/StreamingDicomMappingHandler.js';
         import StreamingDicomSelectingHandler from './src/handlers/StreamingDicomSelectingHandler.js';
         import StreamingJsonValueHandler from './src/handlers/StreamingJsonValueHandler.js';
-        import StreamingJsonMetadataInstanceHandler from './src/handlers/StreamingJsonMetadataInstanceHandler.js';
+        import StreamingDicomMetadataInstanceHandler from './src/handlers/StreamingDicomMetadataInstanceHandler.js';
 
         import DicomToFHIRImagingStudyMapping from './src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
 
@@ -738,7 +738,7 @@
                 const reader = EASI
                     .newStreamingReaderBuilder()
                     .withParser(new StreamingJsonDataParser())
-                    .withHandler(new StreamingJsonMetadataInstanceHandler())
+                    .withHandler(new StreamingDicomMetadataInstanceHandler())
                     .build();
 
                 // Read and parse the DICOM file
@@ -759,7 +759,7 @@
                 const reader = EASI
                     .newStreamingReaderBuilder()
                     .withParser(new StreamingJsonDataParser())
-                    .withHandler(new StreamingJsonMetadataInstanceHandler())
+                    .withHandler(new StreamingDicomMetadataInstanceHandler())
                     .build();
 
                 // Read and parse the DICOM file
@@ -782,7 +782,7 @@
                 const reader = EASI
                     .newStreamingReaderBuilder()
                     .withParser(new StreamingJsonDataParser())
-                    .withHandler(new StreamingJsonMetadataInstanceHandler())
+                    .withHandler(new StreamingDicomMetadataInstanceHandler())
                     .withOnPart(function (result) { 
 
                         // Log

@@ -1,5 +1,5 @@
 //
-// StreamingJsonMetadataSelectingHandler.js - 1.0.0
+// StreamingDicomMetadataSelectingHandler.js - 1.0.0
 //
 // Streaming DICOM JSON Metadata Selecting Handler Class 
 //
@@ -20,9 +20,9 @@
 //
 
 import AttributeSequence from "../dicom/AttributeSequence.js";
-import StreamingJsonMetadataInstanceHandler from "./StreamingJsonMetadataInstanceHandler.js";
+import StreamingDicomMetadataInstanceHandler from "./StreamingDicomMetadataInstanceHandler.js";
 
-export default class StreamingJsonMetadataSelectingHandler extends StreamingJsonMetadataInstanceHandler {
+export default class StreamingDicomMetadataSelectingHandler extends StreamingDicomMetadataInstanceHandler {
 
     /**
      * Traverse the supplied attribute and any nested sequence item attributes.

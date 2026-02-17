@@ -1,5 +1,5 @@
 //
-// StreamingJsonMetadataInstanceHandler.js - 1.0.0
+// StreamingDicomMetadataInstanceHandler.js - 1.0.0
 //
 // Streaming DICOM JSON Metadata Handler Class 
 //
@@ -29,7 +29,7 @@ import ValueRepresentation from "../dicom/ValueRepresentation.js";
 import Tag from "../dicom/Tag.js"
 import TransferSyntax from "../dicom/TransferSyntax.js";
 
-export default class StreamingJsonMetadataInstanceHandler {
+export default class StreamingDicomMetadataInstanceHandler {
 
     onReset() {
     }

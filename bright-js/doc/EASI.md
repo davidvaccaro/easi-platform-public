@@ -196,7 +196,7 @@ Use this index to navigate all documentation markdown files in `bright-js/doc`.
 - [StreamingDicomInstanceHandler](./handlers/StreamingDicomInstanceHandler.md)
 - [StreamingDicomMappingHandler](./handlers/StreamingDicomMappingHandler.md)
 - [StreamingDicomSelectingHandler](./handlers/StreamingDicomSelectingHandler.md)
-- [StreamingJsonMetadataInstanceHandler](./handlers/StreamingJsonMetadataInstanceHandler.md)
+- [StreamingDicomMetadataInstanceHandler](./handlers/StreamingDicomMetadataInstanceHandler.md)
 - [StreamingJsonValueHandler](./handlers/StreamingJsonValueHandler.md)
 
 ### handlers/mappings

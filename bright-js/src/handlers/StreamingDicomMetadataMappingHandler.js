@@ -1,5 +1,5 @@
 //
-// StreamingJsonMetadataMappingHandler.js - 1.0.0
+// StreamingDicomMetadataMappingHandler.js - 1.0.0
 //
 // Streaming DICOM JSON Metadata Mapping Handler Class 
 //
@@ -20,9 +20,9 @@
 //
 
 import AttributeSequence from "../dicom/AttributeSequence.js";
-import StreamingJsonMetadataInstanceHandler from "./StreamingJsonMetadataInstanceHandler.js";
+import StreamingDicomMetadataInstanceHandler from "./StreamingDicomMetadataInstanceHandler.js";
 
-export default class StreamingJsonMetadataMappingHandler extends StreamingJsonMetadataInstanceHandler {
+export default class StreamingDicomMetadataMappingHandler extends StreamingDicomMetadataInstanceHandler {
 
     /**
      * Normalize the supplied attribute to a mapping-friendly tag/value pair.
