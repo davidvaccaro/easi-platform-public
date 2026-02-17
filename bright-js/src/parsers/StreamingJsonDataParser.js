@@ -29,6 +29,189 @@ import { Status } from "./Status.js";
 export default class StreamingJsonDataParser extends StreamingDataParser {
   
     /**
+     * Determines if the supplied character is a digit (0-9).
+     * @param {number} ch The character to test.
+     * @returns TRUE if the character is a digit, FALSE otherwise.
+     */
+    isDigit(ch) {
+        return ((ch >= 48) && (ch <= 57));
+    }
+
+    /**
+     * Determines if the supplied character is a hexadecimal digit.
+     * @param {number} ch The character to test.
+     * @returns TRUE if the character is a hexadecimal digit, FALSE otherwise.
+     */
+    isHexDigit(ch) {
+        return (
+            ((ch >= 48) && (ch <= 57))
+            ||
+            ((ch >= 65) && (ch <= 70))
+            ||
+            ((ch >= 97) && (ch <= 102))
+        );
+    }
+
+    /**
+     * Determines if the supplied character can delimit a JSON primitive value.
+     * @param {number} ch The character to test.
+     * @returns TRUE if the character is a JSON primitive delimiter, FALSE otherwise.
+     */
+    isValueDelimiter(ch) {
+        return (
+            (ch == null)
+            ||
+            (CharacterUtils.isWhitespace(ch) == true)
+            ||
+            (ch === 44) /* , */
+            ||
+            (ch === 93) /* ] */
+            ||
+            (ch === 125) /* } */
+        );
+    }
+
+    /**
+     * Parse a JSON number token from the current data.
+     * @param {number} start The number start offset.
+     * @param {number} length The current available data length.
+     * @param {boolean} isDone Indicates that no more input data is expected.
+     * @returns {object | boolean} The parsed token details or FALSE if more data is needed.
+     */
+    parseNumberToken(start, length, isDone = false) {
+
+        var i = start;
+
+        // Parse optional minus sign.
+        if (this.data.peekOne(i) === 45 /* - */) {
+            i++;
+            if (i >= length) {
+                if (isDone == true)
+                    throw new Exception("Invalid JSON: Incomplete number token.", ParseErrorCodes.InvalidElement);
+                return false;
+            }
+        }
+
+        // Parse integer part.
+        var ch = this.data.peekOne(i);
+        if (ch === 48 /* 0 */) {
+            i++;
+        }
+        else if ((ch >= 49) && (ch <= 57)) {
+            i++;
+            while ((i < length) && this.isDigit(this.data.peekOne(i))) {
+                i++;
+            }
+        }
+        else {
+            throw new Exception("Invalid JSON: Invalid number token.", ParseErrorCodes.InvalidElement);
+        }
+
+        // Parse optional fraction.
+        if ((i < length) && (this.data.peekOne(i) === 46 /* . */)) {
+            i++;
+            if (i >= length) {
+                if (isDone == true)
+                    throw new Exception("Invalid JSON: Incomplete number fraction.", ParseErrorCodes.InvalidElement);
+                return false;
+            }
+            if (this.isDigit(this.data.peekOne(i)) == false)
+                throw new Exception("Invalid JSON: Invalid number fraction.", ParseErrorCodes.InvalidElement);
+            while ((i < length) && this.isDigit(this.data.peekOne(i))) {
+                i++;
+            }
+        }
+
+        // Parse optional exponent.
+        if ((i < length) && ((this.data.peekOne(i) === 69 /* E */) || (this.data.peekOne(i) === 101 /* e */))) {
+            i++;
+            if (i >= length) {
+                if (isDone == true)
+                    throw new Exception("Invalid JSON: Incomplete number exponent.", ParseErrorCodes.InvalidElement);
+                return false;
+            }
+            if ((this.data.peekOne(i) === 43 /* + */) || (this.data.peekOne(i) === 45 /* - */)) {
+                i++;
+                if (i >= length) {
+                    if (isDone == true)
+                        throw new Exception("Invalid JSON: Incomplete number exponent.", ParseErrorCodes.InvalidElement);
+                    return false;
+                }
+            }
+            if (this.isDigit(this.data.peekOne(i)) == false)
+                throw new Exception("Invalid JSON: Invalid number exponent.", ParseErrorCodes.InvalidElement);
+            while ((i < length) && this.isDigit(this.data.peekOne(i))) {
+                i++;
+            }
+        }
+
+        // Validate delimiter (or end-of-input).
+        var next = (i < length) ? this.data.peekOne(i) : null;
+        if (this.isValueDelimiter(next) == false)
+            throw new Exception("Invalid JSON: Invalid number delimiter.", ParseErrorCodes.InvalidElement);
+        if ((next == null) && (isDone == false))
+            return false;
+
+        // Decode the raw number text.
+        var strValue = this.decoder.decode(this.data.peek(start, (i - start)));
+
+        // Parse to Number (RFC 8259 number domain).
+        var value = Number(strValue);
+        if (Number.isFinite(value) == false)
+            throw new Exception("Invalid JSON: Non-finite number value.", ParseErrorCodes.InvalidElement);
+
+        return {
+            bytesPeeked: i,
+            type: 'number',
+            value: value,
+            isComplete: true
+        };
+
+    }
+
+    /**
+     * Parse a JSON literal token from the current data.
+     * @param {number} start The token start offset.
+     * @param {number} length The current available data length.
+     * @param {Array<number>} literalBytes The literal bytes (ASCII).
+     * @param {string} type The token type.
+     * @param {unknown} value The token value.
+     * @param {boolean} isDone Indicates that no more input data is expected.
+     * @returns {object | boolean} The parsed token details or FALSE if more data is needed.
+     */
+    parseLiteralToken(start, length, literalBytes, type, value, isDone = false) {
+
+        // Ensure the full literal is available.
+        if ((start + literalBytes.length) > length) {
+            if (isDone == true)
+                throw new Exception("Invalid JSON: Incomplete literal token.", ParseErrorCodes.InvalidElement);
+            return false;
+        }
+
+        // Validate bytes.
+        for (var i = 0; i < literalBytes.length; i++) {
+            if (this.data.peekOne(start + i) !== literalBytes[i])
+                throw new Exception("Invalid JSON: Invalid literal token.", ParseErrorCodes.InvalidElement);
+        }
+
+        // Validate delimiter (or end-of-input).
+        var end = (start + literalBytes.length);
+        var next = (end < length) ? this.data.peekOne(end) : null;
+        if (this.isValueDelimiter(next) == false)
+            throw new Exception("Invalid JSON: Invalid literal delimiter.", ParseErrorCodes.InvalidElement);
+        if ((next == null) && (isDone == false))
+            return false;
+
+        return {
+            bytesPeeked: end,
+            type: type,
+            value: value,
+            isComplete: true
+        };
+
+    }
+
+    /**
      * Determines if the supplied character is a component of a number sequence.
      * @param {number} ch The character to test.
      * @returns TRUE if the character is a start of a number, FALSE otherwise
@@ -148,10 +331,30 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
     }
 
     /**
+     * Fire a JSON stream event and update parser status when the event requests terminal control flow.
+     * @param {string} name The stream event name.
+     * @param {unknown} param The stream event parameter.
+     * @returns The status returned from the stream handler.
+     */
+    async fireJsonEvent(name, param = null) {
+
+        // Fire the underlying stream event.
+        var status = await super.fireStreamEvent(name, param);
+
+        // Update parser status when terminal flow is requested.
+        if ((status == Status.JUMP) || (status == Status.STOP) || (status == Status.FAIL)) {
+            this.status = status;
+        }
+
+        return status;
+
+    }
+
+    /**
      * Peek the next JSON data-element.
      * @returns The peeked data-element details if fully present, else FALSE indicating more data is needed.
      */
-    peekNextDataElement() {
+    peekNextDataElement(isDone = false) {
 
         var bytesPeeked = 0;        
 
@@ -238,7 +441,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 };
 
             }
-            if ((isContinue == false) && ((ch === 123) || (ch === 125))) { 
+            else if ((isContinue == false) && ((ch === 123) || (ch === 125))) { 
                 
                 // HANDLE: {}
 
@@ -270,172 +473,145 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 };
 
             }
-            else if ((isContinue == false) && this.isNumberCharacter(ch)) {
-
-                // HANDLE: Number
-
-                // Capture the "start"
-                var start = bytesPeeked;
-
-                // Increment past the current char
-                bytesPeeked ++;
-
-                // Null the current ch
-                ch = null;
-
-                // Read the whole string
-                while (bytesPeeked < length) {
-
-                    // Peek the next data-element "group"
-                    ch = this.data.peekOne(bytesPeeked);
-        
-                    // If the character is awithin the domain of valid number characters
-                    if (this.isNumberCharacter(ch)) {
-
-                        // Increment the bytes peeked
-                        bytesPeeked ++;
-
-                    }
-                    else {
-
-                        // Reached the end of the number, stop reading
-                        break;
-
-                    }
-    
-                }
-
-                // If more data is needed, indicate FALSE
-                if (bytesPeeked >= length) {
-                    return false;
-                }
-    
-                // Capture the end of the sequence
-                var end = bytesPeeked;
-
-                var value = null;
-
-                // Convert the current value to 
-                var strValue = this.decoder.decode(this.data.peek(start, (end - start)));
-
-                // Determine if the value is "float" versus "integer"
-                if (strValue.indexOf('.') != -1)
-                    value = parseFloat(strValue);
-                else
-                    value = parseInt(strValue);
-
-                // Construct the "number" details 
-                result = {
-                    bytesPeeked: bytesPeeked,
-                    type: 'number',
-                    value: value,
-                    isComplete: true
-                };
-
+            else if ((isContinue == false) && ((ch === 45 /* - */) || this.isDigit(ch))) {
+                result = this.parseNumberToken(bytesPeeked, length, isDone);
+            }
+            else if ((isContinue == false) && (ch === 116 /* t */)) {
+                result = this.parseLiteralToken(bytesPeeked, length, [116, 114, 117, 101], 'boolean', true, isDone);
+            }
+            else if ((isContinue == false) && (ch === 102 /* f */)) {
+                result = this.parseLiteralToken(bytesPeeked, length, [102, 97, 108, 115, 101], 'boolean', false, isDone);
+            }
+            else if ((isContinue == false) && (ch === 110 /* n */)) {
+                result = this.parseLiteralToken(bytesPeeked, length, [110, 117, 108, 108], 'null', null, isDone);
             }
             else if (((isContinue == true) && (dataElement.type == 'string')) || ((isContinue == false) && (ch === 34))) {
                
                 // HANDLE: String
 
-                // Establish the previous character
-                var previous = ((isContinue == true) && (dataElement.value != null) && (dataElement.value.length > 0)) 
-                    ? dataElement.value[dataElement.value.length - 1] 
-                    : null;
-
-                // Capture the "start"
-                var start = bytesPeeked;
-
-                // Increment past the current char
-                if (isContinue == false) {
-                    bytesPeeked ++;
-                }
-
-                // Null the current ch
-                ch = null;
-
-                // Read the whole string
-                while (bytesPeeked < length) {
-
-                    // Peek the next data-element "group"
-                    ch = this.data.peekOne(bytesPeeked);
-        
-                    // If we hit another ", interpret
-                    if (ch === 34) {
-
-                        // Handle escaped \"
-                        if (previous != 92) {
-                            break;
-                        }
-
-                    }
-    
-                    // Increment the bytes peeked
-                    bytesPeeked ++;
-
-                    // Save the previous character
-                    previous = ch;
-
-                    // Null the current character
-                    ch = null;
-    
-                }
-
-                // Capture the end of the sequence
-                var end = bytesPeeked;
-
-                // Determine if we are "appending"
+                // Determine if we are appending to an existing string token.
                 var isAppending = ((dataElement != null) && (dataElement.type == 'string')) ? true : false;
 
-                // Determine if this is a "key"
+                // Determine if this string token is a key.
                 var type = ((dataElement == null) || (dataElement.type != 'object') || (dataElement.isOpen == false)) ? 'string' : 'key';
 
-                // Detemrine if this is complete
-                var isComplete = ((ch == null) || (bytesPeeked >= length)) ? false : true;
+                // Track the string scan position.
+                var start = bytesPeeked + ((isContinue == true) ? 0 : 1);
+                var index = start;
+                var escaped = ((isContinue == true) && (dataElement.isEscaped == true)) ? true : false;
+                var unicodeRemaining = ((isContinue == true) && (dataElement.unicodeRemaining != null)) ? dataElement.unicodeRemaining : 0;
+                var isComplete = false;
 
-                // If this is a "key" and it is NOT complete, indicate FALSE
+                // Scan the string token with RFC 8259 escape rules.
+                while (index < length) {
+
+                    // Access the current character.
+                    ch = this.data.peekOne(index);
+
+                    // Continue processing unicode escape hex bytes.
+                    if (unicodeRemaining > 0) {
+                        if (this.isHexDigit(ch) == false)
+                            throw new Exception("Invalid JSON: Invalid unicode escape sequence.", ParseErrorCodes.InvalidElement);
+                        unicodeRemaining--;
+                        index++;
+                        continue;
+                    }
+
+                    // Continue processing escaped characters.
+                    if (escaped == true) {
+                        if (
+                            (ch === 34)   /* " */
+                            ||
+                            (ch === 92)   /* \ */
+                            ||
+                            (ch === 47)   /* / */
+                            ||
+                            (ch === 98)   /* b */
+                            ||
+                            (ch === 102)  /* f */
+                            ||
+                            (ch === 110)  /* n */
+                            ||
+                            (ch === 114)  /* r */
+                            ||
+                            (ch === 116)  /* t */
+                        ) {
+                            escaped = false;
+                            index++;
+                            continue;
+                        }
+                        else if (ch === 117 /* u */) {
+                            escaped = false;
+                            unicodeRemaining = 4;
+                            index++;
+                            continue;
+                        }
+                        else {
+                            throw new Exception("Invalid JSON: Invalid escape sequence.", ParseErrorCodes.InvalidElement);
+                        }
+                    }
+
+                    // Start escape mode.
+                    if (ch === 92 /* \ */) {
+                        escaped = true;
+                        index++;
+                        continue;
+                    }
+
+                    // Detect closing quote.
+                    if (ch === 34 /* " */) {
+                        isComplete = true;
+                        break;
+                    }
+
+                    // JSON strings may not contain unescaped control characters.
+                    if (ch < 32)
+                        throw new Exception("Invalid JSON: Control character in string.", ParseErrorCodes.InvalidElement);
+
+                    // Continue scanning.
+                    index++;
+
+                }
+
+                // Keys must be complete before emitting.
                 if ((isComplete == false) && (type == 'key')) {
+                    if (isDone == true)
+                        throw new Exception("Invalid JSON: Unterminated key string.", ParseErrorCodes.InvalidElement);
                     return false;
                 }
 
-                // Adjust the start and end to strip the "
-                if ((isAppending == false) && (isComplete == true)) {
-                    start++;
-                    end--;
-                }
-                else if ((isAppending == false) && (isComplete == false)) {
-                    start++;
-                }
-                else if ((isAppending == true) && (isComplete == true)) {
-                    end--;
-                }
-                else if ((isAppending == true) && (isComplete == false)) {
-                    var xxx = 100;
-                    // DO NOTHING
-                }
+                // If a non-key string is incomplete at end-of-input, this is invalid JSON.
+                if ((isComplete == false) && (isDone == true))
+                    throw new Exception("Invalid JSON: Unterminated string token.", ParseErrorCodes.InvalidElement);
 
-                // Access the data
-                var valueData = this.data.peek(start, (end - start) + 1);
-
-                // Decode the vallue
+                // Determine token content bounds.
+                var end = (isComplete == true) ? index : length;
+                var valueData = this.data.peek(start, (end - start));
                 var value = this.decoder.decode(valueData);
 
-                // Possibly increment the peeked
-                if (isComplete == true) {
-                    bytesPeeked ++;
-                }
+                // Include the closing quote in bytesPeeked when complete.
+                bytesPeeked = (isComplete == true) ? (index + 1) : length;
 
-                // Construct the "string" details 
+                // Construct the string token details.
                 result = {
                     bytesPeeked: bytesPeeked,
                     type: type,
                     value: value,
-                    isComplete: isComplete
-                };                
+                    isComplete: isComplete,
+                    isEscaped: escaped,
+                    unicodeRemaining: unicodeRemaining
+                };
 
+            }
+            else if (isContinue == false) {
+                throw new Exception("Invalid JSON: Unexpected token.", ParseErrorCodes.InvalidElement);
             }
     
         }
         catch (error) {
+
+            // Mark parser failure.
+            this.status = Status.FAIL;
 
             // Process the error
             this.fireStreamEvent("onError", error);            
@@ -462,7 +638,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
         if (currentElement == null) {
 
             // Peak the next data-element
-            var nextElement = this.peekNextDataElement();
+            var nextElement = this.peekNextDataElement(isDone);
 
             // If MORE data is needed, return FALSE
             if (nextElement == false) {
@@ -485,25 +661,37 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
             if (currentElement.type == 'object') {
 
                 // Start the object
-                currentElement.status = await this.fireStreamEvent("onStartObject");
+                currentElement.status = await this.fireJsonEvent("onStartObject");
 
             }
             else if (currentElement.type == 'array') {
 
                 // Start the array
-                currentElement.status = await this.fireStreamEvent("onStartArray");
+                currentElement.status = await this.fireJsonEvent("onStartArray");
 
             }
             else if (currentElement.type == 'number') {
 
                 // Start the number
-                currentElement.status = await this.fireStreamEvent("onStartNumber", currentElement.value);
+                currentElement.status = await this.fireJsonEvent("onStartNumber", currentElement.value);
 
             }
             else if (currentElement.type == 'string') {
 
                 // Start the string
-                currentElement.status = await this.fireStreamEvent("onStartString", currentElement.value);
+                currentElement.status = await this.fireJsonEvent("onStartString", currentElement.value);
+
+            }
+            else if (currentElement.type == 'boolean') {
+
+                // Start the boolean
+                currentElement.status = await this.fireJsonEvent("onStartBoolean", currentElement.value);
+
+            }
+            else if (currentElement.type == 'null') {
+
+                // Start null
+                currentElement.status = await this.fireJsonEvent("onStartNull");
 
             }
             else {
@@ -531,7 +719,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     // HANDLE "OBJECT": Continue processing the JSON "object"
 
                     // Peak the next element
-                    var nextElement = this.peekNextDataElement();
+                    var nextElement = this.peekNextDataElement(isDone);
 
                     // If MORE data is needed, return FALSE
                     if (nextElement == false) {
@@ -548,7 +736,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     if ((nextElement.type == 'object') && (nextElement.isOpen == false)) {
 
                         // End the object
-                        await this.fireStreamEvent("onEndObject");
+                        await this.fireJsonEvent("onEndObject");
 
                         // Pop the current element
                         this.popCurrent();
@@ -560,7 +748,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         if ((currentElement != null) && (currentElement.type == 'key')) {
 
                             // End the attribute
-                            await this.fireStreamEvent("onEndAttribute", currentElement.value);
+                            await this.fireJsonEvent("onEndAttribute", currentElement.value);
 
                             // Pop the element
                             this.popCurrent();
@@ -579,7 +767,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                             if (nextElement.type == 'key') {
 
                                 // Start the attribute
-                                nextElement.status = await this.fireStreamEvent("onStartAttribute", nextElement.value);
+                                nextElement.status = await this.fireJsonEvent("onStartAttribute", nextElement.value);
 
                                 // Push the key onto the stack
                                 this.pushCurrent(nextElement);
@@ -601,7 +789,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     // HANDLE "ARRAY": Continue processing the JSON "array"
 
                     // Peak the next element
-                    var nextElement = this.peekNextDataElement();
+                    var nextElement = this.peekNextDataElement(isDone);
 
                     // If MORE data is needed, return FALSE
                     if (nextElement == false) {
@@ -618,7 +806,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     if ((nextElement.type == 'array') && (nextElement.isOpen == false)) {
 
                         // End the object
-                        await this.fireStreamEvent("onEndArray");
+                        await this.fireJsonEvent("onEndArray");
 
                         // Pop the current element
                         this.popCurrent();
@@ -630,7 +818,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         if ((currentElement != null) && (currentElement.type == 'key')) {
 
                             // End the attribute
-                            await this.fireStreamEvent("onEndAttribute", currentElement.value);
+                            await this.fireJsonEvent("onEndAttribute", currentElement.value);
 
                             // Pop the element
                             this.popCurrent();
@@ -640,9 +828,9 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     }
                     else {
 
-                        // Validate that this next element MUST be an object, an array, a string or a number OR separate
-                        if ((nextElement.type != 'object') && (nextElement.type != 'array') && (nextElement.type != 'string') && (nextElement.type != 'number') && (nextElement.type != 'separate')) {
-                            throw new Exception("Invalid JSON: Next element MUST be an object, array, string, number or comma!", ParseErrorCodes.InvalidElement);
+                        // Validate that this next element MUST be an object, an array, a string, a number, a boolean, null OR separate
+                        if ((nextElement.type != 'object') && (nextElement.type != 'array') && (nextElement.type != 'string') && (nextElement.type != 'number') && (nextElement.type != 'boolean') && (nextElement.type != 'null') && (nextElement.type != 'separate')) {
+                            throw new Exception("Invalid JSON: Next element MUST be an object, array, string, number, boolean, null or comma!", ParseErrorCodes.InvalidElement);
                         }
                         else {
 
@@ -650,7 +838,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                             if (nextElement.type == 'object') {
 
                                 // Start the object
-                                nextElement.status = await this.fireStreamEvent("onStartObject");
+                                nextElement.status = await this.fireJsonEvent("onStartObject");
 
                                 // Push the key onto the stack
                                 this.pushCurrent(nextElement);
@@ -659,7 +847,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                             else if (nextElement.type == 'array') {
 
                                 // Start the array
-                                nextElement.status = await this.fireStreamEvent("onStartArray");
+                                nextElement.status = await this.fireJsonEvent("onStartArray");
 
                                 // Push the key onto the stack
                                 this.pushCurrent(nextElement);
@@ -668,7 +856,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                             else if (nextElement.type == 'number') {
 
                                 // Start the number
-                                nextElement.status = await this.fireStreamEvent("onStartNumber", nextElement.value);
+                                nextElement.status = await this.fireJsonEvent("onStartNumber", nextElement.value);
 
                                 // Push the key onto the stack
                                 this.pushCurrent(nextElement);
@@ -677,7 +865,25 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                             else if (nextElement.type == 'string') {
 
                                 // Start the string
-                                nextElement.status = await this.fireStreamEvent("onStartString", nextElement.value);
+                                nextElement.status = await this.fireJsonEvent("onStartString", nextElement.value);
+
+                                // Push the key onto the stack
+                                this.pushCurrent(nextElement);
+
+                            }
+                            else if (nextElement.type == 'boolean') {
+
+                                // Start the boolean
+                                nextElement.status = await this.fireJsonEvent("onStartBoolean", nextElement.value);
+
+                                // Push the key onto the stack
+                                this.pushCurrent(nextElement);
+
+                            }
+                            else if (nextElement.type == 'null') {
+
+                                // Start null
+                                nextElement.status = await this.fireJsonEvent("onStartNull");
 
                                 // Push the key onto the stack
                                 this.pushCurrent(nextElement);
@@ -700,7 +906,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     if (currentElement.isComplete == false) {
 
                         // Peak the next data-element
-                        var nextElement = this.peekNextDataElement();
+                        var nextElement = this.peekNextDataElement(isDone);
 
                         // If MORE data is needed, return FALSE
                         if (nextElement == false) {
@@ -720,7 +926,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         if (nextElement.isComplete == true) {
 
                             // End the number
-                            await this.fireStreamEvent("onEndNumber", nextElement.value);
+                            await this.fireJsonEvent("onEndNumber", nextElement.value);
 
                             // Pop the current element
                             this.popCurrent();
@@ -732,7 +938,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                             if ((currentElement != null) && (currentElement.type == 'key')) {
 
                                 // End the attribute
-                                await this.fireStreamEvent("onEndAttribute", currentElement.value);
+                                await this.fireJsonEvent("onEndAttribute", currentElement.value);
 
                                 // Pop the element
                                 this.popCurrent();
@@ -745,7 +951,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     else {
 
                         // End the number
-                        await this.fireStreamEvent("onEndNumber", currentElement.value);
+                        await this.fireJsonEvent("onEndNumber", currentElement.value);
 
                         // Pop the current element
                         this.popCurrent();
@@ -757,12 +963,58 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         if ((currentElement != null) && (currentElement.type == 'key')) {
 
                             // End the attribute
-                            await this.fireStreamEvent("onEndAttribute", currentElement.value);
+                            await this.fireJsonEvent("onEndAttribute", currentElement.value);
 
                             // Pop the element
                             this.popCurrent();
 
                         }
+
+                    }
+
+                }
+                else if (currentElement.type == 'boolean') {
+
+                    // End the boolean
+                    await this.fireJsonEvent("onEndBoolean", currentElement.value);
+
+                    // Pop the current element
+                    this.popCurrent();
+
+                    // Peek the current element
+                    currentElement = this.peekCurrent();
+
+                    // Handle completing an attribute
+                    if ((currentElement != null) && (currentElement.type == 'key')) {
+
+                        // End the attribute
+                        await this.fireJsonEvent("onEndAttribute", currentElement.value);
+
+                        // Pop the element
+                        this.popCurrent();
+
+                    }
+
+                }
+                else if (currentElement.type == 'null') {
+
+                    // End null
+                    await this.fireJsonEvent("onEndNull");
+
+                    // Pop the current element
+                    this.popCurrent();
+
+                    // Peek the current element
+                    currentElement = this.peekCurrent();
+
+                    // Handle completing an attribute
+                    if ((currentElement != null) && (currentElement.type == 'key')) {
+
+                        // End the attribute
+                        await this.fireJsonEvent("onEndAttribute", currentElement.value);
+
+                        // Pop the element
+                        this.popCurrent();
 
                     }
 
@@ -773,7 +1025,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     if (currentElement.isComplete == false) {
 
                         // Peak the next data-element
-                        var nextElement = this.peekNextDataElement();
+                        var nextElement = this.peekNextDataElement(isDone);
 
                         // If MORE data is needed, return FALSE
                         if (nextElement == false) {
@@ -793,10 +1045,10 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         if (nextElement.isComplete == true) {
 
                             // Append the stirng
-                            await this.fireStreamEvent("onAppendString", nextElement.value);
+                            await this.fireJsonEvent("onAppendString", nextElement.value);
 
                             // End the string
-                            await this.fireStreamEvent("onEndString");
+                            await this.fireJsonEvent("onEndString");
 
                             // Pop the current element
                             this.popCurrent();
@@ -808,7 +1060,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                             if ((currentElement != null) && (currentElement.type == 'key')) {
 
                                 // End the attribute
-                                await this.fireStreamEvent("onEndAttribute", currentElement.value);
+                                await this.fireJsonEvent("onEndAttribute", currentElement.value);
 
                                 // Pop the element
                                 this.popCurrent();
@@ -819,7 +1071,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         else {
 
                             // Append the stirng
-                            await this.fireStreamEvent("onAppendString", nextElement.value);
+                            await this.fireJsonEvent("onAppendString", nextElement.value);
 
                         }
 
@@ -827,7 +1079,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     else {
 
                         // End the number
-                        await this.fireStreamEvent("onEndString");
+                        await this.fireJsonEvent("onEndString");
 
                         // Pop the current element
                         this.popCurrent();
@@ -839,7 +1091,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         if ((currentElement != null) && (currentElement.type == 'key')) {
 
                             // End the attribute
-                            await this.fireStreamEvent("onEndAttribute", currentElement.value);
+                            await this.fireJsonEvent("onEndAttribute", currentElement.value);
 
                             // Pop the element
                             this.popCurrent();
@@ -852,7 +1104,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 else if (currentElement.type == 'key') {
 
                     // Peak the next element
-                    var nextElement = this.peekNextDataElement();
+                    var nextElement = this.peekNextDataElement(isDone);
 
                     // If MORE data is needed, return FALSE
                     if (nextElement == false) {
@@ -865,9 +1117,9 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                     // Record bytes consumed
                     bytesConsumed += nextElement.bytesPeeked;
 
-                    // Validate that this next element MUST be an object, an array, a string or a number OR separate
-                    if ((nextElement.type != 'object') && (nextElement.type != 'array') && (nextElement.type != 'string') && (nextElement.type != 'number') && (nextElement.type != 'assign')) {
-                        throw new Exception("Invalid JSON: Next element MUST be an object, array, string, number or assign!", ParseErrorCodes.InvalidElement);
+                    // Validate that this next element MUST be an object, an array, a string, a number, a boolean, null OR assign
+                    if ((nextElement.type != 'object') && (nextElement.type != 'array') && (nextElement.type != 'string') && (nextElement.type != 'number') && (nextElement.type != 'boolean') && (nextElement.type != 'null') && (nextElement.type != 'assign')) {
+                        throw new Exception("Invalid JSON: Next element MUST be an object, array, string, number, boolean, null or assign!", ParseErrorCodes.InvalidElement);
                     }
                     else {
 
@@ -875,7 +1127,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         if (nextElement.type == 'object') {
 
                             // Start the object
-                            nextElement.status = await this.fireStreamEvent("onStartObject");
+                            nextElement.status = await this.fireJsonEvent("onStartObject");
 
                             // Push the key onto the stack
                             this.pushCurrent(nextElement);
@@ -884,7 +1136,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         else if (nextElement.type == 'array') {
 
                             // Start the array
-                            nextElement.status = await this.fireStreamEvent("onStartArray");
+                            nextElement.status = await this.fireJsonEvent("onStartArray");
 
                             // Push the key onto the stack
                             this.pushCurrent(nextElement);
@@ -893,7 +1145,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         else if (nextElement.type == 'number') {
 
                             // Start the number
-                            nextElement.status = await this.fireStreamEvent("onStartNumber", nextElement.value);
+                            nextElement.status = await this.fireJsonEvent("onStartNumber", nextElement.value);
 
                             // Push the key onto the stack
                             this.pushCurrent(nextElement);
@@ -902,7 +1154,25 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                         else if (nextElement.type == 'string') {
 
                             // Start the string
-                            nextElement.status = await this.fireStreamEvent("onStartString", nextElement.value);
+                            nextElement.status = await this.fireJsonEvent("onStartString", nextElement.value);
+
+                            // Push the key onto the stack
+                            this.pushCurrent(nextElement);
+
+                        }
+                        else if (nextElement.type == 'boolean') {
+
+                            // Start the boolean
+                            nextElement.status = await this.fireJsonEvent("onStartBoolean", nextElement.value);
+
+                            // Push the key onto the stack
+                            this.pushCurrent(nextElement);
+
+                        }
+                        else if (nextElement.type == 'null') {
+
+                            // Start null
+                            nextElement.status = await this.fireJsonEvent("onStartNull");
 
                             // Push the key onto the stack
                             this.pushCurrent(nextElement);
@@ -936,7 +1206,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 if (currentElement.type == 'object') {
 
                     // End the object
-                    await this.fireStreamEvent("onEndObject");
+                    await this.fireJsonEvent("onEndObject");
 
                     // Pop the current element
                     this.popCurrent();
@@ -945,7 +1215,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 else if (currentElement.type == 'array') {
 
                     // End the array
-                    await this.fireStreamEvent("onEndArray");
+                    await this.fireJsonEvent("onEndArray");
 
                     // Pop the current element
                     this.popCurrent();
@@ -954,7 +1224,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 else if (currentElement.type == 'number') {
 
                     // End the number
-                    await this.fireStreamEvent("onEndNumber", currentElement.value);
+                    await this.fireJsonEvent("onEndNumber", currentElement.value);
 
                     // Pop the current element
                     this.popCurrent();
@@ -963,7 +1233,25 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 else if (currentElement.type == 'string') {
 
                     // End the string
-                    await this.fireStreamEvent("onEndString", currentElement.value);
+                    await this.fireJsonEvent("onEndString", currentElement.value);
+
+                    // Pop the current element
+                    this.popCurrent();
+
+                }
+                else if (currentElement.type == 'boolean') {
+
+                    // End the boolean
+                    await this.fireJsonEvent("onEndBoolean", currentElement.value);
+
+                    // Pop the current element
+                    this.popCurrent();
+
+                }
+                else if (currentElement.type == 'null') {
+
+                    // End null
+                    await this.fireJsonEvent("onEndNull");
 
                     // Pop the current element
                     this.popCurrent();
@@ -983,7 +1271,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 if ((currentElement != null) && (currentElement.type == 'key')) {
 
                     // End the attribute
-                    await this.fireStreamEvent("onEndAttribute", currentElement.value);
+                    await this.fireJsonEvent("onEndAttribute", currentElement.value);
 
                     // Pop the element
                     this.popCurrent();
@@ -1006,7 +1294,7 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 && 
                 (this.status != Status.STOP) 
                 && 
-                (this.Status != Status.FAIL)) 
+                (this.status != Status.FAIL)) 
             )
         );
 
@@ -1018,59 +1306,125 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
      * @returns TRUE if a DICOM is fully parsed, FALSE otherwise.
      */
     async parse(chunk, isDone = false, totalRead = null, totalLength = null) {
+        
+        try {
 
-        // Init the status
-        var status = Status.CONTINUE;
+            // Ensure that the parser has performed the initial reset.
+            if (this.data == null) {
+                this.reset();
+            }
 
-        // Ensure that the parser has performed the initiel reset
-        if (this.data == null) {
-            this.data.reset();
+            // Append the new chunk of data
+            if ((chunk != null) && (chunk.length > 0)) {
+
+                // Append the new chunck
+                this.data.append(chunk);
+
+            }
+
+            // Init the parse
+            if (this.isStarted == false) {
+
+                // Start the parse
+                this.context = await this.fireJsonEvent("onStart", this.context);
+
+                // Set the flag
+                this.isStarted = true;
+
+            }
+
+            // Update the "progress" state
+            this.bytesRead = totalRead;
+            this.bytesTotal = totalLength;
+
+            // Read the next data-element elements until the part is complete
+            while (await this.parseNextDataElement(isDone) == true) {
+                // KEEP PARSING
+            }
+
+            // Handle terminal statuses requested by the stream handler.
+            if ((this.status == Status.STOP) || (this.status == Status.JUMP)) {
+
+                var terminalStatus = this.status;
+
+                // End the parse and preserve any partial result.
+                this.result = await this.fireJsonEvent("onEnd", this.context);
+
+                // Reset state for the next parse.
+                this.reset();
+
+                return terminalStatus;
+
+            }
+
+            // If parser status is FAIL, reset and return fail.
+            if (this.status == Status.FAIL) {
+
+                var failedStatus = this.status;
+
+                // Reset state for the next parse.
+                this.reset();
+
+                return failedStatus;
+
+            }
+
+            // If the caller marked input complete, consume trailing whitespace.
+            if (isDone == true) {
+                while ((this.data.length() > 0) && (CharacterUtils.isWhitespace(this.data.peekOne(0)) == true)) {
+                    this.data.consume(1);
+                    this.totalBytesConsumed += 1;
+                }
+            }
+
+            // If parsing is complete with no remaining buffered data and no open tokens, finalize.
+            if ((isDone == true) && (this.data.length() == 0) && (this.peekCurrent() == null)) {
+
+                // End the parse
+                this.result = await this.fireJsonEvent("onEnd", this.context);
+
+                // Reset the state
+                this.reset();
+
+                // Indicate that the current JSON payload is fully parsed.
+                return Status.SUCCESS;
+
+            }
+
+            // If input is done but parser still has buffered data or open tokens, this is invalid JSON.
+            if (isDone == true) {
+
+                // Set failure status.
+                this.status = Status.FAIL;
+
+                // Notify the handler.
+                await super.fireStreamEvent("onError", new Exception("Invalid JSON: Unexpected end of input.", ParseErrorCodes.InvalidElement));
+
+                // Reset state for the next parse.
+                this.reset();
+
+                return Status.FAIL;
+
+            }
+
+            // Continue reading until terminal status or parse completion.
+            return Status.CONTINUE;
+
         }
+        catch (error) {
 
-        // Append the new chunk of data
-        if ((chunk != null) && (chunk.length > 0)) {
+            // Set failure status.
+            this.status = Status.FAIL;
 
-            // Append the new chunck
-            this.data.append(chunk);
+            // Notify the handler.
+            await super.fireStreamEvent("onError", error);
 
-        }
-
-        // Init the parse
-        if (this.isStarted == false) {
-
-            // Start the parse
-            this.context = await this.fireStreamEvent("onStart", this.context);
-
-            // Set the flag
-            this.isStarted = true;
-
-        }
-
-        // Update the "progress" state
-        this.bytesRead = totalRead;
-        this.bytesTotal = totalLength;
-
-        // Read the next data-element elements until the part is complete
-        while (await this.parseNextDataElement(isDone) == true) {
-            // KEEP PARSING
-        }
-
-        // If the parsing is COMPLETE!
-        if ((isDone == true) && (this.data.length() == 0)) {
-
-            // End the parse
-            this.result = await this.fireStreamEvent("onEnd", this.context);
-
-            // Reset the state
+            // Reset state for the next parse.
             this.reset();
 
-            // Indicate that the current DICOM is fully parsed
-            return Status.SUCCESS;
+            return Status.FAIL;
 
         }
-
-        // Indicate that current status
-        return status;
 
     }
 

@@ -178,6 +178,12 @@ export default class StreamingDicomMetadataInstanceHandler {
     onStartNumber(context, value) {
     }
 
+    onStartBoolean(context, value) {
+    }
+
+    onStartNull(context) {
+    }
+
     onStartString(context, value) {
 
         // Capture the current value
@@ -368,6 +374,36 @@ export default class StreamingDicomMetadataInstanceHandler {
 
         // Clear the current value
         context.value = null;            
+
+    }
+
+    onEndBoolean(context, value) {
+
+        // Create the attribute value array (if needed)
+        if (context.attribute.value == null) {
+            context.attribute.value = [];
+        }
+
+        // Add the current value to the attribute value array
+        context.attribute.value.push(value);
+
+        // Clear the current value
+        context.value = null;
+
+    }
+
+    onEndNull(context) {
+
+        // Create the attribute value array (if needed)
+        if (context.attribute.value == null) {
+            context.attribute.value = [];
+        }
+
+        // Add the current value to the attribute value array
+        context.attribute.value.push(null);
+
+        // Clear the current value
+        context.value = null;
 
     }
     

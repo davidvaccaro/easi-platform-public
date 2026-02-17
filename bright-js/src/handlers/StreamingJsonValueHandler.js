@@ -103,6 +103,12 @@ export default class StreamingJsonValueHandler {
     onStartNumber(context, value) {
     }
 
+    onStartBoolean(context, value) {
+    }
+
+    onStartNull(context) {
+    }
+
     onStartString(context, value) {
         if (context.current == null) {
             context.current = value;
@@ -166,6 +172,30 @@ export default class StreamingJsonValueHandler {
         }
         else if (Array.isArray(context.current) == true) {
             context.current.push(value);
+        }
+    }
+
+    onEndBoolean(context, value) {
+        if (context.current == null) {
+            context.current = value;
+        }
+        else if (Array.isArray(context.current) == false) {
+            context.current[context.attribute] = value;
+        }
+        else if (Array.isArray(context.current) == true) {
+            context.current.push(value);
+        }
+    }
+
+    onEndNull(context) {
+        if (context.current == null) {
+            context.current = null;
+        }
+        else if (Array.isArray(context.current) == false) {
+            context.current[context.attribute] = null;
+        }
+        else if (Array.isArray(context.current) == true) {
+            context.current.push(null);
         }
     }
     
