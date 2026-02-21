@@ -65,3 +65,42 @@ test("Test: NOT Private Tags", () => {
     expect(Tag.isPrivateTag(tag.Group, tag.Element)).toBe(false);
 
 });
+
+test("Test: De-identification basic protection action defaults for non-protected tags", () => {
+
+    const tag = Tag.Modality;
+
+    expect(tag.IsProtected).toBe(false);
+    expect(tag.BasicProtectionAction).toBe(null);
+
+});
+
+test("Test: Default de-identification mask includes all protected tags", () => {
+
+    const mask = Tag.DefaultDeIdentificationMask;
+    const protectedTags = Object.values(Tags).filter((tag) => tag.IsProtected === true);
+
+    expect(mask.size).toBe(protectedTags.length);
+    for (var i = 0; i < protectedTags.length; i++) {
+        expect(mask.has(protectedTags[i].ID)).toBe(true);
+    }
+
+});
+
+test("Test: Default de-identification mask action values mirror tag basic protection action values", () => {
+
+    const mask = Tag.DefaultDeIdentificationMask;
+
+    const patientNameMask = mask.get(Tag.PatientName.ID);
+    expect(patientNameMask).toStrictEqual({
+        ID: Tag.PatientName.ID,
+        Action: Tag.PatientName.BasicProtectionAction
+    });
+
+    const patientIdMask = mask.get(Tag.PatientID.ID);
+    expect(patientIdMask).toStrictEqual({
+        ID: Tag.PatientID.ID,
+        Action: Tag.PatientID.BasicProtectionAction
+    });
+
+});

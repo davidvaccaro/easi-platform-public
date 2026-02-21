@@ -65,3 +65,44 @@ test('Test: getEndSequence and isEndSequence', () => {
 
     expect(Utilities.getEndSequence()).toStrictEqual(endSequence);
 });
+
+test('Test: createDeterministicUID is stable for the same seed', () => {
+
+    const first = Utilities.createDeterministicUID('00100010|JOHN^DOE');
+    const second = Utilities.createDeterministicUID('00100010|JOHN^DOE');
+
+    expect(first).toBe(second);
+    expect(first.startsWith('2.25.')).toBe(true);
+    expect(first.length).toBeLessThanOrEqual(64);
+
+});
+
+test('Test: createDeterministicUID varies by seed', () => {
+
+    const first = Utilities.createDeterministicUID('00100010|JOHN^DOE');
+    const second = Utilities.createDeterministicUID('00100010|JANE^DOE');
+
+    expect(first).not.toBe(second);
+
+});
+
+test('Test: newUID returns a DICOM-compatible 2.25 OID string', () => {
+
+    const uid = Utilities.newUID();
+
+    expect(uid.startsWith('2.25.')).toBe(true);
+    expect(/^[0-9]+$/.test(uid.substring('2.25.'.length))).toBe(true);
+    expect(uid.length).toBeLessThanOrEqual(64);
+
+});
+
+test('Test: newUID returns different values across multiple calls', () => {
+
+    const values = new Set();
+    for (var i = 0; i < 20; i++) {
+        values.add(Utilities.newUID());
+    }
+
+    expect(values.size).toBe(20);
+
+});

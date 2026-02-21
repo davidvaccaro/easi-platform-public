@@ -34,6 +34,7 @@ export default class Utilities {
      */
     static littleEndianEndSequence = [254, 255, 221, 224, 0, 0, 0, 0];
     static bigEndianEndSequence = [255, 254, 224, 221, 0, 0, 0, 0];
+    static uidCounter = 0;
 
     /**
      * Convert the specified byte array (2 or 4 bytes) to an unsigned integer value.
@@ -191,6 +192,83 @@ export default class Utilities {
         const milliseconds = parseInt(value.slice(7, 10), 10); // Keep only the first 3 digits for JavaScript Date object
       
         return new Date(year, month, day, hours, minutes, seconds, milliseconds);
+
+    }
+
+    /**
+     * Create a deterministic UID from a string seed.
+     * @param {string} seed The source seed.
+     * @returns {string} The replacement UID.
+     */
+    static createDeterministicUID(seed) {
+
+        var hashA = 2166136261;
+        var hashB = 2166136261;
+        var text = (seed == null) ? '' : String(seed);
+
+        for (var i = 0; i < text.length; i++) {
+
+            var code = text.charCodeAt(i);
+            hashA ^= code;
+            hashA = Math.imul(hashA, 16777619);
+
+            hashB ^= (code * 31);
+            hashB = Math.imul(hashB, 2246822519);
+
+        }
+
+        var partA = (hashA >>> 0).toString();
+        var partB = (hashB >>> 0).toString();
+        var uid = ('2.25.' + partA + partB);
+        if (uid.length > 64) {
+            uid = uid.substring(0, 64);
+        }
+
+        return uid;
+
+    }
+
+    /**
+     * Create a new random UID in the DICOM-compatible 2.25 OID space.
+     * @returns {string} The new UID value.
+     */
+    static newUID() {
+
+        // Use 128 random bits and map them to the 2.25.<decimal-uuid> space.
+        var bytes = new Uint8Array(16);
+        var hasCrypto = (
+            (typeof globalThis !== 'undefined')
+            && (globalThis.crypto != null)
+            && (typeof globalThis.crypto.getRandomValues === 'function')
+        );
+
+        if (hasCrypto) {
+            globalThis.crypto.getRandomValues(bytes);
+        }
+        else {
+            for (var i = 0; i < bytes.length; i++) {
+                bytes[i] = Math.floor(Math.random() * 256);
+            }
+        }
+
+        // Mark the 16 bytes as a UUID v4 style value before OID conversion.
+        bytes[6] = (bytes[6] & 0x0F) | 0x40;
+        bytes[8] = (bytes[8] & 0x3F) | 0x80;
+
+        // Fallback for runtimes without BigInt support.
+        if (typeof BigInt !== 'function') {
+            Utilities.uidCounter++;
+            return Utilities.createDeterministicUID(
+                Date.now().toString() + '|' + Utilities.uidCounter.toString() + '|' + Math.random().toString()
+            );
+        }
+
+        var value = 0n;
+        for (var index = 0; index < bytes.length; index++) {
+            value = (value << 8n) | BigInt(bytes[index]);
+        }
+
+        return '2.25.' + value.toString(10);
 
     }
 

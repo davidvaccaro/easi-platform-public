@@ -31,6 +31,10 @@
         <div>
             <button id="study">Parse Study</button>
         </div>
+        <br>
+        <div>
+            <button id="deinstance">Parse De-Identified Instance</button>
+        </div>
 
         <br>
         <hr>        
@@ -302,6 +306,26 @@
                 const reader = EASI.newStreamingReaderBuilder()
                     .withParser(new StreamingDicomDataParser())
                     .withHandler(new StreamingDicomInstanceHandler())
+                    .build();
+
+                // Read and parse the DICOM file
+                reader
+                    .read(instanceUrl)
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err));
+
+            });
+
+            $('#deinstance').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = EASI.newStreamingReaderBuilder()
+                    .withParser(new StreamingDicomDataParser())
+                    .withHandler(new StreamingDicomInstanceHandler())
+                    .withMask(Tag.DefaultDeIdentificationMask)
                     .build();
 
                 // Read and parse the DICOM file

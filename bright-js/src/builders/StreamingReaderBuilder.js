@@ -30,6 +30,7 @@ import StreamingDicomInstanceHandler from "../handlers/StreamingDicomInstanceHan
 import StreamingDicomMappingHandler from '../handlers/StreamingDicomMappingHandler.js';
 import StreamingDicomSelectingHandler from "../handlers/StreamingDicomSelectingHandler.js";
 import StreamingDicomMetadataInstanceHandler from "../handlers/StreamingDicomMetadataInstanceHandler.js";
+import StreamingDicomDeIdentificationHandler from "../handlers/StreamingDicomDeIdentificationHandler.js";
 
 export default class StreamingReaderBuilder {
   
@@ -70,6 +71,16 @@ export default class StreamingReaderBuilder {
      */
     withIsStrict(isStrict) {
         this.isStrict = isStrict;
+        return this;
+    }
+
+    /**
+     * Sets the current de-identification mask map.
+     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null} mask The tag mask map.
+     * @returns The reference to the current builder.
+     */
+    withMask(mask) {
+        this.mask = mask;
         return this;
     }
 
@@ -185,6 +196,11 @@ export default class StreamingReaderBuilder {
         // Set the "onPart" option
         reader.onPart = this.onPart;
 
+        // Wrap the current handler with a de-identifier when configured for DICOM data parsing.
+        if ((this.mask != null) && (this.parser instanceof StreamingDicomDataParser)) {
+            this.handler = new StreamingDicomDeIdentificationHandler(this.handler, this.mask);
+        }
+
         // Set the "handler" into the "parser"
         this.parser.handler = this.handler;
 
@@ -208,6 +224,7 @@ export default class StreamingReaderBuilder {
         this.isStrict = false;
         this.parser = null;
         this.handler = null;
+        this.mask = null;
         this.resolveOnPart = false;
 
     }
