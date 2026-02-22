@@ -20,7 +20,7 @@ function readDicomBytes(name = '0002.DCM') {
 async function parseInstanceWithHandler(handler, bytes) {
 
     const reader = EASI.newStreamingReaderBuilder()
-        .forDicomData()
+        .fromDicomData()
         .withHandler(handler)
         .build();
 
@@ -90,7 +90,7 @@ test('Test: StreamingReaderBuilder withMask applies de-identification handler ch
     const bytes = readDicomBytes('0002.DCM');
 
     const reader = EASI.newStreamingReaderBuilder()
-        .forDicomData()
+        .fromDicomData()
         .toInstances()
         .withMask(new Map([
             [Tag.PatientName, '[BUILDER MASK]']

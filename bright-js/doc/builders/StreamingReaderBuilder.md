@@ -97,7 +97,7 @@ Sets the the status indicating that this parser is perfomring "strict" parsing.
 
 ---
 
-### `forDicomData()`
+### `fromDicomData()`
 
 Sets the current build to stream-parse DICOM Data.
 
@@ -109,7 +109,7 @@ Sets the current build to stream-parse DICOM Data.
 
 ---
 
-### `forDicomMetaData()`
+### `fromDicomMetaData()`
 
 Sets the current build to stream-parse DICOM MetaData.
 
@@ -198,7 +198,7 @@ import EASI from '../../src/EASI.js';
 
 const reader = EASI
   .newStreamingReaderBuilder()
-  .forDicomData()
+  .fromDicomData()
   .toInstances()
   .withIsStrict(true)
   .build();

@@ -68,7 +68,7 @@ export default class EASI {
      */
     static newStreamingDicomDataReaderBuilder() {
         return EASI.newStreamingReaderBuilder()
-            .forDicomData();
+            .fromDicomData();
     }
 
     /**
@@ -77,7 +77,7 @@ export default class EASI {
      */
     static newStreamingDicomMetaDataReaderBuilder() {
         return EASI.newStreamingReaderBuilder()
-            .forDicomMetaData();
+            .fromDicomMetaData();
     }
 
     /**

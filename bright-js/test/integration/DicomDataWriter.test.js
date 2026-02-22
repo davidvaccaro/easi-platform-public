@@ -47,7 +47,7 @@ test('Test: StreamingReaderBuilder toDicomData emits native DICOM bytes that rou
     var sourceBytes = readDicomBytes('0002.DCM');
 
     var writerReader = EASI.newStreamingReaderBuilder()
-        .forDicomData()
+        .fromDicomData()
         .toDicomData()
         .build();
 
@@ -80,7 +80,7 @@ test('Test: toDicomData with onChunk streams bytes and can be chained with withM
     var sourceBytes = readDicomBytes('0002.DCM');
 
     var reader = EASI.newStreamingReaderBuilder()
-        .forDicomData()
+        .fromDicomData()
         .toDicomData({
             onChunk: (chunk) => chunks.push(chunk)
         })
@@ -123,7 +123,7 @@ test('Test: toDicomData round-trips a nested-sequence instance and retains top-l
     var sourceBytes = readDicomBytes('NESTED_SEQUENCE.dcm');
 
     var emittedBytes = await EASI.newStreamingReaderBuilder()
-        .forDicomData()
+        .fromDicomData()
         .toDicomData()
         .build()
         .read(sourceBytes);
@@ -143,7 +143,7 @@ test('Test: toDicomData anonymizes NESTED_SEQUENCE.dcm and writes NESTED_SEQUENC
     var sourceBytes = readDicomBytes('NESTED_SEQUENCE.dcm');
 
     var emittedBytes = await EASI.newStreamingReaderBuilder()
-        .forDicomData()
+        .fromDicomData()
         .toDicomData()
         .withMask(Tag.DefaultDeIdentificationMask)
         .build()
