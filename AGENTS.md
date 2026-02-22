@@ -50,7 +50,7 @@ Agents should avoid modifying:
 Use this execution model when implementing features:
 
 1. Build a reader using `EASI -> StreamingReaderBuilder`.
-2. Choose parser (`fromDicomData`, `fromDicomMetaData`, or `withParser`).
+2. Choose parser (`fromDicomData`, `fromDicomMetadata`, or `withParser`).
 3. Choose output strategy:
    - `toInstances()` for DICOM object model output.
    - `toMapping(mapping)` for mapped output (typically FHIR/custom object).

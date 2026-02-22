@@ -75,9 +75,9 @@ export default class EASI {
      * Create a new reader builder pre-configured for DICOM JSON metadata data.
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
-    static newStreamingDicomMetaDataReaderBuilder() {
+    static newStreamingDicomMetadataReaderBuilder() {
         return EASI.newStreamingReaderBuilder()
-            .fromDicomMetaData();
+            .fromDicomMetadata();
     }
 
     /**
@@ -94,7 +94,7 @@ export default class EASI {
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
     static newStreamingDicomJsonInstanceReaderBuilder() {
-        return EASI.newStreamingDicomMetaDataReaderBuilder()
+        return EASI.newStreamingDicomMetadataReaderBuilder()
             .toInstances();
     }
 
@@ -114,7 +114,7 @@ export default class EASI {
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
     static newStreamingDicomJsonSelectionReaderBuilder(selection) {
-        return EASI.newStreamingDicomMetaDataReaderBuilder()
+        return EASI.newStreamingDicomMetadataReaderBuilder()
             .withHandler(new StreamingDicomMetadataSelectingHandler(selection));
     }
 
@@ -134,7 +134,7 @@ export default class EASI {
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
     static newStreamingDicomJsonMappingReaderBuilder(mapping) {
-        return EASI.newStreamingDicomMetaDataReaderBuilder()
+        return EASI.newStreamingDicomMetadataReaderBuilder()
             .withHandler(new StreamingDicomMetadataMappingHandler(mapping));
     }
 
@@ -162,7 +162,7 @@ export default class EASI {
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
     static newStreamingDicomJsonFHIRImagingStudyReaderBuilder() {
-        return EASI.newStreamingDicomMetaDataReaderBuilder()
+        return EASI.newStreamingDicomMetadataReaderBuilder()
             .withHandler(new StreamingDicomMetadataMappingHandler(new DicomToFHIRImagingStudyMapping()));
     }
 

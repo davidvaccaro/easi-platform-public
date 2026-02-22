@@ -35,8 +35,8 @@ test('Test: newStreamingDicomDataReaderBuilder', () => {
     expect(builder.parser instanceof StreamingDicomDataParser).toBe(true);
 });
 
-test('Test: newStreamingDicomMetaDataReaderBuilder', () => {
-    const builder = EASI.newStreamingDicomMetaDataReaderBuilder();
+test('Test: newStreamingDicomMetadataReaderBuilder', () => {
+    const builder = EASI.newStreamingDicomMetadataReaderBuilder();
     expect(builder.parser instanceof StreamingJsonDataParser).toBe(true);
 });
 

@@ -109,9 +109,9 @@ Sets the current build to stream-parse DICOM Data.
 
 ---
 
-### `fromDicomMetaData()`
+### `fromDicomMetadata()`
 
-Sets the current build to stream-parse DICOM MetaData.
+Sets the current build to stream-parse DICOM Metadata.
 
 #### Returns
 

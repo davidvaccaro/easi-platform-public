@@ -99,10 +99,10 @@ export default class StreamingReaderBuilder {
     }
 
     /**
-     * Sets the current build to stream-parse DICOM MetaData.
+     * Sets the current build to stream-parse DICOM Metadata.
      * @returns The reference to the current builder.
      */
-    fromDicomMetaData() {
+    fromDicomMetadata() {
         
         // Setup for stream-parsing DICOM data ...
         this.parser = new StreamingJsonDataParser();
