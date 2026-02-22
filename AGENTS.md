@@ -9,24 +9,22 @@ BrightDicom provides a pure JavaScript implementation of EASI, the "Efficient AP
 
 - DICOM studies contain many large instances and require streaming-friendly processing.
 - EASI is designed around stream parsing and stream handling (similar in spirit to SAX-style processing).
-- The main engineering focus is `bright-js`.
+- The main engineering focus is `easi-js`.
 
 Subsystems in this repository:
-- `bright-js`: Primary JavaScript implementation (main target for agent changes).
-- `bright-cs`: C# code generation tools (avoid unless explicitly requested).
-- `bright-web`: Marketing site (avoid unless explicitly requested).
+- `easi-js`: Primary JavaScript implementation (main target for agent changes).
+- `easi-cs`: Reserved placeholder for the future C# implementation of EASI (avoid unless explicitly requested).
 
 ---
 
 ## 2. Repository Structure
 Top-level:
-- `/bright-js` Primary runtime/library code.
-- `/bright-cs` Code-generation utilities.
-- `/bright-web` Website.
+- `/easi-js` Primary runtime/library code.
+- `/easi-cs` Reserved placeholder for the future C# EASI implementation.
 - `/data` Sample DICOM files and dictionary source files used by tooling/tests.
 - `/ext/tools` External DICOM tooling binaries/scripts.
 
-`bright-js` structure:
+`easi-js` structure:
 - `/src/EASI.js` Factory entry point (`EASI.newStreamingReaderBuilder()`).
 - `/src/builders` Reader construction APIs (`StreamingReaderBuilder`).
 - `/src/readers` Network stream reader (`StreamingReader`) that routes single-part vs multipart payloads.
@@ -40,12 +38,11 @@ Top-level:
 - `/src/dicom` Core DICOM model/types (`Tag`, `Attribute`, `TransferSyntax`, `Instance`, etc.).
 - `/src/fhir` FHIR model classes used by DICOM-to-FHIR mapping.
 - `/src/codecs` Pixel data decoding utilities.
-- `/src/test/dicom` Jest unit tests.
+- `/test` Jest unit and integration tests (mirrors `src` structure).
 - `/doc` Markdown API and class docs.
 
 Agents should avoid modifying:
-- `/bright-cs`
-- `/bright-web`
+- `/easi-cs`
 
 ---
 
@@ -53,7 +50,7 @@ Agents should avoid modifying:
 Use this execution model when implementing features:
 
 1. Build a reader using `EASI -> StreamingReaderBuilder`.
-2. Choose parser (`forDicomData`, `forDicomMetaData`, or `withParser`).
+2. Choose parser (`fromDicomData`, `fromDicomMetaData`, or `withParser`).
 3. Choose output strategy:
    - `toInstances()` for DICOM object model output.
    - `toMapping(mapping)` for mapped output (typically FHIR/custom object).
@@ -75,38 +72,38 @@ Extension points:
 Run commands from repository root unless noted.
 
 Environment:
-1. `cd bright-js`
+1. `cd easi-js`
 2. `node -v` (expected major version `16` or `18` per `package.json`)
 
 Install dependencies:
-1. `cd bright-js`
+1. `cd easi-js`
 2. `npm ci`
 
 Run full tests:
-1. `cd bright-js`
+1. `cd easi-js`
 2. `npm test`
 
 Run full tests serially (more stable local debugging):
-1. `cd bright-js`
+1. `cd easi-js`
 2. `npm test -- --runInBand`
 
 Run a single test file:
-1. `cd bright-js`
-2. `npx jest src/test/dicom/TransferSyntax.test.js`
+1. `cd easi-js`
+2. `npx jest test/dicom/TransferSyntax.test.js`
 
 Run tests matching a name:
-1. `cd bright-js`
+1. `cd easi-js`
 2. `npx jest -t "TransferSyntax"`
 
 Coverage output:
 - Jest coverage is enabled by default (`collectCoverage: true`).
-- HTML report path: `bright-js/coverage/lcov-report/index.html`.
+- HTML report path: `easi-js/coverage/lcov-report/index.html`.
 
 ---
 
 ## 5. Lint and Formatting Rules
 Current repository state:
-- No `lint` script is defined in `bright-js/package.json`.
+- No `lint` script is defined in `easi-js/package.json`.
 - No ESLint/Prettier config is currently configured as a required check.
 
 Agent expectations:
@@ -133,12 +130,12 @@ All code changes must:
 
 - Include or update unit tests when behavior changes.
 - Run relevant tests locally before completing work.
-- Run at least `npm test -- --runInBand` for broad changes in `bright-js`.
+- Run at least `npm test -- --runInBand` for broad changes in `easi-js`.
 - Avoid reducing coverage for touched modules without justification.
 
 When adding/changing:
-- Parser logic: add tests under `bright-js/src/test/dicom` focused on parser status/edge cases.
-- DICOM model types: add/update class unit tests in `bright-js/src/test/dicom`.
+- Parser logic: add tests under `easi-js/test/parsers` (or related integration tests) focused on parser status/edge cases.
+- DICOM model types: add/update class unit tests in `easi-js/test/dicom`.
 - Mapping/selection behavior: add targeted tests covering tag presence/absence and completion conditions.
 
 ---

@@ -7,18 +7,17 @@ AI assistant guidance for the BrightDicom repository.
 
 BrightDicom is a pure JavaScript implementation of **EASI** (Efficient API for Streaming in Healthcare Imaging) for streaming-oriented reading of DICOM medical images. The architecture is explicitly SAX-style: data flows through a `Reader → Parser → Handler` pipeline with status-based flow control at each stage.
 
-**Primary target for all work:** `bright-js/`
+**Primary target for all work:** `easi-js/`
 
 **Avoid unless explicitly requested:**
-- `bright-cs/` (C# code-generation tooling)
-- `bright-web/` (marketing site)
+- `easi-cs/` (reserved placeholder for the future C# EASI implementation)
 
 ---
 
 ## Repository Layout
 
 ```
-bright-js/src/
+easi-js/src/
   EASI.js                   # Factory entry point
   builders/                 # StreamingReaderBuilder
   readers/                  # StreamingReader (HTTP, single-part and multipart)
@@ -31,11 +30,11 @@ bright-js/src/
   fhir/                     # FHIR model classes used by DICOM-to-FHIR mapping
   codecs/                   # Pixel data decoding utilities
 
-bright-js/test/             # Jest tests (mirrors src/ tree)
+easi-js/test/             # Jest tests (mirrors src/ tree)
   dicom/                    # Unit tests for DICOM model classes
     entities/               # Entity-level integration tests (CT, XA, Image, Entity)
     parsers/                # Parser integration tests
-bright-js/backlog/          # Deferred work notes (read before touching parsers)
+easi-js/backlog/          # Deferred work notes (read before touching parsers)
 data/                       # Sample DICOM files and dictionary source files
 ```
 
@@ -45,7 +44,7 @@ data/                       # Sample DICOM files and dictionary source files
 
 ```
 EASI.newStreamingReaderBuilder()
-  .forDicomData()           # sets parser = StreamingDicomDataParser
+  .fromDicomData()          # sets parser = StreamingDicomDataParser
   .toInstances()            # sets handler = StreamingDicomInstanceHandler
   .build()                  # wires parser.handler = handler, reader.parser = parser
 ```
@@ -71,7 +70,7 @@ Extension points:
 
 ## Commands
 
-All commands run from inside `bright-js/` unless noted.
+All commands run from inside `easi-js/` unless noted.
 
 ```bash
 # Install
@@ -90,7 +89,7 @@ npx jest test/dicom/TransferSyntax.test.js
 npx jest -t "TransferSyntax"
 ```
 
-Coverage HTML report: `bright-js/coverage/lcov-report/index.html`
+Coverage HTML report: `easi-js/coverage/lcov-report/index.html`
 
 Node.js requirement: `18.x` or `16.x` (see `package.json` `engines` field).
 
@@ -111,7 +110,7 @@ Node.js requirement: `18.x` or `16.x` (see `package.json` `engines` field).
 ## Testing Requirements
 
 - Include or update tests for any behavior change.
-- Tests live in `bright-js/test/` mirroring `bright-js/src/`.
+- Tests live in `easi-js/test/` mirroring `easi-js/src/`.
 - Parser logic tests go in `test/dicom/` (or `test/dicom/parsers/`).
 - Model class tests go in `test/dicom/`.
 - Mapping/selection tests should cover tag-present, tag-absent, and completion conditions.
@@ -122,7 +121,7 @@ Node.js requirement: `18.x` or `16.x` (see `package.json` `engines` field).
 
 ## Known Backlog / Before You Touch Parsers
 
-Read `bright-js/backlog/parsers/StreamingDicomDataParser.md` before modifying the parser. It documents three known deferred issues:
+Read `easi-js/backlog/parsers/StreamingDicomDataParser.md` before modifying the parser. It documents three known deferred issues:
 
 1. Truncated end-of-stream can return `Status.SUCCESS` (lines ~1181 / ~1244).
 2. Undefined-length empty/odd sequences can leak control tags as normal attributes (lines ~1348 / ~1352 / ~1264).
