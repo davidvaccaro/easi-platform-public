@@ -3,10 +3,12 @@ import EASI from '../src/EASI.js';
 import StreamingReaderBuilder from '../src/builders/StreamingReaderBuilder.js';
 import StreamingDicomDataParser from '../src/parsers/StreamingDicomDataParser.js';
 import StreamingJsonDataParser from '../src/parsers/StreamingJsonDataParser.js';
+import StreamingWriter from '../src/writers/StreamingWriter.js';
 
 import StreamingDicomInstanceHandler from '../src/handlers/StreamingDicomInstanceHandler.js';
 import StreamingDicomSelectingHandler from '../src/handlers/StreamingDicomSelectingHandler.js';
 import StreamingDicomMappingHandler from '../src/handlers/StreamingDicomMappingHandler.js';
+import StreamingDicomDataWriterHandler from '../src/handlers/StreamingDicomDataWriterHandler.js';
 import StreamingDicomMetadataInstanceHandler from '../src/handlers/StreamingDicomMetadataInstanceHandler.js';
 import StreamingDicomMetadataSelectingHandler from '../src/handlers/StreamingDicomMetadataSelectingHandler.js';
 import StreamingDicomMetadataMappingHandler from '../src/handlers/StreamingDicomMetadataMappingHandler.js';
@@ -18,6 +20,14 @@ import DumpParser from '../src/tools/dicom/DumpParser.js';
 
 test('Test: newStreamingReaderBuilder', () => {
     expect(EASI.newStreamingReaderBuilder() instanceof StreamingReaderBuilder).toBe(true);
+});
+
+test('Test: newStreamingWriter', () => {
+    expect(EASI.newStreamingWriter() instanceof StreamingWriter).toBe(true);
+});
+
+test('Test: newStreamingDicomDataWriter', () => {
+    expect(EASI.newStreamingDicomDataWriter() instanceof StreamingWriter).toBe(true);
 });
 
 test('Test: newStreamingDicomDataReaderBuilder', () => {
@@ -79,6 +89,12 @@ test('Test: newStreamingDicomFHIRImagingStudyReaderBuilder', () => {
     expect(builder.parser instanceof StreamingDicomDataParser).toBe(true);
     expect(builder.handler instanceof StreamingDicomMappingHandler).toBe(true);
     expect(builder.handler.mapping instanceof DicomToFHIRImagingStudyMapping).toBe(true);
+});
+
+test('Test: newStreamingDicomDataWriterReaderBuilder', () => {
+    const builder = EASI.newStreamingDicomDataWriterReaderBuilder();
+    expect(builder.parser instanceof StreamingDicomDataParser).toBe(true);
+    expect(builder.handler instanceof StreamingDicomDataWriterHandler).toBe(true);
 });
 
 test('Test: newStreamingDicomJsonFHIRImagingStudyReaderBuilder', () => {

@@ -21,10 +21,12 @@
 
 import StreamingReaderBuilder from "./builders/StreamingReaderBuilder.js";
 import StreamingJsonDataParser from "./parsers/StreamingJsonDataParser.js";
+import StreamingWriter from "./writers/StreamingWriter.js";
 
 import StreamingDicomInstanceHandler from "./handlers/StreamingDicomInstanceHandler.js";
 import StreamingDicomSelectingHandler from "./handlers/StreamingDicomSelectingHandler.js";
 import StreamingDicomMappingHandler from "./handlers/StreamingDicomMappingHandler.js";
+import StreamingDicomDataWriterHandler from "./handlers/StreamingDicomDataWriterHandler.js";
 import StreamingJsonValueHandler from "./handlers/StreamingJsonValueHandler.js";
 import StreamingDicomMetadataSelectingHandler from "./handlers/StreamingDicomMetadataSelectingHandler.js";
 import StreamingDicomMetadataMappingHandler from "./handlers/StreamingDicomMetadataMappingHandler.js";
@@ -33,6 +35,24 @@ import DicomToFHIRImagingStudyMapping from "./handlers/mappings/DicomToFHIRImagi
 import DumpParser from "./tools/dicom/DumpParser.js";
 
 export default class EASI {
+
+    /**
+     * Create a new instance of the EASI Streaming Writer class.
+     * @param {{ onChunk?: Function, collectOutput?: boolean, chunkSize?: number } | null} options Writer options.
+     * @returns A new, initialized StreamingWriter class instance.
+     */
+    static newStreamingWriter(options = null) {
+        return new StreamingWriter(options);
+    }
+
+    /**
+     * Create a new streaming writer pre-configured for DICOM byte output.
+     * @param {{ onChunk?: Function, collectOutput?: boolean, chunkSize?: number } | null} options Writer options.
+     * @returns A new, initialized StreamingWriter class instance.
+     */
+    static newStreamingDicomDataWriter(options = null) {
+        return EASI.newStreamingWriter(options);
+    }
 
     /**
      * Create a new instance of the EASI Streaming Reader Builder class.
@@ -125,6 +145,16 @@ export default class EASI {
     static newStreamingDicomFHIRImagingStudyReaderBuilder() {
         return EASI.newStreamingReaderBuilder()
             .toFHIRImagingStudies();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM byte data -> native DICOM byte emit.
+     * @param {{ onChunk?: Function, collectOutput?: boolean } | null} options Options for streaming output.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomDataWriterReaderBuilder(options = null) {
+        return EASI.newStreamingDicomDataReaderBuilder()
+            .withHandler(new StreamingDicomDataWriterHandler(options));
     }
 
     /**

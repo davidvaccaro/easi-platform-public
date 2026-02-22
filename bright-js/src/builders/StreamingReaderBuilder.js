@@ -31,6 +31,7 @@ import StreamingDicomMappingHandler from '../handlers/StreamingDicomMappingHandl
 import StreamingDicomSelectingHandler from "../handlers/StreamingDicomSelectingHandler.js";
 import StreamingDicomMetadataInstanceHandler from "../handlers/StreamingDicomMetadataInstanceHandler.js";
 import StreamingDicomDeIdentificationHandler from "../handlers/StreamingDicomDeIdentificationHandler.js";
+import StreamingDicomDataWriterHandler from "../handlers/StreamingDicomDataWriterHandler.js";
 
 export default class StreamingReaderBuilder {
   
@@ -169,6 +170,23 @@ export default class StreamingReaderBuilder {
 
         // ...into a FHIR ImagingStudy resource
         this.handler = new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping());
+
+        return this;
+
+    }
+
+    /**
+     * Sets the current build to stream-parse DICOM data and emit native DICOM data bytes.
+     * @param {{ onChunk?: Function, collectOutput?: boolean } | null} options Options for streaming output.
+     * @returns The reference to the current builder.
+     */
+    toDicomData(options = null) {
+
+        // Setup for stream-parsing DICOM data ...
+        this.parser = new StreamingDicomDataParser();
+
+        // ...into native DICOM byte output
+        this.handler = new StreamingDicomDataWriterHandler(options);
 
         return this;
 
