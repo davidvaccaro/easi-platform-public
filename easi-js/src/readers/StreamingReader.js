@@ -140,6 +140,8 @@ export default class StreamingReader {
                 resolve(this._parser.result);
             else if (status == Status.JUMP)
                 resolve(this._parser.result);
+            else if (this._parser.error != null)
+                reject(this._parser.error);
             else
                 reject(new Exception("Failed parsing single DICOM data-set.", GeneralErrorCodes.GeneralError));
 
@@ -568,6 +570,8 @@ export default class StreamingReader {
                     resolve(that.parser.result);
                 else if (status == Status.JUMP)
                     resolve(that.parser.result);
+                else if (that.parser.error != null)
+                    reject(that.parser.error);
                 else
                     reject(new Exception("Failed parsing single DICOM data-set.", GeneralErrorCodes.GeneralError));
                 

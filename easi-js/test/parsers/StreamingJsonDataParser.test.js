@@ -1,5 +1,5 @@
 import StreamingJsonDataParser from '../../src/parsers/StreamingJsonDataParser.js';
-import StreamingJsonValueHandler from '../../src/handlers/StreamingJsonValueHandler.js';
+import StreamingJsonDataHandler from '../../src/handlers/StreamingJsonDataHandler.js';
 import { Status } from '../../src/parsers/Status.js';
 
 class StopHandler {
@@ -39,7 +39,7 @@ test('Test: Parses RFC literals true false null', async () => {
 
     const parser = new StreamingJsonDataParser();
     parser.reset();
-    parser.handler = new StreamingJsonValueHandler();
+    parser.handler = new StreamingJsonDataHandler();
 
     const payload = (new TextEncoder()).encode('{"a":true,"b":false,"c":null,"arr":[1,true,null]}');
     const status = await parser.parse(payload, true, payload.length, payload.length);
@@ -99,7 +99,7 @@ test('Test: Parses valid RFC escape sequences in strings', async () => {
 
     const parser = new StreamingJsonDataParser();
     parser.reset();
-    parser.handler = new StreamingJsonValueHandler();
+    parser.handler = new StreamingJsonDataHandler();
 
     const payload = (new TextEncoder()).encode('{"escaped":"a\\nb","unicode":"\\u0041"}');
     const status = await parser.parse(payload, true, payload.length, payload.length);
@@ -114,7 +114,7 @@ test('Test: Invalid RFC number (leading zero) returns FAIL', async () => {
 
     const parser = new StreamingJsonDataParser();
     parser.reset();
-    parser.handler = new StreamingJsonValueHandler();
+    parser.handler = new StreamingJsonDataHandler();
 
     const payload = (new TextEncoder()).encode('{"n":01}');
     const status = await parser.parse(payload, true, payload.length, payload.length);
@@ -127,7 +127,7 @@ test('Test: Invalid JSON returns FAIL', async () => {
 
     const parser = new StreamingJsonDataParser();
     parser.reset();
-    parser.handler = new StreamingJsonValueHandler();
+    parser.handler = new StreamingJsonDataHandler();
 
     const payload = (new TextEncoder()).encode('{"a":');
     const status = await parser.parse(payload, true, payload.length, payload.length);
@@ -139,7 +139,7 @@ test('Test: Invalid JSON returns FAIL', async () => {
 test('Test: Parser auto-resets when parse is called without explicit reset', async () => {
 
     const parser = new StreamingJsonDataParser();
-    parser.handler = new StreamingJsonValueHandler();
+    parser.handler = new StreamingJsonDataHandler();
 
     const payload = (new TextEncoder()).encode('{"ok":1}');
     const status = await parser.parse(payload, true, payload.length, payload.length);

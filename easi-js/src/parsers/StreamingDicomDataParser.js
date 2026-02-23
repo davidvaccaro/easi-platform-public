@@ -75,6 +75,15 @@ const DicomDataSetSpecification = [
 export default class StreamingDicomDataParser {
 
     /**
+     * Determine whether the supplied value is Promise-like.
+     * @param {*} value The value to test.
+     * @returns {boolean} TRUE when the value is thenable.
+     */
+    isThenable(value) {
+        return ((value != null) && (typeof value.then === 'function'));
+    }
+
+    /**
      * Reset the current state of the parser.
      */
     reset() {
@@ -431,7 +440,7 @@ export default class StreamingDicomDataParser {
      * @param {*} param The parameter to pass to the event.
      * @returns The status based on the standard processing.
      */
-    async fireStreamEvent(name, param, currentStatus) {
+    fireStreamEvent(name, param, currentStatus) {
 
         // If there is NO handler, NOOP
         if (this._handler == null)
@@ -450,46 +459,51 @@ export default class StreamingDicomDataParser {
             // Call the event function
             const result = this._handler[name](this.context, param);
 
-            if (result instanceof Promise)
-                status = await result;
-            else
-                status = result;
-
-            if (status == null) {
-                status = Status.CONTINUE;
+            if (this.isThenable(result) == true) {
+                return result.then((resolved) => ((resolved == null) ? Status.CONTINUE : resolved));
             }
 
-        }
-
-        // If the current status is to CONTINUE,
-        if ((name.startsWith('onEnd') == true) && (status == Status.CONTINUE)) {
-
-            // If the stream-handler supports "onProgress",
-            if (this._handler.onProgress != undefined) {
-
-                // Call the event function
-                const result = this._handler.onProgress(
-                    this.context, {
-                        bytesRead: this.bytesRead, 
-                        bytesProcessed: this.totalBytesConsumed, 
-                        bytesTotal: this.bytesTotal                        
-                    }
-                );
-
-                if (result instanceof Promise)
-                    status = await result;
-                else
-                    status = result;
-
-                if (status == null) {
-                    status = Status.CONTINUE;
-                }
-
-            }
+            status = (result == null) ? Status.CONTINUE : result;
 
         }
 
         return status;
+
+    }
+
+    /**
+     * Fires a throttled progress event. Parsers should call this explicitly (typically once per parse chunk).
+     * @param {*} currentStatus The current parser status.
+     * @returns {*} The resulting status.
+     */
+    fireProgressEvent(currentStatus = Status.CONTINUE) {
+
+        // If there is NO handler, NOOP
+        if (this._handler == null)
+            return Status.CONTINUE;
+
+        // Only pulse progress while continuing.
+        if (currentStatus != Status.CONTINUE)
+            return currentStatus;
+
+        // If the stream-handler does not support progress, NOOP.
+        if (this._handler.onProgress == undefined)
+            return Status.CONTINUE;
+
+        // Call the event function
+        const result = this._handler.onProgress(
+            this.context, {
+                bytesRead: this.bytesRead,
+                bytesProcessed: this.totalBytesConsumed,
+                bytesTotal: this.bytesTotal
+            }
+        );
+
+        if (this.isThenable(result) == true) {
+            return result.then((resolved) => ((resolved == null) ? Status.CONTINUE : resolved));
+        }
+
+        return (result == null) ? Status.CONTINUE : result;
 
     }
 
@@ -601,6 +615,15 @@ export default class StreamingDicomDataParser {
             // Parse more data-set
             status = await this.parseNextDataSet(isDone);
             
+        }
+
+        // Pulse progress once per parse invocation (chunk-level) instead of after every onEnd* event.
+        if (status == Status.CONTINUE) {
+            var progressStatus = await this.fireProgressEvent(status);
+            if ((progressStatus == Status.JUMP) || (progressStatus == Status.STOP) || (progressStatus == Status.FAIL)) {
+                status = progressStatus;
+                this.status = progressStatus;
+            }
         }
 
         // If the instance is complete, end the instance

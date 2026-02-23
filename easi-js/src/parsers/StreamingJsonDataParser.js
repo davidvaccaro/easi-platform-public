@@ -336,10 +336,23 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
      * @param {unknown} param The stream event parameter.
      * @returns The status returned from the stream handler.
      */
-    async fireJsonEvent(name, param = null) {
+    fireJsonEvent(name, param = null) {
 
         // Fire the underlying stream event.
-        var status = await super.fireStreamEvent(name, param);
+        var status = super.fireStreamEvent(name, param);
+
+        if (this.isThenable(status) == true) {
+            return status.then((resolved) => {
+
+                // Update parser status when terminal flow is requested.
+                if ((resolved == Status.JUMP) || (resolved == Status.STOP) || (resolved == Status.FAIL)) {
+                    this.status = resolved;
+                }
+
+                return resolved;
+
+            });
+        }
 
         // Update parser status when terminal flow is requested.
         if ((status == Status.JUMP) || (status == Status.STOP) || (status == Status.FAIL)) {
@@ -1342,6 +1355,14 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
                 // KEEP PARSING
             }
 
+            // Pulse progress once per parse invocation (chunk-level) instead of after every onEnd* event.
+            if (this.status == Status.CONTINUE) {
+                var progressStatus = await super.fireProgressEvent(this.status);
+                if ((progressStatus == Status.JUMP) || (progressStatus == Status.STOP) || (progressStatus == Status.FAIL)) {
+                    this.status = progressStatus;
+                }
+            }
+
             // Handle terminal statuses requested by the stream handler.
             if ((this.status == Status.STOP) || (this.status == Status.JUMP)) {
 
@@ -1364,6 +1385,9 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
 
                 // Reset state for the next parse.
                 this.reset();
+
+                // Preserve the parser error captured by onError (if any) for the caller.
+                // When FAIL is returned directly by a handler without an exception, this remains null.
 
                 return failedStatus;
 
@@ -1394,14 +1418,19 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
             // If input is done but parser still has buffered data or open tokens, this is invalid JSON.
             if (isDone == true) {
 
+                var invalidJsonError = new Exception("Invalid JSON: Unexpected end of input.", ParseErrorCodes.InvalidElement);
+
                 // Set failure status.
                 this.status = Status.FAIL;
 
                 // Notify the handler.
-                await super.fireStreamEvent("onError", new Exception("Invalid JSON: Unexpected end of input.", ParseErrorCodes.InvalidElement));
+                await super.fireStreamEvent("onError", invalidJsonError);
 
                 // Reset state for the next parse.
                 this.reset();
+
+                // Preserve the underlying parser error for the caller.
+                this.error = invalidJsonError;
 
                 return Status.FAIL;
 
@@ -1421,6 +1450,9 @@ export default class StreamingJsonDataParser extends StreamingDataParser {
 
             // Reset state for the next parse.
             this.reset();
+
+            // Preserve the underlying parser error for the caller.
+            this.error = error;
 
             return Status.FAIL;
 

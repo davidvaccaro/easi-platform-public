@@ -2,6 +2,9 @@ import StreamingReaderBuilder from "../../src/builders/StreamingReaderBuilder.js
 import StreamingDicomDataParser from "../../src/parsers/StreamingDicomDataParser.js";
 import StreamingJsonDataParser from "../../src/parsers/StreamingJsonDataParser.js";
 import StreamingDicomInstanceHandler from "../../src/handlers/StreamingDicomInstanceHandler.js";
+import StreamingDicomDeIdentificationHandler from "../../src/handlers/StreamingDicomDeIdentificationHandler.js";
+import StreamingDicomMetadataAdapterHandler from "../../src/handlers/StreamingDicomMetadataAdapterHandler.js";
+import StreamingDicomDataWriterHandler from "../../src/handlers/StreamingDicomDataWriterHandler.js";
 import Exception from "../../src/environment/Exception.js";
 import { BuilderErrorCodes } from "../../src/environment/Exception.js";
 
@@ -72,8 +75,8 @@ test("Test: build throws InvalidOnPart", () => {
 test("Test: build throws IncompatibleParserAndHandler", () => {
     const error = captureBuildError(
         new StreamingReaderBuilder()
-            .fromDicomMetadata()
-            .toDicomData()
+            .withParser(new StreamingJsonDataParser())
+            .withHandler(new StreamingDicomDataWriterHandler())
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -84,7 +87,7 @@ test("Test: build throws IncompatibleMaskAndParser", () => {
     const error = captureBuildError(
         new StreamingReaderBuilder()
             .withParser(new StreamingJsonDataParser())
-            .toInstances()
+            .withHandler({})
             .withMask(new Map())
     );
 
@@ -103,4 +106,26 @@ test("Test: build does not mutate builder handler when masking", () => {
 
     expect(builder.handler).toBe(originalHandler);
     expect(builder.handler instanceof StreamingDicomInstanceHandler).toBe(true);
+});
+
+test("Test: build composes metadata adapter with shared handler", () => {
+    const reader = new StreamingReaderBuilder()
+        .fromDicomMetadata()
+        .toSelection({})
+        .build();
+
+    expect(reader.parser instanceof StreamingJsonDataParser).toBe(true);
+    expect(reader.parser.handler instanceof StreamingDicomMetadataAdapterHandler).toBe(true);
+});
+
+test("Test: build composes metadata adapter -> deid -> writer when masking JSON metadata", () => {
+    const reader = new StreamingReaderBuilder()
+        .fromDicomMetadata()
+        .toDicomData()
+        .withMask(new Map())
+        .build();
+
+    expect(reader.parser.handler instanceof StreamingDicomMetadataAdapterHandler).toBe(true);
+    expect(reader.parser.handler.nextHandler instanceof StreamingDicomDeIdentificationHandler).toBe(true);
+    expect(reader.parser.handler.nextHandler.nextHandler instanceof StreamingDicomDataWriterHandler).toBe(true);
 });

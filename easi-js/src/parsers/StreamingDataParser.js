@@ -23,6 +23,15 @@ import Data from '../data/Data.js';
 import { Status } from './Status.js';
 
 export default class StreamingDataParser {
+
+    /**
+     * Determine whether the supplied value is Promise-like.
+     * @param {*} value The value to test.
+     * @returns {boolean} TRUE when the value is thenable.
+     */
+    isThenable(value) {
+        return ((value != null) && (typeof value.then === 'function'));
+    }
   
     /**
      * Fires a stream event or skips the event if the stream-handler does NOT support the event.
@@ -30,7 +39,7 @@ export default class StreamingDataParser {
      * @param {*} param The parameter to pass to the event.
      * @returns The status based on the standard processing.
      */
-    async fireStreamEvent(name, param, currentStatus) {
+    fireStreamEvent(name, param, currentStatus) {
 
         // If there is NO handler, NOOP
         if (this._handler == null)
@@ -49,46 +58,51 @@ export default class StreamingDataParser {
             // Call the event function
             const result = this._handler[name](this.context, param);
 
-            if (result instanceof Promise)
-                status = await result;
-            else
-                status = result;
-
-            if (status == null) {
-                status = Status.CONTINUE;
+            if (this.isThenable(result) == true) {
+                return result.then((resolved) => ((resolved == null) ? Status.CONTINUE : resolved));
             }
 
-        }
-
-        // If the current status is to CONTINUE,
-        if ((name.startsWith('onEnd') == true) && (status == Status.CONTINUE)) {
-
-            // If the stream-handler supports "onProgress",
-            if (this._handler.onProgress != undefined) {
-
-                // Call the event function
-                const result = this._handler.onProgress(
-                    this.context, {
-                        bytesRead: this.bytesRead, 
-                        bytesProcessed: this.totalBytesConsumed, 
-                        bytesTotal: this.bytesTotal                        
-                    }
-                );
-
-                if (result instanceof Promise)
-                    status = await result;
-                else
-                    status = result;
-
-                if (status == null) {
-                    status = Status.CONTINUE;
-                }
-
-            }
+            status = (result == null) ? Status.CONTINUE : result;
 
         }
 
         return status;
+
+    }
+
+    /**
+     * Fires a throttled progress event. Parsers should call this explicitly (typically once per parse chunk).
+     * @param {*} currentStatus The current parser status.
+     * @returns {*} The resulting status.
+     */
+    fireProgressEvent(currentStatus = Status.CONTINUE) {
+
+        // If there is NO handler, NOOP
+        if (this._handler == null)
+            return Status.CONTINUE;
+
+        // Only pulse progress while continuing.
+        if (currentStatus != Status.CONTINUE)
+            return currentStatus;
+
+        // If the stream-handler does not support progress, NOOP.
+        if (this._handler.onProgress == undefined)
+            return Status.CONTINUE;
+
+        // Call the event function
+        const result = this._handler.onProgress(
+            this.context, {
+                bytesRead: this.bytesRead,
+                bytesProcessed: this.totalBytesConsumed,
+                bytesTotal: this.bytesTotal
+            }
+        );
+
+        if (this.isThenable(result) == true) {
+            return result.then((resolved) => ((resolved == null) ? Status.CONTINUE : resolved));
+        }
+
+        return (result == null) ? Status.CONTINUE : result;
 
     }
 
@@ -113,6 +127,9 @@ export default class StreamingDataParser {
         this.bytesRead = 0;
         this.bytesProcessed = 0;
         this.bytesTotal = 0;
+
+        // Clear the last parser error.
+        this.error = null;
 
     }
         
@@ -166,6 +183,9 @@ export default class StreamingDataParser {
         
         // Init the session context
         this.context = null;
+
+        // Init the last parser error
+        this.error = null;
 
     }
     

@@ -53,7 +53,7 @@ Set the current handler.
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `handler` | `StreamingDicomInstanceHandler | StreamingDicomMetadataInstanceHandler | StreamingDicomMappingHandler | StreamingDicomSelectingHandler` | The handler used to handle parsed elements. |
+| `handler` | `StreamingDicomInstanceHandler | StreamingDicomMetadataAdapterHandler | StreamingDicomMappingHandler | StreamingDicomSelectingHandler` | The handler used to handle parsed elements. |
 
 #### Returns
 

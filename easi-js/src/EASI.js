@@ -27,9 +27,7 @@ import StreamingDicomInstanceHandler from "./handlers/StreamingDicomInstanceHand
 import StreamingDicomSelectingHandler from "./handlers/StreamingDicomSelectingHandler.js";
 import StreamingDicomMappingHandler from "./handlers/StreamingDicomMappingHandler.js";
 import StreamingDicomDataWriterHandler from "./handlers/StreamingDicomDataWriterHandler.js";
-import StreamingJsonValueHandler from "./handlers/StreamingJsonValueHandler.js";
-import StreamingDicomMetadataSelectingHandler from "./handlers/StreamingDicomMetadataSelectingHandler.js";
-import StreamingDicomMetadataMappingHandler from "./handlers/StreamingDicomMetadataMappingHandler.js";
+import StreamingJsonDataHandler from "./handlers/StreamingJsonDataHandler.js";
 import DicomToFHIRImagingStudyMapping from "./handlers/mappings/DicomToFHIRImagingStudyMapping.js";
 
 import DumpParser from "./tools/dicom/DumpParser.js";
@@ -115,7 +113,7 @@ export default class EASI {
      */
     static newStreamingDicomJsonSelectionReaderBuilder(selection) {
         return EASI.newStreamingDicomMetadataReaderBuilder()
-            .withHandler(new StreamingDicomMetadataSelectingHandler(selection));
+            .toSelection(selection);
     }
 
     /**
@@ -135,7 +133,7 @@ export default class EASI {
      */
     static newStreamingDicomJsonMappingReaderBuilder(mapping) {
         return EASI.newStreamingDicomMetadataReaderBuilder()
-            .withHandler(new StreamingDicomMetadataMappingHandler(mapping));
+            .toMapping(mapping);
     }
 
     /**
@@ -163,7 +161,7 @@ export default class EASI {
      */
     static newStreamingDicomJsonFHIRImagingStudyReaderBuilder() {
         return EASI.newStreamingDicomMetadataReaderBuilder()
-            .withHandler(new StreamingDicomMetadataMappingHandler(new DicomToFHIRImagingStudyMapping()));
+            .toFHIRImagingStudies();
     }
 
     /**
@@ -173,7 +171,7 @@ export default class EASI {
     static newStreamingJsonValueReaderBuilder() {
         return EASI.newStreamingReaderBuilder()
             .withParser(new StreamingJsonDataParser())
-            .withHandler(new StreamingJsonValueHandler());
+            .withHandler(new StreamingJsonDataHandler());
     }
 
     /**

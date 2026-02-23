@@ -1,19 +1,19 @@
-# `StreamingJsonValueHandler` Class
+# `StreamingJsonDataHandler` Class
 
-The `StreamingJsonValueHandler` class handles parser lifecycle callbacks to build or transform stream parse results.
+The `StreamingJsonDataHandler` class handles parser lifecycle callbacks to build or transform stream parse results.
 
 ---
 
 ## Inheritance
 
 ```text
-StreamingJsonValueHandler → (none)
+StreamingJsonDataHandler → (none)
 ```
 
 ## Constructor
 
 ```js
-new StreamingJsonValueHandler()
+new StreamingJsonDataHandler()
 ```
 
 ## Methods
@@ -278,10 +278,10 @@ Performs class-specific behavior.
 
 ```js
 import StreamingJsonDataParser from '../../src/parsers/StreamingJsonDataParser.js';
-import StreamingJsonValueHandler from '../../src/handlers/StreamingJsonValueHandler.js';
+import StreamingJsonDataHandler from '../../src/handlers/StreamingJsonDataHandler.js';
 
 const parser = new StreamingJsonDataParser();
-parser.handler = new StreamingJsonValueHandler();
+parser.handler = new StreamingJsonDataHandler();
 
 // Parse JSON and collect primitive/object values from stream events.
 ```
