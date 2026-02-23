@@ -4,8 +4,8 @@ import StreamingJsonDataParser from "../../src/parsers/StreamingJsonDataParser.j
 import StreamingXmlDataParser from "../../src/parsers/StreamingXmlDataParser.js";
 import StreamingDicomInstanceHandler from "../../src/handlers/StreamingDicomInstanceHandler.js";
 import StreamingDicomDeIdentificationHandler from "../../src/handlers/StreamingDicomDeIdentificationHandler.js";
-import StreamingDicomJsonMetadataAdapterHandler from "../../src/handlers/StreamingDicomJsonMetadataAdapterHandler.js";
-import StreamingDicomXmlMetadataAdapterHandler from "../../src/handlers/StreamingDicomXmlMetadataAdapterHandler.js";
+import StreamingDicomJsonMetadataAdapter from "../../src/handlers/adapters/StreamingDicomJsonMetadataAdapter.js";
+import StreamingDicomXmlMetadataAdapter from "../../src/handlers/adapters/StreamingDicomXmlMetadataAdapter.js";
 import StreamingDicomDataWriterHandler from "../../src/handlers/StreamingDicomDataWriterHandler.js";
 import Exception from "../../src/environment/Exception.js";
 import { BuilderErrorCodes } from "../../src/environment/Exception.js";
@@ -117,7 +117,7 @@ test("Test: build composes metadata adapter with shared handler", () => {
         .build();
 
     expect(reader.parser instanceof StreamingJsonDataParser).toBe(true);
-    expect(reader.parser.handler instanceof StreamingDicomJsonMetadataAdapterHandler).toBe(true);
+    expect(reader.parser.handler instanceof StreamingDicomJsonMetadataAdapter).toBe(true);
 });
 
 test("Test: build composes metadata adapter -> deid -> writer when masking JSON metadata", () => {
@@ -127,7 +127,7 @@ test("Test: build composes metadata adapter -> deid -> writer when masking JSON 
         .withMask(new Map())
         .build();
 
-    expect(reader.parser.handler instanceof StreamingDicomJsonMetadataAdapterHandler).toBe(true);
+    expect(reader.parser.handler instanceof StreamingDicomJsonMetadataAdapter).toBe(true);
     expect(reader.parser.handler.nextHandler instanceof StreamingDicomDeIdentificationHandler).toBe(true);
     expect(reader.parser.handler.nextHandler.nextHandler instanceof StreamingDicomDataWriterHandler).toBe(true);
 });
@@ -139,7 +139,7 @@ test("Test: build composes XML metadata adapter with shared handler", () => {
         .build();
 
     expect(reader.parser instanceof StreamingXmlDataParser).toBe(true);
-    expect(reader.parser.handler instanceof StreamingDicomXmlMetadataAdapterHandler).toBe(true);
+    expect(reader.parser.handler instanceof StreamingDicomXmlMetadataAdapter).toBe(true);
 });
 
 test("Test: build composes XML metadata adapter -> deid -> writer when masking XML metadata", () => {
@@ -149,7 +149,7 @@ test("Test: build composes XML metadata adapter -> deid -> writer when masking X
         .withMask(new Map())
         .build();
 
-    expect(reader.parser.handler instanceof StreamingDicomXmlMetadataAdapterHandler).toBe(true);
+    expect(reader.parser.handler instanceof StreamingDicomXmlMetadataAdapter).toBe(true);
     expect(reader.parser.handler.nextHandler instanceof StreamingDicomDeIdentificationHandler).toBe(true);
     expect(reader.parser.handler.nextHandler.nextHandler instanceof StreamingDicomDataWriterHandler).toBe(true);
 });

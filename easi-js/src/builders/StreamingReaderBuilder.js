@@ -30,8 +30,8 @@ import DicomToFHIRImagingStudyMapping from '../handlers/mappings/DicomToFHIRImag
 import StreamingDicomInstanceHandler from "../handlers/StreamingDicomInstanceHandler.js";
 import StreamingDicomMappingHandler from '../handlers/StreamingDicomMappingHandler.js';
 import StreamingDicomSelectingHandler from "../handlers/StreamingDicomSelectingHandler.js";
-import StreamingDicomJsonMetadataAdapterHandler from "../handlers/StreamingDicomJsonMetadataAdapterHandler.js";
-import StreamingDicomXmlMetadataAdapterHandler from "../handlers/StreamingDicomXmlMetadataAdapterHandler.js";
+import StreamingDicomJsonMetadataAdapter from "../handlers/adapters/StreamingDicomJsonMetadataAdapter.js";
+import StreamingDicomXmlMetadataAdapter from "../handlers/adapters/StreamingDicomXmlMetadataAdapter.js";
 import StreamingDicomDeIdentificationHandler from "../handlers/StreamingDicomDeIdentificationHandler.js";
 import StreamingDicomDataWriterHandler from "../handlers/StreamingDicomDataWriterHandler.js";
 import Exception from "../environment/Exception.js";
@@ -84,8 +84,8 @@ export default class StreamingReaderBuilder {
 
         // Native DICOM parser is incompatible with DICOM JSON/XML metadata adapter handlers.
         if ((parser instanceof StreamingDicomDataParser)
-            && ((handler instanceof StreamingDicomJsonMetadataAdapterHandler)
-                || (handler instanceof StreamingDicomXmlMetadataAdapterHandler))) {
+            && ((handler instanceof StreamingDicomJsonMetadataAdapter)
+                || (handler instanceof StreamingDicomXmlMetadataAdapter))) {
             throw new Exception(
                 `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
                 BuilderErrorCodes.IncompatibleParserAndHandler
@@ -93,7 +93,7 @@ export default class StreamingReaderBuilder {
         }
 
         // Prevent mixing JSON and XML metadata adapters with the wrong metadata parser.
-        if ((parser instanceof StreamingJsonDataParser) && (handler instanceof StreamingDicomXmlMetadataAdapterHandler)) {
+        if ((parser instanceof StreamingJsonDataParser) && (handler instanceof StreamingDicomXmlMetadataAdapter)) {
             throw new Exception(
                 `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
                 BuilderErrorCodes.IncompatibleParserAndHandler
@@ -101,8 +101,8 @@ export default class StreamingReaderBuilder {
         }
 
         if ((parser instanceof StreamingXmlDataParser)
-            && (handler instanceof StreamingDicomJsonMetadataAdapterHandler)
-            && (handler instanceof StreamingDicomXmlMetadataAdapterHandler == false)) {
+            && (handler instanceof StreamingDicomJsonMetadataAdapter)
+            && (handler instanceof StreamingDicomXmlMetadataAdapter == false)) {
             throw new Exception(
                 `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
                 BuilderErrorCodes.IncompatibleParserAndHandler
@@ -119,11 +119,11 @@ export default class StreamingReaderBuilder {
     wrapDicomMetadataAdapterIfNeeded(handler) {
 
         if (this.parser instanceof StreamingJsonDataParser) {
-            return new StreamingDicomJsonMetadataAdapterHandler(handler);
+            return new StreamingDicomJsonMetadataAdapter(handler);
         }
 
         if (this.parser instanceof StreamingXmlDataParser) {
-            return new StreamingDicomXmlMetadataAdapterHandler(handler);
+            return new StreamingDicomXmlMetadataAdapter(handler);
         }
 
         return handler;
@@ -142,7 +142,7 @@ export default class StreamingReaderBuilder {
       
     /**
      * Set the current handler.
-     * @param {StreamingDicomInstanceHandler | StreamingDicomMappingHandler | StreamingDicomSelectingHandler | StreamingDicomJsonMetadataAdapterHandler} handler The handler used to handle parsed elements.
+     * @param {StreamingDicomInstanceHandler | StreamingDicomMappingHandler | StreamingDicomSelectingHandler | StreamingDicomJsonMetadataAdapter} handler The handler used to handle parsed elements.
      * @returns The reference to the current builder.
      */
     withHandler(handler) {
@@ -229,9 +229,9 @@ export default class StreamingReaderBuilder {
         if ((this.parser instanceof StreamingDicomDataParser) || (this.parser == null))
             this.handler = new StreamingDicomInstanceHandler();
         else if (this.parser instanceof StreamingJsonDataParser)
-            this.handler = new StreamingDicomJsonMetadataAdapterHandler(new StreamingDicomInstanceHandler());
+            this.handler = new StreamingDicomJsonMetadataAdapter(new StreamingDicomInstanceHandler());
         else if (this.parser instanceof StreamingXmlDataParser)
-            this.handler = new StreamingDicomXmlMetadataAdapterHandler(new StreamingDicomInstanceHandler());
+            this.handler = new StreamingDicomXmlMetadataAdapter(new StreamingDicomInstanceHandler());
 
         return this;
 
@@ -366,8 +366,8 @@ export default class StreamingReaderBuilder {
             }
             else if (parser instanceof StreamingJsonDataParser) {
 
-                if (handler instanceof StreamingDicomJsonMetadataAdapterHandler) {
-                    handler = new StreamingDicomJsonMetadataAdapterHandler(
+                if (handler instanceof StreamingDicomJsonMetadataAdapter) {
+                    handler = new StreamingDicomJsonMetadataAdapter(
                         new StreamingDicomDeIdentificationHandler(handler.nextHandler, this.mask)
                     );
                 }
@@ -381,8 +381,8 @@ export default class StreamingReaderBuilder {
             }
             else if (parser instanceof StreamingXmlDataParser) {
 
-                if (handler instanceof StreamingDicomXmlMetadataAdapterHandler) {
-                    handler = new StreamingDicomXmlMetadataAdapterHandler(
+                if (handler instanceof StreamingDicomXmlMetadataAdapter) {
+                    handler = new StreamingDicomXmlMetadataAdapter(
                         new StreamingDicomDeIdentificationHandler(handler.nextHandler, this.mask)
                     );
                 }

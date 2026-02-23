@@ -196,7 +196,7 @@ Use this index to navigate all documentation markdown files in `easi-js/doc`.
 - [StreamingDicomInstanceHandler](./handlers/StreamingDicomInstanceHandler.md)
 - [StreamingDicomMappingHandler](./handlers/StreamingDicomMappingHandler.md)
 - [StreamingDicomSelectingHandler](./handlers/StreamingDicomSelectingHandler.md)
-- [StreamingDicomJsonMetadataAdapterHandler](./handlers/StreamingDicomJsonMetadataAdapterHandler.md)
+- [StreamingDicomJsonMetadataAdapter](./handlers/adapters/StreamingDicomJsonMetadataAdapter.md)
 - [StreamingJsonDataHandler](./handlers/StreamingJsonDataHandler.md)
 
 ### handlers/mappings

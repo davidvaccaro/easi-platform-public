@@ -1,7 +1,7 @@
 //
-// StreamingDicomJsonMetadataAdapterHandler.js - 1.0.0
+// StreamingDicomJsonMetadataAdapter.js - 1.0.0
 //
-// Streaming DICOM Metadata Adapter Handler Class
+// Streaming DICOM Metadata Adapter Class
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,18 +19,18 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import Instance from "../dicom/Instance.js";
-import Attribute from "../dicom/Attribute.js";
-import AttributeSequence from "../dicom/AttributeSequence.js";
-import Item from "../dicom/Item.js";
-import MetaSet from "../dicom/MetaSet.js";
-import DataSet from "../dicom/DataSet.js";
-import ValueRepresentation from "../dicom/ValueRepresentation.js";
-import Tag from "../dicom/Tag.js"
-import TransferSyntax from "../dicom/TransferSyntax.js";
-import { Status } from "../parsers/Status.js";
+import Instance from "../../dicom/Instance.js";
+import Attribute from "../../dicom/Attribute.js";
+import AttributeSequence from "../../dicom/AttributeSequence.js";
+import Item from "../../dicom/Item.js";
+import MetaSet from "../../dicom/MetaSet.js";
+import DataSet from "../../dicom/DataSet.js";
+import ValueRepresentation from "../../dicom/ValueRepresentation.js";
+import Tag from "../../dicom/Tag.js"
+import TransferSyntax from "../../dicom/TransferSyntax.js";
+import { Status } from "../../parsers/Status.js";
 
-export default class StreamingDicomJsonMetadataAdapterHandler {
+export default class StreamingDicomJsonMetadataAdapter {
 
     /**
      * Defer downstream terminal control-flow statuses until the current metadata instance closes.

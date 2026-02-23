@@ -10,8 +10,8 @@ import StreamingDicomInstanceHandler from '../src/handlers/StreamingDicomInstanc
 import StreamingDicomSelectingHandler from '../src/handlers/StreamingDicomSelectingHandler.js';
 import StreamingDicomMappingHandler from '../src/handlers/StreamingDicomMappingHandler.js';
 import StreamingDicomDataWriterHandler from '../src/handlers/StreamingDicomDataWriterHandler.js';
-import StreamingDicomJsonMetadataAdapterHandler from '../src/handlers/StreamingDicomJsonMetadataAdapterHandler.js';
-import StreamingDicomXmlMetadataAdapterHandler from '../src/handlers/StreamingDicomXmlMetadataAdapterHandler.js';
+import StreamingDicomJsonMetadataAdapter from '../src/handlers/adapters/StreamingDicomJsonMetadataAdapter.js';
+import StreamingDicomXmlMetadataAdapter from '../src/handlers/adapters/StreamingDicomXmlMetadataAdapter.js';
 import StreamingJsonDataHandler from '../src/handlers/StreamingJsonDataHandler.js';
 
 import DicomToFHIRImagingStudyMapping from '../src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
@@ -54,14 +54,14 @@ test('Test: newStreamingDicomInstanceReaderBuilder', () => {
 test('Test: newStreamingDicomJsonInstanceReaderBuilder', () => {
     const builder = EASI.newStreamingDicomJsonInstanceReaderBuilder();
     expect(builder.parser instanceof StreamingJsonDataParser).toBe(true);
-    expect(builder.handler instanceof StreamingDicomJsonMetadataAdapterHandler).toBe(true);
+    expect(builder.handler instanceof StreamingDicomJsonMetadataAdapter).toBe(true);
     expect(builder.handler.nextHandler instanceof StreamingDicomInstanceHandler).toBe(true);
 });
 
 test('Test: newStreamingDicomXmlInstanceReaderBuilder', () => {
     const builder = EASI.newStreamingDicomXmlInstanceReaderBuilder();
     expect(builder.parser instanceof StreamingXmlDataParser).toBe(true);
-    expect(builder.handler instanceof StreamingDicomXmlMetadataAdapterHandler).toBe(true);
+    expect(builder.handler instanceof StreamingDicomXmlMetadataAdapter).toBe(true);
     expect(builder.handler.nextHandler instanceof StreamingDicomInstanceHandler).toBe(true);
 });
 
@@ -77,7 +77,7 @@ test('Test: newStreamingDicomJsonSelectionReaderBuilder', () => {
     const selection = {};
     const builder = EASI.newStreamingDicomJsonSelectionReaderBuilder(selection);
     expect(builder.parser instanceof StreamingJsonDataParser).toBe(true);
-    expect(builder.handler instanceof StreamingDicomJsonMetadataAdapterHandler).toBe(true);
+    expect(builder.handler instanceof StreamingDicomJsonMetadataAdapter).toBe(true);
     expect(builder.handler.nextHandler instanceof StreamingDicomSelectingHandler).toBe(true);
     expect(builder.handler.nextHandler.selection).toBe(selection);
 });
@@ -86,7 +86,7 @@ test('Test: newStreamingDicomXmlSelectionReaderBuilder', () => {
     const selection = {};
     const builder = EASI.newStreamingDicomXmlSelectionReaderBuilder(selection);
     expect(builder.parser instanceof StreamingXmlDataParser).toBe(true);
-    expect(builder.handler instanceof StreamingDicomXmlMetadataAdapterHandler).toBe(true);
+    expect(builder.handler instanceof StreamingDicomXmlMetadataAdapter).toBe(true);
     expect(builder.handler.nextHandler instanceof StreamingDicomSelectingHandler).toBe(true);
     expect(builder.handler.nextHandler.selection).toBe(selection);
 });
@@ -103,7 +103,7 @@ test('Test: newStreamingDicomJsonMappingReaderBuilder', () => {
     const mapping = {};
     const builder = EASI.newStreamingDicomJsonMappingReaderBuilder(mapping);
     expect(builder.parser instanceof StreamingJsonDataParser).toBe(true);
-    expect(builder.handler instanceof StreamingDicomJsonMetadataAdapterHandler).toBe(true);
+    expect(builder.handler instanceof StreamingDicomJsonMetadataAdapter).toBe(true);
     expect(builder.handler.nextHandler instanceof StreamingDicomMappingHandler).toBe(true);
     expect(builder.handler.nextHandler.mapping).toBe(mapping);
 });
@@ -112,7 +112,7 @@ test('Test: newStreamingDicomXmlMappingReaderBuilder', () => {
     const mapping = {};
     const builder = EASI.newStreamingDicomXmlMappingReaderBuilder(mapping);
     expect(builder.parser instanceof StreamingXmlDataParser).toBe(true);
-    expect(builder.handler instanceof StreamingDicomXmlMetadataAdapterHandler).toBe(true);
+    expect(builder.handler instanceof StreamingDicomXmlMetadataAdapter).toBe(true);
     expect(builder.handler.nextHandler instanceof StreamingDicomMappingHandler).toBe(true);
     expect(builder.handler.nextHandler.mapping).toBe(mapping);
 });
@@ -133,7 +133,7 @@ test('Test: newStreamingDicomDataWriterReaderBuilder', () => {
 test('Test: newStreamingDicomJsonFHIRImagingStudyReaderBuilder', () => {
     const builder = EASI.newStreamingDicomJsonFHIRImagingStudyReaderBuilder();
     expect(builder.parser instanceof StreamingJsonDataParser).toBe(true);
-    expect(builder.handler instanceof StreamingDicomJsonMetadataAdapterHandler).toBe(true);
+    expect(builder.handler instanceof StreamingDicomJsonMetadataAdapter).toBe(true);
     expect(builder.handler.nextHandler instanceof StreamingDicomMappingHandler).toBe(true);
     expect(builder.handler.nextHandler.mapping instanceof DicomToFHIRImagingStudyMapping).toBe(true);
 });
@@ -141,7 +141,7 @@ test('Test: newStreamingDicomJsonFHIRImagingStudyReaderBuilder', () => {
 test('Test: newStreamingDicomXmlFHIRImagingStudyReaderBuilder', () => {
     const builder = EASI.newStreamingDicomXmlFHIRImagingStudyReaderBuilder();
     expect(builder.parser instanceof StreamingXmlDataParser).toBe(true);
-    expect(builder.handler instanceof StreamingDicomXmlMetadataAdapterHandler).toBe(true);
+    expect(builder.handler instanceof StreamingDicomXmlMetadataAdapter).toBe(true);
     expect(builder.handler.nextHandler instanceof StreamingDicomMappingHandler).toBe(true);
     expect(builder.handler.nextHandler.mapping instanceof DicomToFHIRImagingStudyMapping).toBe(true);
 });

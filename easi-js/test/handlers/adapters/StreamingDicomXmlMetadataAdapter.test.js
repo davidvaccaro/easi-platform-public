@@ -1,10 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import StreamingXmlDataParser from '../../src/parsers/StreamingXmlDataParser.js';
-import StreamingDicomXmlMetadataAdapterHandler from '../../src/handlers/StreamingDicomXmlMetadataAdapterHandler.js';
-import StreamingDicomInstanceHandler from '../../src/handlers/StreamingDicomInstanceHandler.js';
-import { Status } from '../../src/parsers/Status.js';
-import Tag from '../../src/dicom/Tag.js';
+import StreamingXmlDataParser from '../../../src/parsers/StreamingXmlDataParser.js';
+import StreamingDicomXmlMetadataAdapter from '../../../src/handlers/adapters/StreamingDicomXmlMetadataAdapter.js';
+import StreamingDicomInstanceHandler from '../../../src/handlers/StreamingDicomInstanceHandler.js';
+import { Status } from '../../../src/parsers/Status.js';
+import Tag from '../../../src/dicom/Tag.js';
 
 test('Test: XML metadata adapter parses Native DICOM Model XML and emits Instance', async () => {
 
@@ -40,7 +40,7 @@ test('Test: XML metadata adapter parses Native DICOM Model XML and emits Instanc
 
     const parser = new StreamingXmlDataParser();
     parser.reset();
-    parser.handler = new StreamingDicomXmlMetadataAdapterHandler(new StreamingDicomInstanceHandler());
+    parser.handler = new StreamingDicomXmlMetadataAdapter(new StreamingDicomInstanceHandler());
 
     const status = await parser.parse(bytes, true, bytes.length, bytes.length);
 
@@ -78,7 +78,7 @@ test('Test: XML metadata adapter supports adapter-only materialization mode', as
 
     const parser = new StreamingXmlDataParser();
     parser.reset();
-    parser.handler = new StreamingDicomXmlMetadataAdapterHandler();
+    parser.handler = new StreamingDicomXmlMetadataAdapter();
 
     const status = await parser.parse(bytes, true, bytes.length, bytes.length);
 
@@ -96,7 +96,7 @@ test('Test: XML metadata adapter parses repository DICOMweb XML sample file', as
 
     const parser = new StreamingXmlDataParser();
     parser.reset();
-    parser.handler = new StreamingDicomXmlMetadataAdapterHandler(new StreamingDicomInstanceHandler());
+    parser.handler = new StreamingDicomXmlMetadataAdapter(new StreamingDicomInstanceHandler());
 
     const status = await parser.parse(new Uint8Array(bytes), true, bytes.length, bytes.length);
 

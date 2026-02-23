@@ -1,26 +1,26 @@
 //
-// StreamingDicomXmlMetadataAdapterHandler.js - 1.0.0
+// StreamingDicomXmlMetadataAdapter.js - 1.0.0
 //
-// Streaming DICOM XML Metadata Adapter Handler Class
+// Streaming DICOM XML Metadata Adapter Class
 //
 
-import Instance from "../dicom/Instance.js";
-import Attribute from "../dicom/Attribute.js";
-import AttributeSequence from "../dicom/AttributeSequence.js";
-import Item from "../dicom/Item.js";
-import MetaSet from "../dicom/MetaSet.js";
-import DataSet from "../dicom/DataSet.js";
-import ValueRepresentation from "../dicom/ValueRepresentation.js";
-import Tag from "../dicom/Tag.js";
-import TransferSyntax from "../dicom/TransferSyntax.js";
-import StreamingDicomJsonMetadataAdapterHandler from "./StreamingDicomJsonMetadataAdapterHandler.js";
-import Exception from "../environment/Exception.js";
-import { ParseErrorCodes } from "../environment/Exception.js";
-import { Status } from "../parsers/Status.js";
+import Instance from "../../dicom/Instance.js";
+import Attribute from "../../dicom/Attribute.js";
+import AttributeSequence from "../../dicom/AttributeSequence.js";
+import Item from "../../dicom/Item.js";
+import MetaSet from "../../dicom/MetaSet.js";
+import DataSet from "../../dicom/DataSet.js";
+import ValueRepresentation from "../../dicom/ValueRepresentation.js";
+import Tag from "../../dicom/Tag.js";
+import TransferSyntax from "../../dicom/TransferSyntax.js";
+import StreamingDicomJsonMetadataAdapter from "./StreamingDicomJsonMetadataAdapter.js";
+import Exception from "../../environment/Exception.js";
+import { ParseErrorCodes } from "../../environment/Exception.js";
+import { Status } from "../../parsers/Status.js";
 
 const PersonNamePartOrder = ['FamilyName', 'GivenName', 'MiddleName', 'NamePrefix', 'NameSuffix'];
 
-export default class StreamingDicomXmlMetadataAdapterHandler extends StreamingDicomJsonMetadataAdapterHandler {
+export default class StreamingDicomXmlMetadataAdapter extends StreamingDicomJsonMetadataAdapter {
 
     /**
      * Emit a DICOM attribute through the canonical downstream handler interface.
