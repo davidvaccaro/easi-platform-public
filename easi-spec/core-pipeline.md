@@ -8,17 +8,35 @@ Define the normative core execution model of EASI independent of language and tr
 
 EASI is a streaming pipeline composed of:
 
-1. `Reader`
-2. `Parser`
-3. `Handler`
+1. `Source` (input bytes / stream payload)
+2. `Reader`
+3. `Parser`
+4. `HandlerChain` (zero or more handler stages)
+5. `TerminalHandler`
+6. optional `Writer` (transport/output packaging stage)
 
 High-level flow:
 
-1. A `Reader` receives input bytes or stream data.
+1. A `Reader` receives input bytes or stream data from the `Source`.
 2. The `Reader` forwards input to a configured `Parser`.
 3. The `Parser` decodes the source format incrementally.
-4. The `Parser` emits lifecycle events to a configured `Handler`.
-5. The `Handler` produces the final output object(s), stream bytes, or side effects.
+4. The `Parser` emits lifecycle events to the head of the configured handler chain.
+5. Each handler stage may inspect, transform, or forward events.
+6. The `TerminalHandler` produces the final output object(s), emitted bytes, or side effects.
+7. When used, a `Writer` packages output for transport (for example single-part or multipart framing).
+
+Example forms:
+
+- Typical parse/materialize pipeline: `Reader -> Parser -> TerminalHandler`
+- Filtered pipeline: `Reader -> Parser -> HandlerChain -> TerminalHandler`
+- Parse/transform/emit pipeline: `Reader -> Parser -> HandlerChain -> TerminalHandler -> Writer`
+
+## Normative Terminology
+
+- `HandlerChain`: ordered handler stages that receive parser lifecycle events.
+- `Filter Handler` / `Transform Handler`: a handler stage that modifies or selectively forwards events to a next handler (for example de-identification).
+- `TerminalHandler`: the final handler stage that materializes output, emits bytes, or records results.
+- `Writer`: an optional post-handler output packaging component (for example multipart body writer).
 
 ## Component Responsibilities
 
@@ -50,18 +68,35 @@ Non-responsibilities:
 - Transport retrieval and HTTP concerns
 - Domain-specific output mapping logic
 
-### Handler
+### HandlerChain / TerminalHandler
 
 Responsibilities:
 
 - Receives parser lifecycle events
-- Materializes or transforms parsed content
-- May stream output incrementally (for example native DICOM write handler)
+- Handler stages may transform, filter, annotate, or forward parsed content
+- Terminal handlers materialize output or emit stream bytes incrementally (for example native DICOM write handler)
 - Returns status values to influence parser control flow
 
 Non-responsibilities:
 
 - Source format tokenization/decoding
+
+Implementation note (reference behavior):
+
+- De-identification is represented as a filter handler that wraps a terminal handler and forwards lifecycle events to `nextHandler`.
+
+### Writer (Optional)
+
+Responsibilities:
+
+- Packages terminal handler output for a destination protocol or transport shape
+- Supports output framing concerns (for example single-part vs multipart)
+- Streams output bytes/chunks without requiring full buffering when supported
+
+Non-responsibilities:
+
+- Source format parsing
+- DICOM semantic transformation (unless explicitly implemented as a handler instead)
 
 ## Builder Wiring Contract (Summary)
 
@@ -75,8 +110,9 @@ When `build()` is called:
 
 1. The builder must create/configure a `Reader`.
 2. The builder must assign `reader.parser`.
-3. The builder must assign `parser.handler`.
-4. The builder must apply configured options/defaults.
+3. The builder must compose any configured handler stages and terminal handler.
+4. The builder must assign `parser.handler` to the head of the composed chain.
+5. The builder must apply configured options/defaults.
 
 Detailed builder requirements are defined in `builder-contract.md`.
 
@@ -85,7 +121,8 @@ Detailed builder requirements are defined in `builder-contract.md`.
 The following extension classes are first-class EASI concepts:
 
 - New parser implementations (new source formats)
-- New handler implementations (new outputs / transformations)
+- New handler implementations (filter/transform stages and terminal handlers)
+- New writer implementations (transport/output packaging)
 - New mapping abstractions (domain transformation)
 - New selection abstractions (targeted extraction)
 

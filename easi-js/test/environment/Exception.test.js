@@ -1,6 +1,7 @@
 import Exception from '../../src/environment/Exception.js';
 import { GeneralErrorCodes } from '../../src/environment/Exception.js';
 import { DicomErrorCodes } from '../../src/environment/Exception.js';
+import { BuilderErrorCodes } from '../../src/environment/Exception.js';
 
 test("Test: GeneralError", () => {
     const t = () => {
@@ -70,4 +71,12 @@ test("Test: InvalidMetaSet", () => {
       throw new Exception("InvalidMetaSet", DicomErrorCodes.InvalidMetaSet);
     };
     expect(t).toThrow(Exception);
+});
+
+test("Test: Exception extends Error", () => {
+    const error = new Exception("MissingParser", BuilderErrorCodes.MissingParser);
+    expect(error instanceof Error).toBe(true);
+    expect(error instanceof Exception).toBe(true);
+    expect(error.message).toBe("MissingParser");
+    expect(error.code).toBe(BuilderErrorCodes.MissingParser);
 });

@@ -1,7 +1,7 @@
 //
-// CharacterUtils.js - 1.0.0
+// DiagnosticUtils.js - 1.0.0
 //
-// Character Utils Class 
+// Diagnostic Utils Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,15 +19,19 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class CharacterUtils {
+export default class DiagnosticUtils {
 
     /**
-     * Tests the specified string value to determine if it is "whitespace" (per JSON definition).
-     * @param {number} char The character to test.
-     * @returns TRUE if the spoecified character is "whitespace", FALSE otherwise.
+     * Gets a friendly type name for diagnostics.
+     * @param {*} value The current value.
+     * @returns {string} A readable type name.
      */
-    static isWhitespace = (byte) => {
-        return byte === 0x20 || byte === 0x09 || byte === 0x0A || byte === 0x0D;
+    static getTypeName(value) {
+        if (value == null)
+            return 'null';
+        if ((value.constructor != null) && (value.constructor.name != null))
+            return value.constructor.name;
+        return typeof value;
     }
 
 };

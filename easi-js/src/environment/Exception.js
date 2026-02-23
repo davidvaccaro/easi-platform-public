@@ -19,7 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-export default class Exception {
+export default class Exception extends Error {
 
     /**
      * Create a new Exception given a message, code and optional underlying error.
@@ -28,9 +28,11 @@ export default class Exception {
      * @param {Error | null} error The underlying error associated to the error condition.
      */
     constructor(message, code = GeneralErrorCodes.GeneralError, error = null) {
-        this.message = message;
+        super(message);
+        this.name = 'Exception';
         this.code = code;
         this.error = error;
+        Object.setPrototypeOf(this, new.target.prototype);
     }
 
 };
@@ -50,6 +52,20 @@ export var GeneralErrorCodes = {
 export var ParseErrorCodes = {
     InvalidToken: 'InvalidToken',
     InvalidElement: 'InvalidElement'
+};
+
+/**
+ * Builder error conditions.
+ */
+export var BuilderErrorCodes = {
+    MissingParser: 'MissingParser',
+    MissingHandler: 'MissingHandler',
+    InvalidParser: 'InvalidParser',
+    InvalidHandler: 'InvalidHandler',
+    IncompatibleParserAndHandler: 'IncompatibleParserAndHandler',
+    IncompatibleMaskAndParser: 'IncompatibleMaskAndParser',
+    InvalidOnPart: 'InvalidOnPart',
+    InvalidBuildState: 'InvalidBuildState'
 };
 
 /**

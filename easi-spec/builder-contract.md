@@ -9,7 +9,9 @@ Define the normative builder semantics for constructing EASI pipelines.
 The builder provides a declarative way to configure:
 
 - source format (`fromXxx`)
-- output strategy (`toXxx`)
+- output strategy (`toXxx`) via a terminal handler
+- optional handler chain stages (for example de-identification)
+- optional output packaging/writer composition where supported by the implementation
 - optional parser/handler overrides (`withXxx`)
 - optional control flags (`withIsStrict`, masks, callbacks, etc.)
 
@@ -38,9 +40,10 @@ Examples:
 
 Normative intent:
 
-- `toXxx` configures handler/output strategy
+- `toXxx` configures a terminal handler/output strategy
 - `toXxx` may also apply parser defaults where the scenario demands a specific parser
 - Any parser override behavior must be documented explicitly
+- `toXxx` does not preclude additional handler stages being composed around the terminal handler during `build()`
 
 ### Overrides (`with...`)
 
@@ -55,18 +58,20 @@ Normative intent:
 
 - `withXxx` methods set explicit caller intent
 - Later calls override earlier calls unless otherwise documented
+- Some `withXxx` methods may configure deferred composition behavior (for example `withMask(mask)` causing a de-identification filter handler to wrap the terminal handler during `build()`)
 
 ## `build()` Contract (Draft)
 
 `build()` must:
 
 1. Validate that a parser is available (configured or defaulted)
-2. Default the handler when omitted (if a default exists for the selected parser)
+2. Determine or default the terminal handler when omitted (if a default exists for the selected parser)
 3. Create/configure a reader
-4. Wire `reader.parser`
-5. Wire `parser.handler`
-6. Apply builder options to parser/reader/handler as defined
-7. Return the configured reader
+4. Compose configured handler chain stages around the terminal handler (if any)
+5. Wire `reader.parser`
+6. Wire `parser.handler` to the head of the composed chain (or the terminal handler when no chain stages exist)
+7. Apply builder options to parser/reader/handler as defined
+8. Return the configured reader
 
 ## Precedence Rules (Draft)
 
@@ -75,6 +80,7 @@ Define and freeze precedence for combinations such as:
 - `fromXxx().withParser(customParser)`
 - `withParser(customParser).toInstances()`
 - `toMapping(mapping)` when a non-DICOM parser is already selected
+- `withMask(mask).withHandler(customHandler)` and `withHandler(customHandler).withMask(mask)` (whether mask wraps the explicit handler)
 
 Current implementation behavior should be documented before this is frozen.
 
@@ -84,14 +90,18 @@ Current implementation behavior should be documented before this is frozen.
 
 - `newStreamingReaderBuilder()`
 - `fromXxx`, `toXxx`, `withXxx`, `build()`
+- handler-chain composition semantics
+- status propagation through handler chains
 
 ### Convenience (may evolve)
 
 - `EASI.newStreamingDicomInstanceReaderBuilder()`
 - `EASI.newStreamingDicomDataWriterReaderBuilder()`
 - other scenario-specific helpers
+- explicit transport writer helpers and shortcuts beyond the core reader/parser/handler builder
 
 ## Open Design Questions (to resolve before freeze)
 
 - Should builder methods return specialized typed builder states in some languages?
 - Which `toXxx` methods are normative vs implementation conveniences?
+- Should writer composition be modeled directly in the reader builder, or remain an implementation-level helper after terminal handler emission?

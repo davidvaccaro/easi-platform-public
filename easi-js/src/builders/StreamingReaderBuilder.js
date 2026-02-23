@@ -32,8 +32,63 @@ import StreamingDicomSelectingHandler from "../handlers/StreamingDicomSelectingH
 import StreamingDicomMetadataInstanceHandler from "../handlers/StreamingDicomMetadataInstanceHandler.js";
 import StreamingDicomDeIdentificationHandler from "../handlers/StreamingDicomDeIdentificationHandler.js";
 import StreamingDicomDataWriterHandler from "../handlers/StreamingDicomDataWriterHandler.js";
+import Exception from "../environment/Exception.js";
+import DiagnosticUtils from "../utils/DiagnosticUtils.js";
+import { BuilderErrorCodes } from "../environment/Exception.js";
 
 export default class StreamingReaderBuilder {
+
+    /**
+     * Determines if the parser appears to implement the EASI parser contract.
+     * @param {object} parser The parser instance.
+     * @returns {boolean} True if the parser looks valid.
+     */
+    isValidParser(parser) {
+        return ((parser != null)
+            && (typeof parser.reset == 'function')
+            && (typeof parser.parse == 'function'));
+    }
+
+    /**
+     * Determines if the handler appears to implement the EASI handler contract.
+     * @param {object} handler The handler instance.
+     * @returns {boolean} True if the handler looks valid.
+     */
+    isValidHandler(handler) {
+        return ((handler != null) && (typeof handler == 'object'));
+    }
+
+    /**
+     * Validates compatibility of known parser and handler pairings.
+     * @param {object} parser The configured parser.
+     * @param {object} handler The configured handler.
+     */
+    validateParserHandlerCompatibility(parser, handler) {
+        // DICOM JSON metadata parser is incompatible with native DICOM byte-stream handlers.
+        if (parser instanceof StreamingJsonDataParser) {
+
+            if ((handler instanceof StreamingDicomInstanceHandler)
+                || (handler instanceof StreamingDicomMappingHandler)
+                || (handler instanceof StreamingDicomSelectingHandler)
+                || (handler instanceof StreamingDicomDataWriterHandler)
+                || (handler instanceof StreamingDicomDeIdentificationHandler)) {
+                throw new Exception(
+                    `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
+                    BuilderErrorCodes.IncompatibleParserAndHandler
+                );
+            }
+
+        }
+
+        // Native DICOM parser is incompatible with DICOM JSON metadata handlers.
+        if ((parser instanceof StreamingDicomDataParser) && (handler instanceof StreamingDicomMetadataInstanceHandler)) {
+            throw new Exception(
+                `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
+                BuilderErrorCodes.IncompatibleParserAndHandler
+            );
+        }
+
+    }
   
     /**
      * Set the current parser.
@@ -133,9 +188,6 @@ export default class StreamingReaderBuilder {
      */
     toMapping(mapping) {
         
-        // Setup for stream-parsing DICOM data ...
-        this.parser = new StreamingDicomDataParser();
-
         // ...into a mapping
         this.handler = new StreamingDicomMappingHandler(mapping);
 
@@ -149,9 +201,6 @@ export default class StreamingReaderBuilder {
      */
     toSelection(selection) {
         
-        // Setup for stream-parsing DICOM data ...
-        this.parser = new StreamingDicomDataParser();
-
         // ...into a selection
         this.handler = new StreamingDicomSelectingHandler(selection);
 
@@ -165,9 +214,6 @@ export default class StreamingReaderBuilder {
      */
     toFHIRImagingStudies() {
         
-        // Setup for stream-parsing DICOM data ...
-        this.parser = new StreamingDicomDataParser();
-
         // ...into a FHIR ImagingStudy resource
         this.handler = new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping());
 
@@ -182,9 +228,6 @@ export default class StreamingReaderBuilder {
      */
     toDicomData(options = null) {
 
-        // Setup for stream-parsing DICOM data ...
-        this.parser = new StreamingDicomDataParser();
-
         // ...into native DICOM byte output
         this.handler = new StreamingDicomDataWriterHandler(options);
 
@@ -198,14 +241,54 @@ export default class StreamingReaderBuilder {
      */
     build() {
 
-        // Default to the "DICOM Streaming Parser"
-        if (this.parser == null) {
-            throw new Error();
+        // Validate the "onPart" option
+        if ((this.onPart != null) && (typeof this.onPart != 'function')) {
+            throw new Exception(
+                'StreamingReaderBuilder.build requires "onPart" to be a function or null.',
+                BuilderErrorCodes.InvalidOnPart
+            );
         }
 
-        // Default to the "DICOM Streaming Instance Handler"
+        // Fail if no parser was configured
+        if (this.parser == null) {
+            throw new Exception(
+                'StreamingReaderBuilder.build requires a parser. Call fromDicomData(), fromDicomMetadata(), or withParser(...).',
+                BuilderErrorCodes.MissingParser
+            );
+        }
+
+        // Fail if no handler was configured
         if (this.handler == null) {
-            this.handler = new StreamingDicomInstanceHandler();
+            throw new Exception(
+                'StreamingReaderBuilder.build requires a handler. Call toInstances(), toSelection(...), toMapping(...), toDicomData(...), or withHandler(...).',
+                BuilderErrorCodes.MissingHandler
+            );
+        }
+
+        // Validate parser/handler contract shape
+        if (this.isValidParser(this.parser) == false) {
+            throw new Exception(
+                `The configured parser '${DiagnosticUtils.getTypeName(this.parser)}' is invalid or does not implement the EASI parser contract.`,
+                BuilderErrorCodes.InvalidParser
+            );
+        }
+
+        if (this.isValidHandler(this.handler) == false) {
+            throw new Exception(
+                `The configured handler '${DiagnosticUtils.getTypeName(this.handler)}' is invalid or does not implement the EASI handler contract.`,
+                BuilderErrorCodes.InvalidHandler
+            );
+        }
+
+        // Validate compatibility of known parser/handler combinations
+        this.validateParserHandlerCompatibility(this.parser, this.handler);
+
+        // Validate de-identification mask usage
+        if ((this.mask != null) && (this.parser instanceof StreamingDicomDataParser == false)) {
+            throw new Exception(
+                'withMask(...) is only supported with StreamingDicomDataParser.',
+                BuilderErrorCodes.IncompatibleMaskAndParser
+            );
         }
 
         // Create the new "DICOM Streaming Reader" instance
@@ -214,16 +297,20 @@ export default class StreamingReaderBuilder {
         // Set the "onPart" option
         reader.onPart = this.onPart;
 
+        // Compose the handler chain without mutating the builder state
+        const parser = this.parser;
+        var handler = this.handler;
+
         // Wrap the current handler with a de-identifier when configured for DICOM data parsing.
-        if ((this.mask != null) && (this.parser instanceof StreamingDicomDataParser)) {
-            this.handler = new StreamingDicomDeIdentificationHandler(this.handler, this.mask);
+        if (this.mask != null) {
+            handler = new StreamingDicomDeIdentificationHandler(handler, this.mask);
         }
 
         // Set the "handler" into the "parser"
-        this.parser.handler = this.handler;
+        parser.handler = handler;
 
         // Set the "parser" into the "reader"
-        reader.parser = this.parser;
+        reader.parser = parser;
 
         // Set the "strict" status
         reader.parser.isStrict = this.isStrict;

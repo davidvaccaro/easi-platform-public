@@ -104,7 +104,7 @@ export default class EASI {
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
     static newStreamingDicomSelectionReaderBuilder(selection) {
-        return EASI.newStreamingReaderBuilder()
+        return EASI.newStreamingDicomDataReaderBuilder()
             .toSelection(selection);
     }
 
@@ -124,7 +124,7 @@ export default class EASI {
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
     static newStreamingDicomMappingReaderBuilder(mapping) {
-        return EASI.newStreamingReaderBuilder()
+        return EASI.newStreamingDicomDataReaderBuilder()
             .toMapping(mapping);
     }
 
@@ -143,7 +143,7 @@ export default class EASI {
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
     static newStreamingDicomFHIRImagingStudyReaderBuilder() {
-        return EASI.newStreamingReaderBuilder()
+        return EASI.newStreamingDicomDataReaderBuilder()
             .toFHIRImagingStudies();
     }
 
