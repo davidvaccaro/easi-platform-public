@@ -15,6 +15,12 @@
     <div>
         <h4>DICOM Data Parse Related Actions</h4>
         <hr>
+        <div>
+            <span><strong>Validate?</strong></span>
+            <label><input type="radio" name="dicomDataValidationMode" value="none" checked /> No</label>
+            <label><input type="radio" name="dicomDataValidationMode" value="permissive" /> Permissive</label>
+            <label><input type="radio" name="dicomDataValidationMode" value="strict" /> Strict</label>
+        </div>
         <br>
         <div>
             <input type="file" id="dicomFile" name="dicomFile" />
@@ -231,6 +237,42 @@
             // PARSE DICOM
             // ================================
 
+            function getDicomDataValidationMode() {
+                return $('input[name="dicomDataValidationMode"]:checked').val() || 'none';
+            }
+
+            function applyDicomDataValidation(builder) {
+
+                var mode = getDicomDataValidationMode();
+
+                function logValidationConcern(concern) {
+                    console.warn('[DICOM Validation]', {
+                        severity: concern.severity,
+                        code: concern.code,
+                        path: concern.path,
+                        message: concern.message,
+                        tagID: concern.tagID,
+                        tagName: concern.tagName,
+                        details: concern.details
+                    });
+                }
+
+                if (mode === 'strict')
+                    return builder.withValidation({
+                        goal: 'strict',
+                        onConcern: logValidationConcern
+                    });
+
+                if (mode === 'permissive')
+                    return builder.withValidation({
+                        goal: 'permissive',
+                        onConcern: logValidationConcern
+                    });
+
+                return builder.withValidation(false);
+
+            }
+
             $('#dicomFile').on('change', function () {
 
                 // Cleare the console
@@ -240,10 +282,11 @@
                 var url = URL.createObjectURL(this.files[0]);
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomInstanceHandler())
-                    .build();
+                const reader = applyDicomDataValidation(
+                    EASI.newStreamingReaderBuilder()
+                        .withParser(new StreamingDicomDataParser())
+                        .withHandler(new StreamingDicomInstanceHandler())
+                ).build();
 
                 // Read and parse the DICOM file
                 reader
@@ -307,10 +350,11 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomInstanceHandler())
-                    .build();
+                const reader = applyDicomDataValidation(
+                    EASI.newStreamingReaderBuilder()
+                        .withParser(new StreamingDicomDataParser())
+                        .withHandler(new StreamingDicomInstanceHandler())
+                ).build();
 
                 // Read and parse the DICOM file
                 reader
@@ -326,11 +370,12 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomInstanceHandler())
-                    .withMask(Tag.DefaultDeIdentificationMask)
-                    .build();
+                const reader = applyDicomDataValidation(
+                    EASI.newStreamingReaderBuilder()
+                        .withParser(new StreamingDicomDataParser())
+                        .withHandler(new StreamingDicomInstanceHandler())
+                        .withMask(Tag.DefaultDeIdentificationMask)
+                ).build();
 
                 // Read and parse the DICOM file
                 reader
@@ -347,10 +392,11 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomInstanceHandler())
-                    .build();
+                const reader = applyDicomDataValidation(
+                    EASI.newStreamingReaderBuilder()
+                        .withParser(new StreamingDicomDataParser())
+                        .withHandler(new StreamingDicomInstanceHandler())
+                ).build();
 
                 // Read and parse the DICOM file
                 reader
@@ -369,22 +415,23 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomInstanceHandler())
-                    .withOnPart(function (result) { 
+                const reader = applyDicomDataValidation(
+                    EASI.newStreamingReaderBuilder()
+                        .withParser(new StreamingDicomDataParser())
+                        .withHandler(new StreamingDicomInstanceHandler())
+                        .withOnPart(function (result) { 
 
-                        // Log
-                        if (Array.isArray(result) == false)                    
-                            console.log(result);
-                        else
-                            console.log(result[result.length - 1]);
+                            // Log
+                            if (Array.isArray(result) == false)                    
+                                console.log(result);
+                            else
+                                console.log(result[result.length - 1]);
 
-                        // Return CONTINUE
-                        return Status.CONTINUE;
+                            // Return CONTINUE
+                            return Status.CONTINUE;
 
-                    })
-                    .build();
+                        })
+                ).build();
 
                 // Read and parse the DICOM file
                 reader

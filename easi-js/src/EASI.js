@@ -70,12 +70,32 @@ export default class EASI {
     }
 
     /**
+     * Create a new reader builder pre-configured for DICOM byte data with validation enabled/configured.
+     * @param {boolean | string | object | null} validation Validation filter configuration.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomValidatedDataReaderBuilder(validation = true) {
+        return EASI.newStreamingDicomDataReaderBuilder()
+            .withValidation(validation);
+    }
+
+    /**
      * Create a new reader builder pre-configured for DICOM JSON metadata data.
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
     static newStreamingDicomMetadataReaderBuilder() {
         return EASI.newStreamingReaderBuilder()
             .fromDicomMetadata();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM JSON metadata data with validation enabled/configured.
+     * @param {boolean | string | object | null} validation Validation filter configuration.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomValidatedMetadataReaderBuilder(validation = true) {
+        return EASI.newStreamingDicomMetadataReaderBuilder()
+            .withValidation(validation);
     }
 
     /**
@@ -88,11 +108,31 @@ export default class EASI {
     }
 
     /**
+     * Create a new reader builder pre-configured for DICOM XML metadata data with validation enabled/configured.
+     * @param {boolean | string | object | null} validation Validation filter configuration.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomValidatedXmlMetadataReaderBuilder(validation = true) {
+        return EASI.newStreamingDicomXmlMetadataReaderBuilder()
+            .withValidation(validation);
+    }
+
+    /**
      * Create a new reader builder pre-configured for DICOM byte data -> DICOM Instance emit.
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
     static newStreamingDicomInstanceReaderBuilder() {
         return EASI.newStreamingDicomDataReaderBuilder()
+            .toInstances();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM byte data -> validated DICOM Instance emit.
+     * @param {boolean | string | object | null} validation Validation filter configuration.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomValidatedInstanceReaderBuilder(validation = true) {
+        return EASI.newStreamingDicomValidatedDataReaderBuilder(validation)
             .toInstances();
     }
 
@@ -106,11 +146,31 @@ export default class EASI {
     }
 
     /**
+     * Create a new reader builder pre-configured for DICOM JSON metadata -> validated DICOM Instance emit.
+     * @param {boolean | string | object | null} validation Validation filter configuration.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomJsonValidatedInstanceReaderBuilder(validation = true) {
+        return EASI.newStreamingDicomValidatedMetadataReaderBuilder(validation)
+            .toInstances();
+    }
+
+    /**
      * Create a new reader builder pre-configured for DICOM XML metadata -> DICOM Instance emit.
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
     static newStreamingDicomXmlInstanceReaderBuilder() {
         return EASI.newStreamingDicomXmlMetadataReaderBuilder()
+            .toInstances();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM XML metadata -> validated DICOM Instance emit.
+     * @param {boolean | string | object | null} validation Validation filter configuration.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomXmlValidatedInstanceReaderBuilder(validation = true) {
+        return EASI.newStreamingDicomValidatedXmlMetadataReaderBuilder(validation)
             .toInstances();
     }
 

@@ -33,6 +33,7 @@ import StreamingDicomSelectingHandler from "../handlers/terminals/StreamingDicom
 import StreamingDicomJsonMetadataAdapter from "../handlers/adapters/StreamingDicomJsonMetadataAdapter.js";
 import StreamingDicomXmlMetadataAdapter from "../handlers/adapters/StreamingDicomXmlMetadataAdapter.js";
 import StreamingDicomDeIdentificationFilter from "../handlers/filters/StreamingDicomDeIdentificationFilter.js";
+import StreamingDicomValidationFilter from "../handlers/filters/StreamingDicomValidationFilter.js";
 import StreamingDicomDataWriterHandler from "../handlers/terminals/StreamingDicomDataWriterHandler.js";
 import Exception from "../environment/Exception.js";
 import DiagnosticUtils from "../utils/DiagnosticUtils.js";
@@ -73,7 +74,8 @@ export default class StreamingReaderBuilder {
                 || (handler instanceof StreamingDicomMappingHandler)
                 || (handler instanceof StreamingDicomSelectingHandler)
                 || (handler instanceof StreamingDicomDataWriterHandler)
-                || (handler instanceof StreamingDicomDeIdentificationFilter)) {
+                || (handler instanceof StreamingDicomDeIdentificationFilter)
+                || (handler instanceof StreamingDicomValidationFilter)) {
                 throw new Exception(
                     `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
                     BuilderErrorCodes.IncompatibleParserAndHandler
@@ -129,6 +131,50 @@ export default class StreamingReaderBuilder {
         return handler;
 
     }
+
+    /**
+     * Compose a canonical DICOM semantic filter into the current handler chain.
+     * Supports native DICOM parser chains and metadata adapters that expose a canonical DICOM `nextHandler`.
+     * @param {object} parser The configured parser.
+     * @param {object} handler The configured top-level handler.
+     * @param {Function} filterFactory Factory that wraps the canonical DICOM semantic handler.
+     * @param {string} errorMessage The exception message when composition is incompatible.
+     * @param {string} errorCode The exception code when composition is incompatible.
+     * @returns {object} The updated top-level handler chain.
+     */
+    composeDicomSemanticFilter(parser, handler, filterFactory, errorMessage, errorCode) {
+
+        if (parser instanceof StreamingDicomDataParser) {
+            return filterFactory(handler);
+        }
+
+        if (parser instanceof StreamingJsonDataParser) {
+
+            if (handler instanceof StreamingDicomJsonMetadataAdapter) {
+                return new StreamingDicomJsonMetadataAdapter(
+                    filterFactory(handler.nextHandler)
+                );
+            }
+
+            throw new Exception(errorMessage, errorCode);
+
+        }
+
+        if (parser instanceof StreamingXmlDataParser) {
+
+            if (handler instanceof StreamingDicomXmlMetadataAdapter) {
+                return new StreamingDicomXmlMetadataAdapter(
+                    filterFactory(handler.nextHandler)
+                );
+            }
+
+            throw new Exception(errorMessage, errorCode);
+
+        }
+
+        throw new Exception(errorMessage, errorCode);
+
+    }
   
     /**
      * Set the current parser.
@@ -142,7 +188,7 @@ export default class StreamingReaderBuilder {
       
     /**
      * Set the current handler.
-     * @param {StreamingDicomInstanceHandler | StreamingDicomMappingHandler | StreamingDicomSelectingHandler | StreamingDicomJsonMetadataAdapter} handler The handler used to handle parsed elements.
+     * @param {StreamingDicomInstanceHandler | StreamingDicomMappingHandler | StreamingDicomSelectingHandler | StreamingDicomWriterHandler} handler The handler used to handle parsed elements.
      * @returns The reference to the current builder.
      */
     withHandler(handler) {
@@ -178,6 +224,32 @@ export default class StreamingReaderBuilder {
     withMask(mask) {
         this.mask = mask;
         return this;
+    }
+
+    /**
+     * Enables/configures the DICOM validation filter in the canonical DICOM semantic handler chain.
+     * @param {boolean | string | object | null} validation Validation configuration:
+     *  - `true` enables validation with defaults (permissive)
+     *  - `false`/`null` disables validation
+     *  - `string`/`boolean` shorthand for validation goal
+     *  - `object` options passed to StreamingDicomValidationFilter
+     * @returns The reference to the current builder.
+     */
+    withValidation(validation = true) {
+
+        if ((validation == null) || (validation === false)) {
+            this.validation = null;
+            return this;
+        }
+
+        if (validation === true) {
+            this.validation = {};
+            return this;
+        }
+
+        this.validation = validation;
+        return this;
+
     }
 
     /**
@@ -359,47 +431,27 @@ export default class StreamingReaderBuilder {
         // Compose de-identification in the canonical DICOM semantic handler chain.
         if (this.mask != null) {
 
-            if (parser instanceof StreamingDicomDataParser) {
+            handler = this.composeDicomSemanticFilter(
+                parser,
+                handler,
+                (nextHandler) => (new StreamingDicomDeIdentificationFilter(nextHandler, this.mask)),
+                'withMask(...) requires a DICOM semantic handler chain (native DICOM parser or metadata adapter).',
+                BuilderErrorCodes.IncompatibleMaskAndParser
+            );
+        }
 
-                handler = new StreamingDicomDeIdentificationFilter(handler, this.mask);
+        // Compose validation in the canonical DICOM semantic handler chain.
+        // Validation is applied outermost so it evaluates the original parsed semantics before downstream transforms (e.g. de-identification).
+        if (this.validation != null) {
 
-            }
-            else if (parser instanceof StreamingJsonDataParser) {
+            handler = this.composeDicomSemanticFilter(
+                parser,
+                handler,
+                (nextHandler) => (new StreamingDicomValidationFilter(nextHandler, this.validation)),
+                'withValidation(...) requires a DICOM semantic handler chain (native DICOM parser or metadata adapter).',
+                BuilderErrorCodes.IncompatibleValidationAndParser
+            );
 
-                if (handler instanceof StreamingDicomJsonMetadataAdapter) {
-                    handler = new StreamingDicomJsonMetadataAdapter(
-                        new StreamingDicomDeIdentificationFilter(handler.nextHandler, this.mask)
-                    );
-                }
-                else {
-                    throw new Exception(
-                        'withMask(...) requires a DICOM semantic handler chain (native DICOM parser or JSON metadata adapter).',
-                        BuilderErrorCodes.IncompatibleMaskAndParser
-                    );
-                }
-
-            }
-            else if (parser instanceof StreamingXmlDataParser) {
-
-                if (handler instanceof StreamingDicomXmlMetadataAdapter) {
-                    handler = new StreamingDicomXmlMetadataAdapter(
-                        new StreamingDicomDeIdentificationFilter(handler.nextHandler, this.mask)
-                    );
-                }
-                else {
-                    throw new Exception(
-                        'withMask(...) requires a DICOM semantic handler chain (native DICOM parser or metadata adapter).',
-                        BuilderErrorCodes.IncompatibleMaskAndParser
-                    );
-                }
-
-            }
-            else {
-                throw new Exception(
-                    'withMask(...) requires a DICOM semantic handler chain (native DICOM parser or metadata adapter).',
-                    BuilderErrorCodes.IncompatibleMaskAndParser
-                );
-            }
         }
 
         // Set the "handler" into the "parser"
@@ -426,6 +478,7 @@ export default class StreamingReaderBuilder {
         this.parser = null;
         this.handler = null;
         this.mask = null;
+        this.validation = null;
         this.resolveOnPart = false;
 
     }

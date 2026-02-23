@@ -938,6 +938,99 @@ export default class StreamingDicomDataParser extends StreamingDataParser {
                             // Clear the current data-elemen
                             this.dataElement = null;
 
+                            // If the top of the stack is the sequence itself, there is no currently open item.
+                            // This occurs after a fixed-length item ends within an open sequence. In that case,
+                            // intercept the next Item (FFFE,E000) / Sequence Delimitation (FFFE,E0DD) marker here
+                            // so it is not mis-parsed as a normal attribute.
+                            if ((item != null) && (item.element instanceof AttributeSequence)) {
+
+                                // Explicit-length sequence can complete without a delimiter once all bytes are consumed.
+                                if ((item.element.valueLength != Constants.UndefinedLength)
+                                    && ((this.totalBytesConsumed - item.start) >= item.element.valueLength)) {
+
+                                    // Set the complete flag
+                                    item.element.isComplete = true;
+
+                                    // End the sequence (possibly SKIP)
+                                    await this.fireStreamEvent("onEndSequence", item.element, item.status);
+
+                                    // Pop the current sequence
+                                    this.dataElements.pop();
+
+                                    // Continue processing any outer sequence context.
+                                    continue;
+
+                                }
+
+                                // Peek the next tag details to determine whether a new item starts or the sequence ends.
+                                var sequenceDetails = this.peekTagDetails();
+
+                                // Handle failure
+                                if (sequenceDetails == null) {
+                                    return Status.FAIL;
+                                }
+
+                                // If MORE data is needed, return false
+                                if (sequenceDetails == false) {
+                                    return Status.CONTINUE;
+                                }
+
+                                // Start the next sequence item.
+                                if (sequenceDetails.tag == Tag.Item) {
+
+                                    // Consume the item tag/value-length marker
+                                    this.data.consume(sequenceDetails.bytesPeeked);
+
+                                    // Record bytes consumed
+                                    this.totalBytesConsumed += sequenceDetails.bytesPeeked;
+
+                                    // Push the next item (value start is after the marker bytes)
+                                    var nextItemIndex = this.dataElements.push({
+                                        start: this.totalBytesConsumed,
+                                        element: new Item(sequenceDetails.valueLength),
+                                        status: sequence.status
+                                    });
+
+                                    // If the current sequence STATUS is CONTINUE
+                                    if (sequence.status == Status.CONTINUE) {
+
+                                        // Start the item
+                                        this.dataElements[nextItemIndex - 1].status = await this.fireStreamEvent("onStartItem");
+
+                                    }
+
+                                    // Break so parsing can continue with item content.
+                                    break;
+
+                                }
+                                // End an undefined-length sequence.
+                                else if (sequenceDetails.tag == Tag.SequenceDelimitationItem) {
+
+                                    // Consume the sequence delimiter marker
+                                    this.data.consume(sequenceDetails.bytesPeeked);
+
+                                    // Record bytes consumed
+                                    this.totalBytesConsumed += sequenceDetails.bytesPeeked;
+
+                                    // Set the complete flag
+                                    item.element.isComplete = true;
+
+                                    // Pop the current sequence
+                                    this.dataElements.pop();
+
+                                    // End the current sequence (possibly SKIP)
+                                    await this.fireStreamEvent("onEndSequence", item.element, item.status);
+
+                                    // Continue processing any outer sequence context.
+                                    continue;
+
+                                }
+
+                                // Otherwise, leave control to normal parsing/recovery logic.
+                                break;
+
+                            }
+
                             // If the current sequence item has undefined length, 
                             if (item.element.valueLength == Constants.UndefinedLength) {
 

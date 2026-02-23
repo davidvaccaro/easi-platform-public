@@ -4,6 +4,7 @@ import StreamingJsonDataParser from "../../src/parsers/StreamingJsonDataParser.j
 import StreamingXmlDataParser from "../../src/parsers/StreamingXmlDataParser.js";
 import StreamingDicomInstanceHandler from "../../src/handlers/terminals/StreamingDicomInstanceHandler.js";
 import StreamingDicomDeIdentificationFilter from "../../src/handlers/filters/StreamingDicomDeIdentificationFilter.js";
+import StreamingDicomValidationFilter, { ValidationGoals } from "../../src/handlers/filters/StreamingDicomValidationFilter.js";
 import StreamingDicomJsonMetadataAdapter from "../../src/handlers/adapters/StreamingDicomJsonMetadataAdapter.js";
 import StreamingDicomXmlMetadataAdapter from "../../src/handlers/adapters/StreamingDicomXmlMetadataAdapter.js";
 import StreamingDicomDataWriterHandler from "../../src/handlers/terminals/StreamingDicomDataWriterHandler.js";
@@ -97,6 +98,18 @@ test("Test: build throws IncompatibleMaskAndParser", () => {
     expect(error.code).toBe(BuilderErrorCodes.IncompatibleMaskAndParser);
 });
 
+test("Test: build throws IncompatibleValidationAndParser", () => {
+    const error = captureBuildError(
+        new StreamingReaderBuilder()
+            .withParser(new StreamingJsonDataParser())
+            .withHandler({})
+            .withValidation()
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleValidationAndParser);
+});
+
 test("Test: build does not mutate builder handler when masking", () => {
     const builder = new StreamingReaderBuilder()
         .fromDicomData()
@@ -132,6 +145,34 @@ test("Test: build composes metadata adapter -> deid -> writer when masking JSON 
     expect(reader.parser.handler.nextHandler.nextHandler instanceof StreamingDicomDataWriterHandler).toBe(true);
 });
 
+test("Test: build composes validation filter for native DICOM semantic chain", () => {
+    const onConcern = () => {};
+    const reader = new StreamingReaderBuilder()
+        .fromDicomData()
+        .toInstances()
+        .withValidation({ goal: ValidationGoals.STRICT, onConcern })
+        .build();
+
+    expect(reader.parser.handler instanceof StreamingDicomValidationFilter).toBe(true);
+    expect(reader.parser.handler.goal).toBe(ValidationGoals.STRICT);
+    expect(reader.parser.handler.onConcern).toBe(onConcern);
+    expect(reader.parser.handler.nextHandler instanceof StreamingDicomInstanceHandler).toBe(true);
+});
+
+test("Test: build composes metadata adapter -> validation -> deid -> writer when validation and masking JSON metadata", () => {
+    const reader = new StreamingReaderBuilder()
+        .fromDicomMetadata()
+        .toDicomData()
+        .withValidation({ goal: 'permissive' })
+        .withMask(new Map())
+        .build();
+
+    expect(reader.parser.handler instanceof StreamingDicomJsonMetadataAdapter).toBe(true);
+    expect(reader.parser.handler.nextHandler instanceof StreamingDicomValidationFilter).toBe(true);
+    expect(reader.parser.handler.nextHandler.nextHandler instanceof StreamingDicomDeIdentificationFilter).toBe(true);
+    expect(reader.parser.handler.nextHandler.nextHandler.nextHandler instanceof StreamingDicomDataWriterHandler).toBe(true);
+});
+
 test("Test: build composes XML metadata adapter with shared handler", () => {
     const reader = new StreamingReaderBuilder()
         .fromDicomXmlMetadata()
@@ -152,4 +193,15 @@ test("Test: build composes XML metadata adapter -> deid -> writer when masking X
     expect(reader.parser.handler instanceof StreamingDicomXmlMetadataAdapter).toBe(true);
     expect(reader.parser.handler.nextHandler instanceof StreamingDicomDeIdentificationFilter).toBe(true);
     expect(reader.parser.handler.nextHandler.nextHandler instanceof StreamingDicomDataWriterHandler).toBe(true);
+});
+
+test("Test: withValidation(false) disables validation composition", () => {
+    const reader = new StreamingReaderBuilder()
+        .fromDicomData()
+        .toInstances()
+        .withValidation(false)
+        .build();
+
+    expect(reader.parser.handler instanceof StreamingDicomValidationFilter).toBe(false);
+    expect(reader.parser.handler instanceof StreamingDicomInstanceHandler).toBe(true);
 });
