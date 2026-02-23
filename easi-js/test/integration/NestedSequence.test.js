@@ -1,6 +1,6 @@
 import EASI from '../../src/EASI.js';
 import StreamingDicomDataParser from '../../src/parsers/StreamingDicomDataParser.js';
-import StreamingDicomInstanceHandler from '../../src/handlers/StreamingDicomInstanceHandler.js';
+import StreamingDicomInstanceHandler from '../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
 import Tag from '../../src/dicom/Tag.js';
 
 const path = require('path');

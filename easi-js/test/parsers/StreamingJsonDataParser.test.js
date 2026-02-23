@@ -1,5 +1,5 @@
 import StreamingJsonDataParser from '../../src/parsers/StreamingJsonDataParser.js';
-import StreamingJsonDataHandler from '../../src/handlers/StreamingJsonDataHandler.js';
+import StreamingJsonDataHandler from '../../src/handlers/terminals/syntax/StreamingJsonDataHandler.js';
 import { Status } from '../../src/parsers/Status.js';
 
 class StopHandler {

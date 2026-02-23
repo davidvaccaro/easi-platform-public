@@ -2,11 +2,11 @@ import StreamingReaderBuilder from "../../src/builders/StreamingReaderBuilder.js
 import StreamingDicomDataParser from "../../src/parsers/StreamingDicomDataParser.js";
 import StreamingJsonDataParser from "../../src/parsers/StreamingJsonDataParser.js";
 import StreamingXmlDataParser from "../../src/parsers/StreamingXmlDataParser.js";
-import StreamingDicomInstanceHandler from "../../src/handlers/StreamingDicomInstanceHandler.js";
-import StreamingDicomDeIdentificationHandler from "../../src/handlers/StreamingDicomDeIdentificationHandler.js";
+import StreamingDicomInstanceHandler from "../../src/handlers/terminals/StreamingDicomInstanceHandler.js";
+import StreamingDicomDeIdentificationFilter from "../../src/handlers/filters/StreamingDicomDeIdentificationFilter.js";
 import StreamingDicomJsonMetadataAdapter from "../../src/handlers/adapters/StreamingDicomJsonMetadataAdapter.js";
 import StreamingDicomXmlMetadataAdapter from "../../src/handlers/adapters/StreamingDicomXmlMetadataAdapter.js";
-import StreamingDicomDataWriterHandler from "../../src/handlers/StreamingDicomDataWriterHandler.js";
+import StreamingDicomDataWriterHandler from "../../src/handlers/terminals/StreamingDicomDataWriterHandler.js";
 import Exception from "../../src/environment/Exception.js";
 import { BuilderErrorCodes } from "../../src/environment/Exception.js";
 
@@ -128,7 +128,7 @@ test("Test: build composes metadata adapter -> deid -> writer when masking JSON 
         .build();
 
     expect(reader.parser.handler instanceof StreamingDicomJsonMetadataAdapter).toBe(true);
-    expect(reader.parser.handler.nextHandler instanceof StreamingDicomDeIdentificationHandler).toBe(true);
+    expect(reader.parser.handler.nextHandler instanceof StreamingDicomDeIdentificationFilter).toBe(true);
     expect(reader.parser.handler.nextHandler.nextHandler instanceof StreamingDicomDataWriterHandler).toBe(true);
 });
 
@@ -150,6 +150,6 @@ test("Test: build composes XML metadata adapter -> deid -> writer when masking X
         .build();
 
     expect(reader.parser.handler instanceof StreamingDicomXmlMetadataAdapter).toBe(true);
-    expect(reader.parser.handler.nextHandler instanceof StreamingDicomDeIdentificationHandler).toBe(true);
+    expect(reader.parser.handler.nextHandler instanceof StreamingDicomDeIdentificationFilter).toBe(true);
     expect(reader.parser.handler.nextHandler.nextHandler instanceof StreamingDicomDataWriterHandler).toBe(true);
 });

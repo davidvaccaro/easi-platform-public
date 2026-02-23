@@ -1,7 +1,7 @@
 import StreamingJsonDataParser from '../../../src/parsers/StreamingJsonDataParser.js';
 import StreamingDicomJsonMetadataAdapter from '../../../src/handlers/adapters/StreamingDicomJsonMetadataAdapter.js';
 import { Status } from '../../../src/parsers/Status.js';
-import StreamingDicomInstanceHandler from '../../../src/handlers/StreamingDicomInstanceHandler.js';
+import StreamingDicomInstanceHandler from '../../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
 import Tag from '../../../src/dicom/Tag.js';
 
 class TraceDicomHandler {

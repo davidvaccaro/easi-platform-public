@@ -27,13 +27,13 @@ import StreamingXmlDataParser from "../parsers/StreamingXmlDataParser.js";
 
 import DicomToFHIRImagingStudyMapping from '../handlers/mappings/DicomToFHIRImagingStudyMapping.js';
 
-import StreamingDicomInstanceHandler from "../handlers/StreamingDicomInstanceHandler.js";
-import StreamingDicomMappingHandler from '../handlers/StreamingDicomMappingHandler.js';
-import StreamingDicomSelectingHandler from "../handlers/StreamingDicomSelectingHandler.js";
+import StreamingDicomInstanceHandler from "../handlers/terminals/StreamingDicomInstanceHandler.js";
+import StreamingDicomMappingHandler from '../handlers/terminals/StreamingDicomMappingHandler.js';
+import StreamingDicomSelectingHandler from "../handlers/terminals/StreamingDicomSelectingHandler.js";
 import StreamingDicomJsonMetadataAdapter from "../handlers/adapters/StreamingDicomJsonMetadataAdapter.js";
 import StreamingDicomXmlMetadataAdapter from "../handlers/adapters/StreamingDicomXmlMetadataAdapter.js";
-import StreamingDicomDeIdentificationHandler from "../handlers/StreamingDicomDeIdentificationHandler.js";
-import StreamingDicomDataWriterHandler from "../handlers/StreamingDicomDataWriterHandler.js";
+import StreamingDicomDeIdentificationFilter from "../handlers/filters/StreamingDicomDeIdentificationFilter.js";
+import StreamingDicomDataWriterHandler from "../handlers/terminals/StreamingDicomDataWriterHandler.js";
 import Exception from "../environment/Exception.js";
 import DiagnosticUtils from "../utils/DiagnosticUtils.js";
 import { BuilderErrorCodes } from "../environment/Exception.js";
@@ -73,7 +73,7 @@ export default class StreamingReaderBuilder {
                 || (handler instanceof StreamingDicomMappingHandler)
                 || (handler instanceof StreamingDicomSelectingHandler)
                 || (handler instanceof StreamingDicomDataWriterHandler)
-                || (handler instanceof StreamingDicomDeIdentificationHandler)) {
+                || (handler instanceof StreamingDicomDeIdentificationFilter)) {
                 throw new Exception(
                     `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
                     BuilderErrorCodes.IncompatibleParserAndHandler
@@ -361,14 +361,14 @@ export default class StreamingReaderBuilder {
 
             if (parser instanceof StreamingDicomDataParser) {
 
-                handler = new StreamingDicomDeIdentificationHandler(handler, this.mask);
+                handler = new StreamingDicomDeIdentificationFilter(handler, this.mask);
 
             }
             else if (parser instanceof StreamingJsonDataParser) {
 
                 if (handler instanceof StreamingDicomJsonMetadataAdapter) {
                     handler = new StreamingDicomJsonMetadataAdapter(
-                        new StreamingDicomDeIdentificationHandler(handler.nextHandler, this.mask)
+                        new StreamingDicomDeIdentificationFilter(handler.nextHandler, this.mask)
                     );
                 }
                 else {
@@ -383,7 +383,7 @@ export default class StreamingReaderBuilder {
 
                 if (handler instanceof StreamingDicomXmlMetadataAdapter) {
                     handler = new StreamingDicomXmlMetadataAdapter(
-                        new StreamingDicomDeIdentificationHandler(handler.nextHandler, this.mask)
+                        new StreamingDicomDeIdentificationFilter(handler.nextHandler, this.mask)
                     );
                 }
                 else {

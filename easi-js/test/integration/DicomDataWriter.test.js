@@ -1,6 +1,6 @@
 import EASI from '../../src/EASI.js';
 import Tag from '../../src/dicom/Tag.js';
-import StreamingDicomDataWriterHandler from '../../src/handlers/StreamingDicomDataWriterHandler.js';
+import StreamingDicomDataWriterHandler from '../../src/handlers/terminals/StreamingDicomDataWriterHandler.js';
 
 const path = require('path');
 const fs = require('fs');

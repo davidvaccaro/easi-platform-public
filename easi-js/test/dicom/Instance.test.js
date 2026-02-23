@@ -1,7 +1,7 @@
 import EASI from '../../src/EASI.js';
 import Constants from '../../src/dicom/Constants.js'
 import StreamingDicomDataParser from '../../src/parsers/StreamingDicomDataParser.js';
-import StreamingDicomInstanceHandler from '../../src/handlers/StreamingDicomInstanceHandler.js';
+import StreamingDicomInstanceHandler from '../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
 import Instance from '../../src/dicom/Instance.js';
 import DataSet from '../../src/dicom/DataSet.js';
 

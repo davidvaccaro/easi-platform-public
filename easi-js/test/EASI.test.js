@@ -6,13 +6,13 @@ import StreamingJsonDataParser from '../src/parsers/StreamingJsonDataParser.js';
 import StreamingXmlDataParser from '../src/parsers/StreamingXmlDataParser.js';
 import StreamingWriter from '../src/writers/StreamingWriter.js';
 
-import StreamingDicomInstanceHandler from '../src/handlers/StreamingDicomInstanceHandler.js';
-import StreamingDicomSelectingHandler from '../src/handlers/StreamingDicomSelectingHandler.js';
-import StreamingDicomMappingHandler from '../src/handlers/StreamingDicomMappingHandler.js';
-import StreamingDicomDataWriterHandler from '../src/handlers/StreamingDicomDataWriterHandler.js';
+import StreamingDicomInstanceHandler from '../src/handlers/terminals/StreamingDicomInstanceHandler.js';
+import StreamingDicomSelectingHandler from '../src/handlers/terminals/StreamingDicomSelectingHandler.js';
+import StreamingDicomMappingHandler from '../src/handlers/terminals/StreamingDicomMappingHandler.js';
+import StreamingDicomDataWriterHandler from '../src/handlers/terminals/StreamingDicomDataWriterHandler.js';
 import StreamingDicomJsonMetadataAdapter from '../src/handlers/adapters/StreamingDicomJsonMetadataAdapter.js';
 import StreamingDicomXmlMetadataAdapter from '../src/handlers/adapters/StreamingDicomXmlMetadataAdapter.js';
-import StreamingJsonDataHandler from '../src/handlers/StreamingJsonDataHandler.js';
+import StreamingJsonDataHandler from '../src/handlers/terminals/syntax/StreamingJsonDataHandler.js';
 
 import DicomToFHIRImagingStudyMapping from '../src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
 

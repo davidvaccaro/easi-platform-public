@@ -34,7 +34,7 @@ new StreamingDicomJsonMetadataAdapter(nextHandler = null)
 ```js
 import StreamingJsonDataParser from '../../../src/parsers/StreamingJsonDataParser.js';
 import StreamingDicomJsonMetadataAdapter from '../../../src/handlers/adapters/StreamingDicomJsonMetadataAdapter.js';
-import StreamingDicomInstanceHandler from '../../../src/handlers/StreamingDicomInstanceHandler.js';
+import StreamingDicomInstanceHandler from '../../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
 
 const parser = new StreamingJsonDataParser();
 parser.handler = new StreamingDicomJsonMetadataAdapter(

@@ -19,9 +19,9 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import Constants from "../dicom/Constants.js";
-import Tag from "../dicom/Tag.js";
-import TransferSyntax from "../dicom/TransferSyntax.js";
+import Constants from "../../dicom/Constants.js";
+import Tag from "../../dicom/Tag.js";
+import TransferSyntax from "../../dicom/TransferSyntax.js";
 
 const ExplicitLongLengthVRs = new Set(['OB', 'OD', 'OF', 'OL', 'OV', 'OW', 'SQ', 'UC', 'UR', 'UT', 'UN']);
 

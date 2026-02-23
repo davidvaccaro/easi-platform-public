@@ -358,7 +358,7 @@ Performs class-specific behavior.
 ## Usage Example
 
 ```js
-import StreamingDicomMappingHandler from '../../src/handlers/StreamingDicomMappingHandler.js';
+import StreamingDicomMappingHandler from '../../src/handlers/terminals/StreamingDicomMappingHandler.js';
 import DicomToFHIRImagingStudyMapping from '../../src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
 
 const mapping = new DicomToFHIRImagingStudyMapping();

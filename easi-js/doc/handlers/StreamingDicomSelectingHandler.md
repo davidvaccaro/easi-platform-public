@@ -392,7 +392,7 @@ Performs class-specific behavior.
 ## Usage Example
 
 ```js
-import StreamingDicomSelectingHandler from '../../src/handlers/StreamingDicomSelectingHandler.js';
+import StreamingDicomSelectingHandler from '../../src/handlers/terminals/StreamingDicomSelectingHandler.js';
 import DicomSelection from '../../src/handlers/selections/DicomSelection.js';
 import Tag from '../../src/dicom/Tag.js';
 

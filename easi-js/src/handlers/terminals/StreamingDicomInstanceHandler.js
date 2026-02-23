@@ -19,10 +19,10 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import Instance from "../dicom/Instance.js";
-import MetaSet from "../dicom/MetaSet.js";
-import DataSet from "../dicom/DataSet.js";
-import Item from "../dicom/Item.js";
+import Instance from "../../dicom/Instance.js";
+import MetaSet from "../../dicom/MetaSet.js";
+import DataSet from "../../dicom/DataSet.js";
+import Item from "../../dicom/Item.js";
 
 export default class StreamingDicomInstanceHandler {
 

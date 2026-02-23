@@ -1,7 +1,7 @@
 //
-// StreamingDicomDeIdentificationHandler.js - 1.0.0
+// StreamingDicomDeIdentificationFilter.js - 1.0.0
 //
-// Stream DICOM De-identification Handler Class
+// Stream DICOM De-identification Filter Class
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors
@@ -19,16 +19,16 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import Tag from "../dicom/Tag.js";
-import Utilities from '../dicom/Utilities.js';
-import { Status } from "../parsers/Status.js";
+import Tag from "../../dicom/Tag.js";
+import Utilities from '../../dicom/Utilities.js';
+import { Status } from "../../parsers/Status.js";
 
 const DeIdentificationContextSymbol = Symbol('DeIdentificationContext');
 const AttributeMaskResolvedSymbol = Symbol('AttributeMaskResolved');
 const AttributeMaskValueSymbol = Symbol('AttributeMaskValue');
 const RemoveAttributeSymbol = Symbol('RemoveAttribute');
 
-export default class StreamingDicomDeIdentificationHandler {
+export default class StreamingDicomDeIdentificationFilter {
 
     /**
      * Forward an event call to the next handler when supported.

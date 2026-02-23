@@ -1,6 +1,6 @@
 import EASI from '../../src/EASI.js';
 import StreamingDicomDataParser from '../../src/parsers/StreamingDicomDataParser.js';
-import StreamingDicomInstanceHandler from '../../src/handlers/StreamingDicomInstanceHandler.js';
+import StreamingDicomInstanceHandler from '../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
 import Dumper from '../../src/tools/dicom/Dumper.js';
 import DumpParser from '../../src/tools/dicom/DumpParser.js';
 

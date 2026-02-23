@@ -277,8 +277,8 @@ Performs class-specific behavior.
 ## Usage Example
 
 ```js
-import StreamingJsonDataParser from '../../src/parsers/StreamingJsonDataParser.js';
-import StreamingJsonDataHandler from '../../src/handlers/StreamingJsonDataHandler.js';
+import StreamingJsonDataParser from '../../../../src/parsers/StreamingJsonDataParser.js';
+import StreamingJsonDataHandler from '../../../../src/handlers/terminals/syntax/StreamingJsonDataHandler.js';
 
 const parser = new StreamingJsonDataParser();
 parser.handler = new StreamingJsonDataHandler();

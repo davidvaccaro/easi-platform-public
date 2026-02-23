@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import StreamingXmlDataParser from '../../../src/parsers/StreamingXmlDataParser.js';
 import StreamingDicomXmlMetadataAdapter from '../../../src/handlers/adapters/StreamingDicomXmlMetadataAdapter.js';
-import StreamingDicomInstanceHandler from '../../../src/handlers/StreamingDicomInstanceHandler.js';
+import StreamingDicomInstanceHandler from '../../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
 import { Status } from '../../../src/parsers/Status.js';
 import Tag from '../../../src/dicom/Tag.js';
 

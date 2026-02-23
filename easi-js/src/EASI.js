@@ -23,11 +23,11 @@ import StreamingReaderBuilder from "./builders/StreamingReaderBuilder.js";
 import StreamingJsonDataParser from "./parsers/StreamingJsonDataParser.js";
 import StreamingWriter from "./writers/StreamingWriter.js";
 
-import StreamingDicomInstanceHandler from "./handlers/StreamingDicomInstanceHandler.js";
-import StreamingDicomSelectingHandler from "./handlers/StreamingDicomSelectingHandler.js";
-import StreamingDicomMappingHandler from "./handlers/StreamingDicomMappingHandler.js";
-import StreamingDicomDataWriterHandler from "./handlers/StreamingDicomDataWriterHandler.js";
-import StreamingJsonDataHandler from "./handlers/StreamingJsonDataHandler.js";
+import StreamingDicomInstanceHandler from "./handlers/terminals/StreamingDicomInstanceHandler.js";
+import StreamingDicomSelectingHandler from "./handlers/terminals/StreamingDicomSelectingHandler.js";
+import StreamingDicomMappingHandler from "./handlers/terminals/StreamingDicomMappingHandler.js";
+import StreamingDicomDataWriterHandler from "./handlers/terminals/StreamingDicomDataWriterHandler.js";
+import StreamingJsonDataHandler from "./handlers/terminals/syntax/StreamingJsonDataHandler.js";
 import DicomToFHIRImagingStudyMapping from "./handlers/mappings/DicomToFHIRImagingStudyMapping.js";
 
 import DumpParser from "./tools/dicom/DumpParser.js";

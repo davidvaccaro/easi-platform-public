@@ -367,7 +367,7 @@ Performs class-specific behavior.
 
 ```js
 import StreamingDicomDataParser from '../../src/parsers/StreamingDicomDataParser.js';
-import StreamingDicomInstanceHandler from '../../src/handlers/StreamingDicomInstanceHandler.js';
+import StreamingDicomInstanceHandler from '../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
 
 const parser = new StreamingDicomDataParser();
 parser.handler = new StreamingDicomInstanceHandler();

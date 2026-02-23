@@ -1,5 +1,5 @@
 import StreamingXmlDataParser from '../../src/parsers/StreamingXmlDataParser.js';
-import StreamingXmlDataHandler from '../../src/handlers/StreamingXmlDataHandler.js';
+import StreamingXmlDataHandler from '../../src/handlers/terminals/syntax/StreamingXmlDataHandler.js';
 import { Status } from '../../src/parsers/Status.js';
 
 test('Test: XML data handler materializes XML document tree', async () => {

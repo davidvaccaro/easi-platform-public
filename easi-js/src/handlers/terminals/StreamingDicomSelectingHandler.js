@@ -1,7 +1,7 @@
 //
-// StreamingDicomMappingHandler.js - 1.0.0
+// StreamingDicomSelectingHandler.js - 1.0.0
 //
-// Stream DICOM Mapping Handler Class 
+// Stream DICOM Selecting Handler Class 
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
@@ -19,10 +19,44 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import Item from "../dicom/Item.js";
-import { Status } from '../parsers/Status.js'
+import Item from "../../dicom/Item.js";
+import { Status } from '../../parsers/Status.js'
 
-export default class StreamingDicomMappingHandler {
+export default class StreamingDicomSelectingHandler {
+
+    /**
+     * Determine if the current attribute should be skipped based on the current context and attribute data.
+     * @param {object} context The current context.
+     * @param {Attribute | AttributeSequence} attribute The current attribute.
+     */
+    skipAttribute(context, attribute) {
+
+        // If the selection does NOT contain the current attribute, skip
+        if (this.selection.hasTag(attribute.tag) == false)
+            return true;
+
+        return false;
+
+    }
+
+    /**
+     * Determine if the current attribute should be skipped based on the current context and attribute data.
+     * @param {object} context The current context.
+     * @param {Attribute | AttributeSequence} attribute The current attribute.
+     */
+    stopAttribute(context, attribute) {
+
+        // If the selection is complete, SKIP
+        if (this.selection.isComplete(context) == true)
+            return true;
+
+        // If the current parsed attribute is beyond the maximum selection tag, SKIP
+        if ((this.selection.maximumTag != null) && (attribute.tag.Group >= this.selection.maximumTag.Group) && (attribute.tag.Element > this.selection.maximumTag.Element))
+            return true;        
+
+        return false;
+
+    }
 
     onReset() {
     }
@@ -45,8 +79,8 @@ export default class StreamingDicomMappingHandler {
 
         }
 
-        // Start the mapping
-        return this.mapping.start(context);
+        // Start the selection
+        return this.selection.start(context);
 
     }
 
@@ -60,8 +94,12 @@ export default class StreamingDicomMappingHandler {
 
     onStartAttribute(context, attribute) {
 
-        // If the mapping does NOT map the current attribute, skip
-        if (this.mapping.hasTag(attribute.tag) == false)
+        // Stop the sequence if needed
+        if (this.stopAttribute(context, attribute))
+            return Status.JUMP;
+
+        // Skip the sequence if needed
+        if (this.skipAttribute(context, attribute))
             return Status.SKIP;
 
         // The attribute gets populated into either:
@@ -87,8 +125,12 @@ export default class StreamingDicomMappingHandler {
 
     onStartSequence(context, sequence) {
 
-        // If the mapping does NOT map the current attribute, skip
-        if (this.mapping.hasTag(sequence.tag) == false)
+        // Stop the sequence if needed
+        if (this.stopAttribute(context, sequence))
+            return Status.JUMP;
+
+        // Skip the sequence if needed
+        if (this.skipAttribute(context, sequence))
             return Status.SKIP;
 
         // If there is a data-set
@@ -133,15 +175,15 @@ export default class StreamingDicomMappingHandler {
 
     onEndAttribute(context, attribute) {
 
-        // Map the attribute
-        this.mapping.mapAttribute(context, attribute);
+        // Match the attribute
+        this.selection.matchAttribute(context, attribute);
 
     }
 
     onEndSequence(context, sequence) {
 
         // Map the sequence
-        this.mapping.mapAttribute(context, sequence);
+        this.selection.matchAttribute(context, sequence);
 
         // Pop the current sequence stack
         context.sequences.pop();
@@ -163,8 +205,8 @@ export default class StreamingDicomMappingHandler {
      */
     onEndInstance(context) {
 
-        // End the currnent mapping
-        return this.mapping.end(context);
+        // End the currnent selection
+        return this.selection.end(context);
 
     }
 
@@ -174,10 +216,14 @@ export default class StreamingDicomMappingHandler {
     onProgress(context, progress) {
     }
 
-    constructor(mapping) {
+    /**
+     * Create a new instance of the handler with the specified "selection".
+     * @param {Selection} selection The specified selection to apply when processing the DICOM Data.
+     */
+    constructor(selection) {
 
-        // Set the mapping
-        this.mapping = mapping;
+        // Set the selection
+        this.selection = selection;
 
     }
 

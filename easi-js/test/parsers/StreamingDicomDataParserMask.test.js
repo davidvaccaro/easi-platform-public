@@ -1,7 +1,7 @@
 import EASI from '../../src/EASI.js';
 import Tag from '../../src/dicom/Tag.js';
-import StreamingDicomInstanceHandler from '../../src/handlers/StreamingDicomInstanceHandler.js';
-import StreamingDicomDeIdentificationHandler from '../../src/handlers/StreamingDicomDeIdentificationHandler.js';
+import StreamingDicomInstanceHandler from '../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
+import StreamingDicomDeIdentificationFilter from '../../src/handlers/filters/StreamingDicomDeIdentificationFilter.js';
 import { Status } from '../../src/parsers/Status.js';
 
 const path = require('path');
@@ -28,9 +28,9 @@ async function parseInstanceWithHandler(handler, bytes) {
 
 }
 
-test('Test: StreamingDicomDeIdentificationHandler tagMask applies literal masked values', async () => {
+test('Test: StreamingDicomDeIdentificationFilter tagMask applies literal masked values', async () => {
 
-    const handler = new StreamingDicomDeIdentificationHandler(new StreamingDicomInstanceHandler());
+    const handler = new StreamingDicomDeIdentificationFilter(new StreamingDicomInstanceHandler());
     handler.tagMask = new Map([
         [Tag.PatientName, '[MASKED NAME]'],
         [Tag.PatientID, '[MASKED ID]']
@@ -44,9 +44,9 @@ test('Test: StreamingDicomDeIdentificationHandler tagMask applies literal masked
 
 });
 
-test('Test: StreamingDicomDeIdentificationHandler tagMask supports function resolvers', async () => {
+test('Test: StreamingDicomDeIdentificationFilter tagMask supports function resolvers', async () => {
 
-    const handler = new StreamingDicomDeIdentificationHandler(new StreamingDicomInstanceHandler());
+    const handler = new StreamingDicomDeIdentificationFilter(new StreamingDicomInstanceHandler());
     handler.tagMask = new Map([
         [Tag.PatientName, (attribute) => ('MASK:' + attribute.tag.ID)]
     ]);
@@ -57,9 +57,9 @@ test('Test: StreamingDicomDeIdentificationHandler tagMask supports function reso
 
 });
 
-test('Test: StreamingDicomDeIdentificationHandler mask alias supports object keys', async () => {
+test('Test: StreamingDicomDeIdentificationFilter mask alias supports object keys', async () => {
 
-    const handler = new StreamingDicomDeIdentificationHandler(new StreamingDicomInstanceHandler());
+    const handler = new StreamingDicomDeIdentificationFilter(new StreamingDicomInstanceHandler());
     handler.mask = {
         '(0010,0010)': '[HIDDEN]'
     };
@@ -72,7 +72,7 @@ test('Test: StreamingDicomDeIdentificationHandler mask alias supports object key
 
 test('Test: Tag default de-identification mask applies DICOM action-code behavior via handler chain', async () => {
 
-    const handler = new StreamingDicomDeIdentificationHandler(new StreamingDicomInstanceHandler());
+    const handler = new StreamingDicomDeIdentificationFilter(new StreamingDicomInstanceHandler());
     handler.mask = Tag.DefaultDeIdentificationMask;
 
     const result = await parseInstanceWithHandler(handler, readDicomBytes('0002.DCM'));
@@ -105,7 +105,7 @@ test('Test: StreamingReaderBuilder withMask applies de-identification handler ch
 
 test('Test: Action code X removes the masked attribute from the emitted data set', async () => {
 
-    const handler = new StreamingDicomDeIdentificationHandler(new StreamingDicomInstanceHandler());
+    const handler = new StreamingDicomDeIdentificationFilter(new StreamingDicomInstanceHandler());
     handler.mask = new Map([
         [Tag.PatientName, { ID: Tag.PatientName.ID, Action: 'X' }]
     ]);
@@ -123,7 +123,7 @@ test('Test: Action code U replaces a UID value with a deterministic replacement 
         readDicomBytes('0002.DCM')
     );
 
-    const handler = new StreamingDicomDeIdentificationHandler(new StreamingDicomInstanceHandler());
+    const handler = new StreamingDicomDeIdentificationFilter(new StreamingDicomInstanceHandler());
     handler.mask = new Map([
         [Tag.SOPInstanceUID, { ID: Tag.SOPInstanceUID.ID, Action: 'U' }]
     ]);
@@ -140,7 +140,7 @@ test('Test: Action code U replaces a UID value with a deterministic replacement 
 
 test('Test: Action code U creates stable replacement UID across repeated reads', async () => {
 
-    const handler = new StreamingDicomDeIdentificationHandler(new StreamingDicomInstanceHandler());
+    const handler = new StreamingDicomDeIdentificationFilter(new StreamingDicomInstanceHandler());
     handler.mask = new Map([
         [Tag.SOPInstanceUID, { ID: Tag.SOPInstanceUID.ID, Action: 'U' }]
     ]);
@@ -158,7 +158,7 @@ test('Test: Action code U creates stable replacement UID across repeated reads',
 
 test('Test: mask array input applies default [MASKED] action', async () => {
 
-    const handler = new StreamingDicomDeIdentificationHandler(new StreamingDicomInstanceHandler());
+    const handler = new StreamingDicomDeIdentificationFilter(new StreamingDicomInstanceHandler());
     handler.mask = [
         Tag.PatientName,
         '(0010,0020)'
@@ -173,7 +173,7 @@ test('Test: mask array input applies default [MASKED] action', async () => {
 
 test('Test: normalizeMaskActionCode handles whitespace and optional star suffix', () => {
 
-    const handler = new StreamingDicomDeIdentificationHandler();
+    const handler = new StreamingDicomDeIdentificationFilter();
     expect(handler.normalizeMaskActionCode(' x / z / u * ')).toBe('X/Z/U');
     expect(handler.normalizeMaskActionCode('  z / d  ')).toBe('Z/D');
 
@@ -181,7 +181,7 @@ test('Test: normalizeMaskActionCode handles whitespace and optional star suffix'
 
 test('Test: setTagMask and clearTagMask operate on normalized identifiers', () => {
 
-    const handler = new StreamingDicomDeIdentificationHandler();
+    const handler = new StreamingDicomDeIdentificationFilter();
     handler.mask = null;
 
     handler.setTagMask('(0010,0010)', 'X');
@@ -195,7 +195,7 @@ test('Test: setTagMask and clearTagMask operate on normalized identifiers', () =
 test('Test: applyMask defers function action until attribute is complete', async () => {
 
     var resolverCalls = 0;
-    const handler = new StreamingDicomDeIdentificationHandler();
+    const handler = new StreamingDicomDeIdentificationFilter();
     handler.mask = new Map([
         [Tag.PatientName, () => { resolverCalls++; return '[FUNCTION MASK]'; }]
     ]);
@@ -222,7 +222,7 @@ test('Test: applyMask defers function action until attribute is complete', async
 
 test('Test: action code K keeps the original value', async () => {
 
-    const handler = new StreamingDicomDeIdentificationHandler();
+    const handler = new StreamingDicomDeIdentificationFilter();
     handler.mask = new Map([
         [Tag.PatientName, { ID: Tag.PatientName.ID, Action: 'K' }]
     ]);
@@ -244,7 +244,7 @@ test('Test: action code K keeps the original value', async () => {
 test('Test: action code Z uses zero-length replacement for binary attributes', async () => {
 
     const binaryTag = { ID: 'DEADBEEF', VR: { ID: 'OB' } };
-    const handler = new StreamingDicomDeIdentificationHandler();
+    const handler = new StreamingDicomDeIdentificationFilter();
     handler.mask = new Map([
         [binaryTag, { ID: binaryTag.ID, Action: 'Z' }]
     ]);
@@ -267,7 +267,7 @@ test('Test: action code Z uses zero-length replacement for binary attributes', a
 test('Test: action code X causes start-sequence to be skipped', async () => {
 
     const sequenceTag = { ID: 'DEADBE00', VR: { ID: 'SQ' } };
-    const handler = new StreamingDicomDeIdentificationHandler();
+    const handler = new StreamingDicomDeIdentificationFilter();
     handler.mask = new Map([
         [sequenceTag, { ID: sequenceTag.ID, Action: 'X' }]
     ]);

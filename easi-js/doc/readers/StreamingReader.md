@@ -100,7 +100,7 @@ Read a DICOM instance from the specified source of data.
 ```js
 import StreamingReader from '../../src/readers/StreamingReader.js';
 import StreamingDicomDataParser from '../../src/parsers/StreamingDicomDataParser.js';
-import StreamingDicomInstanceHandler from '../../src/handlers/StreamingDicomInstanceHandler.js';
+import StreamingDicomInstanceHandler from '../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
 
 const reader = new StreamingReader();
 const parser = new StreamingDicomDataParser();
