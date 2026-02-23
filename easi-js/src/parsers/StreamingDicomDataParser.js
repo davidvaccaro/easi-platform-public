@@ -24,6 +24,7 @@ import Utilities from '../dicom/Utilities.js';
 import Exception from '../environment/Exception.js';
 import { DicomErrorCodes } from '../environment/Exception.js';
 
+import StreamingDataParser from './StreamingDataParser.js';
 import { Status } from './Status.js';
 
 import TransferSyntax from '../dicom/TransferSyntax.js';
@@ -72,16 +73,7 @@ const DicomDataSetSpecification = [
     DicomPartType.DataSet
 ];
 
-export default class StreamingDicomDataParser {
-
-    /**
-     * Determine whether the supplied value is Promise-like.
-     * @param {*} value The value to test.
-     * @returns {boolean} TRUE when the value is thenable.
-     */
-    isThenable(value) {
-        return ((value != null) && (typeof value.then === 'function'));
-    }
+export default class StreamingDicomDataParser extends StreamingDataParser {
 
     /**
      * Reset the current state of the parser.
@@ -431,79 +423,6 @@ export default class StreamingDicomDataParser {
             return null;
 
         return this.dataElements[this.dataElements.length - 1];
-
-    }
-
-    /**
-     * Fires a stream event or skips the event if the stream-handler does NOT support the event.
-     * @param {string} name The name of the event.
-     * @param {*} param The parameter to pass to the event.
-     * @returns The status based on the standard processing.
-     */
-    fireStreamEvent(name, param, currentStatus) {
-
-        // If there is NO handler, NOOP
-        if (this._handler == null)
-            return Status.CONTINUE;
-
-        // If the current event should be SKIP-ed, do so
-        if ((currentStatus != null) && (currentStatus == Status.SKIP))
-            return Status.CONTINUE;
-
-        // Init the complete state
-        var status = Status.CONTINUE;
-
-        // If the stream-handler supports the event,
-        if (this._handler[name] != null) {
-
-            // Call the event function
-            const result = this._handler[name](this.context, param);
-
-            if (this.isThenable(result) == true) {
-                return result.then((resolved) => ((resolved == null) ? Status.CONTINUE : resolved));
-            }
-
-            status = (result == null) ? Status.CONTINUE : result;
-
-        }
-
-        return status;
-
-    }
-
-    /**
-     * Fires a throttled progress event. Parsers should call this explicitly (typically once per parse chunk).
-     * @param {*} currentStatus The current parser status.
-     * @returns {*} The resulting status.
-     */
-    fireProgressEvent(currentStatus = Status.CONTINUE) {
-
-        // If there is NO handler, NOOP
-        if (this._handler == null)
-            return Status.CONTINUE;
-
-        // Only pulse progress while continuing.
-        if (currentStatus != Status.CONTINUE)
-            return currentStatus;
-
-        // If the stream-handler does not support progress, NOOP.
-        if (this._handler.onProgress == undefined)
-            return Status.CONTINUE;
-
-        // Call the event function
-        const result = this._handler.onProgress(
-            this.context, {
-                bytesRead: this.bytesRead,
-                bytesProcessed: this.totalBytesConsumed,
-                bytesTotal: this.bytesTotal
-            }
-        );
-
-        if (this.isThenable(result) == true) {
-            return result.then((resolved) => ((resolved == null) ? Status.CONTINUE : resolved));
-        }
-
-        return (result == null) ? Status.CONTINUE : result;
 
     }
 
@@ -1510,50 +1429,15 @@ export default class StreamingDicomDataParser {
     }
 
     /**
-     * Sets the the status indicating that this parser is perfomring "strict" parsing.
-     * @description Strict indicates that the parser will strictly enforce general structural aspects of the DICOM Standard.
-     */
-    set isStrict (isStrict) {
-        this._isStrict = isStrict;
-    }
-
-    /**
-     * Gets the status indicating that this parser is performing "strict" parsing.
-     * @description Strict indicates that the parser will strictly enforce general structural aspects of the DICOM Standard.
-     */
-    get isStrict() {
-        return this._isStrict;
-    }
-
-    /**
-     * Sets the current handler for this parser.
-     * @param {object} handler The handler used to handle parsed elements of the DICOM data.
-     */
-    set handler (handler) {
-        this._handler = handler;
-    }
-
-    /**
-     * Gets the current handler for this parser.
-     * @returns The handler used to handle parsed elements of the DICOM data.
-     */
-    get handler () {
-        return this._handler;
-    }
-
-    /**
      * Constructos a new DICOM Parser with the associated DICOM Stream Handler.
      */
     constructor() {
 
-        // Default the "strict" status
-        this._isStrict = false;
+        // Call the base constructor
+        super();
 
         // Set the default part specification (Part-10)
         this.partSpecification = DicomPart10Specification;
-        
-        // Init the session context
-        this.context = null;
 
     }
 
