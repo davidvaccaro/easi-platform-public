@@ -1,5 +1,5 @@
 import StreamingJsonDataParser from '../../src/parsers/StreamingJsonDataParser.js';
-import StreamingDicomMetadataAdapterHandler from '../../src/handlers/StreamingDicomMetadataAdapterHandler.js';
+import StreamingDicomJsonMetadataAdapterHandler from '../../src/handlers/StreamingDicomJsonMetadataAdapterHandler.js';
 import { Status } from '../../src/parsers/Status.js';
 import StreamingDicomInstanceHandler from '../../src/handlers/StreamingDicomInstanceHandler.js';
 import Tag from '../../src/dicom/Tag.js';
@@ -80,7 +80,7 @@ test('Test: Metadata adapter emits canonical DICOM attribute events incrementall
 
     const parser = new StreamingJsonDataParser();
     parser.reset();
-    parser.handler = new StreamingDicomMetadataAdapterHandler(new TraceDicomHandler());
+    parser.handler = new StreamingDicomJsonMetadataAdapterHandler(new TraceDicomHandler());
 
     const status1 = await parser.parse(chunk1, false, chunk1.length, bytes.length);
     expect(status1).toBe(Status.CONTINUE);
@@ -128,7 +128,7 @@ test('Test: Metadata adapter emits canonical DICOM sequence and item events incr
 
     const parser = new StreamingJsonDataParser();
     parser.reset();
-    parser.handler = new StreamingDicomMetadataAdapterHandler(new TraceDicomHandler());
+    parser.handler = new StreamingDicomJsonMetadataAdapterHandler(new TraceDicomHandler());
 
     const status1 = await parser.parse(chunk1, false, chunk1.length, bytes.length);
     expect(status1).toBe(Status.CONTINUE);
@@ -183,7 +183,7 @@ test('Test: Metadata adapter parses chunk-split string values without duplicatio
 
     const parser = new StreamingJsonDataParser();
     parser.reset();
-    parser.handler = new StreamingDicomMetadataAdapterHandler(new StreamingDicomInstanceHandler());
+    parser.handler = new StreamingDicomJsonMetadataAdapterHandler(new StreamingDicomInstanceHandler());
 
     const status1 = await parser.parse(chunk1, false, chunk1.length, bytes.length);
     expect(status1).toBe(Status.CONTINUE);
@@ -211,7 +211,7 @@ test('Test: Metadata adapter parses chunk-split PN object string values without 
 
     const parser = new StreamingJsonDataParser();
     parser.reset();
-    parser.handler = new StreamingDicomMetadataAdapterHandler(new StreamingDicomInstanceHandler());
+    parser.handler = new StreamingDicomJsonMetadataAdapterHandler(new StreamingDicomInstanceHandler());
 
     const status1 = await parser.parse(chunk1, false, chunk1.length, bytes.length);
     expect(status1).toBe(Status.CONTINUE);
@@ -239,7 +239,7 @@ test('Test: Metadata adapter parses chunk-split escaped string values without fa
 
     const parser = new StreamingJsonDataParser();
     parser.reset();
-    parser.handler = new StreamingDicomMetadataAdapterHandler(new StreamingDicomInstanceHandler());
+    parser.handler = new StreamingDicomJsonMetadataAdapterHandler(new StreamingDicomInstanceHandler());
 
     const status1 = await parser.parse(chunk1, false, chunk1.length, bytes.length);
     expect(status1).toBe(Status.CONTINUE);
@@ -292,7 +292,7 @@ test('Test: Metadata adapter parses realistic metadata subset with nested sequen
 
     const parser = new StreamingJsonDataParser();
     parser.reset();
-    parser.handler = new StreamingDicomMetadataAdapterHandler(new StreamingDicomInstanceHandler());
+    parser.handler = new StreamingDicomJsonMetadataAdapterHandler(new StreamingDicomInstanceHandler());
 
     expect(await parser.parse(chunk1, false, chunk1.length, bytes.length)).toBe(Status.CONTINUE);
     expect(await parser.parse(chunk2, false, (chunk1.length + chunk2.length), bytes.length)).toBe(Status.CONTINUE);

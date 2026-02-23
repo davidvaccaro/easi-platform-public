@@ -1,5 +1,5 @@
 //
-// StreamingDicomMetadataAdapterHandler.js - 1.0.0
+// StreamingDicomJsonMetadataAdapterHandler.js - 1.0.0
 //
 // Streaming DICOM Metadata Adapter Handler Class
 //
@@ -30,7 +30,7 @@ import Tag from "../dicom/Tag.js"
 import TransferSyntax from "../dicom/TransferSyntax.js";
 import { Status } from "../parsers/Status.js";
 
-export default class StreamingDicomMetadataAdapterHandler {
+export default class StreamingDicomJsonMetadataAdapterHandler {
 
     /**
      * Defer downstream terminal control-flow statuses until the current metadata instance closes.
@@ -121,7 +121,12 @@ export default class StreamingDicomMetadataAdapterHandler {
             if (sequenceStatus != Status.CONTINUE)
                 return sequenceStatus;
 
-            for (var i = 0; i < attribute.items.length; i++) {
+            // Iterate a snapshot because some downstream handlers (e.g. StreamingDicomInstanceHandler)
+            // append items to the same sequence object while handling onStartItem/onStartSequence.
+            // Iterating the live array can cause unbounded growth and infinite loops.
+            var sequenceItems = (Array.isArray(attribute.items) == true) ? attribute.items.slice() : [];
+
+            for (var i = 0; i < sequenceItems.length; i++) {
 
                 var itemStatus = await this.emitStatusEvent(context, "onStartItem");
                 if (itemStatus == Status.SKIP)
@@ -129,7 +134,7 @@ export default class StreamingDicomMetadataAdapterHandler {
                 if (itemStatus != Status.CONTINUE)
                     return itemStatus;
 
-                var item = attribute.items[i];
+                var item = sequenceItems[i];
                 if ((item != null) && (item.attributes != null)) {
                     for (var x = 0; x < item.attributes.length; x++) {
                         itemStatus = await this.emitAttribute(context, item.attributes[x]);

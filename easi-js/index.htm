@@ -113,6 +113,10 @@
         </div>
         <br>
         <div>
+            <button id="metadataXmlInstance">Parse Instance from XML Metadata</button>
+        </div>
+        <br>
+        <div>
             <button id="metadataSeriesInstances">Parse Series from Metadata</button>
         </div>
         <br>
@@ -770,6 +774,26 @@
                     .read(instanceUrl + "/metadata")
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
+
+            });
+
+            // Handle Instance (XML Metadata)
+            $('#metadataXmlInstance').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader (XML metadata -> Instance)
+                const reader = EASI
+                    .newStreamingReaderBuilder()
+                    .fromDicomXmlMetadata()
+                    .toInstances()
+                    .build();
+
+                // Read and parse the local DICOMweb XML metadata sample.
+                reader.read("../data/xml/dicomweb.xml")
+                .then(result => console.log(result))
+                .catch(err => console.log(err));
 
             });
 

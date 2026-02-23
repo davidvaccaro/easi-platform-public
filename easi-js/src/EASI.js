@@ -79,6 +79,15 @@ export default class EASI {
     }
 
     /**
+     * Create a new reader builder pre-configured for DICOM XML metadata data.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomXmlMetadataReaderBuilder() {
+        return EASI.newStreamingReaderBuilder()
+            .fromDicomXmlMetadata();
+    }
+
+    /**
      * Create a new reader builder pre-configured for DICOM byte data -> DICOM Instance emit.
      * @returns A new, initialized StreamingReaderBuilder class instance.
      */
@@ -93,6 +102,15 @@ export default class EASI {
      */
     static newStreamingDicomJsonInstanceReaderBuilder() {
         return EASI.newStreamingDicomMetadataReaderBuilder()
+            .toInstances();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM XML metadata -> DICOM Instance emit.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomXmlInstanceReaderBuilder() {
+        return EASI.newStreamingDicomXmlMetadataReaderBuilder()
             .toInstances();
     }
 
@@ -117,6 +135,16 @@ export default class EASI {
     }
 
     /**
+     * Create a new reader builder pre-configured for DICOM XML metadata -> Selection emit.
+     * @param {Selection} selection The selection used to match and emit attributes.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomXmlSelectionReaderBuilder(selection) {
+        return EASI.newStreamingDicomXmlMetadataReaderBuilder()
+            .toSelection(selection);
+    }
+
+    /**
      * Create a new reader builder pre-configured for DICOM byte data -> Mapping emit.
      * @param {Mapping} mapping The mapping used to transform DICOM attributes.
      * @returns A new, initialized StreamingReaderBuilder class instance.
@@ -133,6 +161,16 @@ export default class EASI {
      */
     static newStreamingDicomJsonMappingReaderBuilder(mapping) {
         return EASI.newStreamingDicomMetadataReaderBuilder()
+            .toMapping(mapping);
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM XML metadata -> Mapping emit.
+     * @param {Mapping} mapping The mapping used to transform DICOM attributes.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomXmlMappingReaderBuilder(mapping) {
+        return EASI.newStreamingDicomXmlMetadataReaderBuilder()
             .toMapping(mapping);
     }
 
@@ -161,6 +199,15 @@ export default class EASI {
      */
     static newStreamingDicomJsonFHIRImagingStudyReaderBuilder() {
         return EASI.newStreamingDicomMetadataReaderBuilder()
+            .toFHIRImagingStudies();
+    }
+
+    /**
+     * Create a new reader builder pre-configured for DICOM XML metadata -> FHIR ImagingStudy emit.
+     * @returns A new, initialized StreamingReaderBuilder class instance.
+     */
+    static newStreamingDicomXmlFHIRImagingStudyReaderBuilder() {
+        return EASI.newStreamingDicomXmlMetadataReaderBuilder()
             .toFHIRImagingStudies();
     }
 

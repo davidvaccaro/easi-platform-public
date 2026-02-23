@@ -479,9 +479,10 @@ export default class StreamingReader {
     /**
      * Read a DICOM instance from the response content of specified URL.
      * @param {string} url The specified URL to a DICOM instance.
+     * @param {RequestInit | null} requestOptions Optional fetch request options (e.g. headers).
      * @returns A Promise that resolves to the result from the DICOM parse operation.
      */
-    readUrl(url) {
+    readUrl(url, requestOptions = null) {
 
         // Establish that
         var that = this;
@@ -493,9 +494,9 @@ export default class StreamingReader {
             var contentLength = null;
 
             // Fetch the DICOM file
-            fetch(url, {
+            fetch(url, Object.assign({
                 method: 'GET'
-            })
+            }, (requestOptions != null) ? requestOptions : {}))
             .then(response => { 
 
                 // Parse the Content-Type header
@@ -587,11 +588,12 @@ export default class StreamingReader {
     /**
      * Read a DICOM instance from the specified source of data.
      * @param {string | Uint8Array} source The specified source of data.
+     * @param {RequestInit | null} requestOptions Optional fetch request options when source is a URL.
      * @returns A Promise that resolves to the result from the DICOM parse operation.
      */
-    read(source) {
+    read(source, requestOptions = null) {
         if (typeof source === 'string')
-            return this.readUrl(source);
+            return this.readUrl(source, requestOptions);
         return this.readData(source);
     };
 

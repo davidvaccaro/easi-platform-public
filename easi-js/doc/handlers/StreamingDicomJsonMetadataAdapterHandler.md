@@ -1,19 +1,19 @@
-# `StreamingDicomMetadataAdapterHandler` Class
+# `StreamingDicomJsonMetadataAdapterHandler` Class
 
-The `StreamingDicomMetadataAdapterHandler` class adapts DICOMweb JSON metadata parser events into canonical DICOM semantic handler events so shared downstream handlers (instance, selection, mapping, de-identification, DICOM writer) can be reused.
+The `StreamingDicomJsonMetadataAdapterHandler` class adapts DICOMweb JSON metadata parser events into canonical DICOM semantic handler events so shared downstream handlers (instance, selection, mapping, de-identification, DICOM writer) can be reused.
 
 ---
 
 ## Inheritance
 
 ```text
-StreamingDicomMetadataAdapterHandler → (none)
+StreamingDicomJsonMetadataAdapterHandler → (none)
 ```
 
 ## Constructor
 
 ```js
-new StreamingDicomMetadataAdapterHandler(nextHandler = null)
+new StreamingDicomJsonMetadataAdapterHandler(nextHandler = null)
 ```
 
 ### Parameters
@@ -33,11 +33,11 @@ new StreamingDicomMetadataAdapterHandler(nextHandler = null)
 
 ```js
 import StreamingJsonDataParser from '../../src/parsers/StreamingJsonDataParser.js';
-import StreamingDicomMetadataAdapterHandler from '../../src/handlers/StreamingDicomMetadataAdapterHandler.js';
+import StreamingDicomJsonMetadataAdapterHandler from '../../src/handlers/StreamingDicomJsonMetadataAdapterHandler.js';
 import StreamingDicomInstanceHandler from '../../src/handlers/StreamingDicomInstanceHandler.js';
 
 const parser = new StreamingJsonDataParser();
-parser.handler = new StreamingDicomMetadataAdapterHandler(
+parser.handler = new StreamingDicomJsonMetadataAdapterHandler(
   new StreamingDicomInstanceHandler()
 );
 ```
