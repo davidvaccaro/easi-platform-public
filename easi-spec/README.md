@@ -1,49 +1,273 @@
-# EASI Specification
+# EASI Specification (Normative Hub)
 
-This folder defines the language-neutral EASI API specification for streaming healthcare imaging workflows.
+EASI (Efficient API for Streaming in Healthcare Imaging) is a language-neutral API specification for streaming-first interaction with DICOM and related healthcare imaging formats.
 
-Purpose:
+EASI is not a replacement for the DICOM data standard. DICOM remains the authoritative data standard. EASI defines a consistent, recognizable API contract for reading, parsing, transforming, validating, de-identifying, selecting, mapping, and emitting DICOM data efficiently across programming languages.
 
-- Define the core EASI contract independent of implementation language (`easi-js`, `easi-cs`, `easi-java`, `easi-py`, etc.)
-- Separate normative behavior (must/should) from convenience APIs (may evolve)
-- Establish a foundation for conformance tests and cross-language parity
+This `README.md` is the primary hub of the EASI specification. It defines the value, scope, conformance model, and core design principles, and links to supporting spec documents that elaborate the details.
 
-Status:
+## Why EASI Exists
+
+DICOM is ubiquitous and powerful, but application developers often need to handle:
+
+- multipart transport and streaming input
+- nested sequence parsing complexity
+- large payloads (for example pixel data)
+- multiple source encodings (native DICOM bytes, DICOMweb JSON metadata, DICOMweb XML metadata)
+- transformation and extraction workflows (selection, mapping, de-identification, validation)
+
+EASI standardizes a clean API interaction model so client applications can work with DICOM efficiently without re-implementing parser orchestration and event flow logic in every project and language.
+
+## EASI Value Proposition
+
+EASI provides:
+
+- A simple, recognizable API shape across languages
+- A streaming-first execution model designed for large imaging payloads
+- A composable pipeline for adapters, filters, and terminal outputs
+- Explicit flow-control semantics (`CONTINUE`, `STOP`, `JUMP`, `FAIL`, `SUCCESS`)
+- A clean separation between source parsing and downstream DICOM-domain processing
+- A conformance target for multiple implementations (`easi-js`, `easi-cs`, `easi-java`, `easi-py`, etc.)
+
+## What Is Normative vs Informative
+
+Normative EASI content defines required semantics and behavior for conforming implementations.
+
+Normative EASI content includes:
+
+- pipeline model
+- lifecycle and status semantics
+- builder intent semantics (`from...`, `to...`, `with...`, `build()`)
+- compatibility and error behavior expectations
+- conformance levels and conformance assertions
+
+Informative content may include:
+
+- implementation examples
+- performance notes
+- language-specific ergonomics
+- convenience factory APIs (unless explicitly promoted into conformance)
+- roadmap scenarios
+
+## Normative Language
+
+This specification uses the terms `MUST`, `SHOULD`, and `MAY` in their standard normative sense:
+
+- `MUST`: required for conformance
+- `SHOULD`: recommended; deviations require justification
+- `MAY`: optional implementation choice
+
+## EASI Core v0.1 Normative Scope
+
+The initial normative target is **EASI Core v0.1**.
+
+EASI Core v0.1 defines:
+
+1. The streaming pipeline model:
+   - `Reader -> Parser -> [Adapters] -> [Filters] -> Terminal -> [Writer]`
+2. The canonical DICOM semantic lifecycle event contract and ordering semantics
+3. Status flow-control semantics:
+   - `CONTINUE`, `SUCCESS`, `STOP`, `JUMP`, `FAIL`
+4. Core builder semantics:
+   - `from...`, `to...`, `with...`, `build()`
+5. Parser/adapter/filter/terminal compatibility behavior
+6. Conformance levels and baseline scenario expectations
+
+EASI Core v0.1 intentionally does not attempt to restate the DICOM standard itself.
+
+## Non-Goals (Initial)
+
+The following are out of scope for EASI Core v0.1:
+
+- restating DICOM encoding rules beyond what is needed for API semantics
+- standardizing internal implementation data structures
+- prescribing language-specific naming casing (`camelCase` vs `PascalCase`)
+- prescribing transport framework choices (Node streams, .NET streams, Java I/O, etc.)
+- requiring all convenience factory methods for conformance
+
+## Core Design Principle: Semantics First, Syntax Second
+
+EASI should be recognizable across languages, but exact syntax does not need to be identical.
+
+What must remain consistent:
+
+- pipeline semantics
+- lifecycle semantics
+- status behavior
+- builder intent (`from`, `to`, `with`, `build`)
+- compatibility/error semantics
+
+What may vary by language:
+
+- method casing (`fromDicomData` vs `FromDicomData`)
+- async primitives (`Promise`, `Task`, `CompletableFuture`)
+- byte container types (`Uint8Array`, `byte[]`, `ByteBuffer`)
+- convenience overloads
+
+## Canonical EASI Pipeline Taxonomy (Normative Vocabulary)
+
+These terms are the normative vocabulary used throughout the spec:
+
+- `Reader`: owns I/O / stream ingestion and source part orchestration
+- `Parser`: decodes a source format incrementally
+- `Adapter`: translates parser-specific syntax events into canonical DICOM semantic events
+- `Filter`: pass-through transform/validation stage on canonical DICOM semantic events
+- `Terminal`: final handler stage that materializes output or emits transformed bytes
+- `Writer` (optional): post-terminal packaging/framing stage for transport output
+
+This vocabulary is designed to remain stable across implementations.
+
+## Canonical Builder Intent (Normative)
+
+EASI standardizes the builder intent model:
+
+- `from...`: choose source format / parser family
+- `to...`: choose terminal behavior / output strategy
+- `with...`: configure explicit options, overrides, callbacks, and pipeline stages
+- `build()`: validate and compose the pipeline (fail-fast)
+
+Reference implementations may provide additional convenience entry points, but the `from` / `to` / `with` / `build` intent model is the recognizable core.
+
+## Conformance Levels (Normative Model)
+
+Conformance is defined in levels so implementations can be useful before full feature parity.
+
+### Level 1: Core API Conformance
+
+A Level 1 implementation MUST provide:
+
+- Reader/Parser/Handler pipeline model semantics
+- lifecycle and status semantics as specified
+- core builder semantics (`from...`, `to...`, `with...`, `build()`)
+- fail-fast build validation for invalid pipeline composition
+
+### Level 2: DICOM Core Scenario Conformance
+
+A Level 2 implementation MUST additionally support the core DICOM scenarios:
+
+- native DICOM bytes -> DICOM Instance model
+- native DICOM bytes -> selection output
+- native DICOM bytes -> mapping output
+
+### Level 3: Extended Scenario Conformance
+
+A Level 3 implementation MAY include additional standardized scenarios such as:
+
+- DICOMweb JSON metadata parsing
+- DICOMweb XML metadata parsing
+- de-identification filters
+- validation filters
+- native DICOM byte re-emission
+- transport writers
+
+### Official Implementation Guidance
+
+Official EASI implementations SHOULD target:
+
+- Level 1 + Level 2 first
+- Level 3 incrementally with documented scenario support
+
+Detailed conformance guidance and fixtures are defined in [`conformance.md`](./conformance.md).
+
+## Multi-Language Example (Same EASI Intent, Different Language Syntax)
+
+### JavaScript (Reference style)
+
+```js
+const reader = EASI.newStreamingReaderBuilder()
+  .fromDicomData()
+  .toInstances()
+  .withValidation('permissive')
+  .build();
+```
+
+### C# (Idiomatic .NET casing, same semantics)
+
+```csharp
+var reader = EASI.NewStreamingReaderBuilder()
+    .FromDicomData()
+    .ToInstances()
+    .WithValidation("permissive")
+    .Build();
+```
+
+### Java (Idiomatic JVM style, same semantics)
+
+```java
+var reader = EASI.newStreamingReaderBuilder()
+    .fromDicomData()
+    .toInstances()
+    .withValidation("permissive")
+    .build();
+```
+
+### Python (Fluent style can still be recognizable)
+
+```python
+reader = (
+    EASI.new_streaming_reader_builder()
+    .from_dicom_data()
+    .to_instances()
+    .with_validation("permissive")
+    .build()
+)
+```
+
+The exact casing differs, but the EASI interaction model remains recognizable.
+
+## Example EASI Pipeline Shapes (Normative Concepts, Informative Examples)
+
+- Native DICOM parse to Instance:
+  - `Reader -> DICOM Parser -> DICOM Instance Terminal`
+- DICOMweb JSON metadata to shared DICOM handlers:
+  - `Reader -> JSON Parser -> DICOM JSON Metadata Adapter -> DICOM Terminal`
+- Native DICOM de-identify and emit native DICOM bytes:
+  - `Reader -> DICOM Parser -> Validation Filter (optional) -> DeIdentification Filter -> DICOM Data Writer Terminal -> Writer (optional)`
+
+## Specification Document Map
+
+Use this `README` as the primary overview and entry point. Use the supporting documents for detailed normative semantics.
+
+### Core (Normative)
+
+- [`core-pipeline.md`](./core-pipeline.md)
+  - normative execution model and component responsibilities
+- [`lifecycle-and-status.md`](./lifecycle-and-status.md)
+  - lifecycle event ordering and status flow semantics
+- [`builder-contract.md`](./builder-contract.md)
+  - builder intent, composition, and `build()` behavior
+- [`conformance.md`](./conformance.md)
+  - conformance levels, assertions, and implementation allowances
+
+### Supporting / Mixed (Normative + Informative)
+
+- [`scenario-matrix.md`](./scenario-matrix.md)
+  - implemented vs planned source/output combinations and roadmap tracking
+
+## Relationship to Implementations
+
+- `EASI` = specification / API contract
+- `BrightDicom` = monorepo and official implementation host
+- `easi-js`, `easi-cs`, `easi-java`, `easi-py` = language-specific implementations of EASI
+
+Implementations may evolve internally, but conforming behavior MUST remain aligned with this specification.
+
+## Recommended Freeze Sequence (Pragmatic)
+
+To stabilize EASI before broad multi-language rollout:
+
+1. Freeze pipeline terminology and model
+2. Freeze lifecycle/status semantics
+3. Freeze builder core semantics and compatibility rules
+4. Freeze conformance levels and baseline scenario expectations
+5. Expand implementations and language-specific ergonomics
+
+## Current Status
 
 - Draft (`v0.x`)
-- Pre-production design freeze work-in-progress
+- Pre-production design freeze in progress
+- Reference implementation: `easi-js`
 
-Scope (initial):
+## Summary
 
-- Core pipeline model (`Reader -> Parser -> Handler`)
-- Lifecycle event ordering and status semantics
-- Builder contract (source/target/wiring/defaults)
-- Supported scenario combinations (current + planned)
-- Conformance expectations for official implementations
-
-Non-goals (initial):
-
-- Full DICOM standard restatement
-- Language-specific implementation details
-- Transport/framework-specific guidance beyond what is required for semantic parity
-
-Documents:
-
-- `core-pipeline.md`
-- `lifecycle-and-status.md`
-- `builder-contract.md`
-- `scenario-matrix.md`
-- `conformance.md`
-
-Terminology:
-
-- `EASI` refers to the API specification / contract.
-- `BrightDicom` refers to the monorepo and official implementation host.
-
-Suggested process:
-
-1. Freeze core pipeline semantics.
-2. Freeze lifecycle/status semantics.
-3. Freeze builder contract and naming.
-4. Freeze conformance expectations.
-5. Encode in language-specific typings/docs/tests.
+EASI succeeds if a developer can recognize the same streaming imaging API model across languages, while DICOM remains the underlying data standard. The specification should therefore standardize semantics and vocabulary first, and fluent syntax second.
