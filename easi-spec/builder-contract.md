@@ -23,6 +23,7 @@ The builder provides a declarative way to configure:
 Examples:
 
 - `fromPartStream()`
+- `fromFetchStream()`
 
 Normative intent:
 

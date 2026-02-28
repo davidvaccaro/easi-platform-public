@@ -52,7 +52,7 @@ test('Test: PipelineBuilder toDicomData emits native DICOM bytes that round-trip
         .toDicomData()
         .build();
 
-    var emittedBytes = await writerReader.read(sourceBytes);
+    var emittedBytes = await writerReader.process(sourceBytes);
     expect(emittedBytes instanceof Uint8Array).toBe(true);
     expect(emittedBytes.length).toBeGreaterThan(0);
 
@@ -61,14 +61,14 @@ test('Test: PipelineBuilder toDicomData emits native DICOM bytes that round-trip
         .ofDicomData()
         .toInstances()
         .build()
-        .read(sourceBytes);
+        .process(sourceBytes);
 
     var emittedInstance = await EASI.pipelineBuilder()
         .fromPartStream()
         .ofDicomData()
         .toInstances()
         .build()
-        .read(emittedBytes);
+        .process(emittedBytes);
 
     expect(emittedInstance.dataSet.find(Tag.PatientName).value)
         .toBe(sourceInstance.dataSet.find(Tag.PatientName).value);
@@ -96,7 +96,7 @@ test('Test: toDicomData with onChunk streams bytes and can be chained with withM
         ]))
         .build();
 
-    var result = await reader.read(sourceBytes);
+    var result = await reader.process(sourceBytes);
     expect(typeof result).toBe('number');
     expect(result).toBeGreaterThan(0);
     expect(chunks.length).toBeGreaterThan(1);
@@ -106,7 +106,7 @@ test('Test: toDicomData with onChunk streams bytes and can be chained with withM
         .fromPartStream().ofDicomData()
         .toInstances()
         .build()
-        .read(emittedBytes);
+        .process(emittedBytes);
 
     expect(emittedInstance.dataSet.find(Tag.PatientName).value).toBe('[MASKED]');
     expect(emittedInstance.dataSet.find(Tag.PatientID).value).not.toBe('[MASKED]');
@@ -121,7 +121,7 @@ test('Test: toDicomData returns byte output', async () => {
         .toDicomData()
         .build();
 
-    var emittedBytes = await reader.read(sourceBytes);
+    var emittedBytes = await reader.process(sourceBytes);
     expect(emittedBytes instanceof Uint8Array).toBe(true);
     expect(emittedBytes.length).toBeGreaterThan(0);
 
@@ -137,13 +137,13 @@ test('Test: toDicomData round-trips a nested-sequence instance and retains top-l
         .fromPartStream().ofDicomData()
         .toDicomData()
         .build()
-        .read(sourceBytes);
+        .process(sourceBytes);
 
     var emittedInstance = await EASI.pipelineBuilder()
         .fromPartStream().ofDicomData()
         .toInstances()
         .build()
-        .read(emittedBytes);
+        .process(emittedBytes);
 
     expect(emittedInstance.dataSet.find(Tag.PixelData)).not.toBe(undefined);
     expect(emittedInstance.dataSet.find(Tag.StudyInstanceUID)).not.toBe(undefined);
@@ -160,7 +160,7 @@ test('Test: toDicomData anonymizes NESTED_SEQUENCE.dcm and writes NESTED_SEQUENC
         .toDicomData()
         .withMask(Tag.DefaultDeIdentificationMask)
         .build()
-        .read(sourceBytes);
+        .process(sourceBytes);
 
     expect(emittedBytes instanceof Uint8Array).toBe(true);
     expect(emittedBytes.length).toBeGreaterThan(0);
@@ -175,13 +175,13 @@ test('Test: toDicomData anonymizes NESTED_SEQUENCE.dcm and writes NESTED_SEQUENC
         .fromPartStream().ofDicomData()
         .toInstances()
         .build()
-        .read(sourceBytes);
+        .process(sourceBytes);
 
     var anonymizedInstance = await EASI.pipelineBuilder()
         .fromPartStream().ofDicomData()
         .toInstances()
         .build()
-        .read(writtenBytes);
+        .process(writtenBytes);
 
     // Preserve the nested-sequence parser fix behavior after anonymization+rewrite.
     expect(anonymizedInstance.dataSet.find(Tag.PixelData)).not.toBe(undefined);

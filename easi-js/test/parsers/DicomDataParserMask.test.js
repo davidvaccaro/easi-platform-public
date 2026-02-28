@@ -19,12 +19,12 @@ function readDicomBytes(name = '0002.DCM') {
 
 async function parseInstanceWithHandler(handler, bytes) {
 
-    const reader = EASI.pipelineBuilder()
+    const pipeline = EASI.pipelineBuilder()
         .fromPartStream().ofDicomData()
         .withHandler(handler)
         .build();
 
-    return await reader.read(bytes);
+    return await pipeline.process(bytes);
 
 }
 
@@ -89,7 +89,7 @@ test('Test: PipelineBuilder withMask applies de-identification handler chain', a
 
     const bytes = readDicomBytes('0002.DCM');
 
-    const reader = EASI.pipelineBuilder()
+    const pipeline = EASI.pipelineBuilder()
         .fromPartStream().ofDicomData()
         .toInstances()
         .withMask(new Map([
@@ -97,7 +97,7 @@ test('Test: PipelineBuilder withMask applies de-identification handler chain', a
         ]))
         .build();
 
-    const result = await reader.read(bytes);
+    const result = await pipeline.process(bytes);
 
     expect(result.dataSet.find(Tag.PatientName).value).toBe('[BUILDER MASK]');
 

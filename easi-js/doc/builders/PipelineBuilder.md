@@ -226,26 +226,26 @@ Sets the current build to stream-parse to a FHIR ImagingStudy resource.
 
 ### `build()`
 
-Build a new reader instance.
+Build a new pipeline instance.
 
 #### Returns
 
 | Type | Description |
 |------|-------------|
-| `*` | The new reader instance. |
+| `*` | The new pipeline instance. |
 
 ## Usage Example
 
 ```js
 import EASI from '../../src/EASI.js';
 
-const reader = EASI
+const pipeline = EASI
   .pipelineBuilder()
   .fromPartStream().ofDicomData()
   .toInstances()
   .withIsStrict(true)
   .build();
 
-const result = await reader.read('https://example.org/study/instance.dcm');
+const result = await pipeline.process('https://example.org/study/instance.dcm');
 ```
 ---

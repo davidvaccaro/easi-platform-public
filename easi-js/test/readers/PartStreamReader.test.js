@@ -1,62 +1,38 @@
 import PartStreamReader from '../../src/readers/PartStreamReader.js';
+import { Status } from '../../src/parsers/Status.js';
+import { GeneralErrorCodes } from '../../src/environment/Exception.js';
 
-test('Test: read forwards fetch headers/options for URL sources', async () => {
+test('Test: read rejects URL sources for PartStreamReader', async () => {
 
-    const originalFetch = global.fetch;
+    const reader = new PartStreamReader();
+
+    expect(() => reader.read('http://example.test/dicom')).toThrow('Use FetchStreamReader');
 
     try {
-
-        const body = new ReadableStream({
-            start(controller) {
-                controller.enqueue(new Uint8Array([1]));
-                controller.close();
-            }
-        });
-
-        global.fetch = jest.fn().mockResolvedValue({
-            headers: {
-                get(name) {
-                    if (String(name).toLowerCase() === 'content-type')
-                        return 'application/dicom+xml';
-                    if (String(name).toLowerCase() === 'content-length')
-                        return '1';
-                    return null;
-                }
-            },
-            body: body
-        });
-
-        const reader = new PartStreamReader();
-
-        reader.processSinglePart = jest.fn((controller, partReader, contentType, contentLength, resolve, reject) => {
-            resolve({ ok: true, contentType, contentLength });
-            controller.close();
-            partReader.releaseLock();
-        });
-
-        const result = await reader.read('http://example.test/metadata', {
-            headers: {
-                Accept: 'application/dicom+xml'
-            }
-        });
-
-        expect(global.fetch).toHaveBeenCalledTimes(1);
-        expect(global.fetch).toHaveBeenCalledWith('http://example.test/metadata', expect.objectContaining({
-            method: 'GET',
-            headers: expect.objectContaining({
-                Accept: 'application/dicom+xml'
-            })
-        }));
-
-        expect(reader.processSinglePart).toHaveBeenCalledTimes(1);
-        expect(result.ok).toBe(true);
-        expect(result.contentType['content-type']).toBe('application/dicom+xml');
-
+        reader.read('http://example.test/dicom');
     }
-    finally {
-
-        global.fetch = originalFetch;
-
+    catch (err) {
+        expect(err.code).toBe(GeneralErrorCodes.InvalidParameter);
     }
+
+});
+
+test('Test: readData processes byte source with parser', async () => {
+
+    const reader = new PartStreamReader();
+    const parser = {
+        result: { ok: true },
+        error: null,
+        reset: jest.fn(),
+        parse: jest.fn(async () => Status.SUCCESS)
+    };
+
+    reader.parser = parser;
+
+    const result = await reader.readData(new Uint8Array([1, 2, 3]));
+
+    expect(parser.reset).toHaveBeenCalledTimes(1);
+    expect(parser.parse).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({ ok: true });
 
 });

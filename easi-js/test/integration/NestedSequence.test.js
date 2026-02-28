@@ -15,13 +15,13 @@ test("Test: Nested sequence parsing keeps PixelData at dataset level", async () 
     const dicomFullPath = path.join(brightDicomRoot, '/data/dicoms/NESTED_SEQUENCE.dcm');
 
     // Build the DICOM streaming reader
-    const reader = EASI.pipelineBuilder()
+    const pipeline = EASI.pipelineBuilder()
         .withParser(new DicomDataParser())
         .withHandler(new DicomInstanceHandler())
         .build();
 
     // Parse the DICOM instance
-    const instance = await reader.read(fs.readFileSync(dicomFullPath));
+    const instance = await pipeline.process(fs.readFileSync(dicomFullPath));
 
     // Validate that PixelData remains in the top-level dataset
     expect(instance.dataSet.has(Tag.PixelData)).toBe(true);

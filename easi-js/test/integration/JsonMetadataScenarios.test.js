@@ -32,13 +32,13 @@ test("Test: DICOM JSON metadata selection emits selected attributes", async () =
     selection.addTag(Tag.SOPInstanceUID);
 
     // Build and run the reader
-    const reader = EASI
+    const pipeline = EASI
         .pipelineBuilder()
         .fromPartStream()
         .ofDicomMetadata()
         .toSelection(selection)
         .build();
-    const result = await reader.read((new TextEncoder()).encode(metadata));
+    const result = await pipeline.process((new TextEncoder()).encode(metadata));
 
     // Validate
     expect(Array.isArray(result)).toBe(true);
@@ -62,13 +62,13 @@ test("Test: DICOM JSON metadata to FHIR ImagingStudy mapping emits ImagingStudy"
     });
 
     // Build and run the reader
-    const reader = EASI
+    const pipeline = EASI
         .pipelineBuilder()
         .fromPartStream()
         .ofDicomMetadata()
         .toFHIRImagingStudies()
         .build();
-    const result = await reader.read((new TextEncoder()).encode(metadata));
+    const result = await pipeline.process((new TextEncoder()).encode(metadata));
 
     // Validate
     expect(result instanceof ImagingStudy).toBe(true);

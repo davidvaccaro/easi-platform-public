@@ -20,6 +20,11 @@
 //
 
 import PartStreamReader from "../readers/PartStreamReader.js";
+import FetchStreamReader from "../readers/FetchStreamReader.js";
+import ByteStreamReader from "../readers/ByteStreamReader.js";
+import FileStreamReader from "../readers/FileStreamReader.js";
+import WebSocketStreamReader from "../readers/WebSocketStreamReader.js";
+import NodeStreamAdapterReader from "../readers/NodeStreamAdapterReader.js";
 
 import DicomDataParser from "../parsers/DicomDataParser.js";
 import JsonDataParser from "../parsers/JsonDataParser.js";
@@ -38,6 +43,7 @@ import DicomDataWriterHandler from "../handlers/terminals/DicomDataWriterHandler
 import Exception from "../environment/Exception.js";
 import DiagnosticUtils from "../utils/DiagnosticUtils.js";
 import { BuilderErrorCodes } from "../environment/Exception.js";
+import Pipeline from "../pipelines/Pipeline.js";
 
 export default class PipelineBuilder {
 
@@ -310,8 +316,47 @@ export default class PipelineBuilder {
      * @returns The reference to the current builder.
      */
     fromPartStream() {
-        this.reader = new PartStreamReader();
-        return this;
+        return this.withReader(new PartStreamReader());
+    }
+
+    /**
+     * Sets the current build to use the fetch-stream transport reader source type.
+     * @returns The reference to the current builder.
+     */
+    fromFetchStream() {
+        return this.withReader(new FetchStreamReader(new PartStreamReader()));
+    }
+
+    /**
+     * Sets the current build to use the byte-stream reader source type.
+     * @returns The reference to the current builder.
+     */
+    fromByteStream() {
+        return this.withReader(new ByteStreamReader(new PartStreamReader()));
+    }
+
+    /**
+     * Sets the current build to use the file-stream reader source type.
+     * @returns The reference to the current builder.
+     */
+    fromFileStream() {
+        return this.withReader(new FileStreamReader(new PartStreamReader()));
+    }
+
+    /**
+     * Sets the current build to use the websocket-stream reader source type.
+     * @returns The reference to the current builder.
+     */
+    fromWebSocketStream() {
+        return this.withReader(new WebSocketStreamReader(new PartStreamReader()));
+    }
+
+    /**
+     * Sets the current build to use the node-stream adapter reader source type.
+     * @returns The reference to the current builder.
+     */
+    fromNodeStreamAdapter() {
+        return this.withReader(new NodeStreamAdapterReader(new PartStreamReader()));
     }
 
     /**
@@ -319,12 +364,7 @@ export default class PipelineBuilder {
      * @returns The reference to the current builder.
      */
     ofDicomData() {
-
-        // Setup for stream-parsing DICOM data ...
-        this.parser = new DicomDataParser();
-
-        return this;
-
+        return this.withParser(new DicomDataParser());
     }
 
     /**
@@ -332,12 +372,7 @@ export default class PipelineBuilder {
      * @returns The reference to the current builder.
      */
     ofDicomMetadata() {
-
-        // Setup for stream-parsing DICOM metadata ...
-        this.parser = new JsonDataParser();
-
-        return this;
-
+        return this.withParser(new JsonDataParser());
     }
 
     /**
@@ -345,12 +380,7 @@ export default class PipelineBuilder {
      * @returns The reference to the current builder.
      */
     ofDicomXmlMetadata() {
-
-        // Setup for stream-parsing DICOM XML metadata ...
-        this.parser = new XmlDataParser();
-
-        return this;
-
+        return this.withParser(new XmlDataParser());
     }
 
     /**
@@ -361,13 +391,13 @@ export default class PipelineBuilder {
         
         // ...into DICOM instances
         if ((this.parser instanceof DicomDataParser) || (this.parser == null))
-            this.handler = new DicomInstanceHandler();
+            return this.withHandler(new DicomInstanceHandler());
         else if (this.parser instanceof JsonDataParser)
-            this.handler = new DicomJsonMetadataAdapter(new DicomInstanceHandler());
+            return this.withHandler(new DicomJsonMetadataAdapter(new DicomInstanceHandler()));
         else if (this.parser instanceof XmlDataParser)
-            this.handler = new DicomXmlMetadataAdapter(new DicomInstanceHandler());
+            return this.withHandler(new DicomXmlMetadataAdapter(new DicomInstanceHandler()));
 
-        return this;
+        return this.withHandler(new DicomInstanceHandler());
 
     }
 
@@ -378,11 +408,9 @@ export default class PipelineBuilder {
     toMapping(mapping) {
         
         // ...into a mapping
-        this.handler = this.wrapDicomMetadataAdapterIfNeeded(
+        return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
             new DicomMappingHandler(mapping)
-        );
-
-        return this;
+        ));
 
     }
 
@@ -393,11 +421,9 @@ export default class PipelineBuilder {
     toSelection(selection) {
         
         // ...into a selection
-        this.handler = this.wrapDicomMetadataAdapterIfNeeded(
+        return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
             new DicomSelectingHandler(selection)
-        );
-
-        return this;
+        ));
 
     }
 
@@ -408,11 +434,9 @@ export default class PipelineBuilder {
     toFHIRImagingStudies() {
         
         // ...into a FHIR ImagingStudy resource
-        this.handler = this.wrapDicomMetadataAdapterIfNeeded(
+        return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
             new DicomMappingHandler(new DicomToFHIRImagingStudyMapping())
-        );
-
-        return this;
+        ));
 
     }
 
@@ -424,17 +448,15 @@ export default class PipelineBuilder {
     toDicomData(options = null) {
 
         // ...into native DICOM byte output
-        this.handler = this.wrapDicomMetadataAdapterIfNeeded(
+        return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
             new DicomDataWriterHandler(options)
-        );
-
-        return this;
+        ));
 
     }
 
     /**
-     * Build a new reader instance.
-     * @returns The new reader instance.
+     * Build a new pipeline instance.
+     * @returns The new pipeline instance.
      */
     build() {
 
@@ -488,7 +510,7 @@ export default class PipelineBuilder {
         // Validate compatibility of known parser/handler combinations
         this.validateParserHandlerCompatibility(this.parser, this.handler);
 
-        // Create the new reader instance
+        // Create the configured reader for this pipeline
         const reader = (this.reader != null)
             ? this.reader
             : new PartStreamReader();
@@ -544,7 +566,7 @@ export default class PipelineBuilder {
         reader.parser.isStrict = this.isStrict;
 
         // Return the build
-        return reader;
+        return new Pipeline(reader);
 
     }
 

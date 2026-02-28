@@ -111,12 +111,12 @@ test('Test: Parser does not leak FFFEE000 item marker into sequence item attribu
 
     const bytes = buildSequenceItemTransitionRegressionDicom();
 
-    const reader = EASI.pipelineBuilder()
+    const pipeline = EASI.pipelineBuilder()
         .withParser(new DicomDataParser())
         .withHandler(new DicomInstanceHandler())
         .build();
 
-    const instance = await reader.read(bytes);
+    const instance = await pipeline.process(bytes);
     const sequence = instance.dataSet.find(Tag.RequestAttributesSequence);
 
     expect(sequence).toBeDefined();

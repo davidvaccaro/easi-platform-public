@@ -44,14 +44,14 @@ const pngFromDICOMRequest = async (request) => {
     return new Promise(function(resolve, reject) {
 
       // Build the DICOM streaming reader
-      const reader = EASI.pipelineBuilder()
+      const pipeline = EASI.pipelineBuilder()
         .withParser(new DicomDataParser())
         .withHandler(new DicomInstanceHandler())
         .build();
 
       // Read and parse the DICOM file
-      reader
-        .read(request.url)
+      pipeline
+        .process(request.url)
         .then(result => {
 
           // Establish the parsed instance

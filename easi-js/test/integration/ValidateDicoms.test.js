@@ -56,14 +56,14 @@ function validateDicomSchema(dicomPath) {
             const dicomFullPath = dicomPath.includes('/') ? dicomPath : path.join(brightDicomRoot, '/data/dicoms/' + dicomPath);
 
             // Build the DICOM streaming reader
-            const reader = EASI.pipelineBuilder()
+            const pipeline = EASI.pipelineBuilder()
                 .withParser(new DicomDataParser())
                 .withHandler(new DicomInstanceHandler())
                 .build();
 
             // Read and parse the DICOM file
-            reader
-                .read(fs.readFileSync(dicomFullPath))
+            pipeline
+                .process(fs.readFileSync(dicomFullPath))
                 .then(parseResult => {
 
                     // Create the DICOM Dumper

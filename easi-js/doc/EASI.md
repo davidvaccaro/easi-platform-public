@@ -25,11 +25,12 @@ The `EASI` class is the root entry point for the EASI DICOM system.
 
 It provides access to the primary constructs and builders of the system.  
 
-Currently, it grants access to the `PipelineBuilder` for creating streaming readers.
+Currently, it grants access to the `PipelineBuilder` for creating streaming pipelines.
 
 ## Parse/Emit Combination Matrix
 
 Use this table as the quick-start map for supported parse-input to emit-output combinations.
+Use `fromFetchStream()` for URL/fetch transport and `fromPartStream()` for direct byte/stream sources.
 
 | Parse Input Format | Emit Output Format | Pipeline Recipe |
 |--------------------|--------------------|-----------------|
@@ -48,7 +49,7 @@ Use this table as the quick-start map for supported parse-input to emit-output c
 | DICOM XML metadata | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toFHIRImagingStudies()` |
 | Generic JSON text/bytes | JavaScript value/object/array | `EASI.pipelineBuilder().fromPartStream().withParser(new JsonDataParser()).withHandler(new JsonDataHandler())` |
 
-> Reader-based scenarios are finalized with `.build().read(source)`.
+> Pipeline-based scenarios are finalized with `.build().process(source)`.
 
 ---
 
@@ -76,15 +77,15 @@ Creates a new instance of the EASI PipelineBuilder.
 import EASI from 'easi-dicom';
 
 // Build the DICOM parsing pipeline
-const reader = EASI.pipelineBuilder()
-    .fromPartStream()
+const pipeline = EASI.pipelineBuilder()
+    .fromFetchStream()
     .ofDicomData()
     .toInstances()
     .build();
 
 // Read and parse a DICOM file from a URL
-reader
-    .read(url)
+pipeline
+    .process(url)
     .then(result => {
 
         // Establish the parsed instance

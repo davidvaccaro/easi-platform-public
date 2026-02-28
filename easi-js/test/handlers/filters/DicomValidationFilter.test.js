@@ -19,12 +19,12 @@ function readDicomBytes(name = '0002.DCM') {
 
 async function parseInstanceWithHandler(handler, bytes) {
 
-    const reader = EASI.pipelineBuilder()
+    const pipeline = EASI.pipelineBuilder()
         .fromPartStream().ofDicomData()
         .withHandler(handler)
         .build();
 
-    return await reader.read(bytes);
+    return await pipeline.process(bytes);
 
 }
 

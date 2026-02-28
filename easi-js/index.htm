@@ -273,6 +273,21 @@
 
             }
 
+            function processWithTiming(pipeline, source, requestOptions = null, label = "Execution") {
+
+                var start = new Date().getTime();
+                var promise = pipeline.process(source, requestOptions);
+
+                return promise.then(function (result) {
+                    console.log(label + ' time: ' + (new Date().getTime() - start) + ' ms');
+                    return result;
+                }).catch(function (err) {
+                    console.log(label + ' time: ' + (new Date().getTime() - start) + ' ms');
+                    throw err;
+                });
+
+            }
+
             $('#dicomFile').on('change', function () {
 
                 // Cleare the console
@@ -282,15 +297,15 @@
                 var url = URL.createObjectURL(this.files[0]);
 
                 // Build the DICOM streaming reader
-                const reader = applyDicomDataValidation(
+                const pipeline = applyDicomDataValidation(
                     EASI.pipelineBuilder()
+                        .fromFetchStream()
                         .withParser(new DicomDataParser())
                         .withHandler(new DicomInstanceHandler())
                 ).build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(url)
+                processWithTiming(pipeline, url)
                     .then(result => {
 
                         // Establish the parsed instance
@@ -350,15 +365,15 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = applyDicomDataValidation(
+                const pipeline = applyDicomDataValidation(
                     EASI.pipelineBuilder()
-                        .withParser(new DicomDataParser())
-                        .withHandler(new DicomInstanceHandler())
+                        .fromFetchStream()
+                        .ofDicomData()
+                        .toInstances()
                 ).build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(instanceUrl)
+                processWithTiming(pipeline, instanceUrl)
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -370,16 +385,16 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = applyDicomDataValidation(
+                const pipeline = applyDicomDataValidation(
                     EASI.pipelineBuilder()
+                        .fromFetchStream()
                         .withParser(new DicomDataParser())
                         .withHandler(new DicomInstanceHandler())
                         .withMask(Tag.DefaultDeIdentificationMask)
                 ).build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(instanceUrl)
+                processWithTiming(pipeline, instanceUrl)
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -394,13 +409,13 @@
                 // Build the DICOM streaming reader
                 const reader = applyDicomDataValidation(
                     EASI.pipelineBuilder()
+                        .fromFetchStream()
                         .withParser(new DicomDataParser())
                         .withHandler(new DicomInstanceHandler())
                 ).build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(seriesUrl)
+                processWithTiming(reader, seriesUrl)
                     .then(result => { 
                         console.log(result); 
                     })
@@ -417,6 +432,7 @@
                 // Build the DICOM streaming reader
                 const reader = applyDicomDataValidation(
                     EASI.pipelineBuilder()
+                        .fromFetchStream()
                         .withParser(new DicomDataParser())
                         .withHandler(new DicomInstanceHandler())
                         .withOnPart(function (result) { 
@@ -434,8 +450,7 @@
                 ).build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(studyUrl)
+                processWithTiming(reader, studyUrl)
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -456,13 +471,13 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new DicomDataParser())
                     .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(url)
+                processWithTiming(reader, url)
                     .then(result => {
                          console.log(result); 
                          $('#fhirDump').val(JSON.stringify(result)); 
@@ -479,13 +494,13 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new DicomDataParser())
                     .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(instanceUrl)
+                processWithTiming(reader, instanceUrl)
                     .then(result => {
                          console.log(result); 
                          $('#fhirDump').val(JSON.stringify(result)); 
@@ -502,13 +517,13 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new DicomDataParser())
                     .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(seriesUrl)
+                processWithTiming(reader, seriesUrl)
                     .then(result => {
                          console.log(result); 
                          $('#fhirDump').val(JSON.stringify(result)); 
@@ -525,13 +540,13 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new DicomDataParser())
                     .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(studyUrl)
+                processWithTiming(reader, studyUrl)
                     .then(result => {
                          console.log(result); 
                          $('#fhirDump').val(JSON.stringify(result)); 
@@ -563,13 +578,13 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new DicomDataParser())
                     .withHandler(new DicomSelectingHandler(selection))
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(url)
+                processWithTiming(reader, url)
                     .then(result => {
                         console.log(result); 
                         $('#fhirDump').val(JSON.stringify(result)); 
@@ -594,13 +609,13 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new DicomDataParser())
                     .withHandler(new DicomSelectingHandler(selection))
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(instanceUrl)
+                processWithTiming(reader, instanceUrl)
                     .then(result => {
                         console.log(result); 
                         $('#fhirDump').val(JSON.stringify(result)); 
@@ -625,13 +640,13 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new DicomDataParser())
                     .withHandler(new DicomSelectingHandler(selection))
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(seriesUrl)
+                processWithTiming(reader, seriesUrl)
                     .then(result => {
                         console.log(result); 
                         $('#fhirDump').val(JSON.stringify(result)); 
@@ -656,13 +671,13 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new DicomDataParser())
                     .withHandler(new DicomSelectingHandler(selection))
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(studyUrl)
+                processWithTiming(reader, studyUrl)
                     .then(result => {
                         console.log(result); 
                         $('#fhirDump').val(JSON.stringify(result)); 
@@ -685,13 +700,13 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new JsonDataParser())
                     .withHandler(new JsonDataHandler())
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(url)
+                processWithTiming(reader, url)
                     .then(result => {
 
                         // Log the instance
@@ -710,13 +725,13 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new JsonDataParser())
                     .withHandler(new JsonDataHandler())
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(instanceUrl + "/metadata")
+                processWithTiming(reader, instanceUrl + "/metadata")
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -753,13 +768,13 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new JsonDataParser())
                     .withHandler(new JsonDataHandler())
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(seriesUrl + "/metadata")
+                processWithTiming(reader, seriesUrl + "/metadata")
                     .then(result => { 
                         console.log(result); 
                     })
@@ -775,6 +790,7 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new JsonDataParser())
                     .withHandler(new JsonDataHandler())
                     .withOnPart(function (result) { 
@@ -792,8 +808,7 @@
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(studyUrl + "/metadata")
+                processWithTiming(reader, studyUrl + "/metadata")
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -812,13 +827,12 @@
                 // Build the DICOM streaming reader
                 const reader = EASI
                     .pipelineBuilder()
-                    .fromPartStream().ofDicomMetadata()
+                    .fromFetchStream().ofDicomMetadata()
                     .toInstances()
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(instanceUrl + "/metadata")
+                processWithTiming(reader, instanceUrl + "/metadata")
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -833,12 +847,12 @@
                 // Build the DICOM streaming reader (XML metadata -> Instance)
                 const reader = EASI
                     .pipelineBuilder()
-                    .fromPartStream().ofDicomXmlMetadata()
+                    .fromFetchStream().ofDicomXmlMetadata()
                     .toInstances()
                     .build();
 
                 // Read and parse the local DICOMweb XML metadata sample.
-                reader.read("../data/xml/dicomweb.xml")
+                processWithTiming(reader, "../data/xml/dicomweb.xml")
                 .then(result => console.log(result))
                 .catch(err => console.log(err));
 
@@ -853,13 +867,12 @@
                 // Build the DICOM streaming reader
                 const reader = EASI
                     .pipelineBuilder()
-                    .fromPartStream().ofDicomMetadata()
+                    .fromFetchStream().ofDicomMetadata()
                     .toInstances()
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(seriesUrl + "/metadata")
+                processWithTiming(reader, seriesUrl + "/metadata")
                     .then(result => { 
                         console.log(result); 
                     })
@@ -876,7 +889,7 @@
                 // Build the DICOM streaming reader
                 const reader = EASI
                     .pipelineBuilder()
-                    .fromPartStream().ofDicomMetadata()
+                    .fromFetchStream().ofDicomMetadata()
                     .toInstances()
                     .withOnPart(function (result) { 
 
@@ -893,8 +906,7 @@
                     .build();
 
                 // Read and parse the DICOM file
-                reader
-                    .read(studyUrl + "/metadata")
+                processWithTiming(reader, studyUrl + "/metadata")
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
 
@@ -959,13 +971,13 @@
                 // Build the EASI DICOM reader configured to parse DICOM Data to DICOM Instances
                 const reader = EASI
                     .pipelineBuilder()
+                    .fromFetchStream()
                     .withParser(new DicomDataParser())
                     .withHandler(new DicomInstanceHandler())
                     .build();
 
                 // Issue the HTTP request, read and parse the DICOM data response 
-                reader
-                    .read(seriesUrl)
+                processWithTiming(reader, seriesUrl)
                     .then(instances => {
 
                         for (const instance of instances) {

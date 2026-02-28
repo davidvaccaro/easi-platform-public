@@ -21,14 +21,14 @@ beforeAll(async () => {
     const dicomFullPath = path.join(brightDicomRoot, '/data/dicoms/0002.DCM');
 
     // Build the DICOM streaming reader
-    const reader = EASI.pipelineBuilder()
+    const pipeline = EASI.pipelineBuilder()
         .withParser(new DicomDataParser())
         .withHandler(new DicomInstanceHandler())
         .build();
 
     // Read and parse the DICOM file
-    await reader
-        .read(fs.readFileSync(dicomFullPath))
+    await pipeline
+        .process(fs.readFileSync(dicomFullPath))
         .then(parseResult => {
 
             // Set the instance
