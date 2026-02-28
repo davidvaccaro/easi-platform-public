@@ -1,4 +1,4 @@
-import StreamingDicomInstanceHandler from '../../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
+import DicomInstanceHandler from '../../../src/handlers/terminals/DicomInstanceHandler.js';
 import Dumper from '../../../src/tools/dicom/Dumper.js';
 import DumpParser from '../../../src/tools/dicom/DumpParser.js';
 
@@ -14,7 +14,7 @@ test('Test: Dumper Dump', () => {
     const dicomFullPath = path.join(brightDicomRoot, '/data/dicoms/0002.DCM');
 
     // Create the DICOM Dumper
-    var dumper = new Dumper(new DumpParser(new StreamingDicomInstanceHandler()));
+    var dumper = new Dumper(new DumpParser(new DicomInstanceHandler()));
 
     // Dump the file
     dumper

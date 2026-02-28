@@ -35,15 +35,15 @@ Regardless of the source scheme, EASI DICOM simplifies the process of building, 
 The following code snippet "builds" a streaming reader, which is set to stream-parse DICOM data into one or more DICOM instances:
 ```js:
 const reader = EASI
-    .newStreamingReaderBuilder()
-    .withParser(new StreamingDicomDataParser())
-    .withHandler(new StreamingDicomInstanceHandler())
+    .pipelineBuilder()
+    .withParser(new DicomDataParser())
+    .withHandler(new DicomInstanceHandler())
     .build();
 
 /* Which could hve been simplified to the following:
 const reader = EASI
-    .newStreamingReaderBuilder()
-    .forDicomData()
+    .pipelineBuilder()
+    .fromPartStream().ofDicomData()
     .toInstances()
     .build();
 */
@@ -79,15 +79,15 @@ Notice that the above code snippet assumes that the implementor is fairly famili
 Alternatively, implementations seeking to avoid direct DICOM data element processing could use the following code snippets to make the same request but with a simplified DICOM "entity" application programming interface as the stream-parsed result:
 ```js:
 const reader = EASI
-    .newStreamingReaderBuilder()
-    .withParser(new StreamingDicomDataParser())
-    .withHandler(new StreamingDicomEntityHandler())
+    .pipelineBuilder()
+    .withParser(new DicomDataParser())
+    .withHandler(new DicomEntityHandler())
     .build();
 
 /* Which could hve been simplified to the following:
 const reader = EASI
-    .newStreamingReaderBuilder()
-    .forDicomData()
+    .pipelineBuilder()
+    .fromPartStream().ofDicomData()
     .toEntities()
     .build();
 */
@@ -122,17 +122,17 @@ But what if the preferred representation is the Fast Healthcare Interoperability
 The following code snippet makes the same request as the two above transactions except this time the stream-parsing results in an extended FHIR ImagingStudy resource:
 ```js:
 const reader = EASI
-    .newStreamingReaderBuilder()
-    .withParser(new StreamingDicomDataParser())
-    .withHandler(new StreamingDicomMappingHandler(
+    .pipelineBuilder()
+    .withParser(new DicomDataParser())
+    .withHandler(new DicomMappingHandler(
         new DicomToFHIRImagingStudyMapping())
     )
     .build();
 
 /* Which could hve been simplified to the following:
 const reader = EASI
-    .newStreamingReaderBuilder()
-    .forDicomData()
+    .pipelineBuilder()
+    .fromPartStream().ofDicomData()
     .toFHIRImagingStudies()
     .build();
 */   

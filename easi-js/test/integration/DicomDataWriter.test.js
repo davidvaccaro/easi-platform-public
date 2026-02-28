@@ -1,6 +1,6 @@
 import EASI from '../../src/EASI.js';
 import Tag from '../../src/dicom/Tag.js';
-import StreamingDicomDataWriterHandler from '../../src/handlers/terminals/StreamingDicomDataWriterHandler.js';
+import DicomDataWriterHandler from '../../src/handlers/terminals/DicomDataWriterHandler.js';
 
 const path = require('path');
 const fs = require('fs');
@@ -42,12 +42,13 @@ function combineChunks(chunks) {
 
 }
 
-test('Test: StreamingReaderBuilder toDicomData emits native DICOM bytes that round-trip parse', async () => {
+test('Test: PipelineBuilder toDicomData emits native DICOM bytes that round-trip parse', async () => {
 
     var sourceBytes = readDicomBytes('0002.DCM');
 
-    var writerReader = EASI.newStreamingReaderBuilder()
-        .fromDicomData()
+    var writerReader = EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
         .toDicomData()
         .build();
 
@@ -55,11 +56,17 @@ test('Test: StreamingReaderBuilder toDicomData emits native DICOM bytes that rou
     expect(emittedBytes instanceof Uint8Array).toBe(true);
     expect(emittedBytes.length).toBeGreaterThan(0);
 
-    var sourceInstance = await EASI.newStreamingDicomInstanceReaderBuilder()
+    var sourceInstance = await EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .toInstances()
         .build()
         .read(sourceBytes);
 
-    var emittedInstance = await EASI.newStreamingDicomInstanceReaderBuilder()
+    var emittedInstance = await EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .toInstances()
         .build()
         .read(emittedBytes);
 
@@ -79,8 +86,8 @@ test('Test: toDicomData with onChunk streams bytes and can be chained with withM
     var chunks = [];
     var sourceBytes = readDicomBytes('0002.DCM');
 
-    var reader = EASI.newStreamingReaderBuilder()
-        .fromDicomData()
+    var reader = EASI.pipelineBuilder()
+        .fromPartStream().ofDicomData()
         .toDicomData({
             onChunk: (chunk) => chunks.push(chunk)
         })
@@ -95,7 +102,9 @@ test('Test: toDicomData with onChunk streams bytes and can be chained with withM
     expect(chunks.length).toBeGreaterThan(1);
 
     var emittedBytes = combineChunks(chunks);
-    var emittedInstance = await EASI.newStreamingDicomInstanceReaderBuilder()
+    var emittedInstance = await EASI.pipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toInstances()
         .build()
         .read(emittedBytes);
 
@@ -104,17 +113,19 @@ test('Test: toDicomData with onChunk streams bytes and can be chained with withM
 
 });
 
-test('Test: newStreamingDicomDataWriterReaderBuilder returns byte output', async () => {
+test('Test: toDicomData returns byte output', async () => {
 
     var sourceBytes = readDicomBytes('0002.DCM');
-    var reader = EASI.newStreamingDicomDataWriterReaderBuilder()
+    var reader = EASI.pipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toDicomData()
         .build();
 
     var emittedBytes = await reader.read(sourceBytes);
     expect(emittedBytes instanceof Uint8Array).toBe(true);
     expect(emittedBytes.length).toBeGreaterThan(0);
 
-    expect(reader.parser.handler instanceof StreamingDicomDataWriterHandler).toBe(true);
+    expect(reader.parser.handler instanceof DicomDataWriterHandler).toBe(true);
 
 });
 
@@ -122,13 +133,15 @@ test('Test: toDicomData round-trips a nested-sequence instance and retains top-l
 
     var sourceBytes = readDicomBytes('NESTED_SEQUENCE.dcm');
 
-    var emittedBytes = await EASI.newStreamingReaderBuilder()
-        .fromDicomData()
+    var emittedBytes = await EASI.pipelineBuilder()
+        .fromPartStream().ofDicomData()
         .toDicomData()
         .build()
         .read(sourceBytes);
 
-    var emittedInstance = await EASI.newStreamingDicomInstanceReaderBuilder()
+    var emittedInstance = await EASI.pipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toInstances()
         .build()
         .read(emittedBytes);
 
@@ -142,8 +155,8 @@ test('Test: toDicomData anonymizes NESTED_SEQUENCE.dcm and writes NESTED_SEQUENC
 
     var sourceBytes = readDicomBytes('NESTED_SEQUENCE.dcm');
 
-    var emittedBytes = await EASI.newStreamingReaderBuilder()
-        .fromDicomData()
+    var emittedBytes = await EASI.pipelineBuilder()
+        .fromPartStream().ofDicomData()
         .toDicomData()
         .withMask(Tag.DefaultDeIdentificationMask)
         .build()
@@ -158,11 +171,15 @@ test('Test: toDicomData anonymizes NESTED_SEQUENCE.dcm and writes NESTED_SEQUENC
     var writtenBytes = new Uint8Array(fs.readFileSync(outputPath));
     expect(writtenBytes.length).toBe(emittedBytes.length);
 
-    var sourceInstance = await EASI.newStreamingDicomInstanceReaderBuilder()
+    var sourceInstance = await EASI.pipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toInstances()
         .build()
         .read(sourceBytes);
 
-    var anonymizedInstance = await EASI.newStreamingDicomInstanceReaderBuilder()
+    var anonymizedInstance = await EASI.pipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toInstances()
         .build()
         .read(writtenBytes);
 

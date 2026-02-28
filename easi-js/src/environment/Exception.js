@@ -60,11 +60,13 @@ export var ParseErrorCodes = {
 export var BuilderErrorCodes = {
     MissingParser: 'MissingParser',
     MissingHandler: 'MissingHandler',
+    InvalidReader: 'InvalidReader',
     InvalidParser: 'InvalidParser',
     InvalidHandler: 'InvalidHandler',
     IncompatibleParserAndHandler: 'IncompatibleParserAndHandler',
     IncompatibleMaskAndParser: 'IncompatibleMaskAndParser',
     IncompatibleValidationAndParser: 'IncompatibleValidationAndParser',
+    IncompatibleOnPartAndReader: 'IncompatibleOnPartAndReader',
     InvalidOnPart: 'InvalidOnPart',
     InvalidBuildState: 'InvalidBuildState'
 };

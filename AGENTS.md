@@ -25,14 +25,14 @@ Top-level:
 - `/ext/tools` External DICOM tooling binaries/scripts.
 
 `easi-js` structure:
-- `/src/EASI.js` Factory entry point (`EASI.newStreamingReaderBuilder()`).
-- `/src/builders` Reader construction APIs (`StreamingReaderBuilder`).
-- `/src/readers` Network stream reader (`StreamingReader`) that routes single-part vs multipart payloads.
-- `/src/parsers` Streaming parsers (`StreamingDicomDataParser`, `StreamingJsonDataParser`) with status-based flow control.
+- `/src/EASI.js` Factory entry point (`EASI.pipelineBuilder()`).
+- `/src/builders` Reader construction APIs (`PipelineBuilder`).
+- `/src/readers` Network stream reader (`PartStreamReader`) that routes single-part vs multipart payloads.
+- `/src/parsers` Streaming parsers (`DicomDataParser`, `JsonDataParser`) with status-based flow control.
 - `/src/handlers` Event handlers that materialize parse output:
-  - `StreamingDicomInstanceHandler` -> `Instance`/`MetaSet`/`DataSet` objects.
-  - `StreamingDicomMappingHandler` -> custom mapped output via mapping classes.
-  - `StreamingDicomSelectingHandler` -> partial attribute extraction via selection classes.
+  - `DicomInstanceHandler` -> `Instance`/`MetaSet`/`DataSet` objects.
+  - `DicomMappingHandler` -> custom mapped output via mapping classes.
+  - `DicomSelectingHandler` -> partial attribute extraction via selection classes.
 - `/src/handlers/mappings` Mapping abstractions (`Mapping`, `DicomMapping`, `DicomToFHIRImagingStudyMapping`).
 - `/src/handlers/selections` Selection abstractions (`Selection`, `DicomSelection`).
 - `/src/dicom` Core DICOM model/types (`Tag`, `Attribute`, `TransferSyntax`, `Instance`, etc.).
@@ -49,14 +49,14 @@ Agents should avoid modifying:
 ## 3. Project Architecture (Important)
 Use this execution model when implementing features:
 
-1. Build a reader using `EASI -> StreamingReaderBuilder`.
-2. Choose parser (`fromDicomData`, `fromDicomMetadata`, or `withParser`).
+1. Build a reader using `EASI -> PipelineBuilder`.
+2. Choose source and parser (`fromPartStream().ofDicomData()`, `fromPartStream().ofDicomMetadata()`, `fromPartStream().ofDicomXmlMetadata()`, or `withParser(...)`).
 3. Choose output strategy:
    - `toInstances()` for DICOM object model output.
    - `toMapping(mapping)` for mapped output (typically FHIR/custom object).
    - `toSelection(selection)` for targeted attribute extraction.
 4. Builder wires `reader.parser = parser` and `parser.handler = handler`.
-5. `StreamingReader` reads HTTP response stream and dispatches parsed events.
+5. `PartStreamReader` reads HTTP response stream and dispatches parsed events.
 6. Parser emits lifecycle events to handler (`onStartAttribute`, `onEndAttribute`, etc.).
 7. Handler returns final product from `onEndInstance`.
 

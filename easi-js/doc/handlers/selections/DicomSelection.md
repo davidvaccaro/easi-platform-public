@@ -132,6 +132,6 @@ const selection = new DicomSelection();
 selection.addTag(Tag.PatientName);
 selection.addTag(Tag.PatientID);
 
-// Used by StreamingDicomSelectingHandler during parser callbacks.
+// Used by DicomSelectingHandler during parser callbacks.
 ```
 ---

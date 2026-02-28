@@ -25,39 +25,38 @@ The `EASI` class is the root entry point for the EASI DICOM system.
 
 It provides access to the primary constructs and builders of the system.  
 
-Currently, it grants access to the `StreamingReaderBuilder` for creating streaming readers.
+Currently, it grants access to the `PipelineBuilder` for creating streaming readers.
 
 ## Parse/Emit Combination Matrix
 
 Use this table as the quick-start map for supported parse-input to emit-output combinations.
 
-| Parse Input Format | Emit Output Format | EASI Convenience Entry Point |
-|--------------------|--------------------|------------------------------|
-| DICOM bytes (Part-10 / native) | DICOM `Instance` / `Array<Instance>` | `EASI.newStreamingDicomInstanceReaderBuilder()` |
-| DICOM bytes (Part-10 / native) | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.newStreamingDicomSelectionReaderBuilder(selection)` |
-| DICOM bytes (Part-10 / native) | Custom mapped output model | `EASI.newStreamingDicomMappingReaderBuilder(mapping)` |
-| DICOM bytes (Part-10 / native) | FHIR `ImagingStudy` | `EASI.newStreamingDicomFHIRImagingStudyReaderBuilder()` |
-| DICOM JSON metadata | DICOM `Instance` / `Array<Instance>` | `EASI.newStreamingDicomJsonInstanceReaderBuilder()` |
-| DICOM JSON metadata | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.newStreamingDicomJsonSelectionReaderBuilder(selection)` |
-| DICOM JSON metadata | Custom mapped output model | `EASI.newStreamingDicomJsonMappingReaderBuilder(mapping)` |
-| DICOM JSON metadata | FHIR `ImagingStudy` | `EASI.newStreamingDicomJsonFHIRImagingStudyReaderBuilder()` |
-| Generic JSON text/bytes | JavaScript value/object/array | `EASI.newStreamingJsonValueReaderBuilder()` |
-| DICOM dump text | DICOM `Instance` / `Array<Instance>` | `EASI.newStreamingDicomInstanceDumpParser().parse(dumpText)` |
-| DICOM dump text | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.newStreamingDicomSelectionDumpParser(selection).parse(dumpText)` |
-| DICOM dump text | Custom mapped output model | `EASI.newStreamingDicomMappingDumpParser(mapping).parse(dumpText)` |
-| DICOM dump text | FHIR `ImagingStudy` | `EASI.newStreamingDicomFHIRImagingStudyDumpParser().parse(dumpText)` |
-| DICOM dump text | Custom emitter output | `EASI.newStreamingDumpParser(handler).parse(dumpText)` |
+| Parse Input Format | Emit Output Format | Pipeline Recipe |
+|--------------------|--------------------|-----------------|
+| DICOM bytes (Part-10 / native) | DICOM `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toInstances()` |
+| DICOM bytes (Part-10 / native) | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toSelection(selection)` |
+| DICOM bytes (Part-10 / native) | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toMapping(mapping)` |
+| DICOM bytes (Part-10 / native) | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toFHIRImagingStudies()` |
+| DICOM bytes (Part-10 / native) | Native DICOM byte stream | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toDicomData(options)` |
+| DICOM JSON metadata | DICOM `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toInstances()` |
+| DICOM JSON metadata | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toSelection(selection)` |
+| DICOM JSON metadata | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toMapping(mapping)` |
+| DICOM JSON metadata | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toFHIRImagingStudies()` |
+| DICOM XML metadata | DICOM `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toInstances()` |
+| DICOM XML metadata | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toSelection(selection)` |
+| DICOM XML metadata | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toMapping(mapping)` |
+| DICOM XML metadata | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toFHIRImagingStudies()` |
+| Generic JSON text/bytes | JavaScript value/object/array | `EASI.pipelineBuilder().fromPartStream().withParser(new JsonDataParser()).withHandler(new JsonDataHandler())` |
 
-> Reader-based scenarios use `.build().read(source)`.  
-> Dump scenarios use `.parse(dumpText)`.
+> Reader-based scenarios are finalized with `.build().read(source)`.
 
 ---
 
 ## Static Methods
 
-### `EASI.newStreamingReaderBuilder()`
+### `EASI.pipelineBuilder()`
 
-Creates a new instance of the EASI Streaming Reader Builder.
+Creates a new instance of the EASI PipelineBuilder.
 
 #### Parameters
 
@@ -67,7 +66,7 @@ Creates a new instance of the EASI Streaming Reader Builder.
 
 | Type                    | Description                                         |
 |-------------------------|-----------------------------------------------------|
-| `StreamingReaderBuilder` | A new, initialized Streaming Reader Builder instance. |
+| `PipelineBuilder` | A new, initialized PipelineBuilder instance. |
 
 ---
 
@@ -76,10 +75,11 @@ Creates a new instance of the EASI Streaming Reader Builder.
 ```js
 import EASI from 'easi-dicom';
 
-// Build the DICOM streaming reader
-const reader = EASI.newStreamingReaderBuilder()
-    .withParser(new StreamingDicomDataParser())
-    .withHandler(new StreamingDicomInstanceHandler())
+// Build the DICOM parsing pipeline
+const reader = EASI.pipelineBuilder()
+    .fromPartStream()
+    .ofDicomData()
+    .toInstances()
     .build();
 
 // Read and parse a DICOM file from a URL
@@ -108,7 +108,7 @@ Use this index to navigate all documentation markdown files in `easi-js/doc`.
 - [EASI](./EASI.md)
 
 ### builders
-- [StreamingReaderBuilder](./builders/StreamingReaderBuilder.md)
+- [PipelineBuilder](./builders/PipelineBuilder.md)
 
 ### codecs
 - [Decoders](./codecs/Decoders.md)
@@ -193,14 +193,14 @@ Use this index to navigate all documentation markdown files in `easi-js/doc`.
 
 ### handlers
 - [StreamHandler](./handlers/StreamHandler.md)
-- [StreamingDicomInstanceHandler](./handlers/StreamingDicomInstanceHandler.md)
-- [StreamingDicomMappingHandler](./handlers/StreamingDicomMappingHandler.md)
-- [StreamingDicomSelectingHandler](./handlers/StreamingDicomSelectingHandler.md)
-- [StreamingDicomJsonMetadataAdapter](./handlers/adapters/StreamingDicomJsonMetadataAdapter.md)
+- [DicomInstanceHandler](./handlers/DicomInstanceHandler.md)
+- [DicomMappingHandler](./handlers/DicomMappingHandler.md)
+- [DicomSelectingHandler](./handlers/DicomSelectingHandler.md)
+- [DicomJsonMetadataAdapter](./handlers/adapters/DicomJsonMetadataAdapter.md)
 
 ### handlers/terminals/syntax
-- [StreamingJsonDataHandler](./handlers/terminals/syntax/StreamingJsonDataHandler.md)
-- [StreamingXmlDataHandler](./handlers/terminals/syntax/StreamingXmlDataHandler.md)
+- [JsonDataHandler](./handlers/terminals/syntax/JsonDataHandler.md)
+- [XmlDataHandler](./handlers/terminals/syntax/XmlDataHandler.md)
 
 ### handlers/mappings
 - [DicomMapping](./handlers/mappings/DicomMapping.md)
@@ -213,12 +213,12 @@ Use this index to navigate all documentation markdown files in `easi-js/doc`.
 
 ### parsers
 - [Status](./parsers/Status.md)
-- [StreamingDataParser](./parsers/StreamingDataParser.md)
-- [StreamingDicomDataParser](./parsers/StreamingDicomDataParser.md)
-- [StreamingJsonDataParser](./parsers/StreamingJsonDataParser.md)
+- [DataParser](./parsers/DataParser.md)
+- [DicomDataParser](./parsers/DicomDataParser.md)
+- [JsonDataParser](./parsers/JsonDataParser.md)
 
 ### readers
-- [StreamingReader](./readers/StreamingReader.md)
+- [PartStreamReader](./readers/PartStreamReader.md)
 
 ### tools/dicom
 - [Dumper](./tools/dicom/Dumper.md)

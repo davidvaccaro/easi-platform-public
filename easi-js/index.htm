@@ -194,25 +194,25 @@
         import Item from './src/dicom/Item.js';
         import AttributeSequence from './src/dicom/AttributeSequence.js';
 
-        import StreamingDicomInstanceHandler from './src/handlers/terminals/StreamingDicomInstanceHandler.js';
-        import StreamingDicomMappingHandler from './src/handlers/terminals/StreamingDicomMappingHandler.js';
-        import StreamingDicomSelectingHandler from './src/handlers/terminals/StreamingDicomSelectingHandler.js';
-        import StreamingJsonDataHandler from './src/handlers/terminals/syntax/StreamingJsonDataHandler.js';
+        import DicomInstanceHandler from './src/handlers/terminals/DicomInstanceHandler.js';
+        import DicomMappingHandler from './src/handlers/terminals/DicomMappingHandler.js';
+        import DicomSelectingHandler from './src/handlers/terminals/DicomSelectingHandler.js';
+        import JsonDataHandler from './src/handlers/terminals/syntax/JsonDataHandler.js';
 
 
         import DicomToFHIRImagingStudyMapping from './src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
 
         import DicomSelection from './src/handlers/selections/DicomSelection.js'
 
-        import StreamingDicomDataParser from './src/parsers/StreamingDicomDataParser.js';
-        import StreamingReader from './src/readers/StreamingReader.js';    
-        import StreamingReaderBuilder from './src/builders/StreamingReaderBuilder.js';
+        import DicomDataParser from './src/parsers/DicomDataParser.js';
+        import PartStreamReader from './src/readers/PartStreamReader.js';    
+        import PipelineBuilder from './src/builders/PipelineBuilder.js';
 
         import Image from './src/dicom/entities/Image.js';
         import CT from './src/dicom/entities/CT.js';
         import XA from './src/dicom/entities/XA.js';
 
-        import StreamingJsonDataParser from './src/parsers/StreamingJsonDataParser.js';
+        import JsonDataParser from './src/parsers/JsonDataParser.js';
 
         import DumpParser from './src/tools/dicom/DumpParser.js';
 
@@ -283,9 +283,9 @@
 
                 // Build the DICOM streaming reader
                 const reader = applyDicomDataValidation(
-                    EASI.newStreamingReaderBuilder()
-                        .withParser(new StreamingDicomDataParser())
-                        .withHandler(new StreamingDicomInstanceHandler())
+                    EASI.pipelineBuilder()
+                        .withParser(new DicomDataParser())
+                        .withHandler(new DicomInstanceHandler())
                 ).build();
 
                 // Read and parse the DICOM file
@@ -351,9 +351,9 @@
 
                 // Build the DICOM streaming reader
                 const reader = applyDicomDataValidation(
-                    EASI.newStreamingReaderBuilder()
-                        .withParser(new StreamingDicomDataParser())
-                        .withHandler(new StreamingDicomInstanceHandler())
+                    EASI.pipelineBuilder()
+                        .withParser(new DicomDataParser())
+                        .withHandler(new DicomInstanceHandler())
                 ).build();
 
                 // Read and parse the DICOM file
@@ -371,9 +371,9 @@
 
                 // Build the DICOM streaming reader
                 const reader = applyDicomDataValidation(
-                    EASI.newStreamingReaderBuilder()
-                        .withParser(new StreamingDicomDataParser())
-                        .withHandler(new StreamingDicomInstanceHandler())
+                    EASI.pipelineBuilder()
+                        .withParser(new DicomDataParser())
+                        .withHandler(new DicomInstanceHandler())
                         .withMask(Tag.DefaultDeIdentificationMask)
                 ).build();
 
@@ -393,9 +393,9 @@
 
                 // Build the DICOM streaming reader
                 const reader = applyDicomDataValidation(
-                    EASI.newStreamingReaderBuilder()
-                        .withParser(new StreamingDicomDataParser())
-                        .withHandler(new StreamingDicomInstanceHandler())
+                    EASI.pipelineBuilder()
+                        .withParser(new DicomDataParser())
+                        .withHandler(new DicomInstanceHandler())
                 ).build();
 
                 // Read and parse the DICOM file
@@ -416,9 +416,9 @@
 
                 // Build the DICOM streaming reader
                 const reader = applyDicomDataValidation(
-                    EASI.newStreamingReaderBuilder()
-                        .withParser(new StreamingDicomDataParser())
-                        .withHandler(new StreamingDicomInstanceHandler())
+                    EASI.pipelineBuilder()
+                        .withParser(new DicomDataParser())
+                        .withHandler(new DicomInstanceHandler())
                         .withOnPart(function (result) { 
 
                             // Log
@@ -455,9 +455,9 @@
                 var url = URL.createObjectURL(this.files[0]);
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
                     .build();
 
                 // Read and parse the DICOM file
@@ -478,9 +478,9 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
                     .build();
 
                 // Read and parse the DICOM file
@@ -501,9 +501,9 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
                     .build();
 
                 // Read and parse the DICOM file
@@ -524,9 +524,9 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
                     .build();
 
                 // Read and parse the DICOM file
@@ -562,9 +562,9 @@
                 selection.addTag(Tag.InstanceNumber);
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomSelectingHandler(selection))
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomSelectingHandler(selection))
                     .build();
 
                 // Read and parse the DICOM file
@@ -593,9 +593,9 @@
                 selection.addTag(Tag.PatientSex);
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomSelectingHandler(selection))
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomSelectingHandler(selection))
                     .build();
 
                 // Read and parse the DICOM file
@@ -624,9 +624,9 @@
                 selection.addTag(Tag.PatientSex);
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomSelectingHandler(selection))
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomSelectingHandler(selection))
                     .build();
 
                 // Read and parse the DICOM file
@@ -655,9 +655,9 @@
                 selection.addTag(Tag.PatientSex);
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomSelectingHandler(selection))
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomSelectingHandler(selection))
                     .build();
 
                 // Read and parse the DICOM file
@@ -684,9 +684,9 @@
                 var url = URL.createObjectURL(new Blob([$('#jsonBox').val()], {type : 'text/plain'}));
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingJsonDataParser())
-                    .withHandler(new StreamingJsonDataHandler())
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new JsonDataParser())
+                    .withHandler(new JsonDataHandler())
                     .build();
 
                 // Read and parse the DICOM file
@@ -709,9 +709,9 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingJsonDataParser())
-                    .withHandler(new StreamingJsonDataHandler())
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new JsonDataParser())
+                    .withHandler(new JsonDataHandler())
                     .build();
 
                 // Read and parse the DICOM file
@@ -752,9 +752,9 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingJsonDataParser())
-                    .withHandler(new StreamingJsonDataHandler())
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new JsonDataParser())
+                    .withHandler(new JsonDataHandler())
                     .build();
 
                 // Read and parse the DICOM file
@@ -774,9 +774,9 @@
                 console.clear();
 
                 // Build the DICOM streaming reader
-                const reader = EASI.newStreamingReaderBuilder()
-                    .withParser(new StreamingJsonDataParser())
-                    .withHandler(new StreamingJsonDataHandler())
+                const reader = EASI.pipelineBuilder()
+                    .withParser(new JsonDataParser())
+                    .withHandler(new JsonDataHandler())
                     .withOnPart(function (result) { 
 
                         // Log
@@ -811,8 +811,8 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI
-                    .newStreamingReaderBuilder()
-                    .fromDicomMetadata()
+                    .pipelineBuilder()
+                    .fromPartStream().ofDicomMetadata()
                     .toInstances()
                     .build();
 
@@ -832,8 +832,8 @@
 
                 // Build the DICOM streaming reader (XML metadata -> Instance)
                 const reader = EASI
-                    .newStreamingReaderBuilder()
-                    .fromDicomXmlMetadata()
+                    .pipelineBuilder()
+                    .fromPartStream().ofDicomXmlMetadata()
                     .toInstances()
                     .build();
 
@@ -852,8 +852,8 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI
-                    .newStreamingReaderBuilder()
-                    .fromDicomMetadata()
+                    .pipelineBuilder()
+                    .fromPartStream().ofDicomMetadata()
                     .toInstances()
                     .build();
 
@@ -875,8 +875,8 @@
 
                 // Build the DICOM streaming reader
                 const reader = EASI
-                    .newStreamingReaderBuilder()
-                    .fromDicomMetadata()
+                    .pipelineBuilder()
+                    .fromPartStream().ofDicomMetadata()
                     .toInstances()
                     .withOnPart(function (result) { 
 
@@ -932,7 +932,7 @@
                 console.clear();
 
                 // Create the DICOM Dump Parer
-                var parser = new DumpParser(new StreamingDicomInstanceHandler());
+                var parser = new DumpParser(new DicomInstanceHandler());
 
                 parser.parse($('#dicomDump').val());
 
@@ -956,11 +956,11 @@
             // SAMPLE CODE 
             $('#sample').on('click', function () {
 
-                // Build the EASI DICOM Streaming Reader configured to parse DICOM Data to DICOM Instances
+                // Build the EASI DICOM reader configured to parse DICOM Data to DICOM Instances
                 const reader = EASI
-                    .newStreamingReaderBuilder()
-                    .withParser(new StreamingDicomDataParser())
-                    .withHandler(new StreamingDicomInstanceHandler())
+                    .pipelineBuilder()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomInstanceHandler())
                     .build();
 
                 // Issue the HTTP request, read and parse the DICOM data response 

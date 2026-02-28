@@ -1,6 +1,6 @@
 import EASI from '../../src/EASI.js';
-import StreamingDicomDataParser from '../../src/parsers/StreamingDicomDataParser.js';
-import StreamingDicomInstanceHandler from '../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
+import DicomDataParser from '../../src/parsers/DicomDataParser.js';
+import DicomInstanceHandler from '../../src/handlers/terminals/DicomInstanceHandler.js';
 import Tag from '../../src/dicom/Tag.js';
 
 const path = require('path');
@@ -15,9 +15,9 @@ test("Test: Nested sequence parsing keeps PixelData at dataset level", async () 
     const dicomFullPath = path.join(brightDicomRoot, '/data/dicoms/NESTED_SEQUENCE.dcm');
 
     // Build the DICOM streaming reader
-    const reader = EASI.newStreamingReaderBuilder()
-        .withParser(new StreamingDicomDataParser())
-        .withHandler(new StreamingDicomInstanceHandler())
+    const reader = EASI.pipelineBuilder()
+        .withParser(new DicomDataParser())
+        .withHandler(new DicomInstanceHandler())
         .build();
 
     // Parse the DICOM instance

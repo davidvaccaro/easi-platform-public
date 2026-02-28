@@ -5,7 +5,7 @@ AI assistant guidance for the BrightDicom repository.
 
 ## Project Overview
 
-BrightDicom is a pure JavaScript implementation of **EASI** (Efficient API for Streaming in Healthcare Imaging) for streaming-oriented reading of DICOM medical images. The architecture is explicitly SAX-style: data flows through a `Reader → Parser → Handler` pipeline with status-based flow control at each stage.
+BrightDicom is a pure JavaScript implementation of **EASI** (Efficient API for Streaming in Healthcare Imaging) for streaming-oriented reading of DICOM medical images. The architecture is explicitly SAX-style: data flows through a `PartStreamReader → Parser → Handler` pipeline with status-based flow control at each stage.
 
 **Primary target for all work:** `easi-js/`
 
@@ -19,10 +19,10 @@ BrightDicom is a pure JavaScript implementation of **EASI** (Efficient API for S
 ```
 easi-js/src/
   EASI.js                   # Factory entry point
-  builders/                 # StreamingReaderBuilder
-  readers/                  # StreamingReader (HTTP, single-part and multipart)
-  parsers/                  # StreamingDicomDataParser, StreamingJsonDataParser, Status
-  handlers/                 # StreamingDicomInstanceHandler, MappingHandler, SelectingHandler
+  builders/                 # PipelineBuilder
+  readers/                  # PartStreamReader (HTTP, single-part and multipart)
+  parsers/                  # DicomDataParser, JsonDataParser, Status
+  handlers/                 # DicomInstanceHandler, MappingHandler, SelectingHandler
     mappings/               # Mapping, DicomMapping, DicomToFHIRImagingStudyMapping
     selections/             # Selection, DicomSelection
   dicom/                    # Core model: Tag, Attribute, AttributeSequence, DataSet,
@@ -40,12 +40,12 @@ data/                       # Sample DICOM files and dictionary source files
 
 ---
 
-## Architecture: Reader → Parser → Handler
+## Architecture: PartStreamReader → Parser → Handler
 
 ```
-EASI.newStreamingReaderBuilder()
-  .fromDicomData()          # sets parser = StreamingDicomDataParser
-  .toInstances()            # sets handler = StreamingDicomInstanceHandler
+EASI.pipelineBuilder()
+  .fromPartStream().ofDicomData()          # sets parser = DicomDataParser
+  .toInstances()            # sets handler = DicomInstanceHandler
   .build()                  # wires parser.handler = handler, reader.parser = parser
 ```
 
@@ -100,7 +100,7 @@ Node.js requirement: `18.x` or `16.x` (see `package.json` `engines` field).
 - **Language:** JavaScript ES modules (`import`/`export default`).
 - **Class structure:** class-oriented; one default export per file.
 - **File header:** every file carries the standard proprietary notice block; preserve it on new files.
-- **Naming:** match existing patterns (`StreamingXxxYyy`, `onStartXxx`/`onEndXxx`, `parseNextXxx`).
+- **Naming:** match existing patterns (`XxxYyy`, `onStartXxx`/`onEndXxx`, `parseNextXxx`).
 - **Comments:** use inline block comments (`/* ... */`) and line comments (`// ...`) in the existing style; don't add JSDoc to methods you didn't touch.
 - **No linter/formatter tooling** is configured — match the surrounding file's formatting by eye.
 - **No new dependencies** without explicit justification.
@@ -121,7 +121,7 @@ Node.js requirement: `18.x` or `16.x` (see `package.json` `engines` field).
 
 ## Known Backlog / Before You Touch Parsers
 
-Read `easi-js/backlog/parsers/StreamingDicomDataParser.md` before modifying the parser. It documents three known deferred issues:
+Read `easi-js/backlog/parsers/DicomDataParser.md` before modifying the parser. It documents three known deferred issues:
 
 1. Truncated end-of-stream can return `Status.SUCCESS` (lines ~1181 / ~1244).
 2. Undefined-length empty/odd sequences can leak control tags as normal attributes (lines ~1348 / ~1352 / ~1264).

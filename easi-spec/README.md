@@ -174,8 +174,9 @@ Detailed conformance guidance and fixtures are defined in [`conformance.md`](./c
 ### JavaScript (Reference style)
 
 ```js
-const reader = EASI.newStreamingReaderBuilder()
-  .fromDicomData()
+const reader = EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
   .toInstances()
   .withValidation('permissive')
   .build();
@@ -184,8 +185,9 @@ const reader = EASI.newStreamingReaderBuilder()
 ### C# (Idiomatic .NET casing, same semantics)
 
 ```csharp
-var reader = EASI.NewStreamingReaderBuilder()
-    .FromDicomData()
+var reader = EASI.PipelineBuilder()
+    .FromPartStream()
+    .OfDicomData()
     .ToInstances()
     .WithValidation("permissive")
     .Build();
@@ -194,8 +196,9 @@ var reader = EASI.NewStreamingReaderBuilder()
 ### Java (Idiomatic JVM style, same semantics)
 
 ```java
-var reader = EASI.newStreamingReaderBuilder()
-    .fromDicomData()
+var reader = EASI.pipelineBuilder()
+    .fromPartStream()
+    .ofDicomData()
     .toInstances()
     .withValidation("permissive")
     .build();
@@ -205,8 +208,9 @@ var reader = EASI.newStreamingReaderBuilder()
 
 ```python
 reader = (
-    EASI.new_streaming_reader_builder()
-    .from_dicom_data()
+    EASI.pipeline_builder()
+    .from_part_stream()
+    .of_dicom_data()
     .to_instances()
     .with_validation("permissive")
     .build()

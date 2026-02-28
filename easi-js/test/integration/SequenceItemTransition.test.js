@@ -1,6 +1,6 @@
 import EASI from '../../src/EASI.js';
-import StreamingDicomDataParser from '../../src/parsers/StreamingDicomDataParser.js';
-import StreamingDicomInstanceHandler from '../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
+import DicomDataParser from '../../src/parsers/DicomDataParser.js';
+import DicomInstanceHandler from '../../src/handlers/terminals/DicomInstanceHandler.js';
 import Tag from '../../src/dicom/Tag.js';
 
 function u16le(value) {
@@ -111,9 +111,9 @@ test('Test: Parser does not leak FFFEE000 item marker into sequence item attribu
 
     const bytes = buildSequenceItemTransitionRegressionDicom();
 
-    const reader = EASI.newStreamingReaderBuilder()
-        .withParser(new StreamingDicomDataParser())
-        .withHandler(new StreamingDicomInstanceHandler())
+    const reader = EASI.pipelineBuilder()
+        .withParser(new DicomDataParser())
+        .withHandler(new DicomInstanceHandler())
         .build();
 
     const instance = await reader.read(bytes);

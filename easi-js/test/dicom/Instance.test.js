@@ -1,7 +1,7 @@
 import EASI from '../../src/EASI.js';
 import Constants from '../../src/dicom/Constants.js'
-import StreamingDicomDataParser from '../../src/parsers/StreamingDicomDataParser.js';
-import StreamingDicomInstanceHandler from '../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
+import DicomDataParser from '../../src/parsers/DicomDataParser.js';
+import DicomInstanceHandler from '../../src/handlers/terminals/DicomInstanceHandler.js';
 import Instance from '../../src/dicom/Instance.js';
 import DataSet from '../../src/dicom/DataSet.js';
 
@@ -21,9 +21,9 @@ beforeAll(async () => {
     const dicomFullPath = path.join(brightDicomRoot, '/data/dicoms/0002.DCM');
 
     // Build the DICOM streaming reader
-    const reader = EASI.newStreamingReaderBuilder()
-        .withParser(new StreamingDicomDataParser())
-        .withHandler(new StreamingDicomInstanceHandler())
+    const reader = EASI.pipelineBuilder()
+        .withParser(new DicomDataParser())
+        .withHandler(new DicomInstanceHandler())
         .build();
 
     // Read and parse the DICOM file

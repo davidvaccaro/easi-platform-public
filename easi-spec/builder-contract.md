@@ -8,7 +8,8 @@ Define the normative builder semantics for constructing EASI pipelines.
 
 The builder provides a declarative way to configure:
 
-- source format (`fromXxx`)
+- source stream type (`fromXxx`)
+- source format (`ofXxx`)
 - output strategy (`toXxx`) via a terminal handler
 - optional handler chain stages (for example de-identification)
 - optional output packaging/writer composition where supported by the implementation
@@ -21,13 +22,25 @@ The builder provides a declarative way to configure:
 
 Examples:
 
-- `fromDicomData()`
-- `fromDicomMetadata()`
+- `fromPartStream()`
 
 Normative intent:
 
-- `fromXxx` configures the parser for the specified source format
+- `fromXxx` configures the reader/source stream type
 - `fromXxx` should not finalize the reader
+
+### Source Format Selection (`of...`)
+
+Examples:
+
+- `ofDicomData()`
+- `ofDicomMetadata()`
+- `ofDicomXmlMetadata()`
+
+Normative intent:
+
+- `ofXxx` configures the parser for the specified source format
+- `ofXxx` should not finalize the reader
 
 ### Output Selection (`to...`)
 
@@ -88,16 +101,16 @@ Current implementation behavior should be documented before this is frozen.
 
 ### Core (recommended to freeze first)
 
-- `newStreamingReaderBuilder()`
-- `fromXxx`, `toXxx`, `withXxx`, `build()`
+- `pipelineBuilder()`
+- `fromXxx`, `ofXxx`, `toXxx`, `withXxx`, `build()`
 - handler-chain composition semantics
 - status propagation through handler chains
 
 ### Convenience (may evolve)
 
-- `EASI.newStreamingDicomInstanceReaderBuilder()`
-- `EASI.newStreamingDicomDataWriterReaderBuilder()`
-- other scenario-specific helpers
+- Convenience helpers are intentionally deferred for now
+- `EASI` currently exposes only `pipelineBuilder()`
+- Scenario-specific factories can be added later once the normative core is frozen
 - explicit transport writer helpers and shortcuts beyond the core reader/parser/handler builder
 
 ## Open Design Questions (to resolve before freeze)

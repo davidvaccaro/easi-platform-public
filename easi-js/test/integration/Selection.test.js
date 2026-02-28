@@ -18,7 +18,11 @@ test("Test: Selection parse returns selected attributes for single DICOM source"
     selection.addTag(Tag.SOPInstanceUID);
 
     // Build the DICOM selection reader
-    const reader = EASI.newStreamingDicomSelectionReaderBuilder(selection).build();
+    const reader = EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .toSelection(selection)
+        .build();
 
     // Parse the DICOM instance
     const result = await reader.read(fs.readFileSync(dicomFullPath));

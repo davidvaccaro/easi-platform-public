@@ -33,7 +33,10 @@ test("Test: DICOM JSON metadata selection emits selected attributes", async () =
 
     // Build and run the reader
     const reader = EASI
-        .newStreamingDicomJsonSelectionReaderBuilder(selection)
+        .pipelineBuilder()
+        .fromPartStream()
+        .ofDicomMetadata()
+        .toSelection(selection)
         .build();
     const result = await reader.read((new TextEncoder()).encode(metadata));
 
@@ -60,7 +63,10 @@ test("Test: DICOM JSON metadata to FHIR ImagingStudy mapping emits ImagingStudy"
 
     // Build and run the reader
     const reader = EASI
-        .newStreamingDicomJsonFHIRImagingStudyReaderBuilder()
+        .pipelineBuilder()
+        .fromPartStream()
+        .ofDicomMetadata()
+        .toFHIRImagingStudies()
         .build();
     const result = await reader.read((new TextEncoder()).encode(metadata));
 

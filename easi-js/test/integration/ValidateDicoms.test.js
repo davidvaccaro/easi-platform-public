@@ -1,6 +1,6 @@
 import EASI from '../../src/EASI.js';
-import StreamingDicomDataParser from '../../src/parsers/StreamingDicomDataParser.js';
-import StreamingDicomInstanceHandler from '../../src/handlers/terminals/StreamingDicomInstanceHandler.js';
+import DicomDataParser from '../../src/parsers/DicomDataParser.js';
+import DicomInstanceHandler from '../../src/handlers/terminals/DicomInstanceHandler.js';
 import Dumper from '../../src/tools/dicom/Dumper.js';
 import DumpParser from '../../src/tools/dicom/DumpParser.js';
 
@@ -56,9 +56,9 @@ function validateDicomSchema(dicomPath) {
             const dicomFullPath = dicomPath.includes('/') ? dicomPath : path.join(brightDicomRoot, '/data/dicoms/' + dicomPath);
 
             // Build the DICOM streaming reader
-            const reader = EASI.newStreamingReaderBuilder()
-                .withParser(new StreamingDicomDataParser())
-                .withHandler(new StreamingDicomInstanceHandler())
+            const reader = EASI.pipelineBuilder()
+                .withParser(new DicomDataParser())
+                .withHandler(new DicomInstanceHandler())
                 .build();
 
             // Read and parse the DICOM file
@@ -67,7 +67,7 @@ function validateDicomSchema(dicomPath) {
                 .then(parseResult => {
 
                     // Create the DICOM Dumper
-                    var dumper = new Dumper(new DumpParser(new StreamingDicomInstanceHandler()));
+                    var dumper = new Dumper(new DumpParser(new DicomInstanceHandler()));
 
                     // Dump the file
                     dumper

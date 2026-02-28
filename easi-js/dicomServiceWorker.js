@@ -1,8 +1,8 @@
 import EASI from './src/EASI.js';
 import Tag from '/easi-js/src/dicom/Tag.js';
 import Modality from '/easi-js/src/dicom/Modality.js';
-import StreamingDicomDataParser from '/easi-js/src/parsers/StreamingDicomDataParser.js';
-import StreamingDicomInstanceHandler from "/easi-js/src/handlers/StreamingDicomInstanceHandler.js";
+import DicomDataParser from '/easi-js/src/parsers/DicomDataParser.js';
+import DicomInstanceHandler from "/easi-js/src/handlers/terminals/DicomInstanceHandler.js";
 import Image from '/easi-js/src/dicom/entities/Image.js';
 import CT from '/easi-js/src/dicom/entities/CT.js';
 import XA from '/easi-js/src/dicom/entities/XA.js';
@@ -44,9 +44,9 @@ const pngFromDICOMRequest = async (request) => {
     return new Promise(function(resolve, reject) {
 
       // Build the DICOM streaming reader
-      const reader = EASI.newStreamingReaderBuilder()
-        .withParser(new StreamingDicomDataParser())
-        .withHandler(new StreamingDicomInstanceHandler())
+      const reader = EASI.pipelineBuilder()
+        .withParser(new DicomDataParser())
+        .withHandler(new DicomInstanceHandler())
         .build();
 
       // Read and parse the DICOM file
