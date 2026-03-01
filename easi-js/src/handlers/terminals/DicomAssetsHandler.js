@@ -1,0 +1,617 @@
+//
+// DicomAssetsHandler.js - 1.0.0
+//
+// Stream DICOM Assets Handler Class
+//
+
+import Exception from "../../environment/Exception.js";
+import { GeneralErrorCodes } from "../../environment/Exception.js";
+import DicomInstanceHandler from "./DicomInstanceHandler.js";
+import DicomMapping from "../mappings/DicomMapping.js";
+import Configuration from "../../environment/Configuration.js";
+import Tag from "../../dicom/Tag.js";
+import Image from "../../dicom/entities/Image.js";
+import PixelData from "../../dicom/PixelData.js";
+import Constants from "../../dicom/Constants.js";
+import TransferSyntax from "../../dicom/TransferSyntax.js";
+import { TransferSyntaxApplicationType } from "../../dicom/TransferSyntax.js";
+
+export default class DicomAssetsHandler {
+
+    /**
+     * Resolve payload frame indices from a frame selector value.
+     * @param {number} frameCount The number of available frames.
+     * @param {'first' | 'all' | Array<number> | { start?: number, end?: number, step?: number } | null} selector The selector.
+     * @returns {Array<number>} The selected 0-based frame indices.
+     */
+    resolveFrameIndices(frameCount, selector) {
+
+        if (frameCount <= 0)
+            return [];
+
+        if ((selector == null) || (selector === 'first')) {
+            return [0];
+        }
+
+        if (selector === 'all') {
+            var all = [];
+            for (var i = 0; i < frameCount; i++) {
+                all.push(i);
+            }
+            return all;
+        }
+
+        if (Array.isArray(selector)) {
+            var selected = [];
+            for (var s = 0; s < selector.length; s++) {
+                var index = Number(selector[s]);
+                if ((Number.isInteger(index) == true) && (index >= 0) && (index < frameCount)) {
+                    selected.push(index);
+                }
+            }
+            return selected;
+        }
+
+        if (typeof selector === 'object') {
+            var start = Number(selector.start ?? 0);
+            var end = Number(selector.end ?? (frameCount - 1));
+            var step = Number(selector.step ?? 1);
+
+            start = Math.max(0, Math.min(frameCount - 1, Math.floor(start)));
+            end = Math.max(0, Math.min(frameCount - 1, Math.floor(end)));
+            step = Math.max(1, Math.floor(step));
+
+            var range = [];
+            for (var r = start; r <= end; r += step) {
+                range.push(r);
+            }
+            return range;
+        }
+
+        return [0];
+
+    }
+
+    /**
+     * Determine if the transfer syntax likely contains frame-based image payload.
+     * @param {TransferSyntax | null} transferSyntax The transfer syntax.
+     * @returns {boolean} TRUE when frame processing should be attempted.
+     */
+    isFrameApplicationType(transferSyntax) {
+
+        var appType = transferSyntax?.ApplicationType;
+        return (
+            (appType == null)
+            || (appType == TransferSyntaxApplicationType.SingleFrame)
+            || (appType == TransferSyntaxApplicationType.MultiFrame)
+            || (appType == TransferSyntaxApplicationType.SingleAndMultiFrame)
+            || (appType == TransferSyntaxApplicationType.All)
+        );
+
+    }
+
+    /**
+     * Determine if the transfer syntax is non-frame media/bulk content.
+     * @param {TransferSyntax | null} transferSyntax The transfer syntax.
+     * @returns {boolean} TRUE when non-frame content should be emitted.
+     */
+    isBulkContentApplicationType(transferSyntax) {
+
+        var appType = transferSyntax?.ApplicationType;
+        return (
+            (appType == TransferSyntaxApplicationType.Video)
+            || (appType == TransferSyntaxApplicationType.Audio)
+            || (appType == TransferSyntaxApplicationType.Text)
+            || (appType == TransferSyntaxApplicationType.Other)
+            || (appType == TransferSyntaxApplicationType.XML)
+        );
+
+    }
+
+    /**
+     * Apply a DICOM mapping across an attribute-set recursively.
+     * @param {DicomMapping} mapping The mapping to apply.
+     * @param {object} context The mapping context.
+     * @param {object} attributeSet The current attribute-set.
+     */
+    mapAttributeSet(mapping, context, attributeSet) {
+
+        if (attributeSet == null)
+            return;
+
+        var attributes = attributeSet.attributes ?? [];
+
+        for (var i = 0; i < attributes.length; i++) {
+
+            var attribute = attributes[i];
+            mapping.mapAttribute(context, attribute);
+
+            if (Array.isArray(attribute.items) == true) {
+                for (var j = 0; j < attribute.items.length; j++) {
+                    this.mapAttributeSet(mapping, context, attribute.items[j]);
+                }
+            }
+
+        }
+
+    }
+
+    /**
+     * Map one parsed instance to metadata output.
+     * @param {object} instance The parsed DICOM instance.
+     * @returns {unknown | null} The mapped metadata output.
+     */
+    mapMetadata(instance) {
+
+        if (this.metadataOptions == null)
+            return null;
+
+        var mapping = this.metadataOptions.mapping;
+        if (mapping == null) {
+            throw new Exception(
+                "toAssets metadata configuration requires a mapping instance.",
+                GeneralErrorCodes.InvalidParameter
+            );
+        }
+
+        if ((mapping instanceof DicomMapping) == false) {
+            throw new Exception(
+                "toAssets metadata.mapping must extend DicomMapping.",
+                GeneralErrorCodes.InvalidParameter
+            );
+        }
+
+        var mappingContext = {};
+        var startedContext = mapping.start(mappingContext);
+        if (startedContext != null) {
+            mappingContext = startedContext;
+        }
+
+        this.mapAttributeSet(mapping, mappingContext, instance.metaSet);
+        this.mapAttributeSet(mapping, mappingContext, instance.dataSet);
+
+        return mapping.end(mappingContext);
+
+    }
+
+    /**
+     * Decode one frame to RGBA bytes.
+     * @param {object} instance The parsed DICOM instance.
+     * @param {number} frameIndex 0-based frame index.
+     * @returns {{ bytes: Uint8Array, width: number, height: number }} RGBA output.
+     */
+    decodeFrameRgba(instance, frameIndex) {
+
+        var image = new Image(instance.dataSet);
+        var width = image.imagePixelModule.columns;
+        var height = image.imagePixelModule.rows;
+        var rgba = new Uint8Array(width * height * 4);
+
+        var decodeResult = image.decodeFrame(rgba, null, frameIndex);
+        if (decodeResult !== true) {
+            throw new Exception(
+                "Failed decoding frame to RGBA.",
+                GeneralErrorCodes.GeneralError
+            );
+        }
+
+        return {
+            bytes: rgba,
+            width,
+            height
+        };
+
+    }
+
+    /**
+     * Resolve one native frame payload for uncompressed and encapsulated image pixel data.
+     * @param {object} instance The parsed DICOM instance.
+     * @param {number} frameIndex 0-based frame index.
+     * @returns {Uint8Array} Native frame bytes.
+     */
+    resolveNativeFrameBytes(instance, frameIndex) {
+
+        var attribute = instance.dataSet?.find(Tag.PixelData);
+        if (attribute == null)
+            return new Uint8Array(0);
+
+        var sourceBytes = attribute.access();
+
+        if (attribute.valueLength != Constants.UndefinedLength) {
+            var image = new Image(instance.dataSet);
+            var frameSize = image.imagePixelModule.imageSize;
+            var start = (frameIndex * frameSize);
+            var stop = Math.min(sourceBytes.length, (start + frameSize));
+            return sourceBytes.subarray(start, stop);
+        }
+
+        var pixelData = new PixelData(attribute);
+        if ((pixelData.offsets == null) || (pixelData.offsets.length == 0)) {
+            return sourceBytes;
+        }
+
+        var startOffset = pixelData.offsets[Math.min(frameIndex, (pixelData.offsets.length - 1))].start;
+        var stopOffset = (frameIndex + 1 < pixelData.offsets.length)
+            ? pixelData.offsets[frameIndex + 1].start
+            : sourceBytes.length;
+
+        return sourceBytes.subarray(startOffset, stopOffset);
+
+    }
+
+    /**
+     * Emit metadata payload for one parsed instance.
+     * @param {object} context Handler context.
+     * @param {object} instance Parsed DICOM instance.
+     * @param {object} result Current instance result object.
+     */
+    async emitMetadata(context, instance, result) {
+
+        if (this.metadataOptions == null)
+            return;
+
+        var mapped = this.mapMetadata(instance);
+
+        if (this.metadataOptions.collect !== false) {
+            result.metadata = mapped;
+            context.assets.metadata.push(mapped);
+        }
+
+        context.assets.metadataCount += 1;
+
+        if (typeof this.metadataOptions.onMetadata === 'function') {
+            await this.metadataOptions.onMetadata(mapped, {
+                instance,
+                context
+            });
+        }
+
+    }
+
+    /**
+     * Encode RGBA bytes to a target payload format.
+     * @param {Uint8Array} rgba RGBA bytes.
+     * @param {number} width Frame width.
+     * @param {number} height Frame height.
+     * @param {string} format Target format.
+     * @param {object} options Encoder options.
+     * @returns {Promise<{ bytes: Uint8Array, mimeType: string, format: string }>} Encoded payload.
+     */
+    async encodeFrame(rgba, width, height, format, options = null) {
+
+        var encoder = this.codecRegistry.getEncoder(format);
+        if (encoder == null) {
+            throw new Exception(
+                `No encoder registered for format '${format}'.`,
+                GeneralErrorCodes.NotImplemented
+            );
+        }
+
+        var encoded = encoder.encode(rgba, width, height, options);
+
+        if ((encoded != null) && (typeof encoded.then === 'function')) {
+            encoded = await encoded;
+        }
+
+        return encoded;
+
+    }
+
+    /**
+     * Emit frame payloads for one parsed instance.
+     * @param {object} context Handler context.
+     * @param {object} instance Parsed DICOM instance.
+     * @param {object} result Current instance result object.
+     */
+    async emitFramePayload(context, instance, result) {
+
+        var frameOptions = this.payloadOptions?.frame;
+        if (frameOptions == null)
+            return;
+
+        var pixelDataAttribute = instance.dataSet?.find(Tag.PixelData);
+        if (pixelDataAttribute == null)
+            return;
+
+        var transferSyntax = pixelDataAttribute.transferSyntax ?? TransferSyntax.NONE;
+        if (this.isFrameApplicationType(transferSyntax) == false) {
+            return;
+        }
+
+        var image = new Image(instance.dataSet);
+        var frameCount = (image.isMultiFrame == true)
+            ? Math.max(1, Number(image.multiFrameModule.numberOfFrames ?? 1))
+            : 1;
+
+        var frameIndices = this.resolveFrameIndices(frameCount, frameOptions.frames);
+        var outputFormat = String(frameOptions.encode ?? 'none').toLowerCase();
+        var decodeMode = String(frameOptions.decode ?? 'rgba').toLowerCase();
+
+        if ((decodeMode == 'native') && (outputFormat != 'none')) {
+            decodeMode = 'rgba';
+        }
+
+        if ((frameIndices.length > 0) && (this.payloadOptions.collect === true) && (result.frames == null)) {
+            result.frames = [];
+        }
+
+        for (var i = 0; i < frameIndices.length; i++) {
+
+            var frameIndex = frameIndices[i];
+            var framePayload = null;
+
+            if (decodeMode == 'native') {
+
+                var nativeBytes = this.resolveNativeFrameBytes(instance, frameIndex);
+                framePayload = {
+                    index: frameIndex,
+                    encoding: 'native',
+                    bytes: nativeBytes,
+                    mimeType: 'application/octet-stream',
+                    transferSyntax: transferSyntax.ID,
+                    width: image.imagePixelModule.columns,
+                    height: image.imagePixelModule.rows
+                };
+
+            }
+            else {
+
+                var decoded = this.decodeFrameRgba(instance, frameIndex);
+
+                if ((outputFormat == 'none') || (outputFormat == 'rgba')) {
+                    framePayload = {
+                        index: frameIndex,
+                        encoding: 'rgba',
+                        bytes: decoded.bytes,
+                        mimeType: 'application/octet-stream',
+                        transferSyntax: transferSyntax.ID,
+                        width: decoded.width,
+                        height: decoded.height
+                    };
+                }
+                else {
+                    var encoded = await this.encodeFrame(decoded.bytes, decoded.width, decoded.height, outputFormat, frameOptions);
+                    framePayload = {
+                        index: frameIndex,
+                        encoding: encoded?.format ?? outputFormat,
+                        bytes: encoded?.bytes ?? new Uint8Array(0),
+                        mimeType: encoded?.mimeType ?? 'application/octet-stream',
+                        transferSyntax: transferSyntax.ID,
+                        width: decoded.width,
+                        height: decoded.height
+                    };
+                }
+
+            }
+
+            if (typeof this.payloadOptions.onFrame === 'function') {
+                await this.payloadOptions.onFrame(framePayload, {
+                    instance,
+                    context
+                });
+            }
+
+            if (this.payloadOptions.collect === true) {
+                result.frames.push(framePayload);
+                context.assets.frames.push(framePayload);
+            }
+
+            context.assets.framesEmitted += 1;
+
+        }
+
+    }
+
+    /**
+     * Emit non-frame content payloads for one parsed instance.
+     * @param {object} context Handler context.
+     * @param {object} instance Parsed DICOM instance.
+     * @param {object} result Current instance result object.
+     */
+    async emitContentPayload(context, instance, result) {
+
+        if (typeof this.payloadOptions?.onContent !== 'function')
+            return;
+
+        var emitted = [];
+
+        var pixelDataAttribute = instance.dataSet?.find(Tag.PixelData);
+        var transferSyntax = pixelDataAttribute?.transferSyntax ?? null;
+
+        if ((pixelDataAttribute != null) && (this.isBulkContentApplicationType(transferSyntax) == true)) {
+            emitted.push({
+                kind: String(transferSyntax?.ApplicationType ?? 'Other'),
+                tag: pixelDataAttribute.tag,
+                bytes: pixelDataAttribute.access(),
+                transferSyntax: transferSyntax?.ID ?? null
+            });
+        }
+
+        var contentTags = [Tag.EncapsulatedDocument, Tag.WaveformData, Tag.AudioSampleData];
+        for (var i = 0; i < contentTags.length; i++) {
+            var tag = contentTags[i];
+            if (tag == null)
+                continue;
+            var attribute = instance.dataSet?.find(tag);
+            if (attribute != null) {
+                emitted.push({
+                    kind: 'Content',
+                    tag: attribute.tag,
+                    bytes: attribute.access(),
+                    transferSyntax: attribute.transferSyntax?.ID ?? null
+                });
+            }
+        }
+
+        if ((emitted.length > 0) && (this.payloadOptions.collect === true)) {
+            result.content = [];
+        }
+
+        for (var j = 0; j < emitted.length; j++) {
+            await this.payloadOptions.onContent(emitted[j], { instance, context });
+            if (this.payloadOptions.collect === true) {
+                result.content.push(emitted[j]);
+                context.assets.content.push(emitted[j]);
+            }
+            context.assets.contentEmitted += 1;
+        }
+
+    }
+
+    /**
+     * Process one parsed instance for metadata/payload extraction.
+     * @param {object} context Handler context.
+     * @param {object} instance Parsed DICOM instance.
+     * @returns {Promise<object>} The instance assets result.
+     */
+    async processInstance(context, instance) {
+
+        var result = {
+            instanceUID: instance?.sopInstanceUid ?? null
+        };
+
+        await this.emitMetadata(context, instance, result);
+        await this.emitFramePayload(context, instance, result);
+        await this.emitContentPayload(context, instance, result);
+
+        return result;
+
+    }
+
+    onReset() {
+        this.instanceHandler.onReset();
+    }
+
+    onStartInstance(context) {
+
+        context = this.instanceHandler.onStartInstance(context);
+
+        if (context.assets == null) {
+            context.assets = {
+                metadata: [],
+                frames: [],
+                content: [],
+                metadataCount: 0,
+                framesEmitted: 0,
+                contentEmitted: 0,
+                instances: []
+            };
+        }
+
+        return context;
+
+    }
+
+    onStartPreamble(context, preamble) {
+        return this.instanceHandler.onStartPreamble(context, preamble);
+    }
+
+    onStartPrefix(context, prefix) {
+        return this.instanceHandler.onStartPrefix(context, prefix);
+    }
+
+    onStartAttribute(context, attribute) {
+        return this.instanceHandler.onStartAttribute(context, attribute);
+    }
+
+    onStartSequence(context, sequence) {
+        return this.instanceHandler.onStartSequence(context, sequence);
+    }
+
+    onStartItem(context) {
+        return this.instanceHandler.onStartItem(context);
+    }
+
+    onAppendAttribute(context, attribute) {
+        return this.instanceHandler.onAppendAttribute(context, attribute);
+    }
+
+    onStartMetaSet(context) {
+        return this.instanceHandler.onStartMetaSet(context);
+    }
+
+    onStartDataSet(context) {
+        return this.instanceHandler.onStartDataSet(context);
+    }
+
+    onEndPreamble(context, preamble) {
+        return this.instanceHandler.onEndPreamble(context, preamble);
+    }
+
+    onEndPrefix(context, prefix) {
+        return this.instanceHandler.onEndPrefix(context, prefix);
+    }
+
+    onEndAttribute(context, attribute) {
+        return this.instanceHandler.onEndAttribute(context, attribute);
+    }
+
+    onEndSequence(context, sequence) {
+        return this.instanceHandler.onEndSequence(context, sequence);
+    }
+
+    onEndItem(context) {
+        return this.instanceHandler.onEndItem(context);
+    }
+
+    onEndMetaSet(context) {
+        return this.instanceHandler.onEndMetaSet(context);
+    }
+
+    onEndDataSet(context) {
+        return this.instanceHandler.onEndDataSet(context);
+    }
+
+    /**
+     * Returns the current assets output for this parse session.
+     * @param {object} context Handler context.
+     * @returns {Promise<object | Array<object>>} The assets result.
+     */
+    async onEndInstance(context) {
+
+        var instance = context.instance;
+        var instanceAssets = await this.processInstance(context, instance);
+
+        // Keep DicomInstanceHandler's internal aggregation behavior intact.
+        this.instanceHandler.onEndInstance(context);
+
+        context.assets.instances.push(instanceAssets);
+
+        return (context.assets.instances.length == 1)
+            ? context.assets.instances[0]
+            : context.assets.instances;
+
+    }
+
+    onError(context, error) {
+        return this.instanceHandler.onError(context, error);
+    }
+
+    onProgress(context, progress) {
+        return this.instanceHandler.onProgress(context, progress);
+    }
+
+    /**
+     * Construct a DICOM assets extraction handler.
+     * @param {{
+     *   metadata?: { mapping: DicomMapping, onMetadata?: Function, collect?: boolean },
+     *   payload?: {
+     *     frame?: { frames?: 'first' | 'all' | Array<number> | { start?: number, end?: number, step?: number }, decode?: 'native' | 'rgba', encode?: 'none' | 'jpeg' | 'png' | 'tiff', quality?: number },
+     *     onFrame?: Function,
+     *     onContent?: Function,
+     *     collect?: boolean
+     *   }
+     * } | null} options Assets extraction options.
+     * @param {object | null} codecRegistry Optional codec registry.
+     */
+    constructor(options = null, codecRegistry = null) {
+
+        this.options = options ?? {};
+        this.metadataOptions = this.options.metadata ?? null;
+        this.payloadOptions = this.options.payload ?? null;
+        this.instanceHandler = new DicomInstanceHandler();
+        this.codecRegistry = codecRegistry ?? Configuration.global.codecRegistry;
+
+    }
+
+};

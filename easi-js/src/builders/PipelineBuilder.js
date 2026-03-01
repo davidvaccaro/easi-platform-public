@@ -35,6 +35,7 @@ import DicomToFHIRImagingStudyMapping from '../handlers/mappings/DicomToFHIRImag
 import DicomInstanceHandler from "../handlers/terminals/DicomInstanceHandler.js";
 import DicomMappingHandler from '../handlers/terminals/DicomMappingHandler.js';
 import DicomSelectingHandler from "../handlers/terminals/DicomSelectingHandler.js";
+import DicomAssetsHandler from "../handlers/terminals/DicomAssetsHandler.js";
 import DicomJsonMetadataAdapter from "../handlers/adapters/DicomJsonMetadataAdapter.js";
 import DicomXmlMetadataAdapter from "../handlers/adapters/DicomXmlMetadataAdapter.js";
 import DicomDeIdentificationFilter from "../handlers/filters/DicomDeIdentificationFilter.js";
@@ -122,6 +123,7 @@ export default class PipelineBuilder {
             if ((handler instanceof DicomInstanceHandler)
                 || (handler instanceof DicomMappingHandler)
                 || (handler instanceof DicomSelectingHandler)
+                || (handler instanceof DicomAssetsHandler)
                 || (handler instanceof DicomDataWriterHandler)
                 || (handler instanceof DicomDeIdentificationFilter)
                 || (handler instanceof DicomValidationFilter)) {
@@ -244,10 +246,20 @@ export default class PipelineBuilder {
         this.reader = reader;
         return this;
     }
+
+    /**
+     * Set the codec registry used by codec-dependent handlers.
+     * @param {object} codecRegistry The codec registry.
+     * @returns The reference to the current builder.
+     */
+    withCodecRegistry(codecRegistry) {
+        this.codecRegistry = codecRegistry;
+        return this;
+    }
       
     /**
      * Set the current handler.
-     * @param {DicomInstanceHandler | DicomMappingHandler | DicomSelectingHandler | DicomDataWriterHandler} handler The handler used to handle parsed elements.
+     * @param {DicomInstanceHandler | DicomMappingHandler | DicomSelectingHandler | DicomDataWriterHandler | DicomAssetsHandler} handler The handler used to handle parsed elements.
      * @returns The reference to the current builder.
      */
     withHandler(handler) {
@@ -455,6 +467,23 @@ export default class PipelineBuilder {
     }
 
     /**
+     * Sets the current build to extract DICOM metadata and payload assets.
+     * @param {{
+     *   metadata?: { mapping: object, onMetadata?: Function, collect?: boolean },
+     *   payload?: {
+     *     frame?: { frames?: 'first' | 'all' | Array<number> | { start?: number, end?: number, step?: number }, decode?: 'native' | 'rgba', encode?: 'none' | 'jpeg' | 'png' | 'tiff', quality?: number },
+     *     onFrame?: Function,
+     *     onContent?: Function,
+     *     collect?: boolean
+     *   }
+     * } | null} options Asset extraction options.
+     * @returns The reference to the current builder.
+     */
+    toAssets(options = null) {
+        return this.withHandler(new DicomAssetsHandler(options, this.codecRegistry));
+    }
+
+    /**
      * Build a new pipeline instance.
      * @returns The new pipeline instance.
      */
@@ -479,7 +508,7 @@ export default class PipelineBuilder {
         // Fail if no handler was configured
         if (this.handler == null) {
             throw new Exception(
-                'PipelineBuilder.build requires a handler. Call toInstances(), toSelection(...), toMapping(...), toDicomData(...), or withHandler(...).',
+                'PipelineBuilder.build requires a handler. Call toInstances(), toSelection(...), toMapping(...), toDicomData(...), toAssets(...), or withHandler(...).',
                 BuilderErrorCodes.MissingHandler
             );
         }
@@ -529,6 +558,11 @@ export default class PipelineBuilder {
         // Compose the handler chain without mutating the builder state
         const parser = this.parser;
         var handler = this.handler;
+
+        // Inject the configured codec registry when using the DICOM assets handler.
+        if ((this.codecRegistry != null) && (handler instanceof DicomAssetsHandler)) {
+            handler.codecRegistry = this.codecRegistry;
+        }
 
         // Compose de-identification in the canonical DICOM semantic handler chain.
         if (this.mask != null) {
@@ -582,6 +616,7 @@ export default class PipelineBuilder {
         this.handler = null;
         this.mask = null;
         this.validation = null;
+        this.codecRegistry = null;
         this.resolveOnPart = false;
 
     }

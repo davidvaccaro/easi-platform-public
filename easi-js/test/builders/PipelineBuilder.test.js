@@ -121,6 +121,21 @@ test("Test: build throws IncompatibleParserAndHandler", () => {
     expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
 });
 
+test("Test: build throws IncompatibleParserAndHandler for toAssets with DICOM metadata parser", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromPartStream().ofDicomMetadata()
+            .toAssets({
+                metadata: {
+                    mapping: {}
+                }
+            })
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
+});
+
 test("Test: build throws IncompatibleMaskAndParser", () => {
     const error = captureBuildError(
         new PipelineBuilder()

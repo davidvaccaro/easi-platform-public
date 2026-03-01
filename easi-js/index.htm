@@ -41,6 +41,28 @@
         <div>
             <button id="deinstance">Parse De-Identified Instance</button>
         </div>
+        <br>
+        <hr>
+        <h4>Asset Extraction Related Actions</h4>
+        <hr>
+        <br>
+        <div>
+            <input type="file" id="dicomAssetsFile" name="dicomAssetsFile" />
+        </div>
+        <br>
+        <div>
+            <button id="extractAssets">Extract FHIR + PNG Frames</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="assetsMetadataDump" rows="10" cols="80" placeholder="FHIR ImagingStudy output..."></textarea>
+        </div>
+        <br>
+        <div>
+            <strong>Extracted PNG Frames</strong>
+            <br>
+            <div id="imageList" style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;"></div>
+        </div>
 
         <br>
         <hr>        
@@ -288,6 +310,82 @@
 
             }
 
+            var imageListObjectUrls = [];
+
+            function clearImageList() {
+
+                for (var i = 0; i < imageListObjectUrls.length; i++) {
+                    URL.revokeObjectURL(imageListObjectUrls[i]);
+                }
+
+                imageListObjectUrls = [];
+                $('#imageList').empty();
+
+            }
+
+            function renderImageListFrames(frames) {
+
+                clearImageList();
+
+                if ((Array.isArray(frames) == false) || (frames.length == 0))
+                    return;
+
+                for (var i = 0; i < frames.length; i++) {
+
+                    appendImageListFrame(frames[i], i);
+
+                }
+
+            }
+
+            function appendImageListFrame(frame, fallbackIndex = null) {
+
+                var bytes = frame?.bytes;
+
+                if ((bytes == null) || (bytes.length == 0))
+                    return;
+
+                var mimeType = frame?.mimeType ?? 'image/png';
+                var blob = new Blob([bytes], { type: mimeType });
+                var objectUrl = URL.createObjectURL(blob);
+                imageListObjectUrls.push(objectUrl);
+
+                var frameContainer = document.createElement('div');
+                frameContainer.style.display = 'inline-block';
+                frameContainer.style.border = '1px solid #ccc';
+                frameContainer.style.padding = '6px';
+                frameContainer.style.background = '#fafafa';
+
+                var frameTitle = document.createElement('div');
+                var frameIndex = frame?.index ?? fallbackIndex ?? 0;
+                frameTitle.textContent = 'Frame ' + String(frameIndex + 1);
+                frameTitle.style.fontSize = '12px';
+                frameTitle.style.marginBottom = '4px';
+                frameContainer.appendChild(frameTitle);
+
+                var image = document.createElement('img');
+                image.src = objectUrl;
+                image.alt = 'Frame ' + String(frameIndex + 1);
+                image.style.maxWidth = '256px';
+                image.style.maxHeight = '256px';
+                image.style.display = 'block';
+                frameContainer.appendChild(image);
+
+                $('#imageList').append(frameContainer);
+
+            }
+
+            function yieldToBrowserFrame() {
+                return new Promise(function (resolve) {
+                    if (typeof requestAnimationFrame === 'function') {
+                        requestAnimationFrame(function () { resolve(); });
+                    }
+                    else {
+                        setTimeout(function () { resolve(); }, 0);
+                    }
+                });
+            }
+
             $('#dicomFile').on('change', function () {
 
                 // Cleare the console
@@ -397,6 +495,70 @@
                 processWithTiming(pipeline, instanceUrl)
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
+
+            });
+
+            // Handle Extract Assets File
+            $('#extractAssets').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                var file = $('#dicomAssetsFile')[0]?.files?.[0];
+                if (file == null) {
+                    alert('Please select a DICOM file first.');
+                    return;
+                }
+
+                $('#assetsMetadataDump').val('');
+                clearImageList();
+
+                var url = URL.createObjectURL(file);
+                var metadataOutput = [];
+
+                const pipeline = applyDicomDataValidation(
+                    EASI.pipelineBuilder()
+                        .fromFetchStream()
+                        .ofDicomData()
+                        .toAssets({
+                            metadata: {
+                                mapping: new DicomToFHIRImagingStudyMapping(),
+                                onMetadata: async function (metadata) {
+
+                                    metadataOutput.push(metadata);
+                                    var displayModel = (metadataOutput.length == 1)
+                                        ? metadataOutput[0]
+                                        : metadataOutput;
+
+                                    $('#assetsMetadataDump').val(JSON.stringify(displayModel, null, 2));
+                                    await yieldToBrowserFrame();
+
+                                }
+                            },
+                            payload: {
+                                frame: {
+                                    frames: 'all',
+                                    decode: 'rgba',
+                                    encode: 'png'
+                                },
+                                onFrame: async function (frame) {
+                                    appendImageListFrame(frame);
+                                    await yieldToBrowserFrame();
+                                }
+                            }
+                        })
+                ).build();
+
+                processWithTiming(pipeline, url, null, "Extract Assets")
+                    .then(result => {
+
+                        var assets = Array.isArray(result) ? result[0] : result;
+
+                        console.log(assets);
+
+                    })
+                    .catch(err => console.log(err))
+                    .finally(() => URL.revokeObjectURL(url));
 
             });
 

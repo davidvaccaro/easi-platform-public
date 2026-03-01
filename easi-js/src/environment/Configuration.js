@@ -23,6 +23,10 @@ import DicomNativePixelDataToRGBADecoder from '../codecs/decoders/dicomNativePix
 import TransferSyntax from '../dicom/TransferSyntax.js';
 import jpegDecoder from '../codecs/decoders/jpegDecoder.js';
 import jpegLosslessDecoder from '../codecs/decoders/jpegLosslessDecoder.js';
+import CodecRegistry from '../codecs/CodecRegistry.js';
+import PngRgbaEncoder from '../codecs/encoders/PngRgbaEncoder.js';
+import TiffRgbaEncoder from '../codecs/encoders/TiffRgbaEncoder.js';
+import JpegRgbaEncoder from '../codecs/encoders/JpegRgbaEncoder.js';
 
 export default class Configuration {
 
@@ -51,20 +55,7 @@ export default class Configuration {
      * @returns A newly created/initialized decoder instance. 
      */
     getDecoderFor(transferSyntax, dicomObject) {
-
-        // Set the default constructor
-        var decoderConstructor = this.decoderPrototypes[TransferSyntax.NONE.ID].constructor;
-
-        // If there is a specific prototype associated to the given transfer-syntax, construct a new decoder instance.
-        if (this.decoderPrototypes[transferSyntax.ID] != null) {
-
-            // Access the prototype constructor
-            decoderConstructor = this.decoderPrototypes[transferSyntax.ID].constructor;
-
-        }
-
-        // Return the new instance
-        return new decoderConstructor(dicomObject);            
+        return this.codecRegistry.getDecoderForTransferSyntax(transferSyntax, dicomObject);
 
     }
 
@@ -74,7 +65,27 @@ export default class Configuration {
      * @param {object} decoderPrototype The prototype instance of the decoder to associated to the specified transfer-syntax.
      */
     setDecoderFor(transferSyntax, decoderPrototype) {
+        this.codecRegistry.setDecoderForTransferSyntax(transferSyntax, decoderPrototype);
         this.decoderPrototypes[transferSyntax.ID] = decoderPrototype;
+    }
+
+    /**
+     * Gets an encoder for a named output format.
+     * @param {string} format The output format.
+     * @returns {object | null} The encoder instance.
+     */
+    getEncoderFor(format) {
+        return this.codecRegistry.getEncoder(format);
+    }
+
+    /**
+     * Sets an encoder for a named output format.
+     * @param {string} format The output format.
+     * @param {object} encoder The encoder.
+     */
+    setEncoderFor(format, encoder) {
+        this.codecRegistry.setEncoder(format, encoder);
+        this.encoderPrototypes[format] = encoder;
     }
 
     /**
@@ -90,11 +101,21 @@ export default class Configuration {
         this.decoderPrototypes = {
         };
 
+        // Initialize the codec registry
+        this.codecRegistry = new CodecRegistry();
+
         // Populate the TransferSyntax-specific decoders
         this.setDecoderFor(TransferSyntax.JPEGBaseline8Bit, new jpegDecoder());
         this.setDecoderFor(TransferSyntax.JPEGLossless, new jpegLosslessDecoder());
         this.setDecoderFor(TransferSyntax.JPEGLosslessSV1, new jpegLosslessDecoder());
         this.setDecoderFor(TransferSyntax.NONE, new DicomNativePixelDataToRGBADecoder());
+
+        // Populate the default output encoders
+        this.setEncoderFor('jpeg', new JpegRgbaEncoder());
+        this.setEncoderFor('jpg', new JpegRgbaEncoder());
+        this.setEncoderFor('png', new PngRgbaEncoder());
+        this.setEncoderFor('tiff', new TiffRgbaEncoder());
+        this.setEncoderFor('tif', new TiffRgbaEncoder());
 
     }
 
