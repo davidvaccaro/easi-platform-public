@@ -65,6 +65,23 @@
         </div>
 
         <br>
+        <hr>
+        <h4>Asset Archive Related Actions</h4>
+        <hr>
+        <br>
+        <div>
+            <input type="file" id="dicomAssetArchiveFile" name="dicomAssetArchiveFile" />
+        </div>
+        <br>
+        <div>
+            <button id="createAssetArchive">Create FHIR + TIFF Asset Archive</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="assetArchiveOutput" rows="6" cols="80" placeholder="Archive generation details..."></textarea>
+        </div>
+
+        <br>
         <hr>        
         <h4>FHIR Mapping Related Actions</h4>
         <hr>
@@ -386,6 +403,44 @@
                 });
             }
 
+            function buildArchiveFileName(fileName) {
+
+                var name = String(fileName ?? 'dicom').trim();
+                if (name.length == 0)
+                    name = 'dicom';
+
+                var extensionIndex = name.lastIndexOf('.');
+                var baseName = (extensionIndex > 0)
+                    ? name.substring(0, extensionIndex)
+                    : name;
+
+                return baseName + '_assets.zip';
+
+            }
+
+            function downloadBytesAsFile(bytes, fileName, mimeType = 'application/zip') {
+
+                if ((bytes == null) || (bytes.length == 0))
+                    return;
+
+                var blob = new Blob([bytes], { type: mimeType });
+                var objectUrl = URL.createObjectURL(blob);
+
+                var link = document.createElement('a');
+                link.href = objectUrl;
+                link.download = fileName;
+                link.style.display = 'none';
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                setTimeout(function () {
+                    URL.revokeObjectURL(objectUrl);
+                }, 0);
+
+            }
+
             $('#dicomFile').on('change', function () {
 
                 // Cleare the console
@@ -559,6 +614,66 @@
                     })
                     .catch(err => console.log(err))
                     .finally(() => URL.revokeObjectURL(url));
+
+            });
+
+            // Handle Asset Archive File
+            $('#createAssetArchive').on('click', function () {
+
+                console.clear();
+
+                var file = $('#dicomAssetArchiveFile')[0]?.files?.[0];
+                if (file == null) {
+                    alert('Please select a DICOM file first.');
+                    return;
+                }
+
+                $('#assetArchiveOutput').val('');
+
+                var url = URL.createObjectURL(file);
+
+                const pipeline = applyDicomDataValidation(
+                    EASI.pipelineBuilder()
+                        .fromFetchStream()
+                        .ofDicomData()
+                        .toAssetArchive({
+                            metadata: {
+                                mapping: new DicomToFHIRImagingStudyMapping()
+                            },
+                            payload: {
+                                frame: {
+                                    frames: 'all',
+                                    decode: 'rgba',
+                                    encode: 'tiff'
+                                }
+                            }
+                        })
+                ).build();
+
+                processWithTiming(pipeline, url, null, "Create Asset Archive")
+                    .then(function (result) {
+
+                        var archiveBytes = Array.isArray(result) ? result[0] : result;
+                        downloadBytesAsFile(archiveBytes, buildArchiveFileName(file.name));
+
+                        $('#assetArchiveOutput').val(
+                            'Archive created successfully.\n'
+                            + 'File: ' + buildArchiveFileName(file.name) + '\n'
+                            + 'Size: ' + (archiveBytes?.length ?? 0) + ' bytes'
+                        );
+
+                        console.log({
+                            archiveFileName: buildArchiveFileName(file.name),
+                            archiveSize: archiveBytes?.length ?? 0
+                        });
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    })
+                    .finally(function () {
+                        URL.revokeObjectURL(url);
+                    });
 
             });
 
