@@ -36,6 +36,7 @@ import DicomInstanceHandler from "../handlers/terminals/DicomInstanceHandler.js"
 import DicomMappingHandler from '../handlers/terminals/DicomMappingHandler.js';
 import DicomSelectingHandler from "../handlers/terminals/DicomSelectingHandler.js";
 import DicomAssetsHandler from "../handlers/terminals/DicomAssetsHandler.js";
+import DicomAssetArchiveHandler from "../handlers/terminals/DicomAssetArchiveHandler.js";
 import DicomJsonMetadataAdapter from "../handlers/adapters/DicomJsonMetadataAdapter.js";
 import DicomXmlMetadataAdapter from "../handlers/adapters/DicomXmlMetadataAdapter.js";
 import DicomDeIdentificationFilter from "../handlers/filters/DicomDeIdentificationFilter.js";
@@ -124,6 +125,7 @@ export default class PipelineBuilder {
                 || (handler instanceof DicomMappingHandler)
                 || (handler instanceof DicomSelectingHandler)
                 || (handler instanceof DicomAssetsHandler)
+                || (handler instanceof DicomAssetArchiveHandler)
                 || (handler instanceof DicomDataWriterHandler)
                 || (handler instanceof DicomDeIdentificationFilter)
                 || (handler instanceof DicomValidationFilter)) {
@@ -484,6 +486,30 @@ export default class PipelineBuilder {
     }
 
     /**
+     * Sets the current build to extract and package DICOM assets as a ZIP archive.
+     * @param {{
+     *   metadata?: { mapping?: object, onMetadata?: Function },
+     *   payload?: {
+     *     frame?: { frames?: 'first' | 'all' | Array<number> | { start?: number, end?: number, step?: number }, decode?: 'native' | 'rgba', encode?: 'none' | 'jpeg' | 'png' | 'tiff', quality?: number },
+     *     onFrame?: Function,
+     *     onContent?: Function
+     *   },
+     *   includeMetadata?: boolean,
+     *   includeManifest?: boolean,
+     *   metadataFilePath?: string,
+     *   manifestFilePath?: string,
+     *   framePath?: string,
+     *   contentPath?: string,
+     *   onChunk?: Function,
+     *   collectOutput?: boolean
+     * } | null} options Asset archive options.
+     * @returns The reference to the current builder.
+     */
+    toAssetArchive(options = null) {
+        return this.withHandler(new DicomAssetArchiveHandler(options, this.codecRegistry));
+    }
+
+    /**
      * Build a new pipeline instance.
      * @returns The new pipeline instance.
      */
@@ -508,7 +534,7 @@ export default class PipelineBuilder {
         // Fail if no handler was configured
         if (this.handler == null) {
             throw new Exception(
-                'PipelineBuilder.build requires a handler. Call toInstances(), toSelection(...), toMapping(...), toDicomData(...), toAssets(...), or withHandler(...).',
+                'PipelineBuilder.build requires a handler. Call toInstances(), toSelection(...), toMapping(...), toDicomData(...), toAssets(...), toAssetArchive(...), or withHandler(...).',
                 BuilderErrorCodes.MissingHandler
             );
         }
@@ -560,7 +586,8 @@ export default class PipelineBuilder {
         var handler = this.handler;
 
         // Inject the configured codec registry when using the DICOM assets handler.
-        if ((this.codecRegistry != null) && (handler instanceof DicomAssetsHandler)) {
+        if ((this.codecRegistry != null)
+            && ((handler instanceof DicomAssetsHandler) || (handler instanceof DicomAssetArchiveHandler))) {
             handler.codecRegistry = this.codecRegistry;
         }
 

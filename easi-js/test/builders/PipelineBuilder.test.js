@@ -14,6 +14,7 @@ import DicomValidationFilter, { ValidationGoals } from "../../src/handlers/filte
 import DicomJsonMetadataAdapter from "../../src/handlers/adapters/DicomJsonMetadataAdapter.js";
 import DicomXmlMetadataAdapter from "../../src/handlers/adapters/DicomXmlMetadataAdapter.js";
 import DicomDataWriterHandler from "../../src/handlers/terminals/DicomDataWriterHandler.js";
+import DicomAssetArchiveHandler from "../../src/handlers/terminals/DicomAssetArchiveHandler.js";
 import Exception from "../../src/environment/Exception.js";
 import { BuilderErrorCodes } from "../../src/environment/Exception.js";
 
@@ -130,6 +131,17 @@ test("Test: build throws IncompatibleParserAndHandler for toAssets with DICOM me
                     mapping: {}
                 }
             })
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
+});
+
+test("Test: build throws IncompatibleParserAndHandler for toAssetArchive with DICOM metadata parser", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromPartStream().ofDicomMetadata()
+            .toAssetArchive()
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -276,6 +288,16 @@ test("Test: build uses configured custom reader", () => {
     expect(pipeline.reader).toBe(customReader);
     expect(pipeline.parser instanceof DicomDataParser).toBe(true);
     expect(pipeline.parser.handler instanceof DicomInstanceHandler).toBe(true);
+});
+
+test("Test: toAssetArchive builds with DicomAssetArchiveHandler", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .toAssetArchive()
+        .build();
+
+    expect(pipeline.parser.handler instanceof DicomAssetArchiveHandler).toBe(true);
 });
 
 test("Test: fromFetchStream builds with FetchStreamReader transport", () => {

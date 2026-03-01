@@ -238,6 +238,8 @@ Use this `README` as the primary overview and entry point. Use the supporting do
   - normative execution model and component responsibilities
 - [`lifecycle-and-status.md`](./lifecycle-and-status.md)
   - lifecycle event ordering and status flow semantics
+- [`asset-archive.md`](./asset-archive.md)
+  - normative ZIP package format for mapped metadata + extracted payload assets
 - [`builder-contract.md`](./builder-contract.md)
   - builder intent, composition, and `build()` behavior
 - [`conformance.md`](./conformance.md)
