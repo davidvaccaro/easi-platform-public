@@ -1236,7 +1236,7 @@ jpeg.lossless.ScanHeader.prototype.read = function(data) {
     return 1;
 };    
 
-export default class jpegLosslessDecoder {
+export default class JpegLosslessDecoder {
 
     decode(source, sourceStart, sourceStop, destination, destinationStart) {
 

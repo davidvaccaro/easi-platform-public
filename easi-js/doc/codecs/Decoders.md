@@ -41,14 +41,14 @@ Decodes image pixel data from the source buffer to the destination buffer.
 | *(None)*| Writes output to the destination buffer. |
 ## Implementations
 
-### `jpegDecoder`
+### `JpegDecoder`
 
 Decodes JPEG Baseline (8-bit lossy) DICOM pixel data.  
 Supports transfer syntax: `TransferSyntax.JPEGBaseline8Bit`.
 
 ---
 
-### `jpegLosslessDecoder`
+### `JpegLosslessDecoder`
 
 Decodes JPEG Lossless (14-bit) DICOM pixel data.  
 Supports transfer syntaxes:

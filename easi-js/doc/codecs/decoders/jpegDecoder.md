@@ -1,19 +1,19 @@
-# `jpegDecoder` Class
+# `JpegDecoder` Class
 
-The `jpegDecoder` class provides pixel decoding functionality for DICOM image data processing.
+The `JpegDecoder` class provides pixel decoding functionality for DICOM image data processing.
 
 ---
 
 ## Inheritance
 
 ```text
-jpegDecoder → (none)
+JpegDecoder → (none)
 ```
 
 ## Constructor
 
 ```js
-new jpegDecoder()
+new JpegDecoder()
 ```
 
 ## Methods
@@ -77,9 +77,9 @@ Performs class-specific behavior.
 ## Usage Example
 
 ```js
-import jpegDecoder from '../../../src/codecs/decoders/jpegDecoder.js';
+import JpegDecoder from '../../../src/codecs/decoders/JpegDecoder.js';
 
-const decoder = new jpegDecoder(dicomObject);
+const decoder = new JpegDecoder(dicomObject);
 const rgba = decoder.decode();
 ```
 ---

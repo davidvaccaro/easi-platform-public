@@ -1,19 +1,19 @@
-# `jpegLosslessDecoder` Class
+# `JpegLosslessDecoder` Class
 
-The `jpegLosslessDecoder` class provides pixel decoding functionality for DICOM image data processing.
+The `JpegLosslessDecoder` class provides pixel decoding functionality for DICOM image data processing.
 
 ---
 
 ## Inheritance
 
 ```text
-jpegLosslessDecoder → (none)
+JpegLosslessDecoder → (none)
 ```
 
 ## Constructor
 
 ```js
-new jpegLosslessDecoder(dicomObject)
+new JpegLosslessDecoder(dicomObject)
 ```
 
 ### Parameters
@@ -51,9 +51,9 @@ Performs class-specific behavior.
 ## Usage Example
 
 ```js
-import jpegLosslessDecoder from '../../../src/codecs/decoders/jpegLosslessDecoder.js';
+import JpegLosslessDecoder from '../../../src/codecs/decoders/JpegLosslessDecoder.js';
 
-const decoder = new jpegLosslessDecoder(dicomObject);
+const decoder = new JpegLosslessDecoder(dicomObject);
 const rgba = decoder.decode();
 ```
 ---

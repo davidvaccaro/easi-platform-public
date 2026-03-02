@@ -72,9 +72,9 @@ By default, `Configuration` pre-registers the following decoders:
 
 | Transfer Syntax                     | Decoder Class                        |
 |-------------------------------------|--------------------------------------|
-| `TransferSyntax.JPEGBaseline8Bit`   | `jpegDecoder`                        |
-| `TransferSyntax.JPEGLossless`       | `jpegLosslessDecoder`                |
-| `TransferSyntax.JPEGLosslessSV1`    | `jpegLosslessDecoder`                |
+| `TransferSyntax.JPEGBaseline8Bit`   | `JpegDecoder`                        |
+| `TransferSyntax.JPEGLossless`       | `JpegLosslessDecoder`                |
+| `TransferSyntax.JPEGLosslessSV1`    | `JpegLosslessDecoder`                |
 | `TransferSyntax.NONE`               | `DicomNativePixelDataToRGBADecoder`  |
 
 ## Usage Example

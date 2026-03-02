@@ -1,6 +1,6 @@
 import EASI from '../../src/EASI.js';
 import DicomToFHIRImagingStudyMapping from '../../src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
-import jpegDecoder from '../../src/codecs/decoders/jpegDecoder.js';
+import JpegDecoder from '../../src/codecs/decoders/JpegDecoder.js';
 
 const path = require('path');
 const fs = require('fs');
@@ -124,7 +124,7 @@ test('Test: toAssets payload frame emits JPEG bytes for first frame', async () =
     expect(result.frames[0].bytes[result.frames[0].bytes.length - 1]).toBe(217);
 
     var destination = new Uint8Array(result.frames[0].width * result.frames[0].height * 4);
-    var decodeResult = new jpegDecoder().decode(
+    var decodeResult = new JpegDecoder().decode(
         result.frames[0].bytes,
         0,
         result.frames[0].bytes.length,

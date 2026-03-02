@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EASI Kitchen Sink Samples</title>
+
+    <!-- JQuery -->
+    <script src="../../lib/jquery.js"></script>
+</head>
+<body>
+    <h1>EASI Kitchen Sink Samples</h1>
+    <div>
+        <em>Developer testing harness only. Not intended for production UI use.</em>
+    </div>
+    <hr>
+    <div>
+        <h4>DICOM Data Parse Related Actions</h4>
+        <hr>
+        <div>
+            <span><strong>Validate?</strong></span>
+            <label><input type="radio" name="dicomDataValidationMode" value="none" checked /> No</label>
+            <label><input type="radio" name="dicomDataValidationMode" value="permissive" /> Permissive</label>
+            <label><input type="radio" name="dicomDataValidationMode" value="strict" /> Strict</label>
+        </div>
+        <br>
+        <div>
+            <input type="file" id="dicomFile" name="dicomFile" />
+        </div>
+        <br>
+        <div>
+            <button id="instance">Parse Instance</button>
+        </div>
+        <br>
+        <div>
+            <button id="series">Parse Series</button>
+        </div>
+        <br>
+        <div>
+            <button id="study">Parse Study</button>
+        </div>
+        <br>
+        <div>
+            <button id="deinstance">Parse De-Identified Instance</button>
+        </div>
+        <br>
+        <hr>
+        <h4>Asset Extraction Related Actions</h4>
+        <hr>
+        <br>
+        <div>
+            <input type="file" id="dicomAssetsFile" name="dicomAssetsFile" />
+        </div>
+        <br>
+        <div>
+            <button id="extractAssets">Extract FHIR + PNG Frames</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="assetsMetadataDump" rows="10" cols="80" placeholder="FHIR ImagingStudy output..."></textarea>
+        </div>
+        <br>
+        <div>
+            <strong>Extracted PNG Frames</strong>
+            <br>
+            <div id="imageList" style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;"></div>
+        </div>
+
+        <br>
+        <hr>
+        <h4>Asset Archive Related Actions</h4>
+        <hr>
+        <br>
+        <div>
+            <input type="file" id="dicomAssetArchiveFile" name="dicomAssetArchiveFile" />
+        </div>
+        <br>
+        <div>
+            <button id="createAssetArchive">Create FHIR + TIFF Asset Archive</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="assetArchiveOutput" rows="6" cols="80" placeholder="Archive generation details..."></textarea>
+        </div>
+
+        <br>
+        <hr>        
+        <h4>FHIR Mapping Related Actions</h4>
+        <hr>
+        <br>
+        <div>
+            <input type="file" id="dicomFileFHIR" name="dicomFileFHIR" />
+        </div>
+        <br>
+        <div>
+            <button id="fhir">Parse Instance To FHIR</button>
+        </div>
+        <br>
+        <div>
+            <button id="fhirSeries">Parse Series To FHIR</button>
+        </div>
+        <br>
+        <div>
+            <button id="fhirStudy">Parse Study To FHIR</button>
+        </div>
+        
+        <br>
+        <hr>
+        <h4>Selection Related Actions</h4>
+        <hr>
+        <br>
+        <div>
+            <input type="file" id="dicomFileSelection" name="dicomFileSelection" />
+        </div>
+        <br>
+        <div>
+            <button id="selection">Parse Instance To a Selection</button>
+        </div>
+        <br>
+        <div>
+            <button id="selectionSeries">Parse Series To a Selection</button>
+        </div>
+        <br>
+        <div>
+            <button id="selectionStudy">Parse Study To a Selection</button>
+        </div>
+
+        <br>
+        <hr>
+        <h4>JSON Related Actions</h4>
+        <hr>
+        <br>
+        <div>
+            <button id="jsonFromBox">Parse JSON</button>
+        </div>
+        <br>
+        <div>
+            <button id="jsonInstance">Parse Instance from JSON</button>&nbsp;<button id="jsonInstanceGET">GET Instance from JSON</button>
+        </div>
+        <br>
+        <div>
+            <button id="jsonSeries">Parse Series from JSON</button>
+        </div>
+        <br>
+        <div>
+            <button id="jsonStudy">Parse Study from JSON</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="jsonBox" rows="10" cols="80">"Hello World Dave!"</textarea>
+        </div>
+
+        <br>
+        <hr>
+        <h4>Metadata Related Actions</h4>
+        <hr>
+        <br>
+        <div>
+            <button id="metadataInstance">Parse Instance from Metadata</button>
+        </div>
+        <br>
+        <div>
+            <button id="metadataXmlInstance">Parse Instance from XML Metadata</button>
+        </div>
+        <br>
+        <div>
+            <button id="metadataSeriesInstances">Parse Series from Metadata</button>
+        </div>
+        <br>
+        <div>
+            <button id="metadataStudyInstances">Parse Study from Metadata</button>
+        </div>
+
+        <br>
+        <hr>
+        <h4>DUMP Related Actions</h4>
+        <hr>
+        <br>
+        <div>
+            <button id="dump">Parse Dump</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="dicomDump" rows="10" cols="80">
+(0x0002,0x0010) UI Transfer Syntax UID VR=<UI> VL=<0x0014> <1.2.840.10008.1.2.1>
+(0x0008,0x0016) UI SOP Class UID VR=<UI> VL=<0x001a> <1.2.840.10008.5.1.4.1.1.7>
+(0x0008,0x0018) UI SOP Instance UID VR=<UI> VL=<0x0008> <2.25.503>
+(0x0008,0x0020) DA Study Date VR=<DA> VL=<0x0008> <20260102>
+(0x0008,0x0060) CS Modality VR=<CS> VL=<0x0002> <OT>
+(0x0010,0x0010) PN Patient Name VR=<PN> VL=<0x0014> <SYNTHETIC^EASI^DUMP>
+(0x0010,0x0020) LO Patient ID VR=<LO> VL=<0x0012> <EASI-SYNTHETIC-001>
+(0x0020,0x000d) UI Study Instance UID VR=<UI> VL=<0x0008> <2.25.501>
+(0x0020,0x000e) UI Series Instance UID VR=<UI> VL=<0x0008> <2.25.502>
+(0x0028,0x0010) US Rows VR=<US> VL=<0x0002> [0x0002]
+(0x0028,0x0011) US Columns VR=<US> VL=<0x0002> [0x0002]
+</textarea>
+        </div>
+        <br>
+        <div>
+            <textarea id="fhirDump" rows="10" cols="80">                
+            </textarea>
+        </div>
+        <br>
+        <div>
+            <!-- 
+            <img src="../../img/xa.dcm">
+            -->
+            <canvas id="canvas" width="512" height="512" style="width:512px;height:512px;"></canvas>
+        </div>
+        <div>
+            <button id="sample">Run the Sample</button>
+        </div>
+    </div>
+    <div>
+    </div>
+
+    <script type="module">
+
+        import EASI from '../../src/EASI.js';
+
+        import Constants from '../../src/dicom/Constants.js';
+
+        import { Status } from '../../src/parsers/Status.js';
+
+        import Tag from '../../src/dicom/Tag.js';
+        import TransferSyntax from '../../src/dicom/TransferSyntax.js';
+        import Modality from '../../src/dicom/Modality.js';
+
+        import Data from '../../src/data/Data.js';
+        import Attribute from '../../src/dicom/Attribute.js'
+
+        import MetaSet from '../../src/dicom/MetaSet.js';
+        import DataSet from '../../src/dicom/DataSet.js';
+
+        import Item from '../../src/dicom/Item.js';
+        import AttributeSequence from '../../src/dicom/AttributeSequence.js';
+
+        import DicomInstanceHandler from '../../src/handlers/terminals/DicomInstanceHandler.js';
+        import DicomMappingHandler from '../../src/handlers/terminals/DicomMappingHandler.js';
+        import DicomSelectingHandler from '../../src/handlers/terminals/DicomSelectingHandler.js';
+        import JsonDataHandler from '../../src/handlers/terminals/syntax/JsonDataHandler.js';
+
+
+        import DicomToFHIRImagingStudyMapping from '../../src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
+
+        import DicomSelection from '../../src/handlers/selections/DicomSelection.js'
+
+        import DicomDataParser from '../../src/parsers/DicomDataParser.js';
+        import PartStreamReader from '../../src/readers/PartStreamReader.js';    
+        import PipelineBuilder from '../../src/builders/PipelineBuilder.js';
+
+        import Image from '../../src/dicom/entities/Image.js';
+        import CT from '../../src/dicom/entities/CT.js';
+        import XA from '../../src/dicom/entities/XA.js';
+
+        import JsonDataParser from '../../src/parsers/JsonDataParser.js';
+
+        import DumpParser from '../../src/tools/dicom/DumpParser.js';
+
+        $(function () {
+
+            var studyUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110';
+            var seriesUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110/series/1.2.840.113619.2.416.274526644159878389490005373725162966144';
+            var instanceUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110/series/1.2.840.113619.2.416.274526644159878389490005373725162966144/instances/1.2.840.113619.2.416.112733676467352283670809522901727305191';
+            
+            // Set the top-level exception handler
+            window.onerror = function (message, source, lineno, columnno, error) {
+
+                // Alert the error message
+                alert(message);
+
+                // The exception is handled, don't show to the user.
+                return true;
+
+            }            
+
+            // ================================
+            // PARSE DICOM
+            // ================================
+
+            function getDicomDataValidationMode() {
+                return $('input[name="dicomDataValidationMode"]:checked').val() || 'none';
+            }
+
+            function applyDicomDataValidation(builder) {
+
+                var mode = getDicomDataValidationMode();
+
+                function logValidationConcern(concern) {
+                    console.warn('[DICOM Validation]', {
+                        severity: concern.severity,
+                        code: concern.code,
+                        path: concern.path,
+                        message: concern.message,
+                        tagID: concern.tagID,
+                        tagName: concern.tagName,
+                        details: concern.details
+                    });
+                }
+
+                if (mode === 'strict')
+                    return builder.withValidation({
+                        goal: 'strict',
+                        onConcern: logValidationConcern
+                    });
+
+                if (mode === 'permissive')
+                    return builder.withValidation({
+                        goal: 'permissive',
+                        onConcern: logValidationConcern
+                    });
+
+                return builder.withValidation(false);
+
+            }
+
+            function processWithTiming(pipeline, source, requestOptions = null, label = "Execution") {
+
+                var start = new Date().getTime();
+                var promise = pipeline.process(source, requestOptions);
+
+                return promise.then(function (result) {
+                    console.log(label + ' time: ' + (new Date().getTime() - start) + ' ms');
+                    return result;
+                }).catch(function (err) {
+                    console.log(label + ' time: ' + (new Date().getTime() - start) + ' ms');
+                    throw err;
+                });
+
+            }
+
+            var imageListObjectUrls = [];
+
+            function clearImageList() {
+
+                for (var i = 0; i < imageListObjectUrls.length; i++) {
+                    URL.revokeObjectURL(imageListObjectUrls[i]);
+                }
+
+                imageListObjectUrls = [];
+                $('#imageList').empty();
+
+            }
+
+            function renderImageListFrames(frames) {
+
+                clearImageList();
+
+                if ((Array.isArray(frames) == false) || (frames.length == 0))
+                    return;
+
+                for (var i = 0; i < frames.length; i++) {
+
+                    appendImageListFrame(frames[i], i);
+
+                }
+
+            }
+
+            function appendImageListFrame(frame, fallbackIndex = null) {
+
+                var bytes = frame?.bytes;
+
+                if ((bytes == null) || (bytes.length == 0))
+                    return;
+
+                var mimeType = frame?.mimeType ?? 'image/png';
+                var blob = new Blob([bytes], { type: mimeType });
+                var objectUrl = URL.createObjectURL(blob);
+                imageListObjectUrls.push(objectUrl);
+
+                var frameContainer = document.createElement('div');
+                frameContainer.style.display = 'inline-block';
+                frameContainer.style.border = '1px solid #ccc';
+                frameContainer.style.padding = '6px';
+                frameContainer.style.background = '#fafafa';
+
+                var frameTitle = document.createElement('div');
+                var frameIndex = frame?.index ?? fallbackIndex ?? 0;
+                frameTitle.textContent = 'Frame ' + String(frameIndex + 1);
+                frameTitle.style.fontSize = '12px';
+                frameTitle.style.marginBottom = '4px';
+                frameContainer.appendChild(frameTitle);
+
+                var image = document.createElement('img');
+                image.src = objectUrl;
+                image.alt = 'Frame ' + String(frameIndex + 1);
+                image.style.maxWidth = '256px';
+                image.style.maxHeight = '256px';
+                image.style.display = 'block';
+                frameContainer.appendChild(image);
+
+                $('#imageList').append(frameContainer);
+
+            }
+
+            function yieldToBrowserFrame() {
+                return new Promise(function (resolve) {
+                    if (typeof requestAnimationFrame === 'function') {
+                        requestAnimationFrame(function () { resolve(); });
+                    }
+                    else {
+                        setTimeout(function () { resolve(); }, 0);
+                    }
+                });
+            }
+
+            function buildArchiveFileName(fileName) {
+
+                var name = String(fileName ?? 'dicom').trim();
+                if (name.length == 0)
+                    name = 'dicom';
+
+                var extensionIndex = name.lastIndexOf('.');
+                var baseName = (extensionIndex > 0)
+                    ? name.substring(0, extensionIndex)
+                    : name;
+
+                return baseName + '_assets.zip';
+
+            }
+
+            function downloadBytesAsFile(bytes, fileName, mimeType = 'application/zip') {
+
+                if ((bytes == null) || (bytes.length == 0))
+                    return;
+
+                var blob = new Blob([bytes], { type: mimeType });
+                var objectUrl = URL.createObjectURL(blob);
+
+                var link = document.createElement('a');
+                link.href = objectUrl;
+                link.download = fileName;
+                link.style.display = 'none';
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                setTimeout(function () {
+                    URL.revokeObjectURL(objectUrl);
+                }, 0);
+
+            }
+
+            $('#dicomFile').on('change', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = URL.createObjectURL(this.files[0]);
+
+                // Build the DICOM streaming reader
+                const pipeline = applyDicomDataValidation(
+                    EASI.pipelineBuilder()
+                        .fromFetchStream()
+                        .withParser(new DicomDataParser())
+                        .withHandler(new DicomInstanceHandler())
+                ).build();
+
+                // Read and parse the DICOM file
+                processWithTiming(pipeline, url)
+                    .then(result => {
+
+                        // Establish the parsed instance
+                        var instance = (typeof result === 'array') ? result[0] : result;
+
+                        // Log the instance
+                        console.log(instance);
+
+                        // Create a new image object from the instance
+                        var imageEntity = null;
+                        
+                        // Get the modality
+                        var modality = instance.dataSet.find(Tag.Modality).value;
+
+                        if (modality == Modality.CT.ID) {
+                            imageEntity = new CT(instance.dataSet);
+                        }
+                        else if (modality == Modality.XA.ID) {
+                            imageEntity = new XA(instance.dataSet);
+                        }
+                        else {
+                            imageEntity = new Image(instance.dataSet);
+                        }
+                                            
+                        // Create the destination for the decode (4 BYTES PER PIXEL)
+                        var destination = new Uint8Array(imageEntity.imagePixelModule.columns * imageEntity.imagePixelModule.rows * 4);
+
+                        // Decoce into the destination
+                        imageEntity.decodeFrame(destination);
+
+                        // Create the image data from the decoded data
+                        var data = new ImageData(
+                            new Uint8ClampedArray(destination), 
+                            imageEntity.imagePixelModule.columns, 
+                            imageEntity.imagePixelModule.rows);
+
+                        var width = imageEntity.imagePixelModule.columns;
+                        var height = imageEntity.imagePixelModule.rows;
+
+                        const canvas = document.getElementById("canvas");
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext("2d");
+
+                        ctx.fillRect(0, 0, width, height);
+                        ctx.putImageData(data, 0, 0);
+
+                    })
+                    .catch(err => console.log(err));
+
+            });
+
+            // Handle Instance
+            $('#instance').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const pipeline = applyDicomDataValidation(
+                    EASI.pipelineBuilder()
+                        .fromFetchStream()
+                        .ofDicomData()
+                        .toInstances()
+                ).build();
+
+                // Read and parse the DICOM file
+                processWithTiming(pipeline, instanceUrl)
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err));
+
+            });
+
+            $('#deinstance').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const pipeline = applyDicomDataValidation(
+                    EASI.pipelineBuilder()
+                        .fromFetchStream()
+                        .withParser(new DicomDataParser())
+                        .withHandler(new DicomInstanceHandler())
+                        .withMask(Tag.DefaultDeIdentificationMask)
+                ).build();
+
+                // Read and parse the DICOM file
+                processWithTiming(pipeline, instanceUrl)
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err));
+
+            });
+
+            // Handle Extract Assets File
+            $('#extractAssets').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                var file = $('#dicomAssetsFile')[0]?.files?.[0];
+                if (file == null) {
+                    alert('Please select a DICOM file first.');
+                    return;
+                }
+
+                $('#assetsMetadataDump').val('');
+                clearImageList();
+
+                var url = URL.createObjectURL(file);
+                var metadataOutput = [];
+
+                const pipeline = applyDicomDataValidation(
+                    EASI.pipelineBuilder()
+                        .fromFetchStream()
+                        .ofDicomData()
+                        .toAssets({
+                            metadata: {
+                                mapping: new DicomToFHIRImagingStudyMapping(),
+                                onMetadata: async function (metadata) {
+
+                                    metadataOutput.push(metadata);
+                                    var displayModel = (metadataOutput.length == 1)
+                                        ? metadataOutput[0]
+                                        : metadataOutput;
+
+                                    $('#assetsMetadataDump').val(JSON.stringify(displayModel, null, 2));
+                                    await yieldToBrowserFrame();
+
+                                }
+                            },
+                            payload: {
+                                frame: {
+                                    frames: 'all',
+                                    decode: 'rgba',
+                                    encode: 'png'
+                                },
+                                onFrame: async function (frame) {
+                                    appendImageListFrame(frame);
+                                    await yieldToBrowserFrame();
+                                }
+                            }
+                        })
+                ).build();
+
+                processWithTiming(pipeline, url, null, "Extract Assets")
+                    .then(result => {
+
+                        var assets = Array.isArray(result) ? result[0] : result;
+
+                        console.log(assets);
+
+                    })
+                    .catch(err => console.log(err))
+                    .finally(() => URL.revokeObjectURL(url));
+
+            });
+
+            // Handle Asset Archive File
+            $('#createAssetArchive').on('click', function () {
+
+                console.clear();
+
+                var file = $('#dicomAssetArchiveFile')[0]?.files?.[0];
+                if (file == null) {
+                    alert('Please select a DICOM file first.');
+                    return;
+                }
+
+                $('#assetArchiveOutput').val('');
+
+                var url = URL.createObjectURL(file);
+
+                const pipeline = applyDicomDataValidation(
+                    EASI.pipelineBuilder()
+                        .fromFetchStream()
+                        .ofDicomData()
+                        .toAssetArchive({
+                            metadata: {
+                                mapping: new DicomToFHIRImagingStudyMapping()
+                            },
+                            payload: {
+                                frame: {
+                                    frames: 'all',
+                                    decode: 'rgba',
+                                    encode: 'tiff'
+                                }
+                            }
+                        })
+                ).build();
+
+                processWithTiming(pipeline, url, null, "Create Asset Archive")
+                    .then(function (result) {
+
+                        var archiveBytes = Array.isArray(result) ? result[0] : result;
+                        downloadBytesAsFile(archiveBytes, buildArchiveFileName(file.name));
+
+                        $('#assetArchiveOutput').val(
+                            'Archive created successfully.\n'
+                            + 'File: ' + buildArchiveFileName(file.name) + '\n'
+                            + 'Size: ' + (archiveBytes?.length ?? 0) + ' bytes'
+                        );
+
+                        console.log({
+                            archiveFileName: buildArchiveFileName(file.name),
+                            archiveSize: archiveBytes?.length ?? 0
+                        });
+
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    })
+                    .finally(function () {
+                        URL.revokeObjectURL(url);
+                    });
+
+            });
+
+            // Handle Series
+            $('#series').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = applyDicomDataValidation(
+                    EASI.pipelineBuilder()
+                        .fromFetchStream()
+                        .withParser(new DicomDataParser())
+                        .withHandler(new DicomInstanceHandler())
+                ).build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, seriesUrl)
+                    .then(result => { 
+                        console.log(result); 
+                    })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // Handle Study
+            $('#study').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = applyDicomDataValidation(
+                    EASI.pipelineBuilder()
+                        .fromFetchStream()
+                        .withParser(new DicomDataParser())
+                        .withHandler(new DicomInstanceHandler())
+                        .withOnPart(function (result) { 
+
+                            // Log
+                            if (Array.isArray(result) == false)                    
+                                console.log(result);
+                            else
+                                console.log(result[result.length - 1]);
+
+                            // Return CONTINUE
+                            return Status.CONTINUE;
+
+                        })
+                ).build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, studyUrl)
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err));
+
+            });            
+
+            // ================================
+            // FHIR DICOM
+            // ================================
+
+            // Handle FHIR File 
+            $('#dicomFileFHIR').on('change', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = URL.createObjectURL(this.files[0]);
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, url)
+                    .then(result => {
+                         console.log(result); 
+                         $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });
+
+            // Handle Instance
+            $('#fhir').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, instanceUrl)
+                    .then(result => {
+                         console.log(result); 
+                         $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });
+
+            // Handle Series
+            $('#fhirSeries').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, seriesUrl)
+                    .then(result => {
+                         console.log(result); 
+                         $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // Handle Study
+            $('#fhirStudy').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomMappingHandler(new DicomToFHIRImagingStudyMapping()))
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, studyUrl)
+                    .then(result => {
+                         console.log(result); 
+                         $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // ================================
+            // SELECTION DICOM
+            // ================================
+
+            // Handle SELECTION File 
+            $('#dicomFileSelection').on('change', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = URL.createObjectURL(this.files[0]);
+
+                // Create the new selection
+                var selection = new DicomSelection();
+
+                selection.addTag(Tag.StudyInstanceUID);
+                selection.addTag(Tag.SeriesInstanceUID);
+                selection.addTag(Tag.SOPInstanceUID);
+                selection.addTag(Tag.InstanceNumber);
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomSelectingHandler(selection))
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, url)
+                    .then(result => {
+                        console.log(result); 
+                        $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });
+
+            // Handle Instance
+            $('#selection').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create the new selection
+                var selection = new DicomSelection();
+
+                selection.addTag(Tag.PatientID);
+                selection.addTag(Tag.PatientName);
+                selection.addTag(Tag.PatientBirthDate);
+                selection.addTag(Tag.PatientSex);
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomSelectingHandler(selection))
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, instanceUrl)
+                    .then(result => {
+                        console.log(result); 
+                        $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });
+
+            // Handle Series
+            $('#selectionSeries').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create the new selection
+                var selection = new DicomSelection();
+
+                selection.addTag(Tag.PatientID);
+                selection.addTag(Tag.PatientName);
+                selection.addTag(Tag.PatientBirthDate);
+                selection.addTag(Tag.PatientSex);
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomSelectingHandler(selection))
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, seriesUrl)
+                    .then(result => {
+                        console.log(result); 
+                        $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // Handle Study
+            $('#selectionStudy').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create the new selection
+                var selection = new DicomSelection();
+
+                selection.addTag(Tag.PatientID);
+                selection.addTag(Tag.PatientName);
+                selection.addTag(Tag.PatientBirthDate);
+                selection.addTag(Tag.PatientSex);
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomSelectingHandler(selection))
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, studyUrl)
+                    .then(result => {
+                        console.log(result); 
+                        $('#fhirDump').val(JSON.stringify(result)); 
+                    })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // ================================
+            // PARSE JSON
+            // ================================
+
+            $('#jsonFromBox').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create an object URL from the selected file
+                var url = URL.createObjectURL(new Blob([$('#jsonBox').val()], {type : 'text/plain'}));
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new JsonDataParser())
+                    .withHandler(new JsonDataHandler())
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, url)
+                    .then(result => {
+
+                        // Log the instance
+                        console.log(result);
+
+                    })
+                    .catch(err => console.log(err));
+
+                });
+
+            // Handle Instance
+            $('#jsonInstance').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new JsonDataParser())
+                    .withHandler(new JsonDataHandler())
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, instanceUrl + "/metadata")
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err));
+
+            });
+
+            $('#jsonInstanceGET').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                var start = new Date().getTime();
+
+                // HTTP GET the configuration
+                $.ajax({
+                    url: instanceUrl + "/metadata",
+                    type: 'GET',
+                    async: true,
+                    success: function (data) {
+
+                        console.log(data);
+
+                        console.log('Execution time: ' + (new Date().getTime() - start) + ' ms');        
+
+                    }
+                });
+
+            });
+
+            // Handle Series
+            $('#jsonSeries').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new JsonDataParser())
+                    .withHandler(new JsonDataHandler())
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, seriesUrl + "/metadata")
+                    .then(result => { 
+                        console.log(result); 
+                    })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // Handle Study
+            $('#jsonStudy').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = EASI.pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new JsonDataParser())
+                    .withHandler(new JsonDataHandler())
+                    .withOnPart(function (result) { 
+
+                        // Log
+                        if (Array.isArray(result) == false)                    
+                            console.log(result);
+                        else
+                            console.log(result[result.length - 1]);
+
+                        // Return CONTINUE
+                        return Status.CONTINUE;
+
+                    })
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, studyUrl + "/metadata")
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err));
+
+            });            
+
+            // ================================
+            // PARSE METADATA
+            // ================================
+
+            // Handle Instance
+            $('#metadataInstance').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = EASI
+                    .pipelineBuilder()
+                    .fromFetchStream().ofDicomMetadata()
+                    .toInstances()
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, instanceUrl + "/metadata")
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err));
+
+            });
+
+            // Handle Instance (XML Metadata)
+            $('#metadataXmlInstance').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader (XML metadata -> Instance)
+                const reader = EASI
+                    .pipelineBuilder()
+                    .fromFetchStream().ofDicomXmlMetadata()
+                    .toInstances()
+                    .build();
+
+                // Read and parse the local DICOMweb XML metadata sample.
+                processWithTiming(reader, "../../../data/xml/dicomweb.xml")
+                .then(result => console.log(result))
+                .catch(err => console.log(err));
+
+            });
+
+            // Handle Series
+            $('#metadataSeriesInstances').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = EASI
+                    .pipelineBuilder()
+                    .fromFetchStream().ofDicomMetadata()
+                    .toInstances()
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, seriesUrl + "/metadata")
+                    .then(result => { 
+                        console.log(result); 
+                    })
+                    .catch(err => console.log(err));
+
+            });            
+
+            // Handle Study
+            $('#metadataStudyInstances').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Build the DICOM streaming reader
+                const reader = EASI
+                    .pipelineBuilder()
+                    .fromFetchStream().ofDicomMetadata()
+                    .toInstances()
+                    .withOnPart(function (result) { 
+
+                        // Log
+                        if (Array.isArray(result) == false)                    
+                            console.log(result);
+                        else
+                            console.log(result[result.length - 1]);
+
+                        // Return CONTINUE
+                        return Status.CONTINUE;
+
+                    })
+                    .build();
+
+                // Read and parse the DICOM file
+                processWithTiming(reader, studyUrl + "/metadata")
+                    .then(result => console.log(result))
+                    .catch(err => console.log(err));
+
+            });
+
+            // ================================
+            // DUMP DICOM
+            // ================================
+
+            function createNewItem(index) {
+
+                let item = new Item(Constants.UndefinedLength);
+                item.add(new Attribute(Tag.FileMetaInformationGroupLength, 4, [255, index, 0, 0], TransferSyntax.NONE));
+
+                let data = (new TextEncoder()).encode("The Title " + index.toString());
+                item.add(new Attribute(Tag.SourceApplicationEntityTitle, data.length, data, TransferSyntax.NONE));
+
+                data = (new TextEncoder()).encode("Short String" + index.toString());
+                item.add(new Attribute(Tag.ImplementationVersionName, data.length, data, TransferSyntax.NONE));
+
+                data = (new TextEncoder()).encode("1.2.3.4.5.6.7.8.9.0." + index.toString());
+                item.add(new Attribute(Tag.ImplementationClassUID, data.length, data, TransferSyntax.NONE));
+
+                data = new Uint8Array([255, 1, 255, 1])
+                item.add(new Attribute(Tag.PixelData, data.length, data, TransferSyntax.NONE));
+
+                return item;
+
+            }
+
+            // Handle Dump
+            $('#dump').on('click', function () {
+
+                // Cleare the console
+                console.clear();
+
+                // Create the DICOM Dump Parer
+                var parser = new DumpParser(new DicomInstanceHandler());
+
+                parser.parse($('#dicomDump').val());
+
+                console.log(parser.result);
+
+                let data = null;
+
+                // Create the squence
+                var metaset = new MetaSet();
+
+                data = (new TextEncoder()).encode("Private Information");
+                metaset.add(new Attribute(Tag.PrivateInformation, data.length, data, TransferSyntax.NONE));
+
+                var ddd = metaset.privateInformation;
+
+
+                var uuu = 100;
+
+            });       
+
+            // SAMPLE CODE 
+            $('#sample').on('click', function () {
+
+                // Build the EASI DICOM reader configured to parse DICOM Data to DICOM Instances
+                const reader = EASI
+                    .pipelineBuilder()
+                    .fromFetchStream()
+                    .withParser(new DicomDataParser())
+                    .withHandler(new DicomInstanceHandler())
+                    .build();
+
+                // Issue the HTTP request, read and parse the DICOM data response 
+                processWithTiming(reader, seriesUrl)
+                    .then(instances => {
+
+                        for (const instance of instances) {
+
+                            // Access the primary patient details
+                            const patientId = instance.dataSet.find(Tag.PatientID); 
+                            const patientName = instance.dataSet.find(Tag.PatientName); 
+                            const patientDOB = instance.dataSet.find(Tag.PatientBirthDate); 
+
+                            // Access the modality details
+                            const modality = instance.dataSet.find(Tag.Modality); 
+
+                            // Access the pixel-data
+                            const pixels = instance.dataSet.find(Tag.PixelData); 
+
+                            // Do something useful with the patient and pixel data
+                            var xxx = 100;
+
+                        }
+
+                    })
+                    .catch(error => { 
+                        // Handler the error  
+                    });                
+
+            });
+            
+        });
+    </script>
+
+</body>
+
+</html>

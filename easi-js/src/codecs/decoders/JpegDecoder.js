@@ -1082,7 +1082,7 @@ var JpegImage = (function jpegImage() {
     return constructor;
   })();
   
-export default class jpegDecoder {
+export default class JpegDecoder {
 
     static getonStartSequence() {
         return [255, 216];
@@ -1150,8 +1150,8 @@ export default class jpegDecoder {
         JpegImage.resetMaxMemoryUsage(opts.maxMemoryUsageInMB * 1024 * 1024);
 
         // Determine the start and stop of the next frame
-        var start = this.indexOf(source, sourceStart, jpegDecoder.getonStartSequence());
-        var stop = this.indexOf(source, start, jpegDecoder.getEndSequence());
+        var start = this.indexOf(source, sourceStart, JpegDecoder.getonStartSequence());
+        var stop = this.indexOf(source, start, JpegDecoder.getEndSequence());
 
         // Extract the array
         source = source.subarray(start, stop + 2);

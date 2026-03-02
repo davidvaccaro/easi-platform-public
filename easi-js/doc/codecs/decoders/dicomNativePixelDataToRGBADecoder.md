@@ -114,7 +114,7 @@ Decode the specificed data to the output buffer.
 ## Usage Example
 
 ```js
-import DicomNativePixelDataToRGBADecoder from '../../../src/codecs/decoders/dicomNativePixelDataToRGBADecoder.js';
+import DicomNativePixelDataToRGBADecoder from '../../../src/codecs/decoders/DicomNativePixelDataToRGBADecoder.js';
 
 const decoder = new DicomNativePixelDataToRGBADecoder(dicomObject);
 const rgba = decoder.decode();

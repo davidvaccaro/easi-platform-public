@@ -19,10 +19,10 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import DicomNativePixelDataToRGBADecoder from '../codecs/decoders/dicomNativePixelDataToRGBADecoder.js';
+import DicomNativePixelDataToRGBADecoder from '../codecs/decoders/DicomNativePixelDataToRGBADecoder.js';
 import TransferSyntax from '../dicom/TransferSyntax.js';
-import jpegDecoder from '../codecs/decoders/jpegDecoder.js';
-import jpegLosslessDecoder from '../codecs/decoders/jpegLosslessDecoder.js';
+import JpegDecoder from '../codecs/decoders/JpegDecoder.js';
+import JpegLosslessDecoder from '../codecs/decoders/JpegLosslessDecoder.js';
 import CodecRegistry from '../codecs/CodecRegistry.js';
 import PngRgbaEncoder from '../codecs/encoders/PngRgbaEncoder.js';
 import TiffRgbaEncoder from '../codecs/encoders/TiffRgbaEncoder.js';
@@ -105,9 +105,9 @@ export default class Configuration {
         this.codecRegistry = new CodecRegistry();
 
         // Populate the TransferSyntax-specific decoders
-        this.setDecoderFor(TransferSyntax.JPEGBaseline8Bit, new jpegDecoder());
-        this.setDecoderFor(TransferSyntax.JPEGLossless, new jpegLosslessDecoder());
-        this.setDecoderFor(TransferSyntax.JPEGLosslessSV1, new jpegLosslessDecoder());
+        this.setDecoderFor(TransferSyntax.JPEGBaseline8Bit, new JpegDecoder());
+        this.setDecoderFor(TransferSyntax.JPEGLossless, new JpegLosslessDecoder());
+        this.setDecoderFor(TransferSyntax.JPEGLosslessSV1, new JpegLosslessDecoder());
         this.setDecoderFor(TransferSyntax.NONE, new DicomNativePixelDataToRGBADecoder());
 
         // Populate the default output encoders

@@ -116,8 +116,8 @@ Use this index to navigate all documentation markdown files in `easi-js/doc`.
 
 ### codecs/decoders
 - [dicomNativePixelDataToRGBADecoder](./codecs/decoders/dicomNativePixelDataToRGBADecoder.md)
-- [jpegDecoder](./codecs/decoders/jpegDecoder.md)
-- [jpegLosslessDecoder](./codecs/decoders/jpegLosslessDecoder.md)
+- [JpegDecoder](./codecs/decoders/jpegDecoder.md)
+- [JpegLosslessDecoder](./codecs/decoders/jpegLosslessDecoder.md)
 
 ### data
 - [Data](./data/Data.md)
