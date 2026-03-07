@@ -66,7 +66,7 @@ test("Test: DICOM JSON metadata to FHIR ImagingStudy mapping emits ImagingStudy"
         .pipelineBuilder()
         .fromPartStream()
         .ofDicomMetadata()
-        .toFHIRImagingStudies()
+        .toFHIRImagingStudy()
         .build();
     const result = await pipeline.process((new TextEncoder()).encode(metadata));
 

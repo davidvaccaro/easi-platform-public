@@ -42,10 +42,13 @@ import DicomXmlMetadataAdapter from "../handlers/adapters/DicomXmlMetadataAdapte
 import DicomDeIdentificationFilter from "../handlers/filters/DicomDeIdentificationFilter.js";
 import DicomValidationFilter from "../handlers/filters/DicomValidationFilter.js";
 import DicomDataWriterHandler from "../handlers/terminals/DicomDataWriterHandler.js";
+import JsonDataHandler from "../handlers/terminals/syntax/JsonDataHandler.js";
+import XmlDataHandler from "../handlers/terminals/syntax/XmlDataHandler.js";
 import Exception from "../environment/Exception.js";
 import DiagnosticUtils from "../utils/DiagnosticUtils.js";
 import { BuilderErrorCodes } from "../environment/Exception.js";
 import Pipeline from "../pipelines/Pipeline.js";
+import Tag from "../dicom/Tag.js";
 
 export default class PipelineBuilder {
 
@@ -137,10 +140,28 @@ export default class PipelineBuilder {
 
         }
 
+        // JSON parser should not be paired with XML terminal syntax handler.
+        if ((parser instanceof JsonDataParser) && (handler instanceof XmlDataHandler)) {
+            throw new Exception(
+                `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
+                BuilderErrorCodes.IncompatibleParserAndHandler
+            );
+        }
+
+        // XML parser should not be paired with JSON terminal syntax handler.
+        if ((parser instanceof XmlDataParser) && (handler instanceof JsonDataHandler)) {
+            throw new Exception(
+                `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
+                BuilderErrorCodes.IncompatibleParserAndHandler
+            );
+        }
+
         // Native DICOM parser is incompatible with DICOM JSON/XML metadata adapter handlers.
         if ((parser instanceof DicomDataParser)
             && ((handler instanceof DicomJsonMetadataAdapter)
-                || (handler instanceof DicomXmlMetadataAdapter))) {
+                || (handler instanceof DicomXmlMetadataAdapter)
+                || (handler instanceof JsonDataHandler)
+                || (handler instanceof XmlDataHandler))) {
             throw new Exception(
                 `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
                 BuilderErrorCodes.IncompatibleParserAndHandler
@@ -297,6 +318,15 @@ export default class PipelineBuilder {
     withMask(mask) {
         this.mask = mask;
         return this;
+    }
+
+    /**
+     * Enables de-identification using the specified mask.
+     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null} [mask=Tag.DefaultDeIdentificationMask] The tag mask map.
+     * @returns The reference to the current builder.
+     */
+    withDeIdentification(mask = Tag.DefaultDeIdentificationMask) {
+        return this.withMask(mask);
     }
 
     /**
@@ -471,7 +501,7 @@ export default class PipelineBuilder {
      * Sets the current build to stream-parse to a FHIR ImagingStudy resource.
      * @returns The reference to the current builder.
      */
-    toFHIRImagingStudies() {
+    toFHIRImagingStudy() {
         
         // ...into a FHIR ImagingStudy resource
         return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
@@ -491,6 +521,20 @@ export default class PipelineBuilder {
         return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
             new DicomDataWriterHandler(options)
         ));
+
+    }
+
+    /**
+     * Sets the current build to stream-parse to a JavaScript value from JSON or XML input.
+     * @returns The reference to the current builder.
+     */
+    toJsonValue() {
+
+        if (this.parser instanceof XmlDataParser) {
+            return this.withHandler(new XmlDataHandler());
+        }
+
+        return this.withHandler(new JsonDataHandler());
 
     }
 
@@ -563,7 +607,7 @@ export default class PipelineBuilder {
         // Fail if no handler was configured
         if (this.handler == null) {
             throw new Exception(
-                'PipelineBuilder.build requires a handler. Call toInstances(), toSelection(...), toMapping(...), toDicomData(...), toAssets(...), toAssetArchive(...), or withHandler(...).',
+                'PipelineBuilder.build requires a handler. Call toInstances(), toSelection(...), toMappedData(...), toFHIRImagingStudy(), toDicomData(...), toAssets(...), toAssetArchive(...), or withHandler(...).',
                 BuilderErrorCodes.MissingHandler
             );
         }
@@ -627,7 +671,7 @@ export default class PipelineBuilder {
                 parser,
                 handler,
                 (nextHandler) => (new DicomDeIdentificationFilter(nextHandler, this.mask)),
-                'withMask(...) requires a DICOM semantic handler chain (native DICOM parser or metadata adapter).',
+                'withMask(...) or withDeIdentification(...) requires a DICOM semantic handler chain (native DICOM parser or metadata adapter).',
                 BuilderErrorCodes.IncompatibleMaskAndParser
             );
         }

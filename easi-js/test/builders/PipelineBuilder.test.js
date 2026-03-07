@@ -15,6 +15,11 @@ import DicomJsonMetadataAdapter from "../../src/handlers/adapters/DicomJsonMetad
 import DicomXmlMetadataAdapter from "../../src/handlers/adapters/DicomXmlMetadataAdapter.js";
 import DicomDataWriterHandler from "../../src/handlers/terminals/DicomDataWriterHandler.js";
 import DicomAssetArchiveHandler from "../../src/handlers/terminals/DicomAssetArchiveHandler.js";
+import DicomMappingHandler from "../../src/handlers/terminals/DicomMappingHandler.js";
+import DicomToFHIRImagingStudyMapping from "../../src/handlers/mappings/DicomToFHIRImagingStudyMapping.js";
+import JsonDataHandler from "../../src/handlers/terminals/syntax/JsonDataHandler.js";
+import XmlDataHandler from "../../src/handlers/terminals/syntax/XmlDataHandler.js";
+import Tag from "../../src/dicom/Tag.js";
 import Exception from "../../src/environment/Exception.js";
 import { BuilderErrorCodes } from "../../src/environment/Exception.js";
 
@@ -122,6 +127,17 @@ test("Test: build throws IncompatibleParserAndHandler", () => {
     expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
 });
 
+test("Test: build throws IncompatibleParserAndHandler for toJsonValue with DICOM parser", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromPartStream().ofDicomData()
+            .toJsonValue()
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
+});
+
 test("Test: build throws IncompatibleParserAndHandler for toAssets with DICOM metadata parser", () => {
     const error = captureBuildError(
         new PipelineBuilder()
@@ -196,6 +212,27 @@ test("Test: build composes metadata adapter with shared handler", () => {
     expect(pipeline.parser.handler instanceof DicomJsonMetadataAdapter).toBe(true);
 });
 
+test("Test: toMapping builds with DicomMappingHandler", () => {
+    const mapping = new DicomToFHIRImagingStudyMapping();
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toMapping(mapping)
+        .build();
+
+    expect(pipeline.parser.handler instanceof DicomMappingHandler).toBe(true);
+    expect(pipeline.parser.handler.mapping).toBe(mapping);
+});
+
+test("Test: toFHIRImagingStudy builds with DicomToFHIRImagingStudyMapping", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toFHIRImagingStudy()
+        .build();
+
+    expect(pipeline.parser.handler instanceof DicomMappingHandler).toBe(true);
+    expect(pipeline.parser.handler.mapping instanceof DicomToFHIRImagingStudyMapping).toBe(true);
+});
+
 test("Test: build composes metadata adapter -> deid -> writer when masking JSON metadata", () => {
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomMetadata()
@@ -206,6 +243,36 @@ test("Test: build composes metadata adapter -> deid -> writer when masking JSON 
     expect(pipeline.parser.handler instanceof DicomJsonMetadataAdapter).toBe(true);
     expect(pipeline.parser.handler.nextHandler instanceof DicomDeIdentificationFilter).toBe(true);
     expect(pipeline.parser.handler.nextHandler.nextHandler instanceof DicomDataWriterHandler).toBe(true);
+});
+
+test("Test: withDeIdentification() composes default de-identification filter", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toInstances()
+        .withDeIdentification()
+        .build();
+
+    expect(pipeline.parser.handler instanceof DicomDeIdentificationFilter).toBe(true);
+    expect(pipeline.parser.handler.mask instanceof Map).toBe(true);
+    expect(pipeline.parser.handler.mask.size).toBeGreaterThan(0);
+    expect(pipeline.parser.handler.mask.has(Tag.PatientName.ID)).toBe(true);
+});
+
+test("Test: withDeIdentification(mask) uses supplied mask", () => {
+    const customMask = new Map([
+        ['00100010', { ID: '00100010', Action: 'Z' }]
+    ]);
+
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toInstances()
+        .withDeIdentification(customMask)
+        .build();
+
+    expect(pipeline.parser.handler instanceof DicomDeIdentificationFilter).toBe(true);
+    expect(pipeline.parser.handler.mask instanceof Map).toBe(true);
+    expect(pipeline.parser.handler.mask.size).toBe(1);
+    expect(pipeline.parser.handler.mask.has('00100010')).toBe(true);
 });
 
 test("Test: build composes validation filter for native DICOM semantic chain", () => {
@@ -298,6 +365,28 @@ test("Test: toAssetArchive builds with DicomAssetArchiveHandler", () => {
         .build();
 
     expect(pipeline.parser.handler instanceof DicomAssetArchiveHandler).toBe(true);
+});
+
+test("Test: toJsonValue builds with JsonDataHandler for JSON parser", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream()
+        .ofJsonData()
+        .toJsonValue()
+        .build();
+
+    expect(pipeline.parser instanceof JsonDataParser).toBe(true);
+    expect(pipeline.parser.handler instanceof JsonDataHandler).toBe(true);
+});
+
+test("Test: toJsonValue builds with XmlDataHandler for XML parser", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream()
+        .ofXmlData()
+        .toJsonValue()
+        .build();
+
+    expect(pipeline.parser instanceof XmlDataParser).toBe(true);
+    expect(pipeline.parser.handler instanceof XmlDataHandler).toBe(true);
 });
 
 test("Test: fromFetchStream builds with FetchStreamReader transport", () => {
