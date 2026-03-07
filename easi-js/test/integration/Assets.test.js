@@ -1,6 +1,7 @@
 import EASI from '../../src/EASI.js';
 import DicomToFHIRImagingStudyMapping from '../../src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
 import JpegDecoder from '../../src/codecs/decoders/JpegDecoder.js';
+import Tag from '../../src/dicom/Tag.js';
 
 const path = require('path');
 const fs = require('fs');
@@ -166,5 +167,83 @@ test('Test: toAssets still decodes frame payload when parser bulk-data policy st
     expect(result.frames.length).toBe(1);
     expect(result.frames[0].mimeType).toBe('image/png');
     expect(result.frames[0].bytes.length).toBeGreaterThan(0);
+
+});
+
+test('Test: toAssets can emit native frame chunks without materializing PixelData bytes', async () => {
+
+    var frameChunkEvents = [];
+    var pixelDataMaterializedLengths = [];
+
+    await EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .withBulkDataPolicy({
+            mode: 'stream',
+            knownLengthThreshold: 1,
+            hardSafetyCap: (64 * 1024 * 1024)
+        })
+        .toAssets({
+            payload: {
+                mode: 'stream',
+                frame: {
+                    frames: 'first',
+                    decode: 'native',
+                    encode: 'none'
+                },
+                onFrameChunk: (frameChunk, scope) => {
+                    frameChunkEvents.push(frameChunk);
+                    var pixelData = scope?.instance?.dataSet?.find(Tag.PixelData);
+                    pixelDataMaterializedLengths.push(pixelData?.length?.() ?? -1);
+                }
+            }
+        })
+        .build()
+        .process(readDicomBytes('0002.DCM'));
+
+    expect(frameChunkEvents.length).toBeGreaterThan(0);
+    expect(frameChunkEvents[0].encoding).toBe('native');
+    expect(frameChunkEvents.some((chunk) => chunk.isFinalChunk == true)).toBe(true);
+    expect(pixelDataMaterializedLengths.every((length) => length == 0)).toBe(true);
+
+});
+
+test('Test: toAssets payload mode materialize prefers end-of-instance frame emission over chunk callbacks', async () => {
+
+    var frameEvents = [];
+    var frameChunkEvents = [];
+    var pixelDataMaterializedLengths = [];
+
+    await EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .withBulkDataPolicy({
+            mode: 'stream',
+            knownLengthThreshold: 1,
+            hardSafetyCap: (64 * 1024 * 1024)
+        })
+        .toAssets({
+            payload: {
+                mode: 'materialize',
+                frame: {
+                    frames: 'first',
+                    decode: 'native',
+                    encode: 'none'
+                },
+                onFrame: (frame, scope) => {
+                    frameEvents.push(frame);
+                    var pixelData = scope?.instance?.dataSet?.find(Tag.PixelData);
+                    pixelDataMaterializedLengths.push(pixelData?.length?.() ?? -1);
+                },
+                onFrameChunk: (frameChunk) => frameChunkEvents.push(frameChunk),
+                collect: false
+            }
+        })
+        .build()
+        .process(readDicomBytes('0002.DCM'));
+
+    expect(frameEvents.length).toBe(1);
+    expect(frameChunkEvents.length).toBe(0);
+    expect(pixelDataMaterializedLengths.every((length) => length > 0)).toBe(true);
 
 });

@@ -19,6 +19,114 @@ import { TransferSyntaxApplicationType } from "../../dicom/TransferSyntax.js";
 export default class DicomAssetsHandler {
 
     /**
+     * Normalize payload extraction mode.
+     * @param {'auto' | 'stream' | 'materialize' | string | null | undefined} mode Requested mode.
+     * @returns {'auto' | 'stream' | 'materialize'} The normalized mode.
+     */
+    normalizePayloadMode(mode) {
+
+        if (typeof mode !== 'string')
+            return 'auto';
+
+        var normalized = mode.trim().toLowerCase();
+        if (normalized == 'stream')
+            return 'stream';
+        if (normalized == 'materialize')
+            return 'materialize';
+
+        return 'auto';
+
+    }
+
+    /**
+     * Determine whether payload extraction mode is explicit stream.
+     * @returns {boolean} TRUE when payload extraction mode is stream.
+     */
+    isPayloadStreamMode() {
+        return (this.payloadMode == 'stream');
+    }
+
+    /**
+     * Determine whether payload extraction mode is explicit materialize.
+     * @returns {boolean} TRUE when payload extraction mode is materialize.
+     */
+    isPayloadMaterializeMode() {
+        return (this.payloadMode == 'materialize');
+    }
+
+    /**
+     * Determine whether frame materialized output is requested.
+     * @returns {boolean} TRUE when a materialized frame consumer is configured.
+     */
+    hasFrameMaterializedConsumer() {
+        return ((typeof this.payloadOptions?.onFrame === 'function')
+            || (this.payloadOptions?.collect === true));
+    }
+
+    /**
+     * Determine whether content materialized output is requested.
+     * @returns {boolean} TRUE when a materialized content consumer is configured.
+     */
+    hasContentMaterializedConsumer() {
+        return ((typeof this.payloadOptions?.onContent === 'function')
+            || (this.payloadOptions?.collect === true));
+    }
+
+    /**
+     * Determine whether materialized frame emission is enabled.
+     * Materialized frame emission includes `onFrame` callback and/or collected `result.frames`.
+     * @returns {boolean} TRUE when materialized frame emission is enabled.
+     */
+    isMaterializedFramePayloadEnabled() {
+        if (this.payloadOptions?.frame == null)
+            return false;
+        if (this.isPayloadStreamMode() == true)
+            return false;
+        return (this.hasFrameMaterializedConsumer() == true);
+    }
+
+    /**
+     * Determine whether materialized content emission is enabled.
+     * Materialized content emission includes `onContent` callback and/or collected `result.content`.
+     * @returns {boolean} TRUE when materialized content emission is enabled.
+     */
+    isMaterializedContentPayloadEnabled() {
+        if (this.isPayloadStreamMode() == true)
+            return false;
+        return (this.hasContentMaterializedConsumer() == true);
+    }
+
+    /**
+     * Determine whether chunk-native frame emission is enabled.
+     * @returns {boolean} TRUE when chunk-native frame emission is enabled.
+     */
+    isFrameChunkPayloadEnabled() {
+        if (this.payloadOptions?.frame == null)
+            return false;
+        if (typeof this.payloadOptions?.onFrameChunk !== 'function')
+            return false;
+        if (this.isPayloadMaterializeMode() == true)
+            return false;
+        if (this.isPayloadStreamMode() == true)
+            return true;
+        return (this.isMaterializedFramePayloadEnabled() == false);
+    }
+
+    /**
+     * Determine whether chunk-native content emission is enabled.
+     * @returns {boolean} TRUE when chunk-native content emission is enabled.
+     */
+    isContentChunkPayloadEnabled() {
+        if (typeof this.payloadOptions?.onContentChunk !== 'function')
+            return false;
+        if (this.isPayloadMaterializeMode() == true)
+            return false;
+        if (this.isPayloadStreamMode() == true)
+            return true;
+        return (this.isMaterializedContentPayloadEnabled() == false);
+    }
+
+    /**
      * Resolve payload frame indices from a frame selector value.
      * @param {number} frameCount The number of available frames.
      * @param {'first' | 'all' | Array<number> | { start?: number, end?: number, step?: number } | null} selector The selector.
@@ -175,6 +283,369 @@ export default class DicomAssetsHandler {
     }
 
     /**
+     * Determine if the current payload option requests native frame chunking.
+     * @returns {boolean} TRUE when configured for native frame chunking.
+     */
+    isNativeFrameChunkMode() {
+
+        var frameOptions = this.payloadOptions?.frame;
+        if (frameOptions == null)
+            return false;
+
+        var decodeMode = String(frameOptions.decode ?? 'rgba').toLowerCase();
+        var outputFormat = String(frameOptions.encode ?? 'none').toLowerCase();
+
+        return ((decodeMode == 'native') && ((outputFormat == 'none') || (outputFormat == 'native')));
+
+    }
+
+    /**
+     * Determine if an attribute should be treated as content payload.
+     * @param {object} attribute The current attribute.
+     * @returns {boolean} TRUE when the attribute represents content payload.
+     */
+    isContentPayloadAttribute(attribute) {
+
+        if (attribute?.tag == null)
+            return false;
+
+        var tagID = attribute.tag?.ID;
+
+        if ((tagID == Tag.EncapsulatedDocument?.ID)
+            || (tagID == Tag.WaveformData?.ID)
+            || (tagID == Tag.AudioSampleData?.ID)) {
+            return true;
+        }
+
+        if (tagID == Tag.PixelData?.ID) {
+            return this.isBulkContentApplicationType(attribute.transferSyntax ?? null);
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Resolve a content payload kind for one attribute.
+     * @param {object} attribute The content attribute.
+     * @returns {string} The resolved content kind.
+     */
+    resolveContentPayloadKind(attribute) {
+
+        if (attribute?.tag?.ID == Tag.PixelData?.ID) {
+            var appType = attribute?.transferSyntax?.ApplicationType;
+            return String(appType ?? 'Content');
+        }
+
+        return 'Content';
+
+    }
+
+    /**
+     * Build frame chunk streaming state for PixelData when configured for native chunk emission.
+     * @param {object} context Handler context.
+     * @param {object} attribute Current PixelData attribute.
+     * @returns {object | null} Frame chunk state or null when not applicable.
+     */
+    createFrameChunkState(context, attribute) {
+
+        if (this.isFrameChunkPayloadEnabled() == false)
+            return null;
+
+        if (this.isNativeFrameChunkMode() == false)
+            return null;
+
+        if (attribute?.tag?.ID != Tag.PixelData?.ID)
+            return null;
+
+        var transferSyntax = attribute.transferSyntax ?? TransferSyntax.NONE;
+        if (this.isFrameApplicationType(transferSyntax) == false)
+            return null;
+
+        var buildUnsplitState = () => {
+            var frameIndices = this.resolveFrameIndices(1, this.payloadOptions?.frame?.frames);
+            if (frameIndices.length == 0)
+                return null;
+
+            return {
+                type: 'frame',
+                bytesSeen: 0,
+                valueLength: attribute.valueLength,
+                frameCount: 1,
+                frameSize: 0,
+                unsplitMode: true,
+                selectedFrameSet: new Set(frameIndices),
+                width: null,
+                height: null,
+                transferSyntaxID: transferSyntax?.ID ?? null
+            };
+        };
+
+        if (attribute.valueLength == Constants.UndefinedLength) {
+            return buildUnsplitState();
+        }
+
+        try {
+
+            var frameOptions = this.payloadOptions?.frame;
+            var image = new Image(context?.instance?.dataSet);
+            var frameCount = Math.max(1, Number(image.multiFrameModule?.numberOfFrames ?? 1));
+            var frameSize = Math.max(0, Number(image.imagePixelModule?.imageSize ?? 0));
+            var useUnsplitMode = (attribute.valueLength == Constants.UndefinedLength);
+
+            // For compressed transfer syntaxes with known length, frame boundaries are
+            // not generally derivable without encapsulated item offsets. Support only
+            // single-frame compressed payload by treating the whole value as one frame.
+            if (transferSyntax?.IsCompressed == true) {
+                if ((frameCount > 1) && (useUnsplitMode == false))
+                    return buildUnsplitState();
+                if (useUnsplitMode == false) {
+                    frameSize = attribute.valueLength;
+                }
+            }
+
+            if (useUnsplitMode == true) {
+                frameCount = 1;
+            }
+
+            var frameIndices = this.resolveFrameIndices(frameCount, frameOptions?.frames);
+
+            if ((useUnsplitMode == false) && (frameSize <= 0))
+                return buildUnsplitState();
+
+            if (frameIndices.length == 0)
+                return null;
+
+            return {
+                type: 'frame',
+                bytesSeen: 0,
+                valueLength: attribute.valueLength,
+                frameCount: frameCount,
+                frameSize: frameSize,
+                unsplitMode: useUnsplitMode,
+                selectedFrameSet: new Set(frameIndices),
+                width: image.imagePixelModule?.columns ?? null,
+                height: image.imagePixelModule?.rows ?? null,
+                transferSyntaxID: transferSyntax?.ID ?? null
+            };
+
+        }
+        catch (_error) {
+            // Fall back to unsplit chunk-native mode when frame metadata is unavailable.
+            return buildUnsplitState();
+        }
+
+    }
+
+    /**
+     * Build content chunk streaming state for non-frame payload attributes.
+     * @param {object} attribute Current content attribute.
+     * @returns {object | null} Content chunk state or null when not applicable.
+     */
+    createContentChunkState(attribute) {
+
+        if (this.isContentChunkPayloadEnabled() == false)
+            return null;
+
+        if (this.isContentPayloadAttribute(attribute) == false)
+            return null;
+
+        return {
+            type: 'content',
+            bytesSeen: 0,
+            kind: this.resolveContentPayloadKind(attribute),
+            transferSyntaxID: attribute?.transferSyntax?.ID ?? null
+        };
+
+    }
+
+    /**
+     * Register per-attribute payload streaming state for chunk-native emission.
+     * @param {object} context Handler context.
+     * @param {object} attribute Current attribute.
+     */
+    registerAttributePayloadState(context, attribute) {
+
+        var payloadStates = context?.assetsRuntime?.payloadStates;
+        if (payloadStates == null)
+            return;
+
+        var state = this.createFrameChunkState(context, attribute);
+        if (state == null) {
+            state = this.createContentChunkState(attribute);
+        }
+
+        if (state != null) {
+            payloadStates.set(attribute, state);
+        }
+
+    }
+
+    /**
+     * Emit native frame chunks for one streamed PixelData chunk.
+     * @param {object} context Handler context.
+     * @param {object} attribute PixelData attribute.
+     * @param {Uint8Array} chunk Current value chunk.
+     * @param {boolean} isFinalChunk TRUE when this is the final attribute chunk.
+     * @param {object} state Frame chunk state.
+     */
+    async emitFrameChunkPayload(context, attribute, chunk, isFinalChunk, state) {
+
+        if ((chunk == null) || (chunk.length == 0)) {
+            if (isFinalChunk == true) {
+                state.bytesSeen = state.valueLength;
+            }
+            return;
+        }
+
+        if (state.unsplitMode == true) {
+
+            if (state.selectedFrameSet.has(0) == true) {
+                await this.payloadOptions.onFrameChunk({
+                    index: 0,
+                    encoding: 'native',
+                    bytes: chunk,
+                    mimeType: 'application/octet-stream',
+                    transferSyntax: state.transferSyntaxID,
+                    width: state.width,
+                    height: state.height,
+                    absoluteOffset: state.bytesSeen,
+                    frameOffset: state.bytesSeen,
+                    isFirstChunk: (state.bytesSeen == 0),
+                    isFinalChunk: (isFinalChunk == true)
+                }, {
+                    instance: context?.instance,
+                    context
+                });
+
+                context.assets.frameChunksEmitted += 1;
+            }
+
+            state.bytesSeen += chunk.length;
+            return;
+
+        }
+
+        var chunkStart = state.bytesSeen;
+        var chunkEnd = (chunkStart + chunk.length);
+        var firstFrame = Math.floor(chunkStart / state.frameSize);
+        var lastFrame = Math.floor(Math.max(chunkStart, (chunkEnd - 1)) / state.frameSize);
+
+        for (var frameIndex = firstFrame; frameIndex <= lastFrame; frameIndex++) {
+
+            if ((frameIndex < 0) || (frameIndex >= state.frameCount))
+                continue;
+
+            if (state.selectedFrameSet.has(frameIndex) == false)
+                continue;
+
+            var frameStart = (frameIndex * state.frameSize);
+            var frameEnd = Math.min(state.valueLength, (frameStart + state.frameSize));
+            var overlapStart = Math.max(chunkStart, frameStart);
+            var overlapEnd = Math.min(chunkEnd, frameEnd);
+
+            if (overlapEnd <= overlapStart)
+                continue;
+
+            var localStart = (overlapStart - chunkStart);
+            var localEnd = (overlapEnd - chunkStart);
+            var frameChunk = chunk.subarray(localStart, localEnd);
+
+            await this.payloadOptions.onFrameChunk({
+                index: frameIndex,
+                encoding: 'native',
+                bytes: frameChunk,
+                mimeType: 'application/octet-stream',
+                transferSyntax: state.transferSyntaxID,
+                width: state.width,
+                height: state.height,
+                absoluteOffset: overlapStart,
+                frameOffset: (overlapStart - frameStart),
+                isFirstChunk: (overlapStart == frameStart),
+                isFinalChunk: ((overlapEnd >= frameEnd) || ((isFinalChunk == true) && (overlapEnd >= chunkEnd)))
+            }, {
+                instance: context?.instance,
+                context
+            });
+
+            context.assets.frameChunksEmitted += 1;
+
+        }
+
+        state.bytesSeen = chunkEnd;
+
+    }
+
+    /**
+     * Emit content chunks for one streamed content payload attribute chunk.
+     * @param {object} context Handler context.
+     * @param {object} attribute Content attribute.
+     * @param {Uint8Array} chunk Current value chunk.
+     * @param {boolean} isFinalChunk TRUE when this is the final attribute chunk.
+     * @param {object} state Content chunk state.
+     */
+    async emitContentChunkPayload(context, attribute, chunk, isFinalChunk, state) {
+
+        if ((chunk == null) || (chunk.length == 0))
+            return;
+
+        await this.payloadOptions.onContentChunk({
+            kind: state.kind,
+            tag: attribute?.tag,
+            bytes: chunk,
+            transferSyntax: state.transferSyntaxID,
+            offset: state.bytesSeen,
+            isFirstChunk: (state.bytesSeen == 0),
+            isFinalChunk: (isFinalChunk == true)
+        }, {
+            instance: context?.instance,
+            context
+        });
+
+        state.bytesSeen += chunk.length;
+        context.assets.contentChunksEmitted += 1;
+
+    }
+
+    /**
+     * Determine whether one streamed chunk should be materialized on the attribute.
+     * @param {object} attribute The streamed attribute.
+     * @param {object | null} state Active payload state for the attribute.
+     * @returns {boolean} TRUE when materialization is required.
+     */
+    shouldMaterializeChunk(attribute, state = null) {
+
+        if (attribute == null)
+            return false;
+
+        if (this.payloadOptions == null)
+            return false;
+
+        // In explicit materialize mode, preserve all streamed attributes when any
+        // materialized payload consumer is configured. This ensures dependent
+        // context attributes (e.g. Rows/Columns) remain available at end-of-instance.
+        if (this.isPayloadMaterializeMode() == true) {
+            return ((this.isMaterializedFramePayloadEnabled() == true)
+                || (this.isMaterializedContentPayloadEnabled() == true));
+        }
+
+        // When chunk-native callbacks are active, keep the attribute chunk-native.
+        if ((state?.type == 'frame') || (state?.type == 'content'))
+            return false;
+
+        // Preserve materialized frame behavior (decode/encode and collected frame output).
+        if ((attribute?.tag?.ID == Tag.PixelData?.ID) && (this.isMaterializedFramePayloadEnabled() == true))
+            return true;
+
+        // Preserve materialized content behavior (onContent / collected content output).
+        if ((this.isMaterializedContentPayloadEnabled() == true) && (this.isContentPayloadAttribute(attribute) == true))
+            return true;
+
+        return false;
+
+    }
+
+    /**
      * Decode one frame to RGBA bytes.
      * @param {object} instance The parsed DICOM instance.
      * @param {number} frameIndex 0-based frame index.
@@ -309,6 +780,9 @@ export default class DicomAssetsHandler {
         if (frameOptions == null)
             return;
 
+        if (this.isMaterializedFramePayloadEnabled() == false)
+            return;
+
         var pixelDataAttribute = instance.dataSet?.find(Tag.PixelData);
         if (pixelDataAttribute == null)
             return;
@@ -319,9 +793,7 @@ export default class DicomAssetsHandler {
         }
 
         var image = new Image(instance.dataSet);
-        var frameCount = (image.isMultiFrame == true)
-            ? Math.max(1, Number(image.multiFrameModule.numberOfFrames ?? 1))
-            : 1;
+        var frameCount = Math.max(1, Number(image.multiFrameModule?.numberOfFrames ?? 1));
 
         var frameIndices = this.resolveFrameIndices(frameCount, frameOptions.frames);
         var outputFormat = String(frameOptions.encode ?? 'none').toLowerCase();
@@ -410,8 +882,13 @@ export default class DicomAssetsHandler {
      */
     async emitContentPayload(context, instance, result) {
 
-        if (typeof this.payloadOptions?.onContent !== 'function')
+        if (this.isMaterializedContentPayloadEnabled() == false)
             return;
+
+        if ((typeof this.payloadOptions?.onContent !== 'function')
+            && (this.payloadOptions?.collect !== true)) {
+            return;
+        }
 
         var emitted = [];
 
@@ -448,7 +925,9 @@ export default class DicomAssetsHandler {
         }
 
         for (var j = 0; j < emitted.length; j++) {
-            await this.payloadOptions.onContent(emitted[j], { instance, context });
+            if (typeof this.payloadOptions.onContent === 'function') {
+                await this.payloadOptions.onContent(emitted[j], { instance, context });
+            }
             if (this.payloadOptions.collect === true) {
                 result.content.push(emitted[j]);
                 context.assets.content.push(emitted[j]);
@@ -494,7 +973,15 @@ export default class DicomAssetsHandler {
                 metadataCount: 0,
                 framesEmitted: 0,
                 contentEmitted: 0,
+                frameChunksEmitted: 0,
+                contentChunksEmitted: 0,
                 instances: []
+            };
+        }
+
+        if (context.assetsRuntime == null) {
+            context.assetsRuntime = {
+                payloadStates: new Map()
             };
         }
 
@@ -511,7 +998,9 @@ export default class DicomAssetsHandler {
     }
 
     onStartAttribute(context, attribute) {
-        return this.instanceHandler.onStartAttribute(context, attribute);
+        var status = this.instanceHandler.onStartAttribute(context, attribute);
+        this.registerAttributePayloadState(context, attribute);
+        return status;
     }
 
     onStartSequence(context, sequence) {
@@ -528,20 +1017,29 @@ export default class DicomAssetsHandler {
 
     /**
      * Handle streamed attribute value chunks.
-     * For asset extraction payload flows, re-materialize streamed chunks on the attribute
-     * so downstream frame/content decoders can access complete value bytes at end-of-instance.
+     * Applies chunk-native frame/content payload emission and conditionally re-materializes
+     * chunks only when materialized end-of-instance payload extraction requires full bytes.
      * @param {object} context Handler context.
      * @param {{ attribute: object, chunk: Uint8Array }} payload Chunk payload.
      */
-    onAttributeChunk(context, payload) {
+    async onAttributeChunk(context, payload) {
 
         var attribute = payload?.attribute;
         var chunk = payload?.chunk;
+        var isFinalChunk = (payload?.isFinalChunk == true);
+        var state = context?.assetsRuntime?.payloadStates?.get(attribute) ?? null;
+
+        if ((state?.type == 'frame') && (chunk != null) && (chunk.length > 0)) {
+            await this.emitFrameChunkPayload(context, attribute, chunk, isFinalChunk, state);
+        }
+        else if ((state?.type == 'content') && (chunk != null) && (chunk.length > 0)) {
+            await this.emitContentChunkPayload(context, attribute, chunk, isFinalChunk, state);
+        }
 
         if ((attribute?.isBulkStreamed == true)
             && (chunk != null)
             && (chunk.length > 0)
-            && (this.payloadOptions != null)) {
+            && (this.shouldMaterializeChunk(attribute, state) == true)) {
             attribute.append(chunk);
         }
 
@@ -566,6 +1064,7 @@ export default class DicomAssetsHandler {
     }
 
     onEndAttribute(context, attribute) {
+        context?.assetsRuntime?.payloadStates?.delete(attribute);
         return this.instanceHandler.onEndAttribute(context, attribute);
     }
 
@@ -619,9 +1118,12 @@ export default class DicomAssetsHandler {
      * @param {{
      *   metadata?: { mapping: DicomMapping, onMetadata?: Function, collect?: boolean },
      *   payload?: {
+     *     mode?: 'auto' | 'stream' | 'materialize',
      *     frame?: { frames?: 'first' | 'all' | Array<number> | { start?: number, end?: number, step?: number }, decode?: 'native' | 'rgba', encode?: 'none' | 'jpeg' | 'png' | 'tiff', quality?: number },
      *     onFrame?: Function,
+     *     onFrameChunk?: Function,
      *     onContent?: Function,
+     *     onContentChunk?: Function,
      *     collect?: boolean
      *   }
      * } | null} options Assets extraction options.
@@ -632,6 +1134,7 @@ export default class DicomAssetsHandler {
         this.options = options ?? {};
         this.metadataOptions = this.options.metadata ?? null;
         this.payloadOptions = this.options.payload ?? null;
+        this.payloadMode = this.normalizePayloadMode(this.payloadOptions?.mode);
         this.instanceHandler = new DicomInstanceHandler();
         this.codecRegistry = codecRegistry ?? Configuration.global.codecRegistry;
 

@@ -392,6 +392,22 @@ export default class PipelineBuilder {
     }
 
     /**
+     * Sets the current build to parse JSON data.
+     * @returns The reference to the current builder.
+     */
+    ofJsonData() {
+        return this.withParser(new JsonDataParser());
+    }
+
+    /**
+     * Sets the current build to parse XML data.
+     * @returns The reference to the current builder.
+     */
+    ofXmlData() {
+        return this.withParser(new XmlDataParser());
+    }
+
+    /**
      * Sets the current build to parse DICOM JSON metadata.
      * @returns The reference to the current builder.
      */
@@ -483,9 +499,12 @@ export default class PipelineBuilder {
      * @param {{
      *   metadata?: { mapping: object, onMetadata?: Function, collect?: boolean },
      *   payload?: {
+     *     mode?: 'auto' | 'stream' | 'materialize',
      *     frame?: { frames?: 'first' | 'all' | Array<number> | { start?: number, end?: number, step?: number }, decode?: 'native' | 'rgba', encode?: 'none' | 'jpeg' | 'png' | 'tiff', quality?: number },
      *     onFrame?: Function,
+     *     onFrameChunk?: Function,
      *     onContent?: Function,
+     *     onContentChunk?: Function,
      *     collect?: boolean
      *   }
      * } | null} options Asset extraction options.
