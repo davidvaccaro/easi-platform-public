@@ -478,6 +478,28 @@ export default class DicomDataWriterHandler {
     }
 
     /**
+     * Ensure one streamed attribute header is emitted once before streamed chunks.
+     * @param {Attribute} attribute The streamed attribute.
+     */
+    async ensureStreamAttributeHeader(attribute) {
+
+        if (this.streamedAttributeHeaders.has(attribute))
+            return;
+
+        this.currentTransferSyntax = attribute.transferSyntax;
+
+        await this.emit(this.serializeHeader(
+            attribute.tag,
+            attribute.tag.VR,
+            attribute.valueLength,
+            attribute.transferSyntax
+        ));
+
+        this.streamedAttributeHeaders.add(attribute);
+
+    }
+
+    /**
      * Reset one streaming instance output state.
      */
     resetInstanceState() {
@@ -487,6 +509,7 @@ export default class DicomDataWriterHandler {
         this.sequenceSyntaxStack = [];
         this.currentTransferSyntax = TransferSyntax.NONE;
         this.emittedAttributes = new WeakSet();
+        this.streamedAttributeHeaders = new WeakSet();
 
     }
 
@@ -555,9 +578,45 @@ export default class DicomDataWriterHandler {
 
     async onAppendAttribute(context, attribute) {
 
+        // Streamed attributes are emitted by onAttributeChunk and finalized in onEndAttribute.
+        if (attribute?.isBulkStreamed == true)
+            return;
+
         // Undefined-length attributes (for example encapsulated PixelData) may complete here.
         if ((attribute.valueLength == Constants.UndefinedLength) && (attribute.isComplete == true)) {
             await this.emitAttribute(attribute);
+        }
+
+    }
+
+    /**
+     * Stream raw value chunks for bulk-streamed attributes.
+     * @param {object} context Handler context.
+     * @param {{ attribute: Attribute, chunk: Uint8Array, isFinalChunk: boolean }} payload Chunk payload.
+     */
+    async onAttributeChunk(context, payload) {
+
+        var attribute = payload?.attribute;
+        var chunk = payload?.chunk;
+        var isFinalChunk = (payload?.isFinalChunk == true);
+
+        if ((attribute == null) || (attribute.isBulkStreamed != true))
+            return;
+
+        await this.ensureStreamAttributeHeader(attribute);
+        await this.emit(chunk);
+
+        if ((isFinalChunk == true) && (attribute.valueLength == Constants.UndefinedLength)) {
+
+            await this.emit(this.serializeHeader(
+                Tag.SequenceDelimitationItem,
+                Tag.SequenceDelimitationItem.VR,
+                0,
+                attribute.transferSyntax
+            ));
+
+            this.emittedAttributes.add(attribute);
+
         }
 
     }
@@ -571,7 +630,27 @@ export default class DicomDataWriterHandler {
     }
 
     async onEndAttribute(context, attribute) {
+
+        if (attribute?.isBulkStreamed == true) {
+
+            await this.ensureStreamAttributeHeader(attribute);
+
+            if ((attribute.valueLength == Constants.UndefinedLength) && (this.emittedAttributes.has(attribute) == false)) {
+                await this.emit(this.serializeHeader(
+                    Tag.SequenceDelimitationItem,
+                    Tag.SequenceDelimitationItem.VR,
+                    0,
+                    attribute.transferSyntax
+                ));
+            }
+
+            this.emittedAttributes.add(attribute);
+            return;
+
+        }
+
         await this.emitAttribute(attribute);
+
     }
 
     async onEndSequence(context, sequence) {

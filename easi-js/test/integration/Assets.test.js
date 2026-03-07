@@ -135,3 +135,36 @@ test('Test: toAssets payload frame emits JPEG bytes for first frame', async () =
     expect(decodeResult).toBe(true);
 
 });
+
+test('Test: toAssets still decodes frame payload when parser bulk-data policy streams PixelData', async () => {
+
+    var frameEvents = [];
+
+    var result = await EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .withBulkDataPolicy({
+            mode: 'auto',
+            knownLengthThreshold: 1024,
+            hardSafetyCap: (64 * 1024 * 1024)
+        })
+        .toAssets({
+            payload: {
+                frame: {
+                    frames: 'first',
+                    decode: 'rgba',
+                    encode: 'png'
+                },
+                onFrame: (frame) => frameEvents.push(frame),
+                collect: true
+            }
+        })
+        .build()
+        .process(readDicomBytes('0002.DCM'));
+
+    expect(frameEvents.length).toBe(1);
+    expect(result.frames.length).toBe(1);
+    expect(result.frames[0].mimeType).toBe('image/png');
+    expect(result.frames[0].bytes.length).toBeGreaterThan(0);
+
+});

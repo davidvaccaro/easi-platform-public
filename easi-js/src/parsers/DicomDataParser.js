@@ -73,6 +73,32 @@ const DicomDataSetSpecification = [
     DicomPartType.DataSet
 ];
 
+const DicomBulkDataPolicyMode = {
+    Materialize: 'materialize',
+    Auto: 'auto',
+    Stream: 'stream'
+};
+
+const DefaultBulkPayloadCandidateVRs = new Set([
+    'OB',
+    'OD',
+    'OF',
+    'OL',
+    'OV',
+    'OW',
+    'UN',
+    'UT'
+]);
+
+const DefaultBulkPayloadCandidateTagIDs = new Set([
+    '7FE00010', // PixelData
+    '7FE00008', // FloatPixelData
+    '7FE00009', // DoubleFloatPixelData
+    '56000020', // SpectroscopyData
+    '54001010', // WaveformData
+    '00420011'  // EncapsulatedDocument
+]);
+
 export default class DicomDataParser extends DataParser {
 
     /**
@@ -110,6 +136,8 @@ export default class DicomDataParser extends DataParser {
 
         // Init the current data-element
         this.dataElement = null;
+        this.dataElementBytesConsumed = 0;
+        this.dataElementStreamingDecision = null;
 
         // Init the data-element stack
         this.dataElements = [];
@@ -423,6 +451,247 @@ export default class DicomDataParser extends DataParser {
             return null;
 
         return this.dataElements[this.dataElements.length - 1];
+
+    }
+
+    /**
+     * Normalize one bulk-data policy mode value.
+     * @param {string | null} mode The configured mode.
+     * @returns {string} The normalized mode.
+     */
+    normalizeBulkDataPolicyMode(mode) {
+
+        if (typeof mode !== 'string')
+            return DicomBulkDataPolicyMode.Auto;
+
+        var normalizedMode = mode.trim().toLowerCase();
+
+        if (normalizedMode == DicomBulkDataPolicyMode.Materialize)
+            return DicomBulkDataPolicyMode.Materialize;
+
+        if (normalizedMode == DicomBulkDataPolicyMode.Stream)
+            return DicomBulkDataPolicyMode.Stream;
+
+        return DicomBulkDataPolicyMode.Auto;
+
+    }
+
+    /**
+     * Determine if a tag is a structural tag that should never be bulk-streamed.
+     * @param {Tag} tag The current tag.
+     * @returns {boolean} TRUE when the tag is structural.
+     */
+    isStructuralTag(tag) {
+
+        if (tag == null)
+            return false;
+
+        if ((tag == Tag.Item) || (tag == Tag.ItemDelimitationItem) || (tag == Tag.SequenceDelimitationItem))
+            return true;
+
+        // Keep parser-critical meta attributes materialized so parse flow decisions remain stable.
+        if ((tag?.ID == Tag.FileMetaInformationGroupLength?.ID) || (tag?.ID == Tag.TransferSyntaxUID?.ID))
+            return true;
+
+        return false;
+
+    }
+
+    /**
+     * Determine if the current attribute is a candidate for bulk streaming based on tag/VR.
+     * @param {Attribute} attribute The current attribute.
+     * @returns {boolean} TRUE when the attribute is a bulk payload candidate.
+     */
+    isPayloadCandidate(attribute) {
+
+        if ((attribute == null) || (attribute.tag == null))
+            return false;
+
+        var tag = attribute.tag;
+        var tagID = tag.ID;
+        var vrID = tag?.VR?.ID;
+
+        // Structural sequence elements are not payload candidates.
+        if ((attribute instanceof AttributeSequence) || (vrID == 'SQ') || this.isStructuralTag(tag))
+            return false;
+
+        // Candidate by exact tag ID.
+        if ((tagID != null) && (DefaultBulkPayloadCandidateTagIDs.has(tagID) == true))
+            return true;
+
+        // Candidate by known template groups:
+        //  - Overlay Data: (60xx,3000)
+        //  - Curve Data: (50xx,3000)
+        //  - Audio Sample Data: (50xx,200C)
+        //  - Variable Pixel Data: (7Fxx,0010)
+        if ((tagID != null) && (
+            /^60[0-9A-F]{2}3000$/.test(tagID)
+            || /^50[0-9A-F]{2}3000$/.test(tagID)
+            || /^50[0-9A-F]{2}200C$/.test(tagID)
+            || /^7F[0-9A-F]{2}0010$/.test(tagID)
+        ))
+            return true;
+
+        // Candidate by VR.
+        if ((vrID != null) && (DefaultBulkPayloadCandidateVRs.has(vrID) == true))
+            return true;
+
+        return false;
+
+    }
+
+    /**
+     * Resolve whether the current data element should be bulk-streamed or materialized.
+     * Decision flow:
+     *  1. Structural tags are never chunked.
+     *  2. Policy mode is applied.
+     *  3. Payload candidate check (VR/tag) is evaluated.
+     *  4. Known-length decision is applied.
+     *  5. Undefined-length decision is applied.
+     *  6. Hard safety cap is enforced independently of VR/tag.
+     * @param {Attribute} attribute The current attribute.
+     * @returns {{streamData: boolean, reason: string, isCandidate: boolean, mode: string}} The resolved decision.
+     */
+    resolveBulkDataDecision(attribute) {
+
+        var mode = this.normalizeBulkDataPolicyMode(this.bulkDataPolicyMode);
+        var valueLength = attribute?.valueLength;
+        var isUndefinedLength = (valueLength == Constants.UndefinedLength);
+        var isStructural = this.isStructuralTag(attribute?.tag)
+            || (attribute instanceof AttributeSequence)
+            || (attribute?.tag?.VR == ValueRepresentations.SQ);
+        var isCandidate = this.isPayloadCandidate(attribute);
+
+        if (isStructural == true) {
+            return {
+                streamData: false,
+                reason: 'structural',
+                isCandidate: false,
+                mode: mode
+            };
+        }
+
+        // Hard safety cap always wins for known-length elements.
+        if ((isUndefinedLength == false)
+            && (typeof valueLength == 'number')
+            && (valueLength >= this.bulkDataHardSafetyCap)) {
+            return {
+                streamData: true,
+                reason: 'hard-safety-cap',
+                isCandidate: isCandidate,
+                mode: mode
+            };
+        }
+
+        if (mode == DicomBulkDataPolicyMode.Stream) {
+            return {
+                streamData: true,
+                reason: isUndefinedLength ? 'policy-stream-undefined' : 'policy-stream',
+                isCandidate: isCandidate,
+                mode: mode
+            };
+        }
+
+        if (mode == DicomBulkDataPolicyMode.Materialize) {
+            return {
+                streamData: false,
+                reason: 'policy-materialize',
+                isCandidate: isCandidate,
+                mode: mode
+            };
+        }
+
+        // Auto mode:
+        //  - Known length: stream only bulk-candidates above threshold.
+        //  - Undefined length: stream only bulk-candidates.
+        if (isUndefinedLength == true) {
+            return {
+                streamData: (isCandidate == true),
+                reason: (isCandidate == true) ? 'auto-undefined-candidate' : 'auto-undefined-non-candidate',
+                isCandidate: isCandidate,
+                mode: mode
+            };
+        }
+
+        if ((isCandidate == true) && (valueLength >= this.bulkDataKnownLengthThreshold)) {
+            return {
+                streamData: true,
+                reason: 'auto-known-threshold',
+                isCandidate: isCandidate,
+                mode: mode
+            };
+        }
+
+        return {
+            streamData: false,
+            reason: 'auto-materialize',
+            isCandidate: isCandidate,
+            mode: mode
+        };
+
+    }
+
+    /**
+     * Fire one attribute chunk event for streamed attributes.
+     * @param {Attribute} attribute The current attribute.
+     * @param {Uint8Array} chunk The raw value bytes chunk.
+     * @param {boolean} isFinalChunk TRUE when this is the final value chunk.
+     */
+    async fireAttributeChunkEvent(attribute, chunk, isFinalChunk = false) {
+
+        if ((attribute == null) || (chunk == null) || (chunk.length == 0))
+            return;
+
+        var status = await this.fireStreamEvent("onAttributeChunk", {
+            attribute: attribute,
+            chunk: chunk,
+            isFinalChunk: (isFinalChunk == true),
+            bytesStreamed: this.dataElementBytesConsumed,
+            valueLength: attribute.valueLength
+        }, this.dataElementStatus);
+
+        if ((status == Status.JUMP) || (status == Status.STOP) || (status == Status.FAIL))
+            this.status = status;
+
+    }
+
+    /**
+     * Apply one consumed value chunk to the current attribute according to the active bulk-data decision.
+     * @param {Uint8Array} chunk The consumed value chunk.
+     * @param {boolean} isFinalChunk TRUE when the value is complete after this chunk.
+     */
+    async applyDataElementChunk(chunk, isFinalChunk = false) {
+
+        if (chunk == null)
+            chunk = new Uint8Array(0);
+
+        this.dataElementBytesConsumed += chunk.length;
+
+        if ((this.dataElementStreamingDecision != null) && (this.dataElementStreamingDecision.streamData == true)) {
+
+            this.dataElement.isMaterialized = false;
+            this.dataElement.isBulkStreamed = true;
+            this.dataElement.bytesStreamed = this.dataElementBytesConsumed;
+
+            await this.fireAttributeChunkEvent(this.dataElement, chunk, isFinalChunk);
+
+            if (isFinalChunk == true) {
+                this.dataElement.isComplete = true;
+            }
+
+            return;
+
+        }
+
+        var shouldMaterializeWhenSkipped = (this.dataElementStreamingDecision?.reason == 'structural');
+
+        if ((this.dataElementStatus != Status.SKIP) || (shouldMaterializeWhenSkipped == true)) {
+            this.dataElement.append(chunk);
+        }
+
+        if ((isFinalChunk == true) && (this.dataElementStatus == Status.SKIP)) {
+            this.dataElement.isComplete = true;
+        }
 
     }
 
@@ -1322,6 +1591,7 @@ export default class DicomDataParser extends DataParser {
             this.dataElement = (details.valueRepresentation == ValueRepresentations.SQ) 
                 ? new AttributeSequence(details.tag, details.valueLength, null, this.data.transferSyntax) 
                 : new Attribute(details.tag, details.valueLength, null, this.data.transferSyntax);
+            this.dataElementBytesConsumed = 0;
 
             // If the STATUS is CONTINUE
             if (this.status == Status.CONTINUE) {
@@ -1349,6 +1619,13 @@ export default class DicomDataParser extends DataParser {
             if ((this.dataElementStatus == Status.JUMP) || (this.dataElementStatus == Status.STOP) || (this.dataElementStatus == Status.FAIL)) {
                 this.status = this.dataElementStatus;
             }
+
+            // Resolve the bulk-data streaming/materialization decision for this data element.
+            this.dataElementStreamingDecision = this.resolveBulkDataDecision(this.dataElement);
+            this.dataElement.isBulkStreamed = (this.dataElementStreamingDecision.streamData == true);
+            this.dataElement.isMaterialized = (this.dataElementStreamingDecision.streamData != true);
+            this.dataElement.bulkDataDecision = this.dataElementStreamingDecision.reason;
+            this.dataElement.bytesStreamed = 0;
 
         }
 
@@ -1442,8 +1719,9 @@ export default class DicomDataParser extends DataParser {
                             // Detemrine the buffer length
                             var totalLength = this.data.length();
 
-                            // Append the remaining bytes to the data-element
-                            this.dataElement.append(this.data.consume(totalLength));
+                            // Consume and process the remaining bytes for this data-element.
+                            var nextUndefinedChunk = this.data.consume(totalLength);
+                            await this.applyDataElementChunk(nextUndefinedChunk, false);
 
                             // Record bytes consumed
                             bytesConsumed += totalLength;
@@ -1451,8 +1729,9 @@ export default class DicomDataParser extends DataParser {
                         }
                         else {
 
-                            // Append the remaining bytes to the data-element
-                            this.dataElement.append(this.data.consume(index));
+                            // Consume and process the final value bytes for this data-element.
+                            var finalUndefinedChunk = this.data.consume(index);
+                            await this.applyDataElementChunk(finalUndefinedChunk, true);
 
                             // Record bytes consumed
                             bytesConsumed += index;
@@ -1478,10 +1757,15 @@ export default class DicomDataParser extends DataParser {
                     else {
 
                         // Determine the next chunk (either remaining for this element OR all remining bytes in the buffer)
-                        var bytesRemaining = Math.min(this.dataElement.bytesRemaining, this.data.length());
+                        var bytesRemaining = Math.min(
+                            Math.max(0, (this.dataElement.valueLength - this.dataElementBytesConsumed)),
+                            this.data.length()
+                        );
 
-                        // Append the data-element data 
-                        this.dataElement.append(this.data.consume(bytesRemaining));
+                        // Consume and process the next value bytes.
+                        var nextKnownChunk = this.data.consume(bytesRemaining);
+                        var isFinalKnownChunk = ((this.dataElementBytesConsumed + bytesRemaining) >= this.dataElement.valueLength);
+                        await this.applyDataElementChunk(nextKnownChunk, isFinalKnownChunk);
 
                         // Record bytes consumed
                         bytesConsumed += bytesRemaining;
@@ -1522,6 +1806,47 @@ export default class DicomDataParser extends DataParser {
     }
 
     /**
+     * Configure bulk data behavior.
+     * @param {{
+     *  mode?: 'materialize' | 'auto' | 'stream',
+     *  knownLengthThreshold?: number,
+     *  hardSafetyCap?: number
+     * } | string | null} policy The policy.
+     */
+    set bulkDataPolicy(policy) {
+
+        if (typeof policy === 'string') {
+            this.bulkDataPolicyMode = this.normalizeBulkDataPolicyMode(policy);
+            return;
+        }
+
+        if ((policy == null) || (typeof policy !== 'object'))
+            return;
+
+        if (policy.mode != null)
+            this.bulkDataPolicyMode = this.normalizeBulkDataPolicyMode(policy.mode);
+
+        if ((typeof policy.knownLengthThreshold === 'number') && (policy.knownLengthThreshold >= 0))
+            this.bulkDataKnownLengthThreshold = Math.floor(policy.knownLengthThreshold);
+
+        if ((typeof policy.hardSafetyCap === 'number') && (policy.hardSafetyCap >= 0))
+            this.bulkDataHardSafetyCap = Math.floor(policy.hardSafetyCap);
+
+    }
+
+    /**
+     * Get the current bulk data policy configuration.
+     * @returns {{mode: string, knownLengthThreshold: number, hardSafetyCap: number}} The policy.
+     */
+    get bulkDataPolicy() {
+        return {
+            mode: this.bulkDataPolicyMode,
+            knownLengthThreshold: this.bulkDataKnownLengthThreshold,
+            hardSafetyCap: this.bulkDataHardSafetyCap
+        };
+    }
+
+    /**
      * Constructos a new DICOM Parser with the associated DICOM Stream Handler.
      */
     constructor() {
@@ -1531,6 +1856,15 @@ export default class DicomDataParser extends DataParser {
 
         // Set the default part specification (Part-10)
         this.partSpecification = DicomPart10Specification;
+
+        // Configure default bulk-data handling.
+        this.bulkDataPolicyMode = DicomBulkDataPolicyMode.Auto;
+        this.bulkDataKnownLengthThreshold = (1024 * 1024); // 1 MB
+        this.bulkDataHardSafetyCap = (16 * 1024 * 1024);   // 16 MB
+
+        // Initialize data-element runtime state.
+        this.dataElementBytesConsumed = 0;
+        this.dataElementStreamingDecision = null;
 
     }
 

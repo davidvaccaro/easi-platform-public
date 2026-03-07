@@ -286,6 +286,10 @@ export default class DicomAssetArchiveHandler {
         return this.assetsHandler.onAppendAttribute(context, attribute);
     }
 
+    onAttributeChunk(context, payload) {
+        return this.assetsHandler.onAttributeChunk(context, payload);
+    }
+
     onStartMetaSet(context) {
         return this.assetsHandler.onStartMetaSet(context);
     }

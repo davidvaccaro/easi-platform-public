@@ -526,6 +526,29 @@ export default class DicomAssetsHandler {
         return this.instanceHandler.onAppendAttribute(context, attribute);
     }
 
+    /**
+     * Handle streamed attribute value chunks.
+     * For asset extraction payload flows, re-materialize streamed chunks on the attribute
+     * so downstream frame/content decoders can access complete value bytes at end-of-instance.
+     * @param {object} context Handler context.
+     * @param {{ attribute: object, chunk: Uint8Array }} payload Chunk payload.
+     */
+    onAttributeChunk(context, payload) {
+
+        var attribute = payload?.attribute;
+        var chunk = payload?.chunk;
+
+        if ((attribute?.isBulkStreamed == true)
+            && (chunk != null)
+            && (chunk.length > 0)
+            && (this.payloadOptions != null)) {
+            attribute.append(chunk);
+        }
+
+        return this.instanceHandler.onAttributeChunk(context, payload);
+
+    }
+
     onStartMetaSet(context) {
         return this.instanceHandler.onStartMetaSet(context);
     }

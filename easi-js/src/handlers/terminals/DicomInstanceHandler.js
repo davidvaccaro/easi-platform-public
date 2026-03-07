@@ -151,6 +151,9 @@ export default class DicomInstanceHandler {
     onAppendAttribute(context, attribute) {
     }
 
+    onAttributeChunk(context, payload) {
+    }
+
     onStartMetaSet(context) {
 
         // Create the new metaset

@@ -16,6 +16,9 @@
     },
     "scripts": {
         "test": "jest",
+        "bench:streaming": "RUN_STREAMING_BENCHMARKS=true jest test/benchmarks/StreamingPerformance.test.js --runInBand --coverage=false",
+        "bench:bulk-policy": "node --expose-gc test/benchmarks/runDicomBulkPolicyProbe.js",
+        "bench:compare": "node test/benchmarks/compareStreamingBenchmarks.js",
         "kitchen-sink": "node samples/kitchen-sink/server.js"
     },
     "jest": {

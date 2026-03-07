@@ -360,6 +360,24 @@ test("Test: fromNodeStreamAdapter builds with NodeStreamAdapterReader transport"
     expect(pipeline.parser.handler instanceof DicomInstanceHandler).toBe(true);
 });
 
+test("Test: withBulkDataPolicy applies parser bulk-data policy when parser supports it", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .withBulkDataPolicy({
+            mode: 'auto',
+            knownLengthThreshold: 4096,
+            hardSafetyCap: 8388608
+        })
+        .toInstances()
+        .build();
+
+    expect(pipeline.parser instanceof DicomDataParser).toBe(true);
+    expect(pipeline.parser.bulkDataPolicy.mode).toBe('auto');
+    expect(pipeline.parser.bulkDataPolicy.knownLengthThreshold).toBe(4096);
+    expect(pipeline.parser.bulkDataPolicy.hardSafetyCap).toBe(8388608);
+});
+
 test("Test: build sets onPart on configured custom reader when supported", () => {
     const onPart = () => {};
     const customReader = {

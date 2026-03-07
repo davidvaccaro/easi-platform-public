@@ -582,6 +582,11 @@ export default class DicomDeIdentificationFilter {
         return await this.forward("onAppendAttribute", context, attribute);
     }
 
+    async onAttributeChunk(context, payload) {
+        context = this.ensureState(context);
+        return await this.forward("onAttributeChunk", context, payload);
+    }
+
     async onEndPreamble(context, preamble) {
         context = this.ensureState(context);
         return await this.forward("onEndPreamble", context, preamble);

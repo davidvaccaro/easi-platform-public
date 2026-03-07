@@ -300,6 +300,16 @@ export default class PipelineBuilder {
     }
 
     /**
+     * Sets the parser bulk-data policy (when supported by the configured parser).
+     * @param {{ mode?: 'materialize' | 'auto' | 'stream', knownLengthThreshold?: number, hardSafetyCap?: number } | string | null} policy The bulk-data policy.
+     * @returns The reference to the current builder.
+     */
+    withBulkDataPolicy(policy) {
+        this.bulkDataPolicy = policy;
+        return this;
+    }
+
+    /**
      * Enables/configures the DICOM validation filter in the canonical DICOM semantic handler chain.
      * @param {boolean | string | object | null} validation Validation configuration:
      *  - `true` enables validation with defaults (permissive)
@@ -626,6 +636,11 @@ export default class PipelineBuilder {
         // Set the "strict" status
         reader.parser.isStrict = this.isStrict;
 
+        // Set parser bulk-data policy when provided and supported.
+        if ((this.bulkDataPolicy != null) && (this.hasPropertyInPrototypeChain(reader.parser, 'bulkDataPolicy') == true)) {
+            reader.parser.bulkDataPolicy = this.bulkDataPolicy;
+        }
+
         // Return the build
         return new Pipeline(reader);
 
@@ -645,6 +660,7 @@ export default class PipelineBuilder {
         this.validation = null;
         this.codecRegistry = null;
         this.resolveOnPart = false;
+        this.bulkDataPolicy = null;
 
     }
   
