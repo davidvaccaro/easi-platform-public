@@ -7,8 +7,28 @@
 import DicomAssetsHandler from './DicomAssetsHandler.js';
 import ZipArchiveWriter from '../../writers/ZipArchiveWriter.js';
 import DicomToFHIRImagingStudyMapping from '../mappings/DicomToFHIRImagingStudyMapping.js';
+import Tag from '../../dicom/Tag.js';
 
 export default class DicomAssetArchiveHandler {
+
+    /**
+     * Resolve SOP Instance UID from one parsed instance.
+     * @param {object} instance Parsed DICOM instance.
+     * @returns {string | null} The SOP Instance UID when available.
+     */
+    resolveInstanceUID(instance) {
+
+        var dataSet = instance?.dataSet;
+        if (dataSet == null)
+            return instance?.sopInstanceUid ?? null;
+
+        var attribute = dataSet.find(Tag.SOPInstanceUID);
+        if (attribute == null)
+            return instance?.sopInstanceUid ?? null;
+
+        return attribute.value ?? null;
+
+    }
 
     /**
      * Ensure one path segment does not contain path separator characters.
@@ -140,7 +160,7 @@ export default class DicomAssetArchiveHandler {
             return;
 
         this.currentArchiveState.metadata.push({
-            instanceUID: context?.instance?.sopInstanceUid ?? null,
+            instanceUID: this.resolveInstanceUID(context?.instance),
             value: metadata
         });
 
@@ -244,7 +264,7 @@ export default class DicomAssetArchiveHandler {
 
         context = this.assetsHandler.onStartInstance(context);
 
-        var instanceUID = this.safePathSegment(context?.instance?.sopInstanceUid, 'instance');
+        var instanceUID = this.safePathSegment(this.resolveInstanceUID(context?.instance), 'instance');
 
         this.currentArchiveState = {
             instanceUID: instanceUID,

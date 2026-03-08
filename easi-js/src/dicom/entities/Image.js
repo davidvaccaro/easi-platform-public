@@ -38,6 +38,10 @@ export default class Image extends Entity {
         return new ImagePixelModule(this.attributeSet);
     }
 
+    get pixels() {
+        return this.imagePixelModule;
+    }
+
     /**
      * Get the Multi Frame Module.
      * @returns The Multi Frame Module.

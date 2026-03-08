@@ -17,7 +17,7 @@ Additionally, the architecture is designed to leverage a novel streaming scheme,
 - An extensible architecture that simplifies authoring custom mappings, transformations and asset extractions of DICOM data to any data model.
 - Clean multi-language implemntation sutiable for use either on the server and then traditional client via multiple implementation languages (Java, C#, Python, JavaScript) or within the browser via pure-JavaScript.
 
-# Stream Reading DICOM Data from a Remote Source
+# Stream Processing DICOM Data from a Remote Source
 Retrieving DICOM data from a remote data source is a common operation in most medical imaging applications. The source and the transmission encoding can vary widely based on the specific environment.
 
 Some common DICOM retrieval scenarios:
@@ -29,7 +29,7 @@ Some common DICOM retrieval scenarios:
 
 Regardless of the scenario, EASI DICOM simplifies the process of efficiently retrieving DICOM data and then stream reading, parsing and processing these requests using a novel declarative pipeline methedology.
 
-## Example: Stream Reading DICOM Data and Parsing to "Instances"
+## Example: Stream Processing native DICOM Data and Emitting "Instances"
 The following code snippet "builds" a streaming pipeline, which is configured to stream-read and parse native DICOM data into one or more DICOM instances objects:
 
 ### JavaScript:
@@ -79,16 +79,14 @@ pipeline
     .process(uri)
     .then(instance => {
 
-		// Access the primary patient details
-		const patientId = instance.dataSet.find(Tag.PatientID).value; 
-		const patientName = instance.dataSet.find(Tag.PatientName).value; 
-		const patientDOB = instance.dataSet.find(Tag.PatientBirthDate).value; 
+		// Access primitive DICOM data directly from the data-set
+        const patientId = instance.dataSet.value(Tag.PatientID);
+        const patientName = instance.dataSet.value(Tag.PatientName);
+        const patientDOB = instance.dataSet.value(Tag.PatientBirthDate);
 
-		// Access the modality details
-		const modality = instance.dataSet.find(Tag.Modality).value; 
-
-		// Access the pixel-data
-		const pixels = instance.dataSet.find(Tag.PixelData).value; 
+        const rows = instance.dataSet.value(Tag.Rows);
+        const cols = instance.dataSet.value(Tag.Columns);
+        const pixelData = instance.dataSet.find(Tag.PixelData);
 
 		// Do something useful with the patient demographic 
         // and image pixel data
@@ -96,35 +94,28 @@ pipeline
     })
     .catch(err => console.log(err));
 ```
-Notice that the above code snippet assumes that the implementor is fairly familiar with the typical DICOM Standard concepts of a DICOM instance that contains a DICOM Dataset comprised of DICOM Tags. 
+Notice that the above code snippet assumes that the developer is fairly familiar with the typical DICOM Standard concepts like a DICOM instance that contains a DICOM Dataset comprised of DICOM Attriutes that can be retrieved via standard DICOM Tags. But this is only one approach. For more generic access to the DICOM data, an "entity" pipeline can be utilized.
 
-## Example: Stream Reading DICOM Data and Parsing to "Entities"
-Alternatively, implementations seeking to avoid direct DICOM data element processing could use the following code snippets to make the same request but with a simplified DICOM "entity" application programming interface as the stream-parsed result:
+## Example: Stream Processing native DICOM Data and Emitting "Entities"
+Implementations seeking to avoid direct DICOM data element processing could use the following code snippets to make the same request but with a simplified DICOM "entity" application programming interface as the stream-parsed result:
 ```js:
-const reader = EASI
+const pipeline = EASI
     .pipelineBuilder()
-    .withParser(new DicomDataParser())
-    .withHandler(new DicomEntityHandler())
-    .build();
-
-/* Which could hve been simplified to the following:
-const reader = EASI
-    .pipelineBuilder()
-    .fromPartStream().ofDicomData()
+    .fromFetchStream()
+    .ofDicomData()
     .toEntities()
     .build();
-*/
 ```
 Then processed as one or more DICOM entities as follows:
 ```js:
-reader
-    .read(uri)
+pipeline
+    .process(uri)
     .then(entity => {
 
 		// Access the primary patient details
-		const patientId = entity.patient.Id;
-		const patientName = entity.patient.Name;
-		const patientDOB = entity.patient.BirthDate;
+		const patientId = entity.patient.id;
+		const patientName = entity.patient.name;
+		const patientDOB = entity.patient.birthDate;
 
 		// Access the modality details
 		const modality = entity.series.modality; 
@@ -138,32 +129,24 @@ reader
     })
     .catch(err => console.log(err));    
 ```
-Notice that the above code snippet still assumes a basic level of knowledge of a DICOM as a data entity that has an associated patient and series. 
+Notice that the above code snippet still assumes a basic level of knowledge of a DICOM, for example, that a DICOM data entity has associated patient, series and image components. 
 
-But what if the preferred representation is the Fast Healthcare Interoperability Resources (FHIR) ImagingStudy resource?
+## Example: Stream Processing DICOM Data and Emitting "FHIR Imaging Study"
+But what if the preferred data representation is not DICOM at all but the Fast Healthcare Interoperability Resources (FHIR) ImagingStudy resource?
 
-The following code snippet makes the same request as the two above transactions except this time the stream-parsing results in an extended FHIR ImagingStudy resource:
+The following code snippet makes the same request as the two transactions above except this time, the pipeline processing results in an extended FHIR ImagingStudy resource:
 ```js:
-const reader = EASI
+const pipeline = EASI
     .pipelineBuilder()
-    .withParser(new DicomDataParser())
-    .withHandler(new DicomMappingHandler(
-        new DicomToFHIRImagingStudyMapping())
-    )
+    .fromFetchStream()
+    .ofDicomData()
+    .toFHIRImagingStudy()
     .build();
-
-/* Which could hve been simplified to the following:
-const reader = EASI
-    .pipelineBuilder()
-    .fromPartStream().ofDicomData()
-    .toFHIRImagingStudies()
-    .build();
-*/   
 ```
 Then processed as FHIR data as follows:
 ```js:
-reader
-    .read(uri)
+pipeline
+    .process(uri)
     .then(study => {
 
 		// Access the primary patient details
@@ -174,8 +157,10 @@ reader
 		// Access the modality details
 		const modality = study.series[0].modality; 
 
-		// Access the pixel-data
-		const pixels = study.series[0].instances[0].pixelData; 
+		// Access the instance UID
+		const uid = study.series[0].instances[0].uid; 
+
+        // Build a WADO-RS URI used to request the pixelData
 
 		// Do something useful with the patient demographic 
         // and image pixel data

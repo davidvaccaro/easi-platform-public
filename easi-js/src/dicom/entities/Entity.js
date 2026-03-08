@@ -20,7 +20,9 @@
 //
 
 import GeneralSeriesModule from '../modules/GeneralSeriesModule.js';
+import ImagePixelModule from '../modules/ImagePixelModule.js';
 import PatientModule from '../modules/PatientModule.js';
+import Tag from '../Tag.js';
 
 export default class Entity {
 
@@ -33,6 +35,14 @@ export default class Entity {
     }
 
     /**
+     * Get the General Series Module.
+     * @returns The Rows value.
+     */
+    get series() {
+        return this.generalSeriesModule;
+    }
+
+    /**
      * Get the Patient Module.
      * @returns The Patient Module.
      */
@@ -41,12 +51,71 @@ export default class Entity {
     }
 
     /**
+     * Get the Patient Module.
+     * @returns The Patient Module.
+     */
+    get patient() {
+        return this.patientModule;
+    }
+
+    /**
+     * Get the Image Pixel Module.
+     * @returns The Image Pixel Module.
+     */
+    get imagePixelModule() {
+        return new ImagePixelModule(this.attributeSet);
+    }
+
+    /**
+     * Get the Patient Module.
+     * @returns The Patient Module.
+     */
+    get image() {
+        return this.imagePixelModule;
+    }
+
+    /**
+     * Gets the SOP Instance UID value.
+     * @returns {string} The SOP Instance UID when available.
+     */
+    get sopInstanceUid() {
+
+        if (this.attributeSet == null)
+            return '';
+
+        var attribute = this.attributeSet.find(Tag.SOPInstanceUID);
+        if (attribute == null)
+            return '';
+
+        return attribute.value;
+
+    }
+
+    /**
+     * Get the Patient accessor.
+     * @returns {PatientModule} The Patient accessor.
+     */
+    get patient() {
+        return this.patientModule;
+    }
+
+    /**
      * Construct an DICOM Object Accessor instance.
      */
-    constructor(attributeSet) {
+    constructor(instance) {
 
-        // Set the attribute-set
-        this.attributeSet = attributeSet;
+        // Support both Instance and raw AttributeSet inputs.
+        // Prefer Instance so entities can always reference the full source object.
+        if ((instance != null)
+            && (typeof instance == 'object')
+            && (Object.prototype.hasOwnProperty.call(instance, 'dataSet') || ('dataSet' in instance))) {
+            this.instance = instance;
+            this.attributeSet = instance.dataSet;
+        }
+        else {
+            this.instance = null;
+            this.attributeSet = instance;
+        }
 
     }
 

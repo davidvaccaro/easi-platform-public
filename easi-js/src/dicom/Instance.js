@@ -19,8 +19,6 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import Tag from './Tag.js'
-
 export default class Instance {
 
     /**
@@ -81,26 +79,6 @@ export default class Instance {
      */
     set dataSet(dataSet) {
         this._dataset = dataSet;
-    }
-
-    /**
-     * Gets the SOP Instance UID value.
-     */
-    get sopInstanceUid() {
-
-        // Check the state
-        if (this.dataSet == null)
-            return '';
-
-        // Find the SOP Instance UID attribute
-        var attribute = this.dataSet.find(Tag.SOPInstanceUID);
-
-        if (attribute == null)
-            return '';
-
-        // Return the value
-        return attribute.value;
-
     }
 
     constructor() {

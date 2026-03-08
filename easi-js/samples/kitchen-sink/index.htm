@@ -222,7 +222,6 @@
 
         import Tag from '../../src/dicom/Tag.js';
         import TransferSyntax from '../../src/dicom/TransferSyntax.js';
-        import Modality from '../../src/dicom/Modality.js';
 
         import Data from '../../src/data/Data.js';
         import Attribute from '../../src/dicom/Attribute.js'
@@ -246,10 +245,6 @@
         import DicomDataParser from '../../src/parsers/DicomDataParser.js';
         import PartStreamReader from '../../src/readers/PartStreamReader.js';    
         import PipelineBuilder from '../../src/builders/PipelineBuilder.js';
-
-        import Image from '../../src/dicom/entities/Image.js';
-        import CT from '../../src/dicom/entities/CT.js';
-        import XA from '../../src/dicom/entities/XA.js';
 
         import JsonDataParser from '../../src/parsers/JsonDataParser.js';
 
@@ -454,35 +449,31 @@
                     EASI.pipelineBuilder()
                         .fromFetchStream()
                         .ofDicomData()
-                        .toInstances()
+                        .toEntities()
                 ).build();
 
                 // Read and parse the DICOM file
                 processWithTiming(pipeline, url)
                     .then(result => {
 
-                        // Establish the parsed instance
-                        var instance = (typeof result === 'array') ? result[0] : result;
+                        // Establish the parsed entity
+                        var entity = Array.isArray(result) ? result[0] : result;
 
-                        // Log the instance
-                        console.log(instance);
+                        // Log the entity
+                        console.log(entity);
 
-                        // Create a new image object from the instance
-                        var imageEntity = null;
-                        
-                        // Get the modality
-                        var modality = instance.dataSet.find(Tag.Modality).value;
+                        var patientID = entity.patient.patientID;
+                        var patientName = entity.patient.patientName;
+                        var patientDOB = entity.patient.patientBirthDate;
 
-                        if (modality == Modality.CT.ID) {
-                            imageEntity = new CT(instance.dataSet);
+                        // Establish the image entity when available
+                        var imageEntity = (entity && (typeof entity.decodeFrame == 'function')) ? entity : null;
+
+                        if (imageEntity == null) {
+                            console.log('No image entity available for the selected file.');
+                            return;
                         }
-                        else if (modality == Modality.XA.ID) {
-                            imageEntity = new XA(instance.dataSet);
-                        }
-                        else {
-                            imageEntity = new Image(instance.dataSet);
-                        }
-                                            
+                                                                    
                         // Create the destination for the decode (4 BYTES PER PIXEL)
                         var destination = new Uint8Array(imageEntity.imagePixelModule.columns * imageEntity.imagePixelModule.rows * 4);
 

@@ -938,6 +938,25 @@ export default class DicomAssetsHandler {
     }
 
     /**
+     * Resolve SOP Instance UID from one parsed instance.
+     * @param {object} instance Parsed DICOM instance.
+     * @returns {string | null} The SOP Instance UID when available.
+     */
+    resolveInstanceUID(instance) {
+
+        var dataSet = instance?.dataSet;
+        if (dataSet == null)
+            return instance?.sopInstanceUid ?? null;
+
+        var attribute = dataSet.find(Tag.SOPInstanceUID);
+        if (attribute == null)
+            return instance?.sopInstanceUid ?? null;
+
+        return attribute.value ?? null;
+
+    }
+
+    /**
      * Process one parsed instance for metadata/payload extraction.
      * @param {object} context Handler context.
      * @param {object} instance Parsed DICOM instance.
@@ -946,7 +965,7 @@ export default class DicomAssetsHandler {
     async processInstance(context, instance) {
 
         var result = {
-            instanceUID: instance?.sopInstanceUid ?? null
+            instanceUID: this.resolveInstanceUID(instance)
         };
 
         await this.emitMetadata(context, instance, result);

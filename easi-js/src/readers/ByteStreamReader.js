@@ -36,7 +36,7 @@ export default class ByteStreamReader {
     /**
      * Read one byte source.
      * @param {Uint8Array | ArrayBuffer | DataView | Array<number>} source The source bytes.
-     * @param {{ contentType?: string | object, contentLength?: number | string | null } | null} options Optional content metadata.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, onPart?: Function | null } | null} options Optional content metadata.
      * @returns {Promise<object>} The parser result.
      */
     read(source, options = null) {
@@ -93,4 +93,3 @@ export default class ByteStreamReader {
     }
 
 }
-

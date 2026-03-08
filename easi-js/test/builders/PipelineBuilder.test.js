@@ -9,6 +9,7 @@ import WebSocketStreamReader from "../../src/readers/WebSocketStreamReader.js";
 import NodeStreamAdapterReader from "../../src/readers/NodeStreamAdapterReader.js";
 import Pipeline from "../../src/pipelines/Pipeline.js";
 import DicomInstanceHandler from "../../src/handlers/terminals/DicomInstanceHandler.js";
+import DicomEntityHandler from "../../src/handlers/terminals/DicomEntityHandler.js";
 import DicomDeIdentificationFilter from "../../src/handlers/filters/DicomDeIdentificationFilter.js";
 import DicomValidationFilter, { ValidationGoals } from "../../src/handlers/filters/DicomValidationFilter.js";
 import DicomJsonMetadataAdapter from "../../src/handlers/adapters/DicomJsonMetadataAdapter.js";
@@ -210,6 +211,27 @@ test("Test: build composes metadata adapter with shared handler", () => {
     expect(pipeline instanceof Pipeline).toBe(true);
     expect(pipeline.parser instanceof JsonDataParser).toBe(true);
     expect(pipeline.parser.handler instanceof DicomJsonMetadataAdapter).toBe(true);
+});
+
+test("Test: toEntities builds with DicomEntityHandler for native DICOM parser", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toEntities()
+        .build();
+
+    expect(pipeline.parser instanceof DicomDataParser).toBe(true);
+    expect(pipeline.parser.handler instanceof DicomEntityHandler).toBe(true);
+});
+
+test("Test: toEntities composes JSON metadata adapter for metadata parser", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomMetadata()
+        .toEntities()
+        .build();
+
+    expect(pipeline.parser instanceof JsonDataParser).toBe(true);
+    expect(pipeline.parser.handler instanceof DicomJsonMetadataAdapter).toBe(true);
+    expect(pipeline.parser.handler.nextHandler instanceof DicomEntityHandler).toBe(true);
 });
 
 test("Test: toMapping builds with DicomMappingHandler", () => {

@@ -34,10 +34,12 @@ test('Test: read forwards fetch headers/options for URL sources', async () => {
         });
 
         const reader = new FetchStreamReader(partReader);
+        const onPart = () => {};
         const result = await reader.read('http://example.test/metadata', {
             headers: {
                 Accept: 'application/dicom+xml'
-            }
+            },
+            onPart: onPart
         });
 
         expect(global.fetch).toHaveBeenCalledTimes(1);
@@ -47,10 +49,12 @@ test('Test: read forwards fetch headers/options for URL sources', async () => {
                 Accept: 'application/dicom+xml'
             })
         }));
+        expect(global.fetch.mock.calls[0][1].onPart).toBeUndefined();
 
         expect(partReader.readStream).toHaveBeenCalledTimes(1);
         expect(partReader.readStream).toHaveBeenCalledWith(body, expect.objectContaining({
             contentLength: '1',
+            onPart: onPart,
             contentType: expect.objectContaining({
                 'content-type': 'application/dicom+xml',
                 isMultiPart: false
@@ -64,4 +68,3 @@ test('Test: read forwards fetch headers/options for URL sources', async () => {
     }
 
 });
-

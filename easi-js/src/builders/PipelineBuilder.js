@@ -33,6 +33,7 @@ import XmlDataParser from "../parsers/XmlDataParser.js";
 import DicomToFHIRImagingStudyMapping from '../handlers/mappings/DicomToFHIRImagingStudyMapping.js';
 
 import DicomInstanceHandler from "../handlers/terminals/DicomInstanceHandler.js";
+import DicomEntityHandler from "../handlers/terminals/DicomEntityHandler.js";
 import DicomMappingHandler from '../handlers/terminals/DicomMappingHandler.js';
 import DicomSelectingHandler from "../handlers/terminals/DicomSelectingHandler.js";
 import DicomAssetsHandler from "../handlers/terminals/DicomAssetsHandler.js";
@@ -125,6 +126,7 @@ export default class PipelineBuilder {
         if ((parser instanceof JsonDataParser) || (parser instanceof XmlDataParser)) {
 
             if ((handler instanceof DicomInstanceHandler)
+                || (handler instanceof DicomEntityHandler)
                 || (handler instanceof DicomMappingHandler)
                 || (handler instanceof DicomSelectingHandler)
                 || (handler instanceof DicomAssetsHandler)
@@ -472,6 +474,24 @@ export default class PipelineBuilder {
     }
 
     /**
+     * Sets the current build to stream-parse to DICOM entities.
+     * @returns The reference to the current builder.
+     */
+    toEntities() {
+
+        // ...into DICOM entities
+        if ((this.parser instanceof DicomDataParser) || (this.parser == null))
+            return this.withHandler(new DicomEntityHandler());
+        else if (this.parser instanceof JsonDataParser)
+            return this.withHandler(new DicomJsonMetadataAdapter(new DicomEntityHandler()));
+        else if (this.parser instanceof XmlDataParser)
+            return this.withHandler(new DicomXmlMetadataAdapter(new DicomEntityHandler()));
+
+        return this.withHandler(new DicomEntityHandler());
+
+    }
+
+    /**
      * Sets the current build to stream-parse to a mapping.
      * @returns The reference to the current builder.
      */
@@ -607,7 +627,7 @@ export default class PipelineBuilder {
         // Fail if no handler was configured
         if (this.handler == null) {
             throw new Exception(
-                'PipelineBuilder.build requires a handler. Call toInstances(), toSelection(...), toMappedData(...), toFHIRImagingStudy(), toDicomData(...), toAssets(...), toAssetArchive(...), or withHandler(...).',
+                'PipelineBuilder.build requires a handler. Call toInstances(), toEntities(), toSelection(...), toMappedData(...), toFHIRImagingStudy(), toDicomData(...), toAssets(...), toAssetArchive(...), or withHandler(...).',
                 BuilderErrorCodes.MissingHandler
             );
         }

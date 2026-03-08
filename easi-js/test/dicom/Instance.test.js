@@ -2,8 +2,6 @@ import EASI from '../../src/EASI.js';
 import Constants from '../../src/dicom/Constants.js'
 import DicomDataParser from '../../src/parsers/DicomDataParser.js';
 import DicomInstanceHandler from '../../src/handlers/terminals/DicomInstanceHandler.js';
-import Instance from '../../src/dicom/Instance.js';
-import DataSet from '../../src/dicom/DataSet.js';
 
 const { exec } = require("child_process");
 const path = require('path');
@@ -56,19 +54,4 @@ test("Test: MetaSet IsComplete", () => {
 
 test("Test: DataSet IsComplete", () => {
     expect(instance.dataSet.isComplete).toBe(true);
-});
-
-test("Test: SOP Instance UID", () => {
-    expect(instance.sopInstanceUid).toBe('1.3.12.2.1107.5.4.3.321890.19960124.162922.29');
-});
-
-test("Test: SOP Instance UID NOT SET", () => {
-    var inst = new Instance();
-    inst.dataSet = new DataSet();
-    expect(inst.sopInstanceUid).toBe('');
-});
-
-test("Test: SOP Instance UID NOT SET", () => {
-    var inst = new Instance();
-    expect(inst.sopInstanceUid).toBe('');
 });

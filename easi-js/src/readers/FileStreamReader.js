@@ -57,16 +57,22 @@ export default class FileStreamReader {
     /**
      * Read one file-like browser source.
      * @param {object} file The browser File/Blob-like object.
-     * @param {object | null} options Optional read options.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, onPart?: Function | null } | null} options Optional read options.
      * @returns {Promise<object>} The parser result.
      */
     async readBrowserFile(file, options = null) {
 
         if ((file != null) && (typeof file.stream === 'function')) {
-            return this._partReader.readStream(file.stream(), {
+            var streamOptions = {
                 contentType: (options?.contentType != null) ? options.contentType : (file.type || 'application/dicom'),
                 contentLength: (options?.contentLength != null) ? options.contentLength : (file.size ?? null)
-            });
+            };
+
+            if ((options != null) && (Object.prototype.hasOwnProperty.call(options, 'onPart') == true)) {
+                streamOptions.onPart = options.onPart;
+            }
+
+            return this._partReader.readStream(file.stream(), streamOptions);
         }
 
         if ((file != null) && (typeof file.arrayBuffer === 'function')) {
@@ -81,7 +87,7 @@ export default class FileStreamReader {
     /**
      * Read one Node file path source.
      * @param {string} filePath The file path.
-     * @param {object | null} options Optional read options.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, onPart?: Function | null } | null} options Optional read options.
      * @returns {Promise<object>} The parser result.
      */
     async readNodeFile(filePath, options = null) {
@@ -92,17 +98,23 @@ export default class FileStreamReader {
         var stat = await fsPromises.stat(filePath);
         var stream = fs.createReadStream(filePath);
 
-        return this._nodeStreamReader.read(stream, {
+        var streamOptions = {
             contentType: (options?.contentType != null) ? options.contentType : this.inferContentType(filePath),
             contentLength: (options?.contentLength != null) ? options.contentLength : stat.size
-        });
+        };
+
+        if ((options != null) && (Object.prototype.hasOwnProperty.call(options, 'onPart') == true)) {
+            streamOptions.onPart = options.onPart;
+        }
+
+        return this._nodeStreamReader.read(stream, streamOptions);
 
     }
 
     /**
      * Read one file source.
      * @param {string | object} source File path string or browser File/Blob-like object.
-     * @param {object | null} options Optional read options.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, onPart?: Function | null } | null} options Optional read options.
      * @returns {Promise<object>} The parser result.
      */
     read(source, options = null) {

@@ -33,11 +33,27 @@ export default class PatientModule extends Module {
     }
 
     /**
+     * Get the Patient Name.
+     * @returns The Patient Name value.
+     */
+    get name() {
+        return this.patientName;
+    }
+
+    /**
      * Get the Patient ID.
      * @returns The Patient ID value.
      */
-    get patientID() {
+    get patientId() {
         return this.attributeSet.value(Tag.PatientID);
+    }
+
+    /**
+     * Get the Patient ID.
+     * @returns The Patient ID value.
+     */
+    get id() {
+        return this.patientID;
     }
 
     /**
@@ -65,6 +81,14 @@ export default class PatientModule extends Module {
     }
 
     /**
+     * Get the Patient Birth Date.
+     * @returns The Patient Birth Date value.
+     */
+    get birthDate() {
+        return this.patientBirthDate;
+    }
+
+    /**
      * Get the Patient Birth Time.
      * @returns The Patient Birth Time value.
      */
@@ -73,11 +97,27 @@ export default class PatientModule extends Module {
     }
 
     /**
+     * Get the Patient Birth Time.
+     * @returns The Patient Birth Time value.
+     */
+    get birthTime() {
+        return this.patientBirthTime;
+    }
+
+    /**
      * Get the Patient Sex.
      * @returns The Patient Sex value.
      */
     get patientSex() {
         return this.attributeSet.value(Tag.PatientSex);
+    }
+
+    /**
+     * Get the Patient Sex.
+     * @returns The Patient Sex value.
+     */
+    get sex() {
+        return this.patientSex;
     }
 
     /**

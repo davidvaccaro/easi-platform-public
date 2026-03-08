@@ -37,7 +37,7 @@ test("Test: PatientModule Accessors Read Standard Patient Module Tags", () => {
     var module = new PatientModule(attributeSet);
 
     expect(module.patientName).toBe('Doe^Jane');
-    expect(module.patientID).toBe('12345');
+    expect(module.patientId).toBe('12345');
     expect(module.issuerOfPatientID).toBe('HOSPITAL-A');
     expect(module.typeOfPatientID).toBe('TEXT');
     expect(module.patientBirthDate).toBe('19800101');

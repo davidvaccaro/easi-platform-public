@@ -14,7 +14,7 @@ export default class FetchStreamReader {
     /**
      * Read and parse one URL source via fetch transport.
      * @param {string} url The source URL.
-     * @param {RequestInit | null} requestOptions Optional fetch options.
+     * @param {(RequestInit & { onPart?: Function | null }) | null} requestOptions Optional fetch options.
      * @returns {Promise<object>} The parser result.
      */
     async readUrl(url, requestOptions = null) {
@@ -23,25 +23,39 @@ export default class FetchStreamReader {
             throw new Exception('Invalid source URL.', GeneralErrorCodes.InvalidParameter);
         }
 
+        var fetchOptions = Object.assign({}, (requestOptions != null) ? requestOptions : {});
+        var hasOnPart = (Object.prototype.hasOwnProperty.call(fetchOptions, 'onPart') == true);
+        var onPart = hasOnPart ? fetchOptions.onPart : undefined;
+
+        if (hasOnPart == true) {
+            delete fetchOptions.onPart;
+        }
+
         var response = await fetch(url, Object.assign({
             method: 'GET'
-        }, (requestOptions != null) ? requestOptions : {}));
+        }, fetchOptions));
 
         if ((response == null) || (response.body == null)) {
             throw new Exception('Invalid fetch response. Missing response body stream.', GeneralErrorCodes.GeneralError);
         }
 
-        return this._partReader.readStream(response.body, {
+        var streamOptions = {
             contentType: PartContentType.parse(response),
             contentLength: (response.headers != null) ? response.headers.get('content-length') : null
-        });
+        };
+
+        if (hasOnPart == true) {
+            streamOptions.onPart = onPart;
+        }
+
+        return this._partReader.readStream(response.body, streamOptions);
 
     }
 
     /**
      * Read and parse one source, routing URL sources through fetch transport.
      * @param {string | ReadableStream | ReadableStreamDefaultReader<Uint8Array> | Uint8Array | ArrayBuffer | DataView | Array<number>} source The source payload.
-     * @param {RequestInit | object | null} options Fetch options for URL sources or stream metadata for non-URL stream sources.
+     * @param {(RequestInit & { onPart?: Function | null }) | object | null} options Fetch options for URL sources or stream metadata for non-URL stream sources.
      * @returns {Promise<object>} The parser result.
      */
     read(source, options = null) {
@@ -94,4 +108,3 @@ export default class FetchStreamReader {
     }
 
 }
-
