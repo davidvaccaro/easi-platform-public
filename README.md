@@ -6,54 +6,77 @@ Over four decades of continuous development, Digital Imaging and Communication i
 A modern approach to medical imaging is needed - one that fully leverages the DICOM Standard but also introduces powerful and flexible functions to shoulder the burden of its expansive nature. Such an approach would not only offer a more gradual entry point for newcomers but also ensure that traditional access to the standard is not compromised.
 
 ### Solution
-To tame the complexity of this substantial standard, EASI DICOM offers a novel programming interface. This interface is not only suitable for productive implementations, but also adaptable to accommodate a wide range of skill levels.
+To tame the complexity of this substantial standard, EASI DICOM offers a novel programming interface. This interface is not only suitable for traditioinal radiological implementations, but also adaptable to accommodate many medical imaging information processing use-cases and accomodate wide range of developer skill levels.
 
-Additionally, the architecture is designed to leverage a novel streaming scheme, providing remarkable levels of performance and flexibility when reading and extracting data from existing medical images, as well as composing new ones.
-
-EASI DICOM is efficient, adaptable, extendable, and offers a coder-friendly programming interface suitable for all experience levels.
+Additionally, the architecture is designed to leverage a novel streaming scheme, providing remarkable levels of performance, efficiency and flexibility when reading, extracting, transforming and composing medical image information.
 
 ### Key Features
 
-- Efficient streaming scheme for reading and writing DICOM data.
+- Efficient streaming pipeline architecture for stream-reading, parsing, transforming and writing DICOM data.
 - A coder-friendly programming interface that allows for productive implementations without requiring expert knowledge of the DICOM Standard.
-- An extensible architecture that simplifies authoring custom mappings of DICOM data to any data model.
-- Clean pure-Javascript implementation sutiable for use on either the server through Node.js or the client within the browser.
-- TBD
+- An extensible architecture that simplifies authoring custom mappings, transformations and asset extractions of DICOM data to any data model.
+- Clean multi-language implemntation sutiable for use either on the server and then traditional client via multiple implementation languages (Java, C#, Python, JavaScript) or within the browser via pure-JavaScript.
 
 # Stream Reading DICOM Data from a Remote Source
-Retrieving DICOM data from a remote data source is a prevalent operation in most medical imaging applications. The source and the transmission encoding can vary widely based on the specific environment.
+Retrieving DICOM data from a remote data source is a common operation in most medical imaging applications. The source and the transmission encoding can vary widely based on the specific environment.
 
-Here are some common source transaction scenarios:
+Some common DICOM retrieval scenarios:
 
-- A straightforward file source providing raw DICOM data or DICOM JSON/XML metadata in response to standard HTTP GET requests.
-- A DICOMweb service source offering raw DICOM data or DICOM JSON/XML metadata via WADO-RS or WADO-URI HTTP requests.
-- An IHE XDS-I Imaging Document Source delivering raw DICOM data or DICOM JSON/XML metadata through RAD-55 HTTP requests.
+- A traditional native DICOM data file or DICOM JSON/XML metadata file is retrieved either from a local file-system or via a standard HTTP GET request.
+- A DICOMweb service source offering access to native DICOM data and/or DICOM JSON/XML metadata via WADO-RS or WADO-URI via standard HTTP GET requests.
+- An IHE XDS-I Imaging Document Source delivering native DICOM data and/or DICOM JSON/XML metadata through RAD-55 transcation via HTTP GET requests.
+- A traditional PACS offering access to native DICOM data via the traditional TCP/IP-based DIMSE (DICOM Message Service Element) C-GET transaction.
 
-Regardless of the source scheme, EASI DICOM simplifies the process of building, issuing, and processing these requests.
+Regardless of the scenario, EASI DICOM simplifies the process of efficiently retrieving DICOM data and then stream reading, parsing and processing these requests using a novel declarative pipeline methedology.
 
 ## Example: Stream Reading DICOM Data and Parsing to "Instances"
-The following code snippet "builds" a streaming reader, which is set to stream-parse DICOM data into one or more DICOM instances:
-```js:
-const reader = EASI
-    .pipelineBuilder()
-    .withParser(new DicomDataParser())
-    .withHandler(new DicomInstanceHandler())
-    .build();
+The following code snippet "builds" a streaming pipeline, which is configured to stream-read and parse native DICOM data into one or more DICOM instances objects:
 
-/* Which could hve been simplified to the following:
-const reader = EASI
+### JavaScript:
+```js
+const pipeline = EASI
     .pipelineBuilder()
-    .fromPartStream().ofDicomData()
+    .fromFetchStream()
+    .ofDicomData()
     .toInstances()
     .build();
-*/
 ```
-Using the above configured streaming reader, the following code snippet then stream-reads and stream-parses DICOM data from a specified URI (using HTTP GET by default) and results in one (or more) DICOM instances that can be used to directly access typical DICOM data elements. 
+### Python:
+```python
+pipeline = (
+    EASI.pipeline_builder()
+        .from_fetch_stream()
+        .of_dicom_data()
+        .to_instances()
+        .build()
+)
+```
+### C#:
+```csharp
+var pipeline = EASI
+    .PipelineBuilder()
+    .FromFetchStream()
+    .OfDicomData()
+    .ToInstances()
+    .Build();
+```
+### Java:
+```java
+var pipeline = EASI
+    .pipelineBuilder()
+    .fromFetchStream()
+    .ofDicomData()
+    .toInstances()
+    .build();
+```
+Using the above configured pipeline, the following code snippet then stream-reads and parses DICOM data from a specified URI (using HTTP GET by default) and results in one (or more) DICOM instances that can be used to directly access typical DICOM data elements. 
 
-NOTE: Whether the remote service delivers a single 'application/dicom' response payload or an HTTP Multipart response consisting of multiple 'application/dicom' data parts, the stream reader will automatically detect and correctly process each response as appropriate.
-```javascript:
-reader
-    .read(uri)
+NOTE: Whether the remote service delivers a single 'application/dicom' response payload or an HTTP Multipart response consisting of multiple 'application/dicom' data parts, the stream reading will automatically detect and correctly process each response part as appropriate.
+
+### JavaScript
+```js
+pipeline
+    .process(uri)
     .then(instance => {
 
 		// Access the primary patient details

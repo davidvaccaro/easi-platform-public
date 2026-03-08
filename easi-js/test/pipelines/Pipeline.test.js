@@ -16,7 +16,7 @@ test('Test: Pipeline.process delegates to configured reader', async () => {
 
 });
 
-test('Test: Pipeline.read aliases Pipeline.process', async () => {
+test('Test: Pipeline.process', async () => {
 
     const reader = {
         parser: { handler: {} },
@@ -24,7 +24,7 @@ test('Test: Pipeline.read aliases Pipeline.process', async () => {
     };
 
     const pipeline = new Pipeline(reader);
-    const result = await pipeline.read('ignored');
+    const result = await pipeline.process('ignored');
 
     expect(result).toBe('result');
 

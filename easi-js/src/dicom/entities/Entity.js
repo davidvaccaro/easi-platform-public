@@ -20,6 +20,7 @@
 //
 
 import GeneralSeriesModule from '../modules/GeneralSeriesModule.js';
+import PatientModule from '../modules/PatientModule.js';
 
 export default class Entity {
 
@@ -29,6 +30,14 @@ export default class Entity {
      */
     get generalSeriesModule() {
         return new GeneralSeriesModule(this.attributeSet);
+    }
+
+    /**
+     * Get the Patient Module.
+     * @returns The Patient Module.
+     */
+    get patientModule() {
+        return new PatientModule(this.attributeSet);
     }
 
     /**

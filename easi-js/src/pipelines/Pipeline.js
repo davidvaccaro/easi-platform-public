@@ -17,16 +17,6 @@ export default class Pipeline {
     }
 
     /**
-     * Backward-compatible alias for process.
-     * @param {any} source The input source passed to the configured reader.
-     * @param {any} options Optional source options passed to the configured reader.
-     * @returns {Promise<any>} The terminal pipeline output.
-     */
-    read(source, options = null) {
-        return this.process(source, options);
-    }
-
-    /**
      * Get the configured reader.
      * @returns {object} The configured reader.
      */
