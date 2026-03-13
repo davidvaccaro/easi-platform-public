@@ -169,7 +169,7 @@ export default class WebSocketStreamReader {
     /**
      * Read one socket source.
      * @param {object} socket The socket source.
-     * @param {{ contentType?: string | object, contentLength?: number | string | null, maxMessages?: number | null, onPart?: Function | null } | null} options Optional read options.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, maxMessages?: number | null, onEmit?: Function | null } | null} options Optional read options.
      * @returns {Promise<object>} The parser result.
      */
     async read(socket, options = null) {

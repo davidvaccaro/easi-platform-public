@@ -88,11 +88,12 @@ export default class PipelineBuilder {
     }
 
     /**
-     * Determines if the reader supports the `onPart` contract.
+     * Determines if the reader supports emission callbacks.
+     * Reader-level emission is implemented with the internal `onPart` contract.
      * @param {object} reader The reader instance.
-     * @returns {boolean} True if `onPart` is present in the object/prototype chain.
+     * @returns {boolean} True if internal `onPart` is present in the object/prototype chain.
      */
-    supportsOnPart(reader) {
+    supportsOnEmit(reader) {
         return this.hasPropertyInPrototypeChain(reader, 'onPart');
     }
 
@@ -293,11 +294,12 @@ export default class PipelineBuilder {
     }
 
     /**
-     * Sets the "onPart" option for the stream-read session.
-     * @param {Function} onPart The "onPart" function handler called to resolve each part of a multi-part stream. 
+     * Sets the "onEmit" callback for the stream-read session.
+     * @param {Function | null} onEmit The callback invoked whenever the pipeline emits a parsed result.
+     * @returns The reference to the current builder.
      */
-    withOnPart(onPart) {
-        this.onPart = onPart;
+    withOnEmit(onEmit) {
+        this.onEmit = onEmit;
         return this;
     }
 
@@ -608,11 +610,11 @@ export default class PipelineBuilder {
      */
     build() {
 
-        // Validate the "onPart" option
-        if ((this.onPart != null) && (typeof this.onPart != 'function')) {
+        // Validate the "onEmit" option
+        if ((this.onEmit != null) && (typeof this.onEmit != 'function')) {
             throw new Exception(
-                'PipelineBuilder.build requires "onPart" to be a function or null.',
-                BuilderErrorCodes.InvalidOnPart
+                'PipelineBuilder.build requires "onEmit" to be a function or null.',
+                BuilderErrorCodes.InvalidOnEmit
             );
         }
 
@@ -663,16 +665,16 @@ export default class PipelineBuilder {
             ? this.reader
             : new PartStreamReader();
 
-        // Validate "onPart" compatibility
-        if ((this.onPart != null) && (this.supportsOnPart(reader) == false)) {
+        // Validate "onEmit" compatibility
+        if ((this.onEmit != null) && (this.supportsOnEmit(reader) == false)) {
             throw new Exception(
-                `The configured reader '${DiagnosticUtils.getTypeName(reader)}' does not support onPart.`,
-                BuilderErrorCodes.IncompatibleOnPartAndReader
+                `The configured reader '${DiagnosticUtils.getTypeName(reader)}' does not support onEmit.`,
+                BuilderErrorCodes.IncompatibleOnEmitAndReader
             );
         }
 
-        // Set the "onPart" option
-        reader.onPart = this.onPart;
+        // Set the internal reader "onPart" from the public pipeline "onEmit" callback.
+        reader.onPart = this.onEmit;
 
         // Compose the handler chain without mutating the builder state
         const parser = this.parser;
@@ -742,7 +744,7 @@ export default class PipelineBuilder {
         this.mask = null;
         this.validation = null;
         this.codecRegistry = null;
-        this.resolveOnPart = false;
+        this.onEmit = null;
         this.bulkDataPolicy = null;
 
     }

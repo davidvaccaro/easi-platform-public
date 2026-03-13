@@ -72,7 +72,30 @@ test('Test: readData processes byte source with parser', async () => {
 
 });
 
-test('Test: readStream uses per-transaction onPart override', async () => {
+test('Test: readData emits one onEmit callback for single-part byte source', async () => {
+
+    const reader = new PartStreamReader();
+    const parser = {
+        result: { ok: true },
+        error: null,
+        reset: jest.fn(),
+        parse: jest.fn(async () => Status.SUCCESS)
+    };
+
+    const onEmit = jest.fn(async () => Status.CONTINUE);
+
+    reader.parser = parser;
+
+    const result = await reader.readData(new Uint8Array([1, 2, 3]), {
+        onEmit: onEmit
+    });
+
+    expect(result).toEqual({ ok: true });
+    expect(onEmit).toHaveBeenCalledTimes(1);
+
+});
+
+test('Test: readStream uses per-transaction onEmit override', async () => {
 
     const reader = new PartStreamReader();
     const boundary = 'tx-boundary';
@@ -91,23 +114,23 @@ test('Test: readStream uses per-transaction onPart override', async () => {
         })
     };
 
-    const defaultOnPart = jest.fn(async () => Status.CONTINUE);
-    const transactionOnPart = jest.fn(async () => Status.CONTINUE);
+    const defaultOnEmit = jest.fn(async () => Status.CONTINUE);
+    const transactionOnEmit = jest.fn(async () => Status.CONTINUE);
 
     reader.parser = parser;
-    reader.onPart = defaultOnPart;
+    reader.onPart = defaultOnEmit;
 
     await reader.readStream(createSingleChunkReader(bytes), {
         contentType: 'multipart/related; boundary=' + boundary,
-        onPart: transactionOnPart
+        onEmit: transactionOnEmit
     });
 
-    expect(transactionOnPart).toHaveBeenCalledTimes(2);
-    expect(defaultOnPart).toHaveBeenCalledTimes(0);
+    expect(transactionOnEmit).toHaveBeenCalledTimes(2);
+    expect(defaultOnEmit).toHaveBeenCalledTimes(0);
 
 });
 
-test('Test: readStream uses default onPart when no transaction override provided', async () => {
+test('Test: readStream uses default onEmit when no transaction override provided', async () => {
 
     const reader = new PartStreamReader();
     const boundary = 'default-boundary';
@@ -126,20 +149,20 @@ test('Test: readStream uses default onPart when no transaction override provided
         })
     };
 
-    const defaultOnPart = jest.fn(async () => Status.CONTINUE);
+    const defaultOnEmit = jest.fn(async () => Status.CONTINUE);
 
     reader.parser = parser;
-    reader.onPart = defaultOnPart;
+    reader.onPart = defaultOnEmit;
 
     await reader.readStream(createSingleChunkReader(bytes), {
         contentType: 'multipart/related; boundary=' + boundary
     });
 
-    expect(defaultOnPart).toHaveBeenCalledTimes(2);
+    expect(defaultOnEmit).toHaveBeenCalledTimes(2);
 
 });
 
-test('Test: readStream allows disabling default onPart per transaction with null override', async () => {
+test('Test: readStream allows disabling default onEmit per transaction with null override', async () => {
 
     const reader = new PartStreamReader();
     const boundary = 'disabled-boundary';
@@ -158,16 +181,16 @@ test('Test: readStream allows disabling default onPart per transaction with null
         })
     };
 
-    const defaultOnPart = jest.fn(async () => Status.CONTINUE);
+    const defaultOnEmit = jest.fn(async () => Status.CONTINUE);
 
     reader.parser = parser;
-    reader.onPart = defaultOnPart;
+    reader.onPart = defaultOnEmit;
 
     await reader.readStream(createSingleChunkReader(bytes), {
         contentType: 'multipart/related; boundary=' + boundary,
-        onPart: null
+        onEmit: null
     });
 
-    expect(defaultOnPart).toHaveBeenCalledTimes(0);
+    expect(defaultOnEmit).toHaveBeenCalledTimes(0);
 
 });

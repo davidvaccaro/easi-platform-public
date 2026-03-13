@@ -66,7 +66,8 @@ export var BuilderErrorCodes = {
     IncompatibleParserAndHandler: 'IncompatibleParserAndHandler',
     IncompatibleMaskAndParser: 'IncompatibleMaskAndParser',
     IncompatibleValidationAndParser: 'IncompatibleValidationAndParser',
-    IncompatibleOnPartAndReader: 'IncompatibleOnPartAndReader',
+    IncompatibleOnEmitAndReader: 'IncompatibleOnEmitAndReader',
+    InvalidOnEmit: 'InvalidOnEmit',
     InvalidOnPart: 'InvalidOnPart',
     InvalidBuildState: 'InvalidBuildState'
 };

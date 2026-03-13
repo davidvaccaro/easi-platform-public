@@ -84,30 +84,47 @@ export default class PartStreamReader {
     }
 
     /**
-     * Resolve effective onPart callback for one read transaction.
+     * Resolve effective emission callback for one read transaction.
      * Priority:
-     * 1. Per-read options.onPart when explicitly provided (including null to disable).
-     * 2. Reader-level onPart configured via builder.
+     * 1. Per-read options.onEmit when explicitly provided (including null to disable).
+     * 2. Reader-level internal onPart callback configured via builder.
      * @param {object | null} options Read options.
-     * @returns {Function | null} Effective onPart callback.
+     * @returns {Function | null} Effective emission callback.
      */
-    resolveOnPart(options = null) {
+    resolveOnEmit(options = null) {
 
         if ((options == null) || (typeof options !== 'object')) {
             return this.onPart;
         }
 
-        if (Object.prototype.hasOwnProperty.call(options, 'onPart') == false) {
+        if (Object.prototype.hasOwnProperty.call(options, 'onEmit') == false) {
             return this.onPart;
         }
 
-        var onPart = options.onPart;
+        var onEmit = options.onEmit;
 
-        if ((onPart != null) && (typeof onPart !== 'function')) {
-            throw new Exception('Invalid "onPart" option. Expected function or null.', GeneralErrorCodes.InvalidParameter);
+        if ((onEmit != null) && (typeof onEmit !== 'function')) {
+            throw new Exception('Invalid "onEmit" option. Expected function or null.', GeneralErrorCodes.InvalidParameter);
         }
 
-        return onPart;
+        return onEmit;
+
+    }
+
+    /**
+     * Emit one parsed result through the active emission callback.
+     * @param {*} result The parsed result.
+     * @param {Function | null} onEmit The emission callback.
+     */
+    async emitResult(result, onEmit = null) {
+
+        if (onEmit == null)
+            return;
+
+        var emitStatus = await onEmit(result);
+        if (emitStatus === Status.FAIL) {
+            throw new Exception('Failed processing emitted result.', GeneralErrorCodes.GeneralError);
+        }
 
     }
 
@@ -116,10 +133,10 @@ export default class PartStreamReader {
      * @param {ReadableStreamDefaultReader<Uint8Array>} reader The source reader.
      * @param {object} contentType Parsed content-type metadata.
      * @param {number | string | null} contentLength Optional content length.
-     * @param {Function | null} onPart Effective onPart callback for this read transaction.
+     * @param {Function | null} onEmit Effective emission callback for this read transaction.
      * @returns {Promise<object>} The parser result.
      */
-    async processSinglePart(reader, contentType, contentLength, onPart = null) {
+    async processSinglePart(reader, contentType, contentLength, onEmit = null) {
 
         var status = Status.CONTINUE;
         var contentRead = 0;
@@ -140,8 +157,11 @@ export default class PartStreamReader {
 
             }
 
-            if ((status === Status.SUCCESS) || (status === Status.STOP) || (status === Status.JUMP))
-                return this._parser.result;
+            if ((status === Status.SUCCESS) || (status === Status.STOP) || (status === Status.JUMP)) {
+                var result = this._parser.result;
+                await this.emitResult(result, onEmit);
+                return result;
+            }
 
             if (this._parser.error != null)
                 throw this._parser.error;
@@ -164,10 +184,10 @@ export default class PartStreamReader {
      * @param {ReadableStreamDefaultReader<Uint8Array>} reader The source reader.
      * @param {object} contentType Parsed content-type metadata.
      * @param {number | string | null} contentLength Optional content length.
-     * @param {Function | null} onPart Effective onPart callback for this read transaction.
+     * @param {Function | null} onEmit Effective emission callback for this read transaction.
      * @returns {Promise<object>} The parser result.
      */
-    async processMultiPart(reader, contentType, contentLength, onPart = null) {
+    async processMultiPart(reader, contentType, contentLength, onEmit = null) {
 
         if ((contentType == null) || (contentType.boundary == null) || (contentType.boundary.length === 0)) {
             throw new Exception('Invalid multipart stream. Missing boundary parameter.', GeneralErrorCodes.InvalidParameter);
@@ -249,9 +269,9 @@ export default class PartStreamReader {
                         var partResult = this._parser.result;
                         this._parser.reset();
 
-                        if (onPart != null) {
+                        if (onEmit != null) {
 
-                            var partStatus = await onPart(partResult);
+                            var partStatus = await onEmit(partResult);
 
                             if (partStatus === Status.STOP) {
                                 status = Status.STOP;
@@ -323,13 +343,13 @@ export default class PartStreamReader {
     /**
      * Read and parse one stream source.
      * @param {ReadableStream | ReadableStreamDefaultReader<Uint8Array>} source The source stream.
-     * @param {{ contentType?: Response | Headers | string | object, contentLength?: number | string | null, onPart?: Function | null } | null} streamOptions Optional stream metadata.
+     * @param {{ contentType?: Response | Headers | string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} streamOptions Optional stream metadata.
      * @returns {Promise<object>} The parser result.
      */
     async readStream(source, streamOptions = null) {
 
         var reader = this.toStreamReader(source);
-        var onPart = this.resolveOnPart(streamOptions);
+        var onEmit = this.resolveOnEmit(streamOptions);
 
         var contentTypeSource = null;
         var contentLength = null;
@@ -342,28 +362,33 @@ export default class PartStreamReader {
         var contentType = this.parseContentType(contentTypeSource);
 
         if (contentType.isMultiPart === true)
-            return this.processMultiPart(reader, contentType, contentLength, onPart);
+            return this.processMultiPart(reader, contentType, contentLength, onEmit);
 
-        return this.processSinglePart(reader, contentType, contentLength, onPart);
+        return this.processSinglePart(reader, contentType, contentLength, onEmit);
 
     }
 
     /**
      * Read and parse one byte source as a single-part payload.
      * @param {Uint8Array | ArrayBuffer | DataView | Array<number>} data The source data.
+     * @param {{ onEmit?: Function | null } | null} readOptions Optional read options.
      * @returns {Promise<object>} The parser result.
      */
-    async readData(data) {
+    async readData(data, readOptions = null) {
 
         var status = Status.CONTINUE;
+        var onEmit = this.resolveOnEmit(readOptions);
 
         try {
 
             this._parser.reset();
             status = await this._parser.parse(this.toBytes(data), true);
 
-            if ((status === Status.SUCCESS) || (status === Status.STOP) || (status === Status.JUMP))
-                return this._parser.result;
+            if ((status === Status.SUCCESS) || (status === Status.STOP) || (status === Status.JUMP)) {
+                var result = this._parser.result;
+                await this.emitResult(result, onEmit);
+                return result;
+            }
 
             if (this._parser.error != null)
                 throw this._parser.error;
@@ -380,7 +405,7 @@ export default class PartStreamReader {
     /**
      * Read and parse one source.
      * @param {ReadableStream | ReadableStreamDefaultReader<Uint8Array> | Uint8Array | ArrayBuffer | DataView | Array<number>} source The source data.
-     * @param {{ contentType?: Response | Headers | string | object, contentLength?: number | string | null, onPart?: Function | null } | null} options Stream metadata options for stream sources.
+     * @param {{ contentType?: Response | Headers | string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} options Stream metadata options for stream sources.
      * @returns {Promise<object>} The parser result.
      */
     read(source, options = null) {
@@ -393,7 +418,7 @@ export default class PartStreamReader {
             return this.readStream(source, options);
         }
 
-        return this.readData(source);
+        return this.readData(source, options);
 
     }
 

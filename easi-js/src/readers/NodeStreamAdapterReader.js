@@ -47,7 +47,7 @@ export default class NodeStreamAdapterReader {
     /**
      * Read one Node/async-iterable stream source.
      * @param {object} source A Node readable stream or async iterable.
-     * @param {{ contentType?: string | object, contentLength?: number | string | null, onPart?: Function | null } | null} options Optional content metadata.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} options Optional content metadata.
      * @returns {Promise<object>} The parser result.
      */
     read(source, options = null) {

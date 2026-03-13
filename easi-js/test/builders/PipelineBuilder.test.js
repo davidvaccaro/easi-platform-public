@@ -88,19 +88,19 @@ test("Test: build throws InvalidReader", () => {
     expect(error.code).toBe(BuilderErrorCodes.InvalidReader);
 });
 
-test("Test: build throws InvalidOnPart", () => {
+test("Test: build throws InvalidOnEmit", () => {
     const error = captureBuildError(
         new PipelineBuilder()
-            .withOnPart(123)
+            .withOnEmit(123)
             .withParser(new DicomDataParser())
             .withHandler(new DicomInstanceHandler())
     );
 
     expect(error instanceof Exception).toBe(true);
-    expect(error.code).toBe(BuilderErrorCodes.InvalidOnPart);
+    expect(error.code).toBe(BuilderErrorCodes.InvalidOnEmit);
 });
 
-test("Test: build throws IncompatibleOnPartAndReader", () => {
+test("Test: build throws IncompatibleOnEmitAndReader", () => {
     const error = captureBuildError(
         new PipelineBuilder()
             .withReader({
@@ -108,13 +108,13 @@ test("Test: build throws IncompatibleOnPartAndReader", () => {
                     return Promise.resolve(null);
                 }
             })
-            .withOnPart(() => {})
+            .withOnEmit(() => {})
             .withParser(new DicomDataParser())
             .withHandler(new DicomInstanceHandler())
     );
 
     expect(error instanceof Exception).toBe(true);
-    expect(error.code).toBe(BuilderErrorCodes.IncompatibleOnPartAndReader);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleOnEmitAndReader);
 });
 
 test("Test: build throws IncompatibleParserAndHandler", () => {
@@ -489,8 +489,8 @@ test("Test: withBulkDataPolicy applies parser bulk-data policy when parser suppo
     expect(pipeline.parser.bulkDataPolicy.hardSafetyCap).toBe(8388608);
 });
 
-test("Test: build sets onPart on configured custom reader when supported", () => {
-    const onPart = () => {};
+test("Test: build sets internal reader onPart from onEmit on configured custom reader when supported", () => {
+    const onEmit = () => {};
     const customReader = {
         read() {
             return Promise.resolve(null);
@@ -502,11 +502,11 @@ test("Test: build sets onPart on configured custom reader when supported", () =>
     const pipeline = new PipelineBuilder()
         .fromPartStream()
         .withReader(customReader)
-        .withOnPart(onPart)
+        .withOnEmit(onEmit)
         .ofDicomData()
         .toInstances()
         .build();
 
     expect(pipeline.reader).toBe(customReader);
-    expect(pipeline.reader.onPart).toBe(onPart);
+    expect(pipeline.reader.onPart).toBe(onEmit);
 });

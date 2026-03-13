@@ -24,7 +24,7 @@ new PipelineBuilder()
 | `isStrict` | `*` | Instance property initialized in constructor. |
 | `reader` | `*` | Instance property initialized in constructor. |
 | `parser` | `*` | Instance property initialized in constructor. |
-| `resolveOnPart` | `*` | Instance property initialized in constructor. |
+| `onEmit` | `*` | Instance property initialized in constructor. |
 
 ## Methods
 
@@ -82,15 +82,15 @@ Set the current handler.
 
 ---
 
-### `withOnPart(onPart)`
+### `withOnEmit(onEmit)`
 
-Sets the "onPart" option for the stream-read session.
+Sets the "onEmit" callback for the stream-read session.
 
 #### Parameters
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `onPart` | `Function` | The "onPart" function handler called to resolve each part of a multi-part stream. |
+| `onEmit` | `Function` | The callback invoked whenever the pipeline emits a parsed result. |
 
 #### Returns
 

@@ -57,7 +57,7 @@ export default class FileStreamReader {
     /**
      * Read one file-like browser source.
      * @param {object} file The browser File/Blob-like object.
-     * @param {{ contentType?: string | object, contentLength?: number | string | null, onPart?: Function | null } | null} options Optional read options.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} options Optional read options.
      * @returns {Promise<object>} The parser result.
      */
     async readBrowserFile(file, options = null) {
@@ -68,8 +68,8 @@ export default class FileStreamReader {
                 contentLength: (options?.contentLength != null) ? options.contentLength : (file.size ?? null)
             };
 
-            if ((options != null) && (Object.prototype.hasOwnProperty.call(options, 'onPart') == true)) {
-                streamOptions.onPart = options.onPart;
+            if ((options != null) && (Object.prototype.hasOwnProperty.call(options, 'onEmit') == true)) {
+                streamOptions.onEmit = options.onEmit;
             }
 
             return this._partReader.readStream(file.stream(), streamOptions);
@@ -87,7 +87,7 @@ export default class FileStreamReader {
     /**
      * Read one Node file path source.
      * @param {string} filePath The file path.
-     * @param {{ contentType?: string | object, contentLength?: number | string | null, onPart?: Function | null } | null} options Optional read options.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} options Optional read options.
      * @returns {Promise<object>} The parser result.
      */
     async readNodeFile(filePath, options = null) {
@@ -103,8 +103,8 @@ export default class FileStreamReader {
             contentLength: (options?.contentLength != null) ? options.contentLength : stat.size
         };
 
-        if ((options != null) && (Object.prototype.hasOwnProperty.call(options, 'onPart') == true)) {
-            streamOptions.onPart = options.onPart;
+        if ((options != null) && (Object.prototype.hasOwnProperty.call(options, 'onEmit') == true)) {
+            streamOptions.onEmit = options.onEmit;
         }
 
         return this._nodeStreamReader.read(stream, streamOptions);
@@ -114,7 +114,7 @@ export default class FileStreamReader {
     /**
      * Read one file source.
      * @param {string | object} source File path string or browser File/Blob-like object.
-     * @param {{ contentType?: string | object, contentLength?: number | string | null, onPart?: Function | null } | null} options Optional read options.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} options Optional read options.
      * @returns {Promise<object>} The parser result.
      */
     read(source, options = null) {

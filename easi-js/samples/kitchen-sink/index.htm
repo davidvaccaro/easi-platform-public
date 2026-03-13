@@ -703,7 +703,7 @@
                         .fromFetchStream()
                         .ofDicomData()
                         .toInstances()
-                        .withOnPart(function (result) { 
+                        .withOnEmit(function (result) { 
 
                             // Log
                             if (Array.isArray(result) == false)                    
@@ -1061,7 +1061,7 @@
                     .fromFetchStream()
                     .ofJsonData()
                     .toJsonValue()
-                    .withOnPart(function (result) { 
+                    .withOnEmit(function (result) { 
 
                         // Log
                         if (Array.isArray(result) == false)                    
@@ -1163,7 +1163,7 @@
                     .fromFetchStream()
                     .ofDicomMetadata()
                     .toInstances()
-                    .withOnPart(function (result) { 
+                    .withOnEmit(function (result) { 
 
                         // Log
                         if (Array.isArray(result) == false)                    

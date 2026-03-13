@@ -9,7 +9,7 @@ export default class Pipeline {
     /**
      * Process one source through the configured reader/parser/handler pipeline.
      * @param {any} source The input source passed to the configured reader.
-     * @param {any} options Optional source options passed to the configured reader (for example reader-specific `onPart`).
+     * @param {any} options Optional source options passed to the configured reader (for example reader-specific `onEmit`).
      * @returns {Promise<any>} The terminal pipeline output.
      */
     process(source, options = null) {
