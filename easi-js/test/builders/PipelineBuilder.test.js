@@ -46,6 +46,8 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
     expect(typeof source.toInstances).toBe("undefined");
     expect(typeof source.withMask).toBe("undefined");
     expect(typeof source.build).toBe("undefined");
+    expect(source._operations).toBeUndefined();
+    expect(Object.isFrozen(source)).toBe(true);
 
     const format = source.fromPartStream();
     expect(typeof format.ofDicomData).toBe("function");
@@ -59,6 +61,8 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
     const ready = target.toInstances();
     expect(typeof ready.withMask).toBe("function");
     expect(typeof ready.build).toBe("function");
+    expect(ready._operations).toBeUndefined();
+    expect(Object.isFrozen(ready)).toBe(true);
 });
 
 test("Test: build throws MissingParser", () => {
@@ -226,17 +230,20 @@ test("Test: build throws IncompatibleValidationAndParser", () => {
     expect(error.code).toBe(BuilderErrorCodes.IncompatibleValidationAndParser);
 });
 
-test("Test: build does not mutate builder handler when masking", () => {
-    const builder = new PipelineBuilder()
+test("Test: repeated build with masking preserves canonical semantic handler chain", () => {
+    const ready = new PipelineBuilder()
         .fromPartStream().ofDicomData()
         .toInstances()
         .withMask(new Map());
 
-    const originalHandler = builder.handler;
-    builder.build();
+    const first = ready.build();
+    const second = ready.build();
 
-    expect(builder.handler).toBe(originalHandler);
-    expect(builder.handler instanceof DicomInstanceHandler).toBe(true);
+    expect(first.parser.handler instanceof DicomDeIdentificationFilter).toBe(true);
+    expect(first.parser.handler.nextHandler instanceof DicomInstanceHandler).toBe(true);
+    expect(second.parser.handler instanceof DicomDeIdentificationFilter).toBe(true);
+    expect(second.parser.handler.nextHandler instanceof DicomInstanceHandler).toBe(true);
+    expect(second.parser.handler.nextHandler.nextHandler).toBeUndefined();
 });
 
 test("Test: build composes metadata adapter with shared handler", () => {
@@ -546,4 +553,3 @@ test("Test: build sets internal reader onPart from onEmit on configured custom r
     expect(pipeline.reader).toBe(customReader);
     expect(pipeline.reader.onPart).toBe(onEmit);
 });
-

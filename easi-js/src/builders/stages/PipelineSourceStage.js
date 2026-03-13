@@ -22,8 +22,10 @@ export default class PipelineSourceStage extends PipelineBuilderStage {
      * @returns {PipelineFormatStage} A format stage reference.
      */
     withReader(reader) {
-        this._operations.withReader(reader);
-        return new PipelineFormatStage(this._operations);
+        return this.nextStage(
+            (session) => session.withReader(reader),
+            PipelineFormatStage
+        );
     }
 
     /** @returns {PipelineFormatStage} */

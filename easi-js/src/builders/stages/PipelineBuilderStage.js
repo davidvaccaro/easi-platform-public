@@ -1,49 +1,85 @@
+const StageSession = new WeakMap();
+
 /**
  * Base stage for staged pipeline builder interfaces.
  *
- * This base intentionally hosts only shared accessors and cloning behavior.
- * Stage-specific public methods are declared in each concrete stage class.
+ * This base intentionally hides the shared build session and exposes only
+ * internal transition helpers for concrete stages.
  */
 export default class PipelineBuilderStage {
 
     /**
-     * Creates a new stage reference of the same stage type.
-     * @returns {PipelineBuilderStage} A new stage object with the same shared operations object.
+     * Resolve the shared build session for the current stage.
+     * @returns {object} The shared build session.
      */
-    cloneStage() {
-        return new this.constructor(this._operations);
+    getSession() {
+        return StageSession.get(this);
     }
 
     /**
-     * Get the configured reader.
-     * @returns {object | null} The configured reader.
+     * Apply one session mutation and transition to the requested stage type.
+     * @param {Function} mutation A callback that mutates the shared session.
+     * @param {Function} StageType The target stage class.
+     * @returns {PipelineBuilderStage} The next stage.
      */
-    get reader() {
-        return this._operations?.reader ?? null;
+    nextStage(mutation, StageType) {
+
+        const session = this.getSession();
+        mutation(session);
+
+        return new StageType(session);
+
     }
 
     /**
-     * Get the configured parser.
-     * @returns {object | null} The configured parser.
+     * Apply one session mutation and return a cloned reference of the current stage type.
+     * @param {Function} mutation A callback that mutates the shared session.
+     * @returns {PipelineBuilderStage} The next stage of the same type.
      */
-    get parser() {
-        return this._operations?.parser ?? null;
+    cloneCurrentStage(mutation) {
+        return this.nextStage(mutation, this.constructor);
     }
 
     /**
-     * Get the configured handler.
-     * @returns {object | null} The configured handler.
+     * Build the current configured pipeline.
+     * @returns {object} The built pipeline.
      */
-    get handler() {
-        return this._operations?.handler ?? null;
+    buildCurrentPipeline() {
+        return this.getSession().build();
+    }
+
+    /**
+     * Determine if the configured parser is an instance of the supplied type.
+     * @param {Function} ParserType The parser type.
+     * @returns {boolean} TRUE when the current parser matches the supplied type.
+     */
+    isParserType(ParserType) {
+        return (this.getSession()?.parser instanceof ParserType);
+    }
+
+    /**
+     * Get the configured codec registry from the shared session.
+     * @returns {object | null} The configured codec registry.
+     */
+    getCodecRegistry() {
+        return this.getSession()?.codecRegistry ?? null;
     }
 
     /**
      * Construct a stage wrapper.
-     * @param {object} operations Shared operations object.
+     * @param {object} session Shared build session.
      */
-    constructor(operations) {
-        this._operations = operations;
+    constructor(session) {
+
+        if ((session == null) || (typeof session.build !== "function")) {
+            throw new Error("Invalid builder stage session.");
+        }
+
+        StageSession.set(this, session);
+
+        // Stage wrappers are immutable references to a shared build session.
+        Object.freeze(this);
+
     }
 
 }

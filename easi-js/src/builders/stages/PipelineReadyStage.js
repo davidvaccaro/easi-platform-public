@@ -14,8 +14,9 @@ export default class PipelineReadyStage extends PipelineBuilderStage {
      * @returns {PipelineReadyStage} A new ready stage object.
      */
     withCodecRegistry(codecRegistry) {
-        this._operations.withCodecRegistry(codecRegistry);
-        return this.cloneStage();
+        return this.cloneCurrentStage(
+            (session) => session.withCodecRegistry(codecRegistry)
+        );
     }
 
     /**
@@ -24,8 +25,9 @@ export default class PipelineReadyStage extends PipelineBuilderStage {
      * @returns {PipelineReadyStage} A new ready stage object.
      */
     withOnEmit(onEmit) {
-        this._operations.withOnEmit(onEmit);
-        return this.cloneStage();
+        return this.cloneCurrentStage(
+            (session) => session.withOnEmit(onEmit)
+        );
     }
 
     /**
@@ -34,8 +36,9 @@ export default class PipelineReadyStage extends PipelineBuilderStage {
      * @returns {PipelineReadyStage} A new ready stage object.
      */
     withIsStrict(isStrict) {
-        this._operations.withIsStrict(isStrict);
-        return this.cloneStage();
+        return this.cloneCurrentStage(
+            (session) => session.withIsStrict(isStrict)
+        );
     }
 
     /**
@@ -44,8 +47,9 @@ export default class PipelineReadyStage extends PipelineBuilderStage {
      * @returns {PipelineReadyStage} A new ready stage object.
      */
     withMask(mask) {
-        this._operations.withMask(mask);
-        return this.cloneStage();
+        return this.cloneCurrentStage(
+            (session) => session.withMask(mask)
+        );
     }
 
     /**
@@ -54,13 +58,16 @@ export default class PipelineReadyStage extends PipelineBuilderStage {
      * @returns {PipelineReadyStage} A new ready stage object.
      */
     withDeIdentification(mask = Tag.DefaultDeIdentificationMask) {
-        if (typeof this._operations.withDeIdentification === "function") {
-            this._operations.withDeIdentification(mask);
-        }
-        else {
-            this._operations.withMask(mask);
-        }
-        return this.cloneStage();
+        return this.cloneCurrentStage((session) => {
+
+            if (typeof session.withDeIdentification === "function") {
+                session.withDeIdentification(mask);
+            }
+            else {
+                session.withMask(mask);
+            }
+
+        });
     }
 
     /**
@@ -69,8 +76,9 @@ export default class PipelineReadyStage extends PipelineBuilderStage {
      * @returns {PipelineReadyStage} A new ready stage object.
      */
     withBulkDataPolicy(policy) {
-        this._operations.withBulkDataPolicy(policy);
-        return this.cloneStage();
+        return this.cloneCurrentStage(
+            (session) => session.withBulkDataPolicy(policy)
+        );
     }
 
     /**
@@ -79,8 +87,9 @@ export default class PipelineReadyStage extends PipelineBuilderStage {
      * @returns {PipelineReadyStage} A new ready stage object.
      */
     withValidation(validation = true) {
-        this._operations.withValidation(validation);
-        return this.cloneStage();
+        return this.cloneCurrentStage(
+            (session) => session.withValidation(validation)
+        );
     }
 
     /**
@@ -88,7 +97,7 @@ export default class PipelineReadyStage extends PipelineBuilderStage {
      * @returns {object} The built pipeline.
      */
     build() {
-        return this._operations.build();
+        return this.buildCurrentPipeline();
     }
 
 }

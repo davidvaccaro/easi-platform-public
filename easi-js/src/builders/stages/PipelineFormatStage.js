@@ -18,8 +18,10 @@ export default class PipelineFormatStage extends PipelineBuilderStage {
      * @returns {PipelineTargetStage} A target stage reference.
      */
     withParser(parser) {
-        this._operations.withParser(parser);
-        return new PipelineTargetStage(this._operations);
+        return this.nextStage(
+            (session) => session.withParser(parser),
+            PipelineTargetStage
+        );
     }
 
     /** @returns {PipelineTargetStage} */

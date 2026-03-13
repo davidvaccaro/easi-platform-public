@@ -32,8 +32,10 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
      * @returns {PipelineReadyStage} A ready stage reference.
      */
     withHandler(handler) {
-        this._operations.withHandler(handler);
-        return new PipelineReadyStage(this._operations);
+        return this.nextStage(
+            (session) => session.withHandler(handler),
+            PipelineReadyStage
+        );
     }
 
     /**
@@ -43,11 +45,11 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
      */
     wrapDicomMetadataAdapterIfNeeded(handler) {
 
-        if (this.parser instanceof JsonDataParser) {
+        if (this.isParserType(JsonDataParser) === true) {
             return new DicomJsonMetadataAdapter(handler);
         }
 
-        if (this.parser instanceof XmlDataParser) {
+        if (this.isParserType(XmlDataParser) === true) {
             return new DicomXmlMetadataAdapter(handler);
         }
 
@@ -58,15 +60,15 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     /** @returns {PipelineReadyStage} */
     toInstances() {
 
-        if (this.parser instanceof DicomDataParser) {
+        if (this.isParserType(DicomDataParser) === true) {
             return this.withHandler(new DicomInstanceHandler());
         }
 
-        if (this.parser instanceof JsonDataParser) {
+        if (this.isParserType(JsonDataParser) === true) {
             return this.withHandler(new DicomJsonMetadataAdapter(new DicomInstanceHandler()));
         }
 
-        if (this.parser instanceof XmlDataParser) {
+        if (this.isParserType(XmlDataParser) === true) {
             return this.withHandler(new DicomXmlMetadataAdapter(new DicomInstanceHandler()));
         }
 
@@ -77,15 +79,15 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     /** @returns {PipelineReadyStage} */
     toEntities() {
 
-        if (this.parser instanceof DicomDataParser) {
+        if (this.isParserType(DicomDataParser) === true) {
             return this.withHandler(new DicomEntityHandler());
         }
 
-        if (this.parser instanceof JsonDataParser) {
+        if (this.isParserType(JsonDataParser) === true) {
             return this.withHandler(new DicomJsonMetadataAdapter(new DicomEntityHandler()));
         }
 
-        if (this.parser instanceof XmlDataParser) {
+        if (this.isParserType(XmlDataParser) === true) {
             return this.withHandler(new DicomXmlMetadataAdapter(new DicomEntityHandler()));
         }
 
@@ -133,7 +135,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     /** @returns {PipelineReadyStage} */
     toJsonValue() {
 
-        if (this.parser instanceof XmlDataParser) {
+        if (this.isParserType(XmlDataParser) === true) {
             return this.withHandler(new XmlDataHandler());
         }
 
@@ -146,7 +148,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
      * @returns {PipelineReadyStage}
      */
     toAssets(options = null) {
-        return this.withHandler(new DicomAssetsHandler(options, this._operations?.codecRegistry));
+        return this.withHandler(new DicomAssetsHandler(options, this.getCodecRegistry()));
     }
 
     /**
@@ -154,7 +156,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
      * @returns {PipelineReadyStage}
      */
     toAssetArchive(options = null) {
-        return this.withHandler(new DicomAssetArchiveHandler(options, this._operations?.codecRegistry));
+        return this.withHandler(new DicomAssetArchiveHandler(options, this.getCodecRegistry()));
     }
 
 }
