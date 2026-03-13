@@ -351,6 +351,11 @@ export default class PartStreamReader {
         var reader = this.toStreamReader(source);
         var onEmit = this.resolveOnEmit(streamOptions);
 
+        // Reset parser transaction state for this top-level read.
+        if ((this._parser != null) && (typeof this._parser.resetSession === "function")) {
+            this._parser.resetSession();
+        }
+
         var contentTypeSource = null;
         var contentLength = null;
 
@@ -380,6 +385,11 @@ export default class PartStreamReader {
         var onEmit = this.resolveOnEmit(readOptions);
 
         try {
+
+            // Reset parser transaction state for this top-level read.
+            if ((this._parser != null) && (typeof this._parser.resetSession === "function")) {
+                this._parser.resetSession();
+            }
 
             this._parser.reset();
             status = await this._parser.parse(this.toBytes(data), true);

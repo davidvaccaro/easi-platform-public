@@ -132,6 +132,22 @@ export default class DataParser {
         this.error = null;
 
     }
+
+    /**
+     * Reset process-session state before a new top-level reader transaction.
+     * This isolates one `pipeline.process(...)` call from the next while allowing
+     * parser-level part resets within a single transaction.
+     */
+    resetSession() {
+
+        // Clear prior transaction context.
+        this.context = null;
+
+        // Clear prior transaction parser outcome/error state.
+        this.result = null;
+        this.error = null;
+
+    }
         
     /**
      * Parse the specified chunk of data.

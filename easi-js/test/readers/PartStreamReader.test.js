@@ -58,6 +58,7 @@ test('Test: readData processes byte source with parser', async () => {
     const parser = {
         result: { ok: true },
         error: null,
+        resetSession: jest.fn(),
         reset: jest.fn(),
         parse: jest.fn(async () => Status.SUCCESS)
     };
@@ -68,6 +69,7 @@ test('Test: readData processes byte source with parser', async () => {
 
     expect(parser.reset).toHaveBeenCalledTimes(1);
     expect(parser.parse).toHaveBeenCalledTimes(1);
+    expect(parser.resetSession).toHaveBeenCalledTimes(1);
     expect(result).toEqual({ ok: true });
 
 });
@@ -104,6 +106,7 @@ test('Test: readStream uses per-transaction onEmit override', async () => {
     const parser = {
         result: null,
         error: null,
+        resetSession: jest.fn(),
         reset: jest.fn(),
         parse: jest.fn(async (value, isFinalChunk) => {
             if (isFinalChunk == true) {
@@ -125,6 +128,7 @@ test('Test: readStream uses per-transaction onEmit override', async () => {
         onEmit: transactionOnEmit
     });
 
+    expect(parser.resetSession).toHaveBeenCalledTimes(1);
     expect(transactionOnEmit).toHaveBeenCalledTimes(2);
     expect(defaultOnEmit).toHaveBeenCalledTimes(0);
 
