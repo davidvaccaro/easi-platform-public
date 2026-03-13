@@ -16,6 +16,7 @@ test("Test: Nested sequence parsing keeps PixelData at dataset level", async () 
 
     // Build the DICOM streaming reader
     const pipeline = EASI.pipelineBuilder()
+        .fromPartStream()
         .withParser(new DicomDataParser())
         .withHandler(new DicomInstanceHandler())
         .build();

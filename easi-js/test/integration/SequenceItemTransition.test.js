@@ -112,6 +112,7 @@ test('Test: Parser does not leak FFFEE000 item marker into sequence item attribu
     const bytes = buildSequenceItemTransitionRegressionDicom();
 
     const pipeline = EASI.pipelineBuilder()
+        .fromPartStream()
         .withParser(new DicomDataParser())
         .withHandler(new DicomInstanceHandler())
         .build();

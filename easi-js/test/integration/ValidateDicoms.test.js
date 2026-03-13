@@ -57,6 +57,7 @@ function validateDicomSchema(dicomPath) {
 
             // Build the DICOM streaming reader
             const pipeline = EASI.pipelineBuilder()
+                .fromPartStream()
                 .withParser(new DicomDataParser())
                 .withHandler(new DicomInstanceHandler())
                 .build();

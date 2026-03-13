@@ -24,9 +24,14 @@ import Tag from "../../src/dicom/Tag.js";
 import Exception from "../../src/environment/Exception.js";
 import { BuilderErrorCodes } from "../../src/environment/Exception.js";
 
-function captureBuildError(builder) {
+function captureBuildError(builderOrAction) {
     try {
-        builder.build();
+        if (typeof builderOrAction === "function") {
+            builderOrAction();
+        }
+        else {
+            builderOrAction.build();
+        }
         return null;
     }
     catch (err) {
@@ -34,9 +39,33 @@ function captureBuildError(builder) {
     }
 }
 
+test("Test: staged interfaces expose only legal methods per stage", () => {
+    const source = new PipelineBuilder();
+    expect(typeof source.fromPartStream).toBe("function");
+    expect(typeof source.ofDicomData).toBe("undefined");
+    expect(typeof source.toInstances).toBe("undefined");
+    expect(typeof source.withMask).toBe("undefined");
+    expect(typeof source.build).toBe("undefined");
+
+    const format = source.fromPartStream();
+    expect(typeof format.ofDicomData).toBe("function");
+    expect(typeof format.toInstances).toBe("undefined");
+    expect(typeof format.withMask).toBe("undefined");
+
+    const target = format.ofDicomData();
+    expect(typeof target.toInstances).toBe("function");
+    expect(typeof target.withMask).toBe("undefined");
+
+    const ready = target.toInstances();
+    expect(typeof ready.withMask).toBe("function");
+    expect(typeof ready.build).toBe("function");
+});
+
 test("Test: build throws MissingParser", () => {
     const error = captureBuildError(
         new PipelineBuilder()
+            .fromPartStream()
+            .withParser(null)
             .toInstances()
     );
 
@@ -47,7 +76,9 @@ test("Test: build throws MissingParser", () => {
 test("Test: build throws MissingHandler", () => {
     const error = captureBuildError(
         new PipelineBuilder()
-            .fromPartStream().ofDicomData()
+            .fromPartStream()
+            .withParser(new DicomDataParser())
+            .withHandler(null)
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -57,8 +88,9 @@ test("Test: build throws MissingHandler", () => {
 test("Test: build throws InvalidParser", () => {
     const error = captureBuildError(
         new PipelineBuilder()
+            .fromPartStream()
             .withParser({ reset() {} })
-            .withHandler(new DicomInstanceHandler())
+            .toInstances()
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -68,7 +100,8 @@ test("Test: build throws InvalidParser", () => {
 test("Test: build throws InvalidHandler", () => {
     const error = captureBuildError(
         new PipelineBuilder()
-            .withParser(new DicomDataParser())
+            .fromPartStream()
+            .ofDicomData()
             .withHandler(123)
     );
 
@@ -80,8 +113,8 @@ test("Test: build throws InvalidReader", () => {
     const error = captureBuildError(
         new PipelineBuilder()
             .withReader({})
-            .withParser(new DicomDataParser())
-            .withHandler(new DicomInstanceHandler())
+            .ofDicomData()
+            .toInstances()
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -91,9 +124,10 @@ test("Test: build throws InvalidReader", () => {
 test("Test: build throws InvalidOnEmit", () => {
     const error = captureBuildError(
         new PipelineBuilder()
+            .fromPartStream()
+            .ofDicomData()
+            .toInstances()
             .withOnEmit(123)
-            .withParser(new DicomDataParser())
-            .withHandler(new DicomInstanceHandler())
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -108,9 +142,9 @@ test("Test: build throws IncompatibleOnEmitAndReader", () => {
                     return Promise.resolve(null);
                 }
             })
+            .ofDicomData()
+            .toInstances()
             .withOnEmit(() => {})
-            .withParser(new DicomDataParser())
-            .withHandler(new DicomInstanceHandler())
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -120,6 +154,7 @@ test("Test: build throws IncompatibleOnEmitAndReader", () => {
 test("Test: build throws IncompatibleParserAndHandler", () => {
     const error = captureBuildError(
         new PipelineBuilder()
+            .fromPartStream()
             .withParser(new JsonDataParser())
             .withHandler(new DicomDataWriterHandler())
     );
@@ -168,6 +203,7 @@ test("Test: build throws IncompatibleParserAndHandler for toAssetArchive with DI
 test("Test: build throws IncompatibleMaskAndParser", () => {
     const error = captureBuildError(
         new PipelineBuilder()
+            .fromPartStream()
             .withParser(new JsonDataParser())
             .withHandler({})
             .withMask(new Map())
@@ -180,6 +216,7 @@ test("Test: build throws IncompatibleMaskAndParser", () => {
 test("Test: build throws IncompatibleValidationAndParser", () => {
     const error = captureBuildError(
         new PipelineBuilder()
+            .fromPartStream()
             .withParser(new JsonDataParser())
             .withHandler({})
             .withValidation()
@@ -282,7 +319,7 @@ test("Test: withDeIdentification() composes default de-identification filter", (
 
 test("Test: withDeIdentification(mask) uses supplied mask", () => {
     const customMask = new Map([
-        ['00100010', { ID: '00100010', Action: 'Z' }]
+        ["00100010", { ID: "00100010", Action: "Z" }]
     ]);
 
     const pipeline = new PipelineBuilder()
@@ -294,7 +331,7 @@ test("Test: withDeIdentification(mask) uses supplied mask", () => {
     expect(pipeline.parser.handler instanceof DicomDeIdentificationFilter).toBe(true);
     expect(pipeline.parser.handler.mask instanceof Map).toBe(true);
     expect(pipeline.parser.handler.mask.size).toBe(1);
-    expect(pipeline.parser.handler.mask.has('00100010')).toBe(true);
+    expect(pipeline.parser.handler.mask.has("00100010")).toBe(true);
 });
 
 test("Test: build composes validation filter for native DICOM semantic chain", () => {
@@ -315,7 +352,7 @@ test("Test: build composes metadata adapter -> validation -> deid -> writer when
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomMetadata()
         .toDicomData()
-        .withValidation({ goal: 'permissive' })
+        .withValidation({ goal: "permissive" })
         .withMask(new Map())
         .build();
 
@@ -363,11 +400,11 @@ test("Test: build uses configured custom reader", () => {
         read() {
             return Promise.resolve(null);
         },
-        parser: null
+        parser: null,
+        onPart: null
     };
 
     const pipeline = new PipelineBuilder()
-        .fromPartStream()
         .withReader(customReader)
         .ofDicomData()
         .toInstances()
@@ -475,16 +512,16 @@ test("Test: withBulkDataPolicy applies parser bulk-data policy when parser suppo
     const pipeline = new PipelineBuilder()
         .fromPartStream()
         .ofDicomData()
+        .toInstances()
         .withBulkDataPolicy({
-            mode: 'auto',
+            mode: "auto",
             knownLengthThreshold: 4096,
             hardSafetyCap: 8388608
         })
-        .toInstances()
         .build();
 
     expect(pipeline.parser instanceof DicomDataParser).toBe(true);
-    expect(pipeline.parser.bulkDataPolicy.mode).toBe('auto');
+    expect(pipeline.parser.bulkDataPolicy.mode).toBe("auto");
     expect(pipeline.parser.bulkDataPolicy.knownLengthThreshold).toBe(4096);
     expect(pipeline.parser.bulkDataPolicy.hardSafetyCap).toBe(8388608);
 });
@@ -500,13 +537,13 @@ test("Test: build sets internal reader onPart from onEmit on configured custom r
     };
 
     const pipeline = new PipelineBuilder()
-        .fromPartStream()
         .withReader(customReader)
-        .withOnEmit(onEmit)
         .ofDicomData()
         .toInstances()
+        .withOnEmit(onEmit)
         .build();
 
     expect(pipeline.reader).toBe(customReader);
     expect(pipeline.reader.onPart).toBe(onEmit);
 });
+
