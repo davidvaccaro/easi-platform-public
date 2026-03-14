@@ -91,6 +91,20 @@ export default class ImagingInstance extends BackboneElement {
     }    
 
     /**
+     * Gets the endpoint value.
+     */
+    get endpoint() {
+        return this._endpoint;
+    }
+
+    /**
+     * Sets the endpoint value.
+     */
+    set endpoint(endpoint) {
+        this._endpoint = endpoint;
+    }
+
+    /**
      * Convert to JSON data
      * @returns 
      */
@@ -99,7 +113,8 @@ export default class ImagingInstance extends BackboneElement {
             uid: this.uid,
             sopClass: this.sopClass,
             number: NumberUtils.parseUnsignedInteger(this.number),
-            title: this.title
+            title: this.title,
+            endpoint: this.endpoint
         }
     }
 

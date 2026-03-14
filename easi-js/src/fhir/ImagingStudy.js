@@ -89,6 +89,20 @@ export default class ImagingStudy extends DomainResource {
     }    
 
     /**
+     * Gets the endpoint value.
+     */
+    get endpoint() {
+        return this._endpoint;
+    }
+
+    /**
+     * Sets the endpoint value.
+     */
+    set endpoint(endpoint) {
+        this._endpoint = endpoint;
+    }
+
+    /**
      * Gets the encounter value.
      */
     get encounter() {
@@ -183,6 +197,7 @@ export default class ImagingStudy extends DomainResource {
             status: this.status,
             modality: this.modality,
             subject: this.subject,
+            endpoint: this.endpoint,
             encounter: this.encounter,
             started: this.started,
             numberOfSeries: this.numberOfSeries,

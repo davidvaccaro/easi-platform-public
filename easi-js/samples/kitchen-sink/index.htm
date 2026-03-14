@@ -97,6 +97,12 @@
         <hr>        
         <h4>FHIR Mapping Related Actions</h4>
         <hr>
+        <div>
+            <span><strong>Subject Mode:</strong></span>
+            <label><input type="radio" name="fhirSubjectMode" value="contained" checked /> Contained</label>
+            <label><input type="radio" name="fhirSubjectMode" value="reference" /> Reference</label>
+            <label><input type="radio" name="fhirSubjectMode" value="none" /> None</label>
+        </div>
         <br>
         <div>
             <input type="file" id="dicomFileFHIR" name="dicomFileFHIR" />
@@ -264,6 +270,7 @@
 
         $(function () {
 
+            var dicomWebBaseUrl = 'http://localhost:8042/dicom-web';
             var studyUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110';
             var seriesUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110/series/1.2.840.113619.2.416.274526644159878389490005373725162966144';
             var instanceUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110/series/1.2.840.113619.2.416.274526644159878389490005373725162966144/instances/1.2.840.113619.2.416.112733676467352283670809522901727305191';
@@ -330,6 +337,29 @@
                 }).catch(function (err) {
                     console.log(label + ' time: ' + (new Date().getTime() - start) + ' ms');
                     throw err;
+                });
+
+            }
+
+            function getFhirSubjectMode() {
+                return $('input[name="fhirSubjectMode"]:checked').val() || 'contained';
+            }
+
+            function newFhirImagingStudyMapping() {
+
+                return new DicomToFHIRImagingStudyMapping({
+                    properties: {
+                        wadoRsBase: dicomWebBaseUrl,
+                        fhirBase: 'http://localhost:8042/fhir'
+                    },
+                    subjectMode: getFhirSubjectMode(),
+                    endpointTemplatePolicy: 'omit',
+                    referenceTemplates: {
+                        study: '{prop.wadoRsBase}/studies/{dicom.StudyInstanceUID}',
+                        series: '{prop.wadoRsBase}/studies/{dicom.StudyInstanceUID}/series/{dicom.SeriesInstanceUID}',
+                        instance: '{prop.wadoRsBase}/studies/{dicom.StudyInstanceUID}/series/{dicom.SeriesInstanceUID}/instances/{dicom.SOPInstanceUID}',
+                        subject: '{prop.fhirBase}/Patient/{dicom.PatientID}'
+                    }
                 });
 
             }
@@ -709,7 +739,7 @@
                         .ofDicomData()
                 ).toAssets({
                             metadata: {
-                                mapping: new DicomToFHIRImagingStudyMapping(),
+                                mapping: newFhirImagingStudyMapping(),
                                 onMetadata: async function (metadata) {
 
                                     metadataOutput.push(metadata);
@@ -770,7 +800,7 @@
                         .ofDicomData()
                 ).toAssetArchive({
                             metadata: {
-                                mapping: new DicomToFHIRImagingStudyMapping()
+                                mapping: newFhirImagingStudyMapping()
                             },
                             payload: {
                                 frame: {
@@ -880,7 +910,7 @@
                 const reader = EASI.pipelineBuilder()
                     .fromHttpStream()
                     .ofDicomData()
-                    .toFHIRImagingStudy()
+                    .toMapping(newFhirImagingStudyMapping())
                     .build();
 
                 // Read and parse the DICOM file
@@ -903,7 +933,7 @@
                 const reader = EASI.pipelineBuilder()
                     .fromHttpStream()
                     .ofDicomData()
-                    .toFHIRImagingStudy()
+                    .toMapping(newFhirImagingStudyMapping())
                     .build();
 
                 // Read and parse the DICOM file
@@ -926,7 +956,7 @@
                 const reader = EASI.pipelineBuilder()
                     .fromHttpStream()
                     .ofDicomData()
-                    .toFHIRImagingStudy()
+                    .toMapping(newFhirImagingStudyMapping())
                     .build();
 
                 // Read and parse the DICOM file
@@ -949,7 +979,7 @@
                 const reader = EASI.pipelineBuilder()
                     .fromHttpStream()
                     .ofDicomData()
-                    .toFHIRImagingStudy()
+                    .toMapping(newFhirImagingStudyMapping())
                     .build();
 
                 // Read and parse the DICOM file

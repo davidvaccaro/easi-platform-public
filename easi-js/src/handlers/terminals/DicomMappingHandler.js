@@ -61,7 +61,7 @@ export default class DicomMappingHandler {
     onStartAttribute(context, attribute) {
 
         // If the mapping does NOT map the current attribute, skip
-        if (this.mapping.hasTag(attribute.tag) == false)
+        if (this.mapping.shouldCaptureTag(attribute.tag) == false)
             return Status.SKIP;
 
         // The attribute gets populated into either:
@@ -88,7 +88,7 @@ export default class DicomMappingHandler {
     onStartSequence(context, sequence) {
 
         // If the mapping does NOT map the current attribute, skip
-        if (this.mapping.hasTag(sequence.tag) == false)
+        if (this.mapping.shouldCaptureTag(sequence.tag) == false)
             return Status.SKIP;
 
         // If there is a data-set
