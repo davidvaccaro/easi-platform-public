@@ -97,6 +97,53 @@ export default class PipelineBuildSession {
     }
 
     /**
+     * Determines if the writer appears to implement the EASI writer contract.
+     * @param {object} writer The writer instance.
+     * @returns {boolean} True if the writer looks valid.
+     */
+    isValidWriter(writer) {
+        return ((writer != null)
+            && (typeof writer === "object")
+            && (typeof writer.write === "function"));
+    }
+
+    /**
+     * Resolve the deepest next-handler in a handler chain.
+     * @param {object} handler The current top handler.
+     * @returns {object | null} The terminal handler.
+     */
+    resolveTerminalHandler(handler) {
+
+        var current = handler;
+
+        while ((current != null) && (current.nextHandler != null)) {
+            current = current.nextHandler;
+        }
+
+        return current;
+
+    }
+
+    /**
+     * Build a result sink callback for writer-enabled pipelines.
+     * @param {object} writer The configured writer.
+     * @param {*} target The configured writer target.
+     * @param {object | null} options Writer options.
+     * @returns {Function} Result sink callback.
+     */
+    createWriterResultSink(writer, target, options = null) {
+
+        return async (result) => {
+            if (target == null) {
+                return writer.write(result, options);
+            }
+
+            return writer.write(target, result, options);
+        };
+
+    }
+
+    /**
      * Validates compatibility of known parser and handler pairings.
      * @param {object} parser The configured parser.
      * @param {object} handler The configured handler.
@@ -325,6 +372,20 @@ export default class PipelineBuildSession {
     }
 
     /**
+     * Set the outbound writer for restreaming pipeline output.
+     * @param {object} writer The output writer.
+     * @param {*} target Optional writer target.
+     * @param {object | null} options Optional writer options.
+     * @returns {PipelineBuildSession} The current session.
+     */
+    withWriter(writer, target = null, options = null) {
+        this.writer = writer;
+        this.writerTarget = target;
+        this.writerOptions = options;
+        return this;
+    }
+
+    /**
      * Build a new pipeline instance.
      * @returns {Pipeline} The built pipeline instance.
      */
@@ -374,6 +435,14 @@ export default class PipelineBuildSession {
             throw new Exception(
                 `The configured reader '${DiagnosticUtils.getTypeName(this.reader)}' is invalid or does not implement the EASI reader contract.`,
                 BuilderErrorCodes.InvalidReader
+            );
+        }
+
+        // Validate writer contract shape if configured.
+        if ((this.writer != null) && (this.isValidWriter(this.writer) == false)) {
+            throw new Exception(
+                `The configured writer '${DiagnosticUtils.getTypeName(this.writer)}' is invalid or does not implement the EASI writer contract.`,
+                BuilderErrorCodes.InvalidBuildState
             );
         }
 
@@ -446,7 +515,28 @@ export default class PipelineBuildSession {
             reader.parser.bulkDataPolicy = this.bulkDataPolicy;
         }
 
-        return new Pipeline(reader);
+        var onResult = null;
+
+        if (this.writer != null) {
+
+            const terminalHandler = this.resolveTerminalHandler(handler);
+
+            // If terminal DICOM data writing is already chunking to an explicit callback,
+            // keep its native output and do not wrap with a post-result writer sink.
+            var shouldApplyWriterSink = true;
+            if ((terminalHandler instanceof DicomDataWriterHandler)
+                && (terminalHandler.collectOutput == false)
+                && (terminalHandler.onChunk != null)) {
+                shouldApplyWriterSink = false;
+            }
+
+            if (shouldApplyWriterSink == true) {
+                onResult = this.createWriterResultSink(this.writer, this.writerTarget, this.writerOptions);
+            }
+
+        }
+
+        return new Pipeline(reader, onResult);
 
     }
 
@@ -463,7 +553,9 @@ export default class PipelineBuildSession {
         this.codecRegistry = null;
         this.onEmit = null;
         this.bulkDataPolicy = null;
+        this.writer = null;
+        this.writerTarget = null;
+        this.writerOptions = null;
     }
 
 }
-

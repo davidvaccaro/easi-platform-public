@@ -177,8 +177,8 @@ Detailed conformance guidance and fixtures are defined in [`conformance.md`](./c
 const reader = EASI.pipelineBuilder()
   .fromPartStream()
   .ofDicomData()
-  .toInstances()
   .withValidation('permissive')
+  .toInstances()
   .build();
 ```
 
@@ -188,8 +188,8 @@ const reader = EASI.pipelineBuilder()
 var reader = EASI.PipelineBuilder()
     .FromPartStream()
     .OfDicomData()
-    .ToInstances()
     .WithValidation("permissive")
+    .ToInstances()
     .Build();
 ```
 
@@ -199,8 +199,8 @@ var reader = EASI.PipelineBuilder()
 var reader = EASI.pipelineBuilder()
     .fromPartStream()
     .ofDicomData()
-    .toInstances()
     .withValidation("permissive")
+    .toInstances()
     .build();
 ```
 
@@ -211,8 +211,8 @@ reader = (
     EASI.pipeline_builder()
     .from_part_stream()
     .of_dicom_data()
-    .to_instances()
     .with_validation("permissive")
+    .to_instances()
     .build()
 )
 ```

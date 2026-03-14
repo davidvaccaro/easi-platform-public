@@ -421,7 +421,7 @@ export default class PartStreamReader {
     read(source, options = null) {
 
         if (typeof source === 'string') {
-            throw new Exception('Invalid source data. Use FetchStreamReader for URL sources.', GeneralErrorCodes.InvalidParameter);
+            throw new Exception('Invalid source data. Use HttpStreamReader for URL sources.', GeneralErrorCodes.InvalidParameter);
         }
 
         if ((source != null) && ((typeof source.getReader === 'function') || (typeof source.read === 'function'))) {

@@ -88,12 +88,12 @@ test('Test: toDicomData with onChunk streams bytes and can be chained with withM
 
     var reader = EASI.pipelineBuilder()
         .fromPartStream().ofDicomData()
-        .toDicomData({
-            onChunk: (chunk) => chunks.push(chunk)
-        })
         .withMask(new Map([
             [Tag.PatientName, '[MASKED]']
         ]))
+        .toDicomData({
+            onChunk: (chunk) => chunks.push(chunk)
+        })
         .build();
 
     var result = await reader.process(sourceBytes);
@@ -157,8 +157,8 @@ test('Test: toDicomData anonymizes NESTED_SEQUENCE.dcm and writes NESTED_SEQUENC
 
     var emittedBytes = await EASI.pipelineBuilder()
         .fromPartStream().ofDicomData()
-        .toDicomData()
         .withMask(Tag.DefaultDeIdentificationMask)
+        .toDicomData()
         .build()
         .process(sourceBytes);
 

@@ -91,10 +91,10 @@ test('Test: PipelineBuilder withMask applies de-identification handler chain', a
 
     const pipeline = EASI.pipelineBuilder()
         .fromPartStream().ofDicomData()
-        .toInstances()
         .withMask(new Map([
             [Tag.PatientName, '[BUILDER MASK]']
         ]))
+        .toInstances()
         .build();
 
     const result = await pipeline.process(bytes);

@@ -1,7 +1,7 @@
 //
-// FetchStreamReader.js - 1.0.0
+// HttpStreamReader.js - 1.0.0
 //
-// FetchStreamReader Class
+// HttpStreamReader Class
 //
 
 import Exception from '../environment/Exception.js';
@@ -9,12 +9,12 @@ import { GeneralErrorCodes } from '../environment/Exception.js';
 import PartStreamReader from './PartStreamReader.js';
 import PartContentType from './parts/PartContentType.js';
 
-export default class FetchStreamReader {
+export default class HttpStreamReader {
 
     /**
-     * Read and parse one URL source via fetch transport.
+     * Read and parse one URL source via HTTP (fetch) transport.
      * @param {string} url The source URL.
-     * @param {(RequestInit & { onEmit?: Function | null }) | null} requestOptions Optional fetch options.
+     * @param {(RequestInit & { onEmit?: Function | null }) | null} requestOptions Optional request options.
      * @returns {Promise<object>} The parser result.
      */
     async readUrl(url, requestOptions = null) {
@@ -23,20 +23,20 @@ export default class FetchStreamReader {
             throw new Exception('Invalid source URL.', GeneralErrorCodes.InvalidParameter);
         }
 
-        var fetchOptions = Object.assign({}, (requestOptions != null) ? requestOptions : {});
-        var hasOnEmit = (Object.prototype.hasOwnProperty.call(fetchOptions, 'onEmit') == true);
-        var onEmit = hasOnEmit ? fetchOptions.onEmit : undefined;
+        var httpOptions = Object.assign({}, (requestOptions != null) ? requestOptions : {});
+        var hasOnEmit = (Object.prototype.hasOwnProperty.call(httpOptions, 'onEmit') == true);
+        var onEmit = hasOnEmit ? httpOptions.onEmit : undefined;
 
         if (hasOnEmit == true) {
-            delete fetchOptions.onEmit;
+            delete httpOptions.onEmit;
         }
 
         var response = await fetch(url, Object.assign({
             method: 'GET'
-        }, fetchOptions));
+        }, httpOptions));
 
         if ((response == null) || (response.body == null)) {
-            throw new Exception('Invalid fetch response. Missing response body stream.', GeneralErrorCodes.GeneralError);
+            throw new Exception('Invalid HTTP response. Missing response body stream.', GeneralErrorCodes.GeneralError);
         }
 
         var streamOptions = {
@@ -53,9 +53,9 @@ export default class FetchStreamReader {
     }
 
     /**
-     * Read and parse one source, routing URL sources through fetch transport.
+     * Read and parse one source, routing URL sources through HTTP transport.
      * @param {string | ReadableStream | ReadableStreamDefaultReader<Uint8Array> | Uint8Array | ArrayBuffer | DataView | Array<number>} source The source payload.
-     * @param {(RequestInit & { onEmit?: Function | null }) | object | null} options Fetch options for URL sources or stream metadata for non-URL stream sources.
+     * @param {(RequestInit & { onEmit?: Function | null }) | object | null} options Request options for URL sources or stream metadata for non-URL stream sources.
      * @returns {Promise<object>} The parser result.
      */
     read(source, options = null) {
@@ -100,7 +100,7 @@ export default class FetchStreamReader {
     }
 
     /**
-     * Create one fetch reader adapter.
+     * Create one HTTP reader adapter.
      * @param {PartStreamReader | null} partReader Optional part reader.
      */
     constructor(partReader = null) {

@@ -11,7 +11,7 @@ import PipelineSourceStage from "./stages/PipelineSourceStage.js";
  * Public staged pipeline builder entry point.
  *
  * The fluent flow is intentionally staged:
- * `from*` -> `of*` -> `to*` -> `with*` -> `build()`.
+ * `from*` -> `of*` -> `with*` -> `to*` -> `[into*]` -> `build()`.
  */
 export default class PipelineBuilder extends PipelineSourceStage {
 
@@ -23,4 +23,3 @@ export default class PipelineBuilder extends PipelineSourceStage {
     }
 
 }
-

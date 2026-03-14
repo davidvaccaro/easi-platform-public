@@ -2,7 +2,7 @@ import PipelineBuilder from "../../src/builders/PipelineBuilder.js";
 import DicomDataParser from "../../src/parsers/DicomDataParser.js";
 import JsonDataParser from "../../src/parsers/JsonDataParser.js";
 import XmlDataParser from "../../src/parsers/XmlDataParser.js";
-import FetchStreamReader from "../../src/readers/FetchStreamReader.js";
+import HttpStreamReader from "../../src/readers/HttpStreamReader.js";
 import ByteStreamReader from "../../src/readers/ByteStreamReader.js";
 import FileStreamReader from "../../src/readers/FileStreamReader.js";
 import WebSocketStreamReader from "../../src/readers/WebSocketStreamReader.js";
@@ -56,13 +56,46 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
 
     const target = format.ofDicomData();
     expect(typeof target.toInstances).toBe("function");
-    expect(typeof target.withMask).toBe("undefined");
+    expect(typeof target.withMask).toBe("function");
 
-    const ready = target.toInstances();
-    expect(typeof ready.withMask).toBe("function");
+    const ready = target.withMask(new Map()).toInstances();
+    expect(typeof ready.withMask).toBe("undefined");
+    expect(typeof ready.intoByteStream).toBe("function");
+    expect(typeof ready.intoBrowserFileStream).toBe("function");
     expect(typeof ready.build).toBe("function");
     expect(ready._operations).toBeUndefined();
     expect(Object.isFrozen(ready)).toBe(true);
+});
+
+test("Test: output writer sink is invoked when into* is configured", async () => {
+    const customReader = {
+        read() {
+            return Promise.resolve(new Uint8Array([1, 2, 3]));
+        },
+        parser: null,
+        onPart: null
+    };
+
+    const writer = {
+        write: jest.fn().mockResolvedValue({ ok: true })
+    };
+
+    const pipeline = new PipelineBuilder()
+        .withReader(customReader)
+        .ofDicomData()
+        .toInstances()
+        .withWriter(writer, "sink-target", { custom: true })
+        .build();
+
+    const result = await pipeline.process(new Uint8Array([9]));
+
+    expect(writer.write).toHaveBeenCalledTimes(1);
+    expect(writer.write).toHaveBeenCalledWith(
+        "sink-target",
+        expect.any(Uint8Array),
+        { custom: true }
+    );
+    expect(result).toEqual({ ok: true });
 });
 
 test("Test: build throws MissingParser", () => {
@@ -130,8 +163,8 @@ test("Test: build throws InvalidOnEmit", () => {
         new PipelineBuilder()
             .fromPartStream()
             .ofDicomData()
-            .toInstances()
             .withOnEmit(123)
+            .toInstances()
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -147,8 +180,8 @@ test("Test: build throws IncompatibleOnEmitAndReader", () => {
                 }
             })
             .ofDicomData()
-            .toInstances()
             .withOnEmit(() => {})
+            .toInstances()
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -209,8 +242,8 @@ test("Test: build throws IncompatibleMaskAndParser", () => {
         new PipelineBuilder()
             .fromPartStream()
             .withParser(new JsonDataParser())
-            .withHandler({})
             .withMask(new Map())
+            .withHandler({})
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -222,8 +255,8 @@ test("Test: build throws IncompatibleValidationAndParser", () => {
         new PipelineBuilder()
             .fromPartStream()
             .withParser(new JsonDataParser())
-            .withHandler({})
             .withValidation()
+            .withHandler({})
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -233,8 +266,8 @@ test("Test: build throws IncompatibleValidationAndParser", () => {
 test("Test: repeated build with masking preserves canonical semantic handler chain", () => {
     const ready = new PipelineBuilder()
         .fromPartStream().ofDicomData()
-        .toInstances()
-        .withMask(new Map());
+        .withMask(new Map())
+        .toInstances();
 
     const first = ready.build();
     const second = ready.build();
@@ -302,8 +335,8 @@ test("Test: toFHIRImagingStudy builds with DicomToFHIRImagingStudyMapping", () =
 test("Test: build composes metadata adapter -> deid -> writer when masking JSON metadata", () => {
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomMetadata()
-        .toDicomData()
         .withMask(new Map())
+        .toDicomData()
         .build();
 
     expect(pipeline.parser.handler instanceof DicomJsonMetadataAdapter).toBe(true);
@@ -314,8 +347,8 @@ test("Test: build composes metadata adapter -> deid -> writer when masking JSON 
 test("Test: withDeIdentification() composes default de-identification filter", () => {
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomData()
-        .toInstances()
         .withDeIdentification()
+        .toInstances()
         .build();
 
     expect(pipeline.parser.handler instanceof DicomDeIdentificationFilter).toBe(true);
@@ -331,8 +364,8 @@ test("Test: withDeIdentification(mask) uses supplied mask", () => {
 
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomData()
-        .toInstances()
         .withDeIdentification(customMask)
+        .toInstances()
         .build();
 
     expect(pipeline.parser.handler instanceof DicomDeIdentificationFilter).toBe(true);
@@ -345,8 +378,8 @@ test("Test: build composes validation filter for native DICOM semantic chain", (
     const onConcern = () => {};
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomData()
-        .toInstances()
         .withValidation({ goal: ValidationGoals.STRICT, onConcern })
+        .toInstances()
         .build();
 
     expect(pipeline.parser.handler instanceof DicomValidationFilter).toBe(true);
@@ -358,9 +391,9 @@ test("Test: build composes validation filter for native DICOM semantic chain", (
 test("Test: build composes metadata adapter -> validation -> deid -> writer when validation and masking JSON metadata", () => {
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomMetadata()
-        .toDicomData()
         .withValidation({ goal: "permissive" })
         .withMask(new Map())
+        .toDicomData()
         .build();
 
     expect(pipeline.parser.handler instanceof DicomJsonMetadataAdapter).toBe(true);
@@ -382,8 +415,8 @@ test("Test: build composes XML metadata adapter with shared handler", () => {
 test("Test: build composes XML metadata adapter -> deid -> writer when masking XML metadata", () => {
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomXmlMetadata()
-        .toDicomData()
         .withMask(new Map())
+        .toDicomData()
         .build();
 
     expect(pipeline.parser.handler instanceof DicomXmlMetadataAdapter).toBe(true);
@@ -394,8 +427,8 @@ test("Test: build composes XML metadata adapter -> deid -> writer when masking X
 test("Test: withValidation(false) disables validation composition", () => {
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomData()
-        .toInstances()
         .withValidation(false)
+        .toInstances()
         .build();
 
     expect(pipeline.parser.handler instanceof DicomValidationFilter).toBe(false);
@@ -455,14 +488,14 @@ test("Test: toJsonValue builds with XmlDataHandler for XML parser", () => {
     expect(pipeline.parser.handler instanceof XmlDataHandler).toBe(true);
 });
 
-test("Test: fromFetchStream builds with FetchStreamReader transport", () => {
+test("Test: fromHttpStream builds with HttpStreamReader transport", () => {
     const pipeline = new PipelineBuilder()
-        .fromFetchStream()
+        .fromHttpStream()
         .ofDicomData()
         .toInstances()
         .build();
 
-    expect(pipeline.reader instanceof FetchStreamReader).toBe(true);
+    expect(pipeline.reader instanceof HttpStreamReader).toBe(true);
     expect(pipeline.parser instanceof DicomDataParser).toBe(true);
     expect(pipeline.parser.handler instanceof DicomInstanceHandler).toBe(true);
 });
@@ -519,12 +552,12 @@ test("Test: withBulkDataPolicy applies parser bulk-data policy when parser suppo
     const pipeline = new PipelineBuilder()
         .fromPartStream()
         .ofDicomData()
-        .toInstances()
         .withBulkDataPolicy({
             mode: "auto",
             knownLengthThreshold: 4096,
             hardSafetyCap: 8388608
         })
+        .toInstances()
         .build();
 
     expect(pipeline.parser instanceof DicomDataParser).toBe(true);
@@ -546,8 +579,8 @@ test("Test: build sets internal reader onPart from onEmit on configured custom r
     const pipeline = new PipelineBuilder()
         .withReader(customReader)
         .ofDicomData()
-        .toInstances()
         .withOnEmit(onEmit)
+        .toInstances()
         .build();
 
     expect(pipeline.reader).toBe(customReader);

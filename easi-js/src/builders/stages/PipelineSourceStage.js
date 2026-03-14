@@ -1,5 +1,5 @@
 import PartStreamReader from "../../readers/PartStreamReader.js";
-import FetchStreamReader from "../../readers/FetchStreamReader.js";
+import HttpStreamReader from "../../readers/HttpStreamReader.js";
 import ByteStreamReader from "../../readers/ByteStreamReader.js";
 import FileStreamReader from "../../readers/FileStreamReader.js";
 import WebSocketStreamReader from "../../readers/WebSocketStreamReader.js";
@@ -34,8 +34,8 @@ export default class PipelineSourceStage extends PipelineBuilderStage {
     }
 
     /** @returns {PipelineFormatStage} */
-    fromFetchStream() {
-        return this.withReader(new FetchStreamReader(new PartStreamReader()));
+    fromHttpStream() {
+        return this.withReader(new HttpStreamReader(new PartStreamReader()));
     }
 
     /** @returns {PipelineFormatStage} */

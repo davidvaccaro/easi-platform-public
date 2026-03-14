@@ -41,7 +41,7 @@ test('Test: read rejects URL sources for PartStreamReader', async () => {
 
     const reader = new PartStreamReader();
 
-    expect(() => reader.read('http://example.test/dicom')).toThrow('Use FetchStreamReader');
+    expect(() => reader.read('http://example.test/dicom')).toThrow('Use HttpStreamReader');
 
     try {
         reader.read('http://example.test/dicom');

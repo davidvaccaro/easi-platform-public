@@ -14,7 +14,16 @@ export default class Pipeline {
      */
     process(source, options = null) {
 
-        const execute = () => this._reader.read(source, options);
+        const execute = async () => {
+
+            const result = await this._reader.read(source, options);
+
+            if (this._onResult == null)
+                return result;
+
+            return this._onResult(result, options);
+
+        };
 
         // Serialize process calls on one pipeline instance so parser/handler state
         // remains transaction-safe even when callers invoke process concurrently.
@@ -58,9 +67,11 @@ export default class Pipeline {
     /**
      * Create a pipeline.
      * @param {object} reader The configured reader.
+     * @param {Function | null} onResult Optional result sink invoked after each process call result.
      */
-    constructor(reader) {
+    constructor(reader, onResult = null) {
         this._reader = reader;
+        this._onResult = onResult;
         this._processQueue = Promise.resolve();
     }
 

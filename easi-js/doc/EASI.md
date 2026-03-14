@@ -30,7 +30,7 @@ Currently, it grants access to the `PipelineBuilder` for creating streaming pipe
 ## Parse/Emit Combination Matrix
 
 Use this table as the quick-start map for supported parse-input to emit-output combinations.
-Use `fromFetchStream()` for URL/fetch transport and `fromPartStream()` for direct byte/stream sources.
+Use `fromHttpStream()` for URL/fetch transport and `fromPartStream()` for direct byte/stream sources.
 
 | Parse Input Format | Emit Output Format | Pipeline Recipe |
 |--------------------|--------------------|-----------------|
@@ -78,7 +78,7 @@ import EASI from 'easi-dicom';
 
 // Build the DICOM parsing pipeline
 const pipeline = EASI.pipelineBuilder()
-    .fromFetchStream()
+    .fromHttpStream()
     .ofDicomData()
     .toInstances()
     .build();

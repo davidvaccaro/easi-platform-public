@@ -242,8 +242,8 @@ import EASI from '../../src/EASI.js';
 const pipeline = EASI
   .pipelineBuilder()
   .fromPartStream().ofDicomData()
-  .toInstances()
   .withIsStrict(true)
+  .toInstances()
   .build();
 
 const result = await pipeline.process('https://example.org/study/instance.dcm');

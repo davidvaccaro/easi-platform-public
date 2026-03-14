@@ -1,4 +1,4 @@
-import FetchStreamReader from '../../src/readers/FetchStreamReader.js';
+import HttpStreamReader from '../../src/readers/HttpStreamReader.js';
 
 test('Test: read forwards fetch headers/options for URL sources', async () => {
 
@@ -33,7 +33,7 @@ test('Test: read forwards fetch headers/options for URL sources', async () => {
             body: body
         });
 
-        const reader = new FetchStreamReader(partReader);
+        const reader = new HttpStreamReader(partReader);
         const onEmit = () => {};
         const result = await reader.read('http://example.test/metadata', {
             headers: {

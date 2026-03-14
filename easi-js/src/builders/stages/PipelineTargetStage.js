@@ -1,6 +1,7 @@
 import DicomDataParser from "../../parsers/DicomDataParser.js";
 import JsonDataParser from "../../parsers/JsonDataParser.js";
 import XmlDataParser from "../../parsers/XmlDataParser.js";
+import Tag from "../../dicom/Tag.js";
 
 import DicomToFHIRImagingStudyMapping from "../../handlers/mappings/DicomToFHIRImagingStudyMapping.js";
 
@@ -17,24 +18,101 @@ import JsonDataHandler from "../../handlers/terminals/syntax/JsonDataHandler.js"
 import XmlDataHandler from "../../handlers/terminals/syntax/XmlDataHandler.js";
 
 import PipelineBuilderStage from "./PipelineBuilderStage.js";
-import PipelineReadyStage from "./PipelineReadyStage.js";
+import PipelineOutputStage from "./PipelineOutputStage.js";
 
 /**
- * Target stage.
+ * Transform/target stage.
  *
- * Responsible for terminal output declaration (`to*`) and explicit handler override.
+ * Responsible for transform configuration (`with*`) and terminal output declaration (`to*`).
  */
 export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
+     * Set the codec registry used by codec-dependent handlers.
+     * @param {object} codecRegistry The codec registry.
+     * @returns {PipelineTargetStage} A new target stage object.
+     */
+    withCodecRegistry(codecRegistry) {
+        return this.cloneCurrentStage(
+            (session) => session.withCodecRegistry(codecRegistry)
+        );
+    }
+
+    /**
+     * Sets the `onEmit` callback for the stream-read session.
+     * @param {Function | null} onEmit The callback invoked whenever the pipeline emits a parsed result.
+     * @returns {PipelineTargetStage} A new target stage object.
+     */
+    withOnEmit(onEmit) {
+        return this.cloneCurrentStage(
+            (session) => session.withOnEmit(onEmit)
+        );
+    }
+
+    /**
+     * Sets strict parser behavior.
+     * @param {boolean} isStrict Indicates strict parse behavior.
+     * @returns {PipelineTargetStage} A new target stage object.
+     */
+    withIsStrict(isStrict) {
+        return this.cloneCurrentStage(
+            (session) => session.withIsStrict(isStrict)
+        );
+    }
+
+    /**
+     * Sets the de-identification mask map.
+     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null} mask The tag mask map.
+     * @returns {PipelineTargetStage} A new target stage object.
+     */
+    withMask(mask) {
+        return this.cloneCurrentStage(
+            (session) => session.withMask(mask)
+        );
+    }
+
+    /**
+     * Enables de-identification using a mask.
+     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null} [mask=Tag.DefaultDeIdentificationMask] The tag mask map.
+     * @returns {PipelineTargetStage} A new target stage object.
+     */
+    withDeIdentification(mask = Tag.DefaultDeIdentificationMask) {
+        return this.cloneCurrentStage(
+            (session) => session.withDeIdentification(mask)
+        );
+    }
+
+    /**
+     * Sets the parser bulk-data policy (when supported by the parser).
+     * @param {{ mode?: 'materialize' | 'auto' | 'stream', knownLengthThreshold?: number, hardSafetyCap?: number } | string | null} policy The bulk-data policy.
+     * @returns {PipelineTargetStage} A new target stage object.
+     */
+    withBulkDataPolicy(policy) {
+        return this.cloneCurrentStage(
+            (session) => session.withBulkDataPolicy(policy)
+        );
+    }
+
+    /**
+     * Enables/configures validation filtering in the canonical DICOM semantic chain.
+     * @param {boolean | string | object | null} validation Validation configuration.
+     * @returns {PipelineTargetStage} A new target stage object.
+     */
+    withValidation(validation = true) {
+        return this.cloneCurrentStage(
+            (session) => session.withValidation(validation)
+        );
+    }
+
+    /**
      * Set the current terminal handler.
      * @param {object} handler The terminal handler.
-     * @returns {PipelineReadyStage} A ready stage reference.
+     * @returns {PipelineOutputStage} An output stage reference.
      */
     withHandler(handler) {
         return this.nextStage(
             (session) => session.withHandler(handler),
-            PipelineReadyStage
+            PipelineOutputStage
         );
     }
 
@@ -57,7 +135,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     }
 
-    /** @returns {PipelineReadyStage} */
+    /** @returns {PipelineOutputStage} */
     toInstances() {
 
         if (this.isParserType(DicomDataParser) === true) {
@@ -76,7 +154,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     }
 
-    /** @returns {PipelineReadyStage} */
+    /** @returns {PipelineOutputStage} */
     toEntities() {
 
         if (this.isParserType(DicomDataParser) === true) {
@@ -97,7 +175,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
      * @param {object} mapping Mapping strategy.
-     * @returns {PipelineReadyStage}
+     * @returns {PipelineOutputStage}
      */
     toMapping(mapping) {
         return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
@@ -107,7 +185,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
      * @param {object} selection Selection strategy.
-     * @returns {PipelineReadyStage}
+     * @returns {PipelineOutputStage}
      */
     toSelection(selection) {
         return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
@@ -115,7 +193,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
         ));
     }
 
-    /** @returns {PipelineReadyStage} */
+    /** @returns {PipelineOutputStage} */
     toFHIRImagingStudy() {
         return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
             new DicomMappingHandler(new DicomToFHIRImagingStudyMapping())
@@ -124,7 +202,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
      * @param {{ onChunk?: Function, collectOutput?: boolean } | null} options Writer options.
-     * @returns {PipelineReadyStage}
+     * @returns {PipelineOutputStage}
      */
     toDicomData(options = null) {
         return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
@@ -132,7 +210,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
         ));
     }
 
-    /** @returns {PipelineReadyStage} */
+    /** @returns {PipelineOutputStage} */
     toJsonValue() {
 
         if (this.isParserType(XmlDataParser) === true) {
@@ -145,7 +223,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
      * @param {object | null} options Asset extraction options.
-     * @returns {PipelineReadyStage}
+     * @returns {PipelineOutputStage}
      */
     toAssets(options = null) {
         return this.withHandler(new DicomAssetsHandler(options, this.getCodecRegistry()));
@@ -153,7 +231,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
      * @param {object | null} options Asset archive options.
-     * @returns {PipelineReadyStage}
+     * @returns {PipelineOutputStage}
      */
     toAssetArchive(options = null) {
         return this.withHandler(new DicomAssetArchiveHandler(options, this.getCodecRegistry()));

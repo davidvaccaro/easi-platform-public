@@ -36,7 +36,7 @@ The following code snippet "builds" a streaming pipeline, which is configured to
 ```js
 const pipeline = EASI
     .pipelineBuilder()
-    .fromFetchStream()
+    .fromHttpStream()
     .ofDicomData()
     .toInstances()
     .build();
@@ -45,7 +45,7 @@ const pipeline = EASI
 ```python
 pipeline = (
     EASI.pipeline_builder()
-        .from_fetch_stream()
+        .from_http_stream()
         .of_dicom_data()
         .to_instances()
         .build()
@@ -55,7 +55,7 @@ pipeline = (
 ```csharp
 var pipeline = EASI
     .PipelineBuilder()
-    .FromFetchStream()
+    .FromHttpStream()
     .OfDicomData()
     .ToInstances()
     .Build();
@@ -64,7 +64,7 @@ var pipeline = EASI
 ```java
 var pipeline = EASI
     .pipelineBuilder()
-    .fromFetchStream()
+    .fromHttpStream()
     .ofDicomData()
     .toInstances()
     .build();
@@ -101,7 +101,7 @@ Implementations seeking to avoid direct DICOM data element processing could use 
 ```js:
 const pipeline = EASI
     .pipelineBuilder()
-    .fromFetchStream()
+    .fromHttpStream()
     .ofDicomData()
     .toEntities()
     .build();
@@ -138,7 +138,7 @@ The following code snippet makes the same request as the two transactions above 
 ```js:
 const pipeline = EASI
     .pipelineBuilder()
-    .fromFetchStream()
+    .fromHttpStream()
     .ofDicomData()
     .toFHIRImagingStudy()
     .build();

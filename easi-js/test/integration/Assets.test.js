@@ -40,6 +40,11 @@ test('Test: toAssets payload frame emits PNG bytes for first frame', async () =>
     var result = await EASI.pipelineBuilder()
         .fromPartStream()
         .ofDicomData()
+        .withBulkDataPolicy({
+            mode: 'auto',
+            knownLengthThreshold: 1024,
+            hardSafetyCap: (64 * 1024 * 1024)
+        })
         .toAssets({
             payload: {
                 frame: {
@@ -155,11 +160,6 @@ test('Test: toAssets still decodes frame payload when parser bulk-data policy st
                 collect: true
             }
         })
-        .withBulkDataPolicy({
-            mode: 'auto',
-            knownLengthThreshold: 1024,
-            hardSafetyCap: (64 * 1024 * 1024)
-        })
         .build()
         .process(readDicomBytes('0002.DCM'));
 
@@ -178,6 +178,11 @@ test('Test: toAssets can emit native frame chunks without materializing PixelDat
     await EASI.pipelineBuilder()
         .fromPartStream()
         .ofDicomData()
+        .withBulkDataPolicy({
+            mode: 'stream',
+            knownLengthThreshold: 1,
+            hardSafetyCap: (64 * 1024 * 1024)
+        })
         .toAssets({
             payload: {
                 mode: 'stream',
@@ -192,11 +197,6 @@ test('Test: toAssets can emit native frame chunks without materializing PixelDat
                     pixelDataMaterializedLengths.push(pixelData?.length?.() ?? -1);
                 }
             }
-        })
-        .withBulkDataPolicy({
-            mode: 'stream',
-            knownLengthThreshold: 1,
-            hardSafetyCap: (64 * 1024 * 1024)
         })
         .build()
         .process(readDicomBytes('0002.DCM'));
@@ -217,6 +217,11 @@ test('Test: toAssets payload mode materialize prefers end-of-instance frame emis
     await EASI.pipelineBuilder()
         .fromPartStream()
         .ofDicomData()
+        .withBulkDataPolicy({
+            mode: 'stream',
+            knownLengthThreshold: 1,
+            hardSafetyCap: (64 * 1024 * 1024)
+        })
         .toAssets({
             payload: {
                 mode: 'materialize',
@@ -233,11 +238,6 @@ test('Test: toAssets payload mode materialize prefers end-of-instance frame emis
                 onFrameChunk: (frameChunk) => frameChunkEvents.push(frameChunk),
                 collect: false
             }
-        })
-        .withBulkDataPolicy({
-            mode: 'stream',
-            knownLengthThreshold: 1,
-            hardSafetyCap: (64 * 1024 * 1024)
         })
         .build()
         .process(readDicomBytes('0002.DCM'));
