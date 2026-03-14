@@ -13,7 +13,21 @@ export default class Pipeline {
      * @returns {Promise<any>} The terminal pipeline output.
      */
     process(source, options = null) {
-        return this._reader.read(source, options);
+
+        const execute = () => this._reader.read(source, options);
+
+        // Serialize process calls on one pipeline instance so parser/handler state
+        // remains transaction-safe even when callers invoke process concurrently.
+        const current = this._processQueue.then(execute, execute);
+
+        // Keep the queue alive regardless of failures from this transaction.
+        this._processQueue = current.then(
+            () => undefined,
+            () => undefined
+        );
+
+        return current;
+
     }
 
     /**
@@ -47,6 +61,7 @@ export default class Pipeline {
      */
     constructor(reader) {
         this._reader = reader;
+        this._processQueue = Promise.resolve();
     }
 
 };
