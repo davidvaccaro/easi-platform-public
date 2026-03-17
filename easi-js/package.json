@@ -31,6 +31,7 @@
         ]
     },
     "dependencies": {
+        "@voxelmed/openjpegjs": "^0.0.2",
         "node-fetch": "^3.3.1"
     }
 }

@@ -20,6 +20,7 @@ const mimeTypes = {
     '.mjs': 'text/javascript; charset=utf-8',
     '.css': 'text/css; charset=utf-8',
     '.json': 'application/json; charset=utf-8',
+    '.wasm': 'application/wasm',
     '.xml': 'application/xml; charset=utf-8',
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
@@ -123,4 +124,3 @@ const server = http.createServer((request, response) => {
 server.listen(port, host, () => {
     console.log(`Kitchen sink server listening on http://${host}:${port}${defaultPagePath}`);
 });
-

@@ -55,6 +55,72 @@
         </div>
         <br>
         <hr>
+        <div>
+            <h4>DICOM Transcoding Stream Save</h5>
+        </div>
+        <hr>
+        <div>
+            <input type="file" id="dicomTranscodeStreamFile" name="dicomTranscodeStreamFile" />
+        </div>
+        <br>
+        <div>
+            <label for="transcodeTargetTransferSyntax"><strong>Target Transfer Syntax:</strong></label>
+            <select id="transcodeTargetTransferSyntax">
+                <option value="1.2.840.10008.1.2">Implicit VR Little Endian (1.2.840.10008.1.2)</option>
+                <option value="1.2.840.10008.1.2.1" selected>Explicit VR Little Endian (1.2.840.10008.1.2.1)</option>
+                <option value="1.2.840.10008.1.2.2">Explicit VR Big Endian (1.2.840.10008.1.2.2)</option>
+                <option value="1.2.840.10008.1.2.4.50">JPEG Baseline (1.2.840.10008.1.2.4.50)</option>
+                <option value="1.2.840.10008.1.2.4.90">JPEG 2000 Lossless (1.2.840.10008.1.2.4.90)</option>
+                <option value="1.2.840.10008.1.2.4.91">JPEG 2000 (1.2.840.10008.1.2.4.91)</option>
+                <option value="1.2.840.10008.1.2.4.201">HTJ2K Lossless (1.2.840.10008.1.2.4.201)</option>
+                <option value="1.2.840.10008.1.2.4.202">HTJ2K Lossless RPCL (1.2.840.10008.1.2.4.202)</option>
+                <option value="1.2.840.10008.1.2.4.203">HTJ2K (1.2.840.10008.1.2.4.203)</option>
+            </select>
+        </div>
+        <br>
+        <div>
+            <label><input type="checkbox" id="transcodeRoundTripEnabled" /> Round-trip transcode</label>
+            <span style="margin-left:8px;">(first stage target above, then transcode back to)</span>
+            <select id="transcodeRoundTripTargetTransferSyntax">
+                <option value="1.2.840.10008.1.2">Implicit VR Little Endian (1.2.840.10008.1.2)</option>
+                <option value="1.2.840.10008.1.2.1" selected>Explicit VR Little Endian (1.2.840.10008.1.2.1)</option>
+                <option value="1.2.840.10008.1.2.2">Explicit VR Big Endian (1.2.840.10008.1.2.2)</option>
+                <option value="1.2.840.10008.1.2.4.50">JPEG Baseline (1.2.840.10008.1.2.4.50)</option>
+                <option value="1.2.840.10008.1.2.4.90">JPEG 2000 Lossless (1.2.840.10008.1.2.4.90)</option>
+                <option value="1.2.840.10008.1.2.4.91">JPEG 2000 (1.2.840.10008.1.2.4.91)</option>
+                <option value="1.2.840.10008.1.2.4.201">HTJ2K Lossless (1.2.840.10008.1.2.4.201)</option>
+                <option value="1.2.840.10008.1.2.4.202">HTJ2K Lossless RPCL (1.2.840.10008.1.2.4.202)</option>
+                <option value="1.2.840.10008.1.2.4.203">HTJ2K (1.2.840.10008.1.2.4.203)</option>
+            </select>
+        </div>
+        <br>
+        <div>
+            <span><strong>Transcoding Fallback:</strong></span>
+            <label><input type="radio" name="transcodeFallbackMode" value="fail" checked /> Fail</label>
+            <label><input type="radio" name="transcodeFallbackMode" value="passthrough" /> Passthrough</label>
+        </div>
+        <br>
+        <div>
+            <label for="transcodeLossyQuality"><strong>Lossy Quality (1-100):</strong></label>
+            <input type="number" id="transcodeLossyQuality" min="1" max="100" step="1" value="90" style="width:72px;" />
+            <span style="margin-left:8px;">Used for lossy JPEG 2000 / HTJ2K targets only.</span>
+        </div>
+        <br>
+        <div>
+            <label for="transcodeCompressionRatio"><strong>Compression Ratio:</strong></label>
+            <input type="number" id="transcodeCompressionRatio" min="1" step="0.1" value="10" style="width:72px;" />
+            <span style="margin-left:8px;">Higher values generally produce smaller lossy output.</span>
+        </div>
+        <br>
+        <div>
+            <button id="transcodeStreamSave">Transcode and Stream Save</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="transcodeStreamOutput" rows="8" cols="80" placeholder="Transcode stream save details..."></textarea>
+        </div>
+        <br>
+        <hr>
         <h4>Asset Extraction Related Actions</h4>
         <hr>
         <br>
@@ -470,6 +536,224 @@
 
             }
 
+            function getTranscodeFallbackMode() {
+                return $('input[name="transcodeFallbackMode"]:checked').val() || 'fail';
+            }
+
+            function getTranscodeTargetTransferSyntaxID() {
+                return $('#transcodeTargetTransferSyntax').val() || TransferSyntax.ExplicitVRLittleEndian.ID;
+            }
+
+            function getTranscodeRoundTripEnabled() {
+                return ($('#transcodeRoundTripEnabled').is(':checked') === true);
+            }
+
+            function getTranscodeRoundTripTargetTransferSyntaxID() {
+                return $('#transcodeRoundTripTargetTransferSyntax').val() || TransferSyntax.ExplicitVRLittleEndian.ID;
+            }
+
+            function getTranscodeLossyQuality() {
+
+                var value = Number($('#transcodeLossyQuality').val());
+                if (Number.isFinite(value) == false)
+                    return 90;
+
+                value = Math.round(value);
+                if (value < 1)
+                    value = 1;
+                if (value > 100)
+                    value = 100;
+
+                return value;
+
+            }
+
+            function getTranscodeCompressionRatio() {
+
+                var value = Number($('#transcodeCompressionRatio').val());
+                if (Number.isFinite(value) == false)
+                    return 10;
+
+                if (value < 1)
+                    value = 1;
+
+                return value;
+
+            }
+
+            function isLossyTransferSyntaxID(transferSyntaxID) {
+                var transferSyntax = TransferSyntax.find(transferSyntaxID);
+                return (transferSyntax?.IsLossy === true);
+            }
+
+            function buildTranscodeCodecOptions(transferSyntaxID, lossyQuality, compressionRatio) {
+
+                if (isLossyTransferSyntaxID(transferSyntaxID) != true)
+                    return null;
+
+                return {
+                    encode: {
+                        quality: lossyQuality,
+                        compressionRatio: compressionRatio
+                    }
+                };
+
+            }
+
+            function isJpeg2000TransferSyntaxID(transferSyntaxID) {
+                return (
+                    (transferSyntaxID == TransferSyntax.JPEG2000Lossless.ID)
+                    || (transferSyntaxID == TransferSyntax.JPEG2000.ID)
+                    || (transferSyntaxID == TransferSyntax.JPEG2000MCLossless.ID)
+                    || (transferSyntaxID == TransferSyntax.JPEG2000MC.ID)
+                    || (transferSyntaxID == TransferSyntax.HTJ2KLossless.ID)
+                    || (transferSyntaxID == TransferSyntax.HTJ2KLosslessRPCL.ID)
+                    || (transferSyntaxID == TransferSyntax.HTJ2K.ID)
+                );
+            }
+
+            async function ensureOpenJpegRuntime() {
+
+                var openjpegModule = globalThis?.EASIOpenJPEGModule ?? null;
+                if ((openjpegModule != null)
+                    && (typeof openjpegModule.J2KEncoder == 'function')
+                    && (typeof openjpegModule.J2KDecoder == 'function')) {
+                    return openjpegModule;
+                }
+
+                if (globalThis.__easiOpenJpegLoadingPromise == null) {
+                    globalThis.__easiOpenJpegLoadingPromise = (async function () {
+
+                        var openjpegBasePath = '/easi-js/node_modules/@voxelmed/openjpegjs/dist/';
+
+                        var openjpegFactory = globalThis?.OpenJPEGWASM ?? null;
+                        if (typeof openjpegFactory != 'function') {
+
+                            if (globalThis.__easiOpenJpegScriptLoadingPromise == null) {
+                                globalThis.__easiOpenJpegScriptLoadingPromise = new Promise(function (resolve, reject) {
+
+                                    var existingScript = document.getElementById('easi-openjpeg-wasm-script');
+                                    if (existingScript != null) {
+                                        existingScript.addEventListener('load', function () { resolve(); }, { once: true });
+                                        existingScript.addEventListener('error', function () { reject(new Error('Failed loading OpenJPEG script.')); }, { once: true });
+                                        return;
+                                    }
+
+                                    var script = document.createElement('script');
+                                    script.id = 'easi-openjpeg-wasm-script';
+                                    script.src = (openjpegBasePath + 'openjpegwasm.js');
+                                    script.async = true;
+                                    script.onload = function () { resolve(); };
+                                    script.onerror = function () { reject(new Error('Failed loading OpenJPEG script.')); };
+                                    document.head.appendChild(script);
+
+                                }).catch(function (error) {
+                                    globalThis.__easiOpenJpegScriptLoadingPromise = null;
+                                    throw error;
+                                });
+                            }
+
+                            await globalThis.__easiOpenJpegScriptLoadingPromise;
+                            openjpegFactory = globalThis?.OpenJPEGWASM ?? null;
+
+                        }
+
+                        if (typeof openjpegFactory != 'function') {
+                            throw new Error('OpenJPEG factory export is unavailable.');
+                        }
+
+                        globalThis.EASIOpenJPEGFactory = openjpegFactory;
+
+                        var loadedModule = await openjpegFactory({
+                            locateFile: function (path) {
+                                return openjpegBasePath + String(path ?? '');
+                            }
+                        });
+                        if ((loadedModule == null)
+                            || (typeof loadedModule.J2KEncoder != 'function')
+                            || (typeof loadedModule.J2KDecoder != 'function')) {
+                            throw new Error('OpenJPEG module does not expose J2KEncoder/J2KDecoder.');
+                        }
+
+                        globalThis.EASIOpenJPEGModule = loadedModule;
+                        return loadedModule;
+
+                    })().catch(function (error) {
+
+                        globalThis.__easiOpenJpegLoadingPromise = null;
+                        throw error;
+
+                    });
+                }
+
+                return await globalThis.__easiOpenJpegLoadingPromise;
+
+            }
+
+            function buildTranscodedDicomFileName(fileName, targetTransferSyntaxID) {
+
+                var name = String(fileName ?? 'dicom').trim();
+                if (name.length == 0)
+                    name = 'dicom';
+
+                var extensionIndex = name.lastIndexOf('.');
+                var baseName = (extensionIndex > 0)
+                    ? name.substring(0, extensionIndex)
+                    : name;
+
+                var syntaxToken = String(targetTransferSyntaxID ?? '').trim();
+                if (syntaxToken.length == 0)
+                    syntaxToken = 'unknown';
+
+                syntaxToken = syntaxToken
+                    .replace(/[^\w.]/g, '_')
+                    .replace(/\.+/g, '.');
+
+                return baseName + '_tx_' + syntaxToken + '.dcm';
+
+            }
+
+            function buildRoundTripDicomFileName(fileName, firstTransferSyntaxID, secondTransferSyntaxID) {
+
+                var name = String(fileName ?? 'dicom').trim();
+                if (name.length == 0)
+                    name = 'dicom';
+
+                var extensionIndex = name.lastIndexOf('.');
+                var baseName = (extensionIndex > 0)
+                    ? name.substring(0, extensionIndex)
+                    : name;
+
+                var firstToken = String(firstTransferSyntaxID ?? '').trim().replace(/[^\w.]/g, '_');
+                var secondToken = String(secondTransferSyntaxID ?? '').trim().replace(/[^\w.]/g, '_');
+
+                if (firstToken.length == 0)
+                    firstToken = 'unknown';
+
+                if (secondToken.length == 0)
+                    secondToken = 'unknown';
+
+                return baseName + '_tx_' + firstToken + '_rt_' + secondToken + '.dcm';
+
+            }
+
+            async function inspectTransferSyntaxFromBytes(bytes) {
+
+                if ((bytes == null) || (bytes.length == 0))
+                    return null;
+
+                const probePipeline = EASI.pipelineBuilder()
+                    .fromByteStream()
+                    .ofDicomData()
+                    .toInstances()
+                    .build();
+
+                var instanceResult = await probePipeline.process(bytes);
+                var instance = Array.isArray(instanceResult) ? instanceResult[0] : instanceResult;
+                return instance?.metaSet?.transferSyntaxUID?.ID ?? null;
+
+            }
+
             function downloadBytesAsFile(bytes, fileName, mimeType = 'application/zip') {
 
                 if ((bytes == null) || (bytes.length == 0))
@@ -704,6 +988,309 @@
                     $('#deidentifyStreamOutput').val(
                         'Stream save failed.\n'
                         + (err?.message ?? String(err))
+                    );
+
+                    console.log(err);
+
+                }
+                finally {
+                    URL.revokeObjectURL(sourceUrl);
+                }
+
+            });
+
+            $('#transcodeStreamSave').on('click', async function () {
+
+                console.clear();
+                $('#transcodeStreamOutput').val('');
+
+                var file = $('#dicomTranscodeStreamFile')[0]?.files?.[0];
+                if (file == null) {
+                    alert('Please select a DICOM file first.');
+                    return;
+                }
+
+                var sourceUrl = URL.createObjectURL(file);
+                var targetTransferSyntaxID = getTranscodeTargetTransferSyntaxID();
+                var roundTripEnabled = getTranscodeRoundTripEnabled();
+                var roundTripTargetTransferSyntaxID = getTranscodeRoundTripTargetTransferSyntaxID();
+                var fallbackMode = getTranscodeFallbackMode();
+                var lossyQuality = getTranscodeLossyQuality();
+                var compressionRatio = getTranscodeCompressionRatio();
+                var stageOneNeedsOpenJpeg = isJpeg2000TransferSyntaxID(targetTransferSyntaxID);
+                var stageTwoNeedsOpenJpeg = ((roundTripEnabled === true) && isJpeg2000TransferSyntaxID(roundTripTargetTransferSyntaxID));
+                var outputFileName = roundTripEnabled
+                    ? buildRoundTripDicomFileName(file.name, targetTransferSyntaxID, roundTripTargetTransferSyntaxID)
+                    : buildTranscodedDicomFileName(file.name, targetTransferSyntaxID);
+
+                var fileHandle = null;
+                var chunkCount = 0;
+                var bytesStreamed = 0;
+                var transcodeConcerns = [];
+                var transcodeFrameEvents = 0;
+                var roundTripConcerns = [];
+                var roundTripFrameEvents = 0;
+
+                try {
+
+                    if ((stageOneNeedsOpenJpeg == true) || (stageTwoNeedsOpenJpeg == true)) {
+                        await ensureOpenJpegRuntime();
+                    }
+
+                    if (typeof window.showSaveFilePicker === 'function') {
+                        fileHandle = await window.showSaveFilePicker({
+                            suggestedName: outputFileName,
+                            types: [{
+                                description: 'DICOM files',
+                                accept: { 'application/dicom': ['.dcm', '.dicom'] }
+                            }]
+                        });
+                    }
+
+                    var stageOneBuilder = applyDicomDataValidation(
+                        EASI.pipelineBuilder()
+                            .fromHttpStream()
+                            .ofDicomData()
+                            .withTranscoding({
+                                targetTransferSyntax: targetTransferSyntaxID,
+                                fallback: fallbackMode,
+                                codec: buildTranscodeCodecOptions(targetTransferSyntaxID, lossyQuality, compressionRatio),
+                                onConcern: function (concern) {
+                                    transcodeConcerns.push(concern);
+                                    console.warn('[DICOM Transcoding]', concern);
+                                },
+                                onFrame: function (frame) {
+                                    transcodeFrameEvents += 1;
+                                    return Status.CONTINUE;
+                                }
+                            })
+                    )
+                    .toDicomData();
+                    var stageOneResult = await processWithTiming(
+                        stageOneBuilder
+                            .intoByteStream({
+                                chunkSize: (64 * 1024),
+                                collectOutput: true
+                            })
+                            .build(),
+                        sourceUrl,
+                        null,
+                        'Transcode Stage 1'
+                    );
+
+                    var stageOneBytes = stageOneResult?.body ?? new Uint8Array(0);
+                    if (stageOneBytes.length == 0) {
+                        throw new Error('No output bytes were produced by transcoding stage 1.');
+                    }
+
+                    var stageOneObservedTransferSyntax = null;
+                    try {
+                        stageOneObservedTransferSyntax = await inspectTransferSyntaxFromBytes(stageOneBytes);
+                    }
+                    catch (probeError) {
+                        console.warn('Unable to inspect stage 1 transfer syntax.', probeError);
+                    }
+
+                    var finalBytes = stageOneBytes;
+                    var finalResult = stageOneResult;
+                    var stageTwoObservedTransferSyntax = null;
+
+                    if (roundTripEnabled === true) {
+
+                        var stageTwoBuilder = applyDicomDataValidation(
+                            EASI.pipelineBuilder()
+                                .fromByteStream()
+                                .ofDicomData()
+                                .withTranscoding({
+                                    targetTransferSyntax: roundTripTargetTransferSyntaxID,
+                                    fallback: fallbackMode,
+                                    codec: buildTranscodeCodecOptions(roundTripTargetTransferSyntaxID, lossyQuality, compressionRatio),
+                                    onConcern: function (concern) {
+                                        roundTripConcerns.push(concern);
+                                        console.warn('[DICOM Transcoding Round-Trip]', concern);
+                                    },
+                                    onFrame: function () {
+                                        roundTripFrameEvents += 1;
+                                        return Status.CONTINUE;
+                                    }
+                                })
+                        )
+                        .toDicomData();
+
+                        finalResult = await processWithTiming(
+                            stageTwoBuilder
+                                .intoByteStream({
+                                    chunkSize: (64 * 1024),
+                                    collectOutput: true
+                                })
+                                .build(),
+                            stageOneBytes,
+                            null,
+                            'Transcode Stage 2 (Round-Trip)'
+                        );
+
+                        finalBytes = finalResult?.body ?? new Uint8Array(0);
+                        if (finalBytes.length == 0) {
+                            throw new Error('No output bytes were produced by transcoding stage 2.');
+                        }
+
+                        try {
+                            stageTwoObservedTransferSyntax = await inspectTransferSyntaxFromBytes(finalBytes);
+                        }
+                        catch (probeError) {
+                            console.warn('Unable to inspect stage 2 transfer syntax.', probeError);
+                        }
+
+                    }
+
+                    var writerOptions = {
+                        chunkSize: (64 * 1024),
+                        onChunk: function (chunk) {
+                            if ((chunk == null) || (chunk.length == 0))
+                                return;
+
+                            bytesStreamed += chunk.length;
+                            chunkCount += 1;
+                        }
+                    };
+
+                    if (fileHandle != null) {
+                        await processWithTiming(
+                            EASI.pipelineBuilder()
+                                .fromByteStream()
+                                .ofDicomData()
+                                .toDicomData()
+                                .intoBrowserFileStream(fileHandle, writerOptions)
+                                .build(),
+                            finalBytes,
+                            null,
+                            'Transcode Output Stream Save'
+                        );
+                    }
+                    else {
+                        // Browser fallback: direct download when no File System Access API.
+                        bytesStreamed = finalBytes.length;
+                        chunkCount = 1;
+                        downloadBytesAsFile(finalBytes, outputFileName, 'application/dicom');
+                    }
+
+                    $('#transcodeStreamOutput').val(
+                        'Source: ' + file.name + '\n'
+                        + 'Output: ' + outputFileName + '\n'
+                        + 'Round-trip enabled: ' + String(roundTripEnabled) + '\n'
+                        + 'Stage 1 target Transfer Syntax: ' + targetTransferSyntaxID + '\n'
+                        + 'Stage 1 observed Transfer Syntax: ' + String(stageOneObservedTransferSyntax ?? 'unknown') + '\n'
+                        + 'Stage 1 frame events: ' + transcodeFrameEvents + '\n'
+                        + 'Stage 1 concerns: ' + transcodeConcerns.length + '\n'
+                        + 'Stage 1 lossy quality: '
+                        + (isLossyTransferSyntaxID(targetTransferSyntaxID) ? String(lossyQuality) : 'n/a (lossless/non-lossy target)')
+                        + '\n'
+                        + 'Stage 1 compression ratio: '
+                        + (isLossyTransferSyntaxID(targetTransferSyntaxID) ? String(compressionRatio) : 'n/a (lossless/non-lossy target)')
+                        + '\n'
+                        + (roundTripEnabled
+                            ? ('Stage 2 target Transfer Syntax: ' + roundTripTargetTransferSyntaxID + '\n'
+                                + 'Stage 2 observed Transfer Syntax: ' + String(stageTwoObservedTransferSyntax ?? 'unknown') + '\n'
+                                + 'Stage 2 frame events: ' + roundTripFrameEvents + '\n'
+                                + 'Stage 2 concerns: ' + roundTripConcerns.length + '\n'
+                                + 'Stage 2 lossy quality: '
+                                + (isLossyTransferSyntaxID(roundTripTargetTransferSyntaxID) ? String(lossyQuality) : 'n/a (lossless/non-lossy target)')
+                                + '\n'
+                                + 'Stage 2 compression ratio: '
+                                + (isLossyTransferSyntaxID(roundTripTargetTransferSyntaxID) ? String(compressionRatio) : 'n/a (lossless/non-lossy target)')
+                                + '\n')
+                            : '')
+                        + 'Fallback: ' + fallbackMode + '\n'
+                        + 'Chunks streamed: ' + chunkCount + '\n'
+                        + 'Bytes streamed: ' + bytesStreamed + '\n'
+                        + 'Final bytes: ' + String(finalResult?.bytesWritten ?? finalBytes.length)
+                    );
+
+                    console.log({
+                        sourceFile: file.name,
+                        outputFile: outputFileName,
+                        roundTripEnabled: roundTripEnabled,
+                        stageOne: {
+                            targetTransferSyntax: targetTransferSyntaxID,
+                            observedTransferSyntax: stageOneObservedTransferSyntax,
+                            lossyQuality: (isLossyTransferSyntaxID(targetTransferSyntaxID) ? lossyQuality : null),
+                            compressionRatio: (isLossyTransferSyntaxID(targetTransferSyntaxID) ? compressionRatio : null),
+                            frameEvents: transcodeFrameEvents,
+                            concerns: transcodeConcerns
+                        },
+                        stageTwo: (roundTripEnabled ? {
+                            targetTransferSyntax: roundTripTargetTransferSyntaxID,
+                            observedTransferSyntax: stageTwoObservedTransferSyntax,
+                            lossyQuality: (isLossyTransferSyntaxID(roundTripTargetTransferSyntaxID) ? lossyQuality : null),
+                            compressionRatio: (isLossyTransferSyntaxID(roundTripTargetTransferSyntaxID) ? compressionRatio : null),
+                            frameEvents: roundTripFrameEvents,
+                            concerns: roundTripConcerns
+                        } : null),
+                        fallbackMode: fallbackMode,
+                        chunksStreamed: chunkCount,
+                        bytesStreamed: bytesStreamed
+                    });
+
+                }
+                catch (err) {
+
+                    if (err?.name === 'AbortError') {
+                        $('#transcodeStreamOutput').val('Save cancelled by user.');
+                        return;
+                    }
+
+                    var concernsSummary = [];
+                    if (Array.isArray(transcodeConcerns) == true) {
+                        for (var concernIndex = 0; concernIndex < transcodeConcerns.length; concernIndex++) {
+                            var concern = transcodeConcerns[concernIndex];
+                            concernsSummary.push(
+                                '[' + String(concern?.severity ?? 'warning').toUpperCase() + '] '
+                                + String(concern?.code ?? 'Concern')
+                                + ': ' + String(concern?.message ?? '')
+                            );
+                        }
+                    }
+
+                    if (Array.isArray(roundTripConcerns) == true) {
+                        for (var rtConcernIndex = 0; rtConcernIndex < roundTripConcerns.length; rtConcernIndex++) {
+                            var rtConcern = roundTripConcerns[rtConcernIndex];
+                            concernsSummary.push(
+                                '[ROUND-TRIP ' + String(rtConcern?.severity ?? 'warning').toUpperCase() + '] '
+                                + String(rtConcern?.code ?? 'Concern')
+                                + ': ' + String(rtConcern?.message ?? '')
+                            );
+                        }
+                    }
+
+                    var message = (
+                        'Transcode stream save failed.\n'
+                        + (err?.message ?? String(err))
+                    );
+
+                    if (concernsSummary.length > 0) {
+                        message += '\n\nConcerns:\n' + concernsSummary.join('\n');
+                    }
+
+                    if ((targetTransferSyntaxID == TransferSyntax.JPEG2000.ID)
+                        || (targetTransferSyntaxID == TransferSyntax.JPEG2000Lossless.ID)
+                        || (targetTransferSyntaxID == TransferSyntax.HTJ2K.ID)
+                        || (targetTransferSyntaxID == TransferSyntax.HTJ2KLossless.ID)
+                        || (targetTransferSyntaxID == TransferSyntax.HTJ2KLosslessRPCL.ID)) {
+
+                        var jpeg2000Unavailable = (
+                            String(err?.message ?? '').toLowerCase().includes('jpeg 2000 encoding is unavailable')
+                            || String(err?.message ?? '').toLowerCase().includes('jpeg 2000 decoding is unavailable')
+                        );
+
+                        if (jpeg2000Unavailable == true) {
+                            message += '\n\nNote: JPEG 2000/HTJ2K transcoding is enabled, but no OpenJPEG runtime/backend is configured. '
+                                + 'Provide an OpenJPEG module/factory (for example via globalThis.EASIOpenJPEGModule or globalThis.EASIOpenJPEGFactory), '
+                                + 'or pass codec options on withTranscoding(...).';
+                        }
+                    }
+
+                    $('#transcodeStreamOutput').val(
+                        message
                     );
 
                     console.log(err);

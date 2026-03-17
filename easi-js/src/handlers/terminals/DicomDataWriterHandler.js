@@ -98,6 +98,11 @@ export default class DicomDataWriterHandler {
     isLittleEndian(transferSyntax) {
         if (transferSyntax == null)
             return true;
+
+        // Treat unresolved syntax ("NONE") as implicit-little-endian to avoid
+        // emitting big-endian byte order for raw data-set streams.
+        if ((transferSyntax == TransferSyntax.NONE) || (transferSyntax?.ID == TransferSyntax.NONE.ID))
+            return true;
         return (transferSyntax.IsLittleEndian == true);
     }
 

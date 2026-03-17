@@ -20,6 +20,7 @@ import DicomJsonMetadataAdapter from "../handlers/adapters/DicomJsonMetadataAdap
 import DicomXmlMetadataAdapter from "../handlers/adapters/DicomXmlMetadataAdapter.js";
 import DicomDeIdentificationFilter from "../handlers/filters/DicomDeIdentificationFilter.js";
 import DicomValidationFilter from "../handlers/filters/DicomValidationFilter.js";
+import DicomTranscodingFilter from "../handlers/filters/DicomTranscodingFilter.js";
 import DicomDataWriterHandler from "../handlers/terminals/DicomDataWriterHandler.js";
 import JsonDataHandler from "../handlers/terminals/syntax/JsonDataHandler.js";
 import XmlDataHandler from "../handlers/terminals/syntax/XmlDataHandler.js";
@@ -372,6 +373,27 @@ export default class PipelineBuildSession {
     }
 
     /**
+     * Enables/configures transfer-syntax transcoding.
+     * Supported forms:
+     * - false/null: disabled
+     * - string: target transfer syntax UID
+     * - object: full transcoding options
+     * @param {string | object | null | false} transcoding Transcoding configuration.
+     * @returns {PipelineBuildSession} The current session.
+     */
+    withTranscoding(transcoding = null) {
+
+        if ((transcoding == null) || (transcoding === false)) {
+            this.transcoding = null;
+            return this;
+        }
+
+        this.transcoding = transcoding;
+        return this;
+
+    }
+
+    /**
      * Set the outbound writer for restreaming pipeline output.
      * @param {object} writer The output writer.
      * @param {*} target Optional writer target.
@@ -475,6 +497,29 @@ export default class PipelineBuildSession {
             handler.codecRegistry = this.codecRegistry;
         }
 
+        // Compose transfer-syntax transcoding for native DICOM parse chains.
+        if (this.transcoding != null) {
+
+            if ((parser instanceof DicomDataParser) == false) {
+                throw new Exception(
+                    "withTranscoding(...) currently requires native DICOM parser semantics.",
+                    BuilderErrorCodes.IncompatibleTranscodingAndParser
+                );
+            }
+
+            var transcoding = this.transcoding;
+
+            // Apply the caller-configured codec registry to transcoding when available.
+            if ((this.codecRegistry != null) && (typeof transcoding == "object") && (transcoding != null)) {
+                transcoding = Object.assign({}, transcoding, {
+                    codecRegistry: (transcoding.codecRegistry ?? this.codecRegistry)
+                });
+            }
+
+            handler = new DicomTranscodingFilter(handler, transcoding);
+
+        }
+
         // Compose de-identification in the canonical DICOM semantic handler chain.
         if (this.mask != null) {
 
@@ -550,6 +595,7 @@ export default class PipelineBuildSession {
         this.handler = null;
         this.mask = null;
         this.validation = null;
+        this.transcoding = null;
         this.codecRegistry = null;
         this.onEmit = null;
         this.bulkDataPolicy = null;

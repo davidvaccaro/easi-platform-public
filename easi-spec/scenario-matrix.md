@@ -18,6 +18,7 @@ This document should distinguish:
 | Native DICOM bytes | Streaming DICOM parser | Selection handler | Attribute selection result | Implemented (`easi-js`) |
 | Native DICOM bytes | Streaming DICOM parser | Mapping handler | Custom mapped output (e.g. FHIR) | Implemented (`easi-js`) |
 | Native DICOM bytes | Streaming DICOM parser | DICOM data writer handler | Native DICOM bytes | Implemented (`easi-js`) |
+| Native DICOM bytes | Streaming DICOM parser + transcoding filter | DICOM data writer handler | Transfer-syntax transcoded native DICOM bytes | Planned (`withTranscoding` contract drafted) |
 | Native DICOM bytes | DICOM parser + assets archive handler | ZIP package (`metadata.json` + `frames/*` + `manifest.json`) | Standard metadata + image payload package | Implemented (`easi-js`) |
 | DICOM JSON metadata | Streaming JSON parser | Metadata instance handler | DICOM `Instance` model | Implemented (`easi-js`) |
 | DICOM JSON metadata | Streaming JSON parser | Metadata selection handler | Attribute selection result | Implemented (`easi-js`) |

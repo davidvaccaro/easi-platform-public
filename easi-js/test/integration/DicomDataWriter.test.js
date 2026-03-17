@@ -81,6 +81,39 @@ test('Test: PipelineBuilder toDicomData emits native DICOM bytes that round-trip
 
 });
 
+test('Test: toDicomData preserves little-endian dataset ordering for raw dataset-only DICOM input', async () => {
+
+    var sourceBytes = readDicomBytes('CR-MONO1-10-chest.dcm');
+
+    var emittedBytes = await EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .toDicomData()
+        .build()
+        .process(sourceBytes);
+
+    expect(emittedBytes instanceof Uint8Array).toBe(true);
+    expect(emittedBytes.length).toBeGreaterThan(0);
+
+    // First attribute tag should remain little-endian encoded (0008,0000) -> 08 00 00 00
+    expect(emittedBytes[0]).toBe(0x08);
+    expect(emittedBytes[1]).toBe(0x00);
+    expect(emittedBytes[2]).toBe(0x00);
+    expect(emittedBytes[3]).toBe(0x00);
+
+    var emittedInstance = await EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .toInstances()
+        .build()
+        .process(emittedBytes);
+
+    expect(emittedInstance.metaSet == null).toBe(true);
+    expect(emittedInstance.dataSet.find(Tag.Rows).value).toBe(440);
+    expect(emittedInstance.dataSet.find(Tag.Columns).value).toBe(440);
+
+});
+
 test('Test: toDicomData with onChunk streams bytes and can be chained with withMask for anonymized DICOM output', async () => {
 
     var chunks = [];

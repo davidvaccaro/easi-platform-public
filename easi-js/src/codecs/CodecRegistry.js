@@ -77,6 +77,16 @@ export default class CodecRegistry {
     }
 
     /**
+     * Determine if a decoder is explicitly registered for a transfer-syntax.
+     * @param {TransferSyntax | string | null} transferSyntax The transfer-syntax.
+     * @returns {boolean} TRUE when a specific decoder is registered.
+     */
+    hasDecoderForTransferSyntax(transferSyntax) {
+        var transferSyntaxID = this.resolveTransferSyntaxID(transferSyntax);
+        return (this.decoderConstructors[transferSyntaxID] != null);
+    }
+
+    /**
      * Register an encoder for a named output format.
      * @param {string} format The output format identifier.
      * @param {object} encoder The encoder instance.

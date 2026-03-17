@@ -105,6 +105,17 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Enables/configures transfer-syntax transcoding in the canonical DICOM semantic chain.
+     * @param {string | object | null | false} transcoding Transcoding configuration.
+     * @returns {PipelineTargetStage} A new target stage object.
+     */
+    withTranscoding(transcoding) {
+        return this.cloneCurrentStage(
+            (session) => session.withTranscoding(transcoding)
+        );
+    }
+
+    /**
      * Set the current terminal handler.
      * @param {object} handler The terminal handler.
      * @returns {PipelineOutputStage} An output stage reference.

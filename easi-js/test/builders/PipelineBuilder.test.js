@@ -12,6 +12,7 @@ import DicomInstanceHandler from "../../src/handlers/terminals/DicomInstanceHand
 import DicomEntityHandler from "../../src/handlers/terminals/DicomEntityHandler.js";
 import DicomDeIdentificationFilter from "../../src/handlers/filters/DicomDeIdentificationFilter.js";
 import DicomValidationFilter, { ValidationGoals } from "../../src/handlers/filters/DicomValidationFilter.js";
+import DicomTranscodingFilter from "../../src/handlers/filters/DicomTranscodingFilter.js";
 import DicomJsonMetadataAdapter from "../../src/handlers/adapters/DicomJsonMetadataAdapter.js";
 import DicomXmlMetadataAdapter from "../../src/handlers/adapters/DicomXmlMetadataAdapter.js";
 import DicomDataWriterHandler from "../../src/handlers/terminals/DicomDataWriterHandler.js";
@@ -21,6 +22,7 @@ import DicomToFHIRImagingStudyMapping from "../../src/handlers/mappings/DicomToF
 import JsonDataHandler from "../../src/handlers/terminals/syntax/JsonDataHandler.js";
 import XmlDataHandler from "../../src/handlers/terminals/syntax/XmlDataHandler.js";
 import Tag from "../../src/dicom/Tag.js";
+import TransferSyntax from "../../src/dicom/TransferSyntax.js";
 import Exception from "../../src/environment/Exception.js";
 import { BuilderErrorCodes } from "../../src/environment/Exception.js";
 
@@ -57,6 +59,7 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
     const target = format.ofDicomData();
     expect(typeof target.toInstances).toBe("function");
     expect(typeof target.withMask).toBe("function");
+    expect(typeof target.withTranscoding).toBe("function");
 
     const ready = target.withMask(new Map()).toInstances();
     expect(typeof ready.withMask).toBe("undefined");
@@ -263,6 +266,19 @@ test("Test: build throws IncompatibleValidationAndParser", () => {
     expect(error.code).toBe(BuilderErrorCodes.IncompatibleValidationAndParser);
 });
 
+test("Test: build throws IncompatibleTranscodingAndParser", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromPartStream()
+            .withParser(new JsonDataParser())
+            .withTranscoding(TransferSyntax.ImplicitVRLittleEndian.ID)
+            .withHandler({})
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleTranscodingAndParser);
+});
+
 test("Test: repeated build with masking preserves canonical semantic handler chain", () => {
     const ready = new PipelineBuilder()
         .fromPartStream().ofDicomData()
@@ -399,6 +415,37 @@ test("Test: build composes metadata adapter -> validation -> deid -> writer when
     expect(pipeline.parser.handler instanceof DicomJsonMetadataAdapter).toBe(true);
     expect(pipeline.parser.handler.nextHandler instanceof DicomValidationFilter).toBe(true);
     expect(pipeline.parser.handler.nextHandler.nextHandler instanceof DicomDeIdentificationFilter).toBe(true);
+    expect(pipeline.parser.handler.nextHandler.nextHandler.nextHandler instanceof DicomDataWriterHandler).toBe(true);
+});
+
+test("Test: build composes transcoding filter for native DICOM semantic chain", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .withTranscoding({
+            targetTransferSyntax: TransferSyntax.ImplicitVRLittleEndian.ID
+        })
+        .toDicomData()
+        .build();
+
+    expect(pipeline.parser.handler instanceof DicomTranscodingFilter).toBe(true);
+    expect(pipeline.parser.handler.nextHandler instanceof DicomDataWriterHandler).toBe(true);
+    expect(pipeline.parser.handler.targetTransferSyntax.ID).toBe(TransferSyntax.ImplicitVRLittleEndian.ID);
+});
+
+test("Test: build composes validation -> deid -> transcoding -> writer in canonical order", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .withValidation({ goal: "permissive" })
+        .withMask(new Map())
+        .withTranscoding({
+            targetTransferSyntax: TransferSyntax.ImplicitVRLittleEndian.ID
+        })
+        .toDicomData()
+        .build();
+
+    expect(pipeline.parser.handler instanceof DicomValidationFilter).toBe(true);
+    expect(pipeline.parser.handler.nextHandler instanceof DicomDeIdentificationFilter).toBe(true);
+    expect(pipeline.parser.handler.nextHandler.nextHandler instanceof DicomTranscodingFilter).toBe(true);
     expect(pipeline.parser.handler.nextHandler.nextHandler.nextHandler instanceof DicomDataWriterHandler).toBe(true);
 });
 

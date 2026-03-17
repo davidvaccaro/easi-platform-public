@@ -753,6 +753,11 @@ export default class DicomDataParser extends DataParser {
                     // Set the "data-set" ONLY specification
                     this.partSpecification = DicomDataSetSpecification;
 
+                    // Data-set only input (no Part-10 prefix/meta-set) defaults to
+                    // Implicit VR Little Endian in practice.
+                    this.dataSetTransferSyntax = TransferSyntax.ImplicitVRLittleEndian;
+                    this.data.convert(this.dataSetTransferSyntax);
+
                 }
 
                 // Update the sequence
@@ -1486,16 +1491,22 @@ export default class DicomDataParser extends DataParser {
             if ((isDone == true) && (this.data.length() == 0)) {
 
                 // Auto-complete the last data-element (if needed)
-                if (this.dataElement != null) {
+                if ((this.dataElement != null) && (this.dataElementEndAttributeFired != true)) {
 
                     // Complete the data element
                     this.dataElement.isComplete = true;
 
                     // End the attribute 
                     await this.fireStreamEvent("onEndAttribute", this.dataElement, this.dataElementStatus);
+                    this.dataElementEndAttributeFired = true;
+
+                }
+
+                if (this.dataElement != null) {
 
                     // Clear the current data-elemen
                     this.dataElement = null;
+                    this.dataElementEndAttributeFired = false;
 
                     // If there was a sequence in process, end it
                     if (this.isParsingSequence == true) {
@@ -1592,6 +1603,7 @@ export default class DicomDataParser extends DataParser {
                 ? new AttributeSequence(details.tag, details.valueLength, null, this.data.transferSyntax) 
                 : new Attribute(details.tag, details.valueLength, null, this.data.transferSyntax);
             this.dataElementBytesConsumed = 0;
+            this.dataElementEndAttributeFired = false;
 
             // If the STATUS is CONTINUE
             if (this.status == Status.CONTINUE) {
@@ -1778,6 +1790,7 @@ export default class DicomDataParser extends DataParser {
 
                                 // End the attribute
                                 await this.fireStreamEvent("onEndAttribute", this.dataElement, this.dataElementStatus);
+                                this.dataElementEndAttributeFired = true;
 
                             }
                             else {
@@ -1865,6 +1878,7 @@ export default class DicomDataParser extends DataParser {
         // Initialize data-element runtime state.
         this.dataElementBytesConsumed = 0;
         this.dataElementStreamingDecision = null;
+        this.dataElementEndAttributeFired = false;
 
     }
 

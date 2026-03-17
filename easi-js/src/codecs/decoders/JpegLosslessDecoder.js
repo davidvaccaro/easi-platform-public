@@ -805,22 +805,26 @@ var littleEndian = (function() {
 
 if (littleEndian) {
     jpeg.lossless.Decoder.prototype.setValue16 = function (index, val) {
-        this.outputData[index] = (val & 0xFF00) >> 8;
-        this.outputData[index + 1] = val & 0x00FF;
+        var byteIndex = (index * 2);
+        this.outputData[byteIndex] = (val & 0xFF00) >> 8;
+        this.outputData[byteIndex + 1] = val & 0x00FF;
     };
     jpeg.lossless.Decoder.prototype.getValue16 = function (index) {
-        return (this.outputData[index] << 8) | this.outputData[index + 1];
+        var byteIndex = (index * 2);
+        return (this.outputData[byteIndex] << 8) | this.outputData[byteIndex + 1];
     };
 } 
 else {
     // If platform is big-endian, we will need to convert to little-endian 
     jpeg.lossless.Decoder.prototype.setValue16 = function (index, val) {
-        this.outputData[index] = val & 0x00FF;
-        this.outputData[index + 1] = (val & 0xFF00) >> 8;
+        var byteIndex = (index * 2);
+        this.outputData[byteIndex] = val & 0x00FF;
+        this.outputData[byteIndex + 1] = (val & 0xFF00) >> 8;
     };
 
     jpeg.lossless.Decoder.prototype.getValue16 = function (index) {
-        return (this.outputData[index + 1] << 8) | this.outputData[index];
+        var byteIndex = (index * 2);
+        return (this.outputData[byteIndex + 1] << 8) | this.outputData[byteIndex];
     };
 }
 
@@ -1249,13 +1253,45 @@ export default class JpegLosslessDecoder {
         // Decode the pixels
         decoder.decompress(source, sourceStart, null, decodedPixels, 0);        
 
+        // Scale one decoded sample to 8-bit display range.
+        var toByte = (sample) => {
+            var precision = Math.max(1, Number(decoder.precision ?? (decoder.numBytes * 8) ?? 8));
+            var maxSample = (precision >= 31) ? Number.MAX_SAFE_INTEGER : ((1 << precision) - 1);
+            var normalized = sample;
+
+            if (precision > 8) {
+                normalized = (sample >> (precision - 8));
+            }
+            else if (precision < 8) {
+                normalized = Math.round((sample / Math.max(1, maxSample)) * 255);
+            }
+
+            if (normalized < 0)
+                normalized = 0;
+            if (normalized > 255)
+                normalized = 255;
+
+            return normalized;
+        };
+
         // Based on the number of components, translate the pixels to RGBA
         if (decoder.numComp == 1) {
             var numPixels = (decoder.xDim * decoder.yDim);
             for (var i = 0; i < numPixels; i++) {
 
-                // Establish the pixel
-                var pixel = decodedPixels[i];
+                // Establish the pixel from 8-bit or 16-bit decoded sample.
+                var pixel = 0;
+                if (decoder.numBytes == 1) {
+                    pixel = (decodedPixels[i] ?? 0);
+                }
+                else if (decoder.numBytes == 2) {
+                    var byteIndex = (i * 2);
+                    var sample = ((decodedPixels[byteIndex] << 8) | (decodedPixels[byteIndex + 1] ?? 0));
+                    pixel = toByte(sample);
+                }
+                else {
+                    pixel = (decodedPixels[i] ?? 0);
+                }
 
                 // Decode the Monochrome Pixel Data to thge RGBA destination
                 destination[((destinationStart + i) * 4) + 0] = pixel;
@@ -1265,6 +1301,34 @@ export default class JpegLosslessDecoder {
                 // Set the alpha channel to the value indicated by MONOCHROME1 versus MONOCHROME2
                 destination[((destinationStart + i) * 4) + 3] = 255;
 
+            }
+        }
+        else if (decoder.numComp >= 3) {
+            var colorPixels = (decoder.xDim * decoder.yDim);
+            for (var p = 0; p < colorPixels; p++) {
+
+                var red = 0;
+                var green = 0;
+                var blue = 0;
+
+                if (decoder.numBytes == 1) {
+                    var rgbIndex = (p * decoder.numComp);
+                    red = decodedPixels[rgbIndex + 0] ?? 0;
+                    green = decodedPixels[rgbIndex + 1] ?? 0;
+                    blue = decodedPixels[rgbIndex + 2] ?? 0;
+                }
+                else if (decoder.numBytes == 2) {
+                    var bytesPerPixel = (decoder.numComp * 2);
+                    var colorByteIndex = (p * bytesPerPixel);
+                    red = toByte(((decodedPixels[colorByteIndex + 0] << 8) | (decodedPixels[colorByteIndex + 1] ?? 0)));
+                    green = toByte(((decodedPixels[colorByteIndex + 2] << 8) | (decodedPixels[colorByteIndex + 3] ?? 0)));
+                    blue = toByte(((decodedPixels[colorByteIndex + 4] << 8) | (decodedPixels[colorByteIndex + 5] ?? 0)));
+                }
+
+                destination[((destinationStart + p) * 4) + 0] = red;
+                destination[((destinationStart + p) * 4) + 1] = green;
+                destination[((destinationStart + p) * 4) + 2] = blue;
+                destination[((destinationStart + p) * 4) + 3] = 255;
             }
         }
 

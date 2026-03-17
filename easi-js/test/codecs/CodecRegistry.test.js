@@ -1,6 +1,9 @@
 import CodecRegistry from '../../src/codecs/CodecRegistry.js';
 import TransferSyntax from '../../src/dicom/TransferSyntax.js';
 import Configuration from '../../src/environment/Configuration.js';
+import Jpeg2000Decoder from '../../src/codecs/decoders/Jpeg2000Decoder.js';
+import RleDecoder from '../../src/codecs/decoders/RleDecoder.js';
+import Htj2kDecoder from '../../src/codecs/decoders/Htj2kDecoder.js';
 
 class FakeDecoder {
     constructor(dicomObject) {
@@ -36,7 +39,7 @@ test('Test: CodecRegistry registers and resolves format encoders case-insensitiv
 
 });
 
-test('Test: Configuration seeds default codec registry with png/tiff/jpeg encoders', () => {
+test('Test: Configuration seeds default codec registry with png/tiff/jpeg/jpeg2000 encoders', () => {
 
     var configuration = new Configuration();
 
@@ -44,5 +47,46 @@ test('Test: Configuration seeds default codec registry with png/tiff/jpeg encode
     expect(configuration.getEncoderFor('png')).toBeDefined();
     expect(configuration.getEncoderFor('tiff')).toBeDefined();
     expect(configuration.getEncoderFor('jpeg')).toBeDefined();
+    expect(configuration.getEncoderFor('jpeg2000')).toBeDefined();
+    expect(configuration.getEncoderFor('jpeg-2000')).toBeDefined();
+    expect(configuration.getEncoderFor('jpeg 2000')).toBeDefined();
+    expect(configuration.getEncoderFor('jp2')).toBeDefined();
+    expect(configuration.getEncoderFor('j2k')).toBeDefined();
+
+});
+
+test('Test: Configuration seeds JPEG2000 transfer-syntax decoders', () => {
+
+    var configuration = new Configuration();
+
+    expect(configuration.getDecoderFor(TransferSyntax.JPEG2000Lossless, null) instanceof Jpeg2000Decoder).toBe(true);
+    expect(configuration.getDecoderFor(TransferSyntax.JPEG2000, null) instanceof Jpeg2000Decoder).toBe(true);
+    expect(configuration.getDecoderFor(TransferSyntax.JPEG2000MCLossless, null) instanceof Jpeg2000Decoder).toBe(true);
+    expect(configuration.getDecoderFor(TransferSyntax.JPEG2000MC, null) instanceof Jpeg2000Decoder).toBe(true);
+
+});
+
+test('Test: Configuration seeds RLE Lossless transfer-syntax decoder', () => {
+
+    var configuration = new Configuration();
+    expect(configuration.getDecoderFor(TransferSyntax.RLELossless, null) instanceof RleDecoder).toBe(true);
+
+});
+
+test('Test: Configuration seeds HTJ2K transfer-syntax decoders', () => {
+
+    var configuration = new Configuration();
+    expect(configuration.getDecoderFor(TransferSyntax.HTJ2KLossless, null) instanceof Htj2kDecoder).toBe(true);
+    expect(configuration.getDecoderFor(TransferSyntax.HTJ2KLosslessRPCL, null) instanceof Htj2kDecoder).toBe(true);
+    expect(configuration.getDecoderFor(TransferSyntax.HTJ2K, null) instanceof Htj2kDecoder).toBe(true);
+
+});
+
+test('Test: Configuration seeds HTJ2K encoder aliases', () => {
+
+    var configuration = new Configuration();
+    expect(configuration.getEncoderFor('htj2k')).toBeDefined();
+    expect(configuration.getEncoderFor('ht-j2k')).toBeDefined();
+    expect(configuration.getEncoderFor('jph')).toBeDefined();
 
 });

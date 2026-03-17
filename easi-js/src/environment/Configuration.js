@@ -23,10 +23,15 @@ import DicomNativePixelDataToRGBADecoder from '../codecs/decoders/DicomNativePix
 import TransferSyntax from '../dicom/TransferSyntax.js';
 import JpegDecoder from '../codecs/decoders/JpegDecoder.js';
 import JpegLosslessDecoder from '../codecs/decoders/JpegLosslessDecoder.js';
+import Jpeg2000Decoder from '../codecs/decoders/Jpeg2000Decoder.js';
+import Htj2kDecoder from '../codecs/decoders/Htj2kDecoder.js';
+import RleDecoder from '../codecs/decoders/RleDecoder.js';
 import CodecRegistry from '../codecs/CodecRegistry.js';
 import PngRgbaEncoder from '../codecs/encoders/PngRgbaEncoder.js';
 import TiffRgbaEncoder from '../codecs/encoders/TiffRgbaEncoder.js';
 import JpegRgbaEncoder from '../codecs/encoders/JpegRgbaEncoder.js';
+import Jpeg2000RgbaEncoder from '../codecs/encoders/Jpeg2000RgbaEncoder.js';
+import Htj2kRgbaEncoder from '../codecs/encoders/Htj2kRgbaEncoder.js';
 
 export default class Configuration {
 
@@ -108,11 +113,29 @@ export default class Configuration {
         this.setDecoderFor(TransferSyntax.JPEGBaseline8Bit, new JpegDecoder());
         this.setDecoderFor(TransferSyntax.JPEGLossless, new JpegLosslessDecoder());
         this.setDecoderFor(TransferSyntax.JPEGLosslessSV1, new JpegLosslessDecoder());
+        this.setDecoderFor(TransferSyntax.JPEG2000Lossless, new Jpeg2000Decoder());
+        this.setDecoderFor(TransferSyntax.JPEG2000, new Jpeg2000Decoder());
+        this.setDecoderFor(TransferSyntax.JPEG2000MCLossless, new Jpeg2000Decoder());
+        this.setDecoderFor(TransferSyntax.JPEG2000MC, new Jpeg2000Decoder());
+        this.setDecoderFor(TransferSyntax.HTJ2KLossless, new Htj2kDecoder());
+        this.setDecoderFor(TransferSyntax.HTJ2KLosslessRPCL, new Htj2kDecoder());
+        this.setDecoderFor(TransferSyntax.HTJ2K, new Htj2kDecoder());
+        this.setDecoderFor(TransferSyntax.RLELossless, new RleDecoder());
         this.setDecoderFor(TransferSyntax.NONE, new DicomNativePixelDataToRGBADecoder());
 
         // Populate the default output encoders
         this.setEncoderFor('jpeg', new JpegRgbaEncoder());
         this.setEncoderFor('jpg', new JpegRgbaEncoder());
+        this.setEncoderFor('jpeg2000', new Jpeg2000RgbaEncoder());
+        this.setEncoderFor('jpeg-2000', new Jpeg2000RgbaEncoder());
+        this.setEncoderFor('jpeg 2000', new Jpeg2000RgbaEncoder());
+        this.setEncoderFor('jp2', new Jpeg2000RgbaEncoder());
+        this.setEncoderFor('j2k', new Jpeg2000RgbaEncoder());
+        this.setEncoderFor('htj2k', new Htj2kRgbaEncoder());
+        this.setEncoderFor('ht-j2k', new Htj2kRgbaEncoder());
+        this.setEncoderFor('ht jpeg 2000', new Htj2kRgbaEncoder());
+        this.setEncoderFor('ht-jpeg-2000', new Htj2kRgbaEncoder());
+        this.setEncoderFor('jph', new Htj2kRgbaEncoder());
         this.setEncoderFor('png', new PngRgbaEncoder());
         this.setEncoderFor('tiff', new TiffRgbaEncoder());
         this.setEncoderFor('tif', new TiffRgbaEncoder());

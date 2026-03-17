@@ -67,12 +67,14 @@ Examples:
 - `withHandler(handler)`
 - `withMask(mask)`
 - `withIsStrict(isStrict)`
+- `withTranscoding(options)`
 
 Normative intent:
 
 - `withXxx` methods set explicit caller intent
 - Later calls override earlier calls unless otherwise documented
 - Some `withXxx` methods may configure deferred composition behavior (for example `withMask(mask)` causing a de-identification filter handler to wrap the terminal handler during `build()`)
+- `withTranscoding(...)` semantics and callback payload contracts are defined in [`transcoding.md`](./transcoding.md)
 
 ## `build()` Contract (Draft)
 

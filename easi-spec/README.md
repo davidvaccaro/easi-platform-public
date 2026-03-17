@@ -242,6 +242,8 @@ Use this `README` as the primary overview and entry point. Use the supporting do
   - normative ZIP package format for mapped metadata + extracted payload assets
 - [`builder-contract.md`](./builder-contract.md)
   - builder intent, composition, and `build()` behavior
+- [`transcoding.md`](./transcoding.md)
+  - draft normative `withTranscoding(...)` contract, including `onFrame` and `onConcern` payloads
 - [`conformance.md`](./conformance.md)
   - conformance levels, assertions, and implementation allowances
 
