@@ -127,6 +127,12 @@ export default class Image extends Entity {
             // Access the frame offset
             var offset = pixelData.offsets[frame];
 
+            if ((offset == null) || (typeof offset.start != 'number')) {
+                throw new Error(
+                    `Missing PixelData frame offset for frame ${frame}. Available offsets: ${pixelData.offsets.length}.`
+                );
+            }
+
             // Decode the specified frame
             res = decoder.decode(this.imagePixelModule.pixelData, offset.start, null, destination, 0, windowCenter, windowWidth)
 

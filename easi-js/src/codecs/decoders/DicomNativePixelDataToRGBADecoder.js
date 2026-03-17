@@ -56,7 +56,7 @@ export default class DicomNativePixelDataToRGBADecoder {
         var pixelMask = (bitsPerPixel <= 8) ? this.generatePixelMask(8, bitsPerPixel) : 255;
 
         // Establish MONOCHROME "1" versus "2" which influences the alpha-channel
-        let isOne = (this.dicomObject.imagePixelModule.photometricInterpretation.ID == PhotometricInterpretationType.MONOCHROME1) ? true : false;
+        let isOne = (this.dicomObject.imagePixelModule.photometricInterpretation == PhotometricInterpretationType.MONOCHROME1);
 
         // Loop over the source image bytes
         for (let i = sourceStart; i < sourceStop; i++) {
@@ -120,7 +120,7 @@ export default class DicomNativePixelDataToRGBADecoder {
         var pixelMask = (bitsPerPixel <= 16) ? this.generatePixelMask(8, bitsPerPixel) : 65535;
 
         // Establish MONOCHROME "1" versus "2" which influences the alpha-channel
-        let isOne = (this.dicomObject.imagePixelModule.photometricInterpretation.ID == PhotometricInterpretationType.MONOCHROME1) ? true : false;
+        let isOne = (this.dicomObject.imagePixelModule.photometricInterpretation == PhotometricInterpretationType.MONOCHROME1);
 
         // Determine the "Max Pixel Value" from the object
         let maxPixelValue = this.dicomObject.imagePixelModule.largestImagePixelValue;
@@ -216,6 +216,65 @@ export default class DicomNativePixelDataToRGBADecoder {
     }
 
     /**
+     * Decode the specified source 8-bit DICOM RGB pixel-data into destination RGBA bytes.
+     * Supports both interleaved (PlanarConfiguration=0) and planar (PlanarConfiguration=1).
+     * @param {Uint8Array} source The source DICOM RGB pixel-data.
+     * @param {number} sourceStart The index into source buffer to start.
+     * @param {number} sourceStop The index into source buffer to stop.
+     * @param {Uint8Array} destination Destination RGBA buffer.
+     * @param {number} destinationStart Destination pixel index offset.
+     * @returns {boolean} TRUE when decode succeeds.
+     */
+    decode8BitDICOMRGBToRGBA(source, sourceStart, sourceStop, destination, destinationStart) {
+
+        var start = Math.max(0, Number(sourceStart) || 0);
+        var stop = Math.min(source.length, Number(sourceStop) || source.length);
+        if (stop <= start)
+            return false;
+
+        var planarConfiguration = Number(this.dicomObject.imagePixelModule.planarConfiguration ?? 0);
+        var destinationIndex = Math.max(0, Number(destinationStart) || 0);
+        var samplesPerPixel = Math.max(1, Number(this.dicomObject.imagePixelModule.samplesPerPixel ?? 3));
+
+        if (samplesPerPixel < 3)
+            return false;
+
+        if (planarConfiguration == 1) {
+
+            var pixelCount = Math.floor((stop - start) / samplesPerPixel);
+            var redStart = start;
+            var greenStart = (start + pixelCount);
+            var blueStart = (start + (pixelCount * 2));
+
+            for (var pixel = 0; pixel < pixelCount; pixel++) {
+
+                destination[(destinationIndex * 4) + 0] = source[redStart + pixel] ?? 0;
+                destination[(destinationIndex * 4) + 1] = source[greenStart + pixel] ?? 0;
+                destination[(destinationIndex * 4) + 2] = source[blueStart + pixel] ?? 0;
+                destination[(destinationIndex * 4) + 3] = 255;
+                destinationIndex++;
+
+            }
+
+            return true;
+
+        }
+
+        for (var i = start; i < stop; i += samplesPerPixel) {
+
+            destination[(destinationIndex * 4) + 0] = source[i] ?? 0;
+            destination[(destinationIndex * 4) + 1] = source[i + 1] ?? 0;
+            destination[(destinationIndex * 4) + 2] = source[i + 2] ?? 0;
+            destination[(destinationIndex * 4) + 3] = 255;
+            destinationIndex++;
+
+        }
+
+        return true;
+
+    }
+
+    /**
      * Decode the specificed data to the output buffer.
      * @param {Uint8Array} source The Uint8Array that serves as the source of the decode operation.
      * @param {number} sourceStart The index into the input array to START reading decode input.
@@ -250,6 +309,17 @@ export default class DicomNativePixelDataToRGBADecoder {
                         bitsPerPixel,
                         windowCenter, windowWidth);
                 }
+
+            case PhotometricInterpretationType.RGB:
+
+                // Handle 8-bit RGB native pixel data.
+                if (this.dicomObject.imagePixelModule.bitsStored <= 8) {
+                    return this.decode8BitDICOMRGBToRGBA(
+                        source, sourceStart, sourceStop,
+                        destination, destinationStart
+                    );
+                }
+                break;
 
         }
 

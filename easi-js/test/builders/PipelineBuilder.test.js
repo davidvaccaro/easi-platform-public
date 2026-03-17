@@ -13,6 +13,7 @@ import DicomEntityHandler from "../../src/handlers/terminals/DicomEntityHandler.
 import DicomDeIdentificationFilter from "../../src/handlers/filters/DicomDeIdentificationFilter.js";
 import DicomValidationFilter, { ValidationGoals } from "../../src/handlers/filters/DicomValidationFilter.js";
 import DicomTranscodingFilter from "../../src/handlers/filters/DicomTranscodingFilter.js";
+import DicomBurnedInRedactionFilter from "../../src/handlers/filters/DicomBurnedInRedactionFilter.js";
 import DicomJsonMetadataAdapter from "../../src/handlers/adapters/DicomJsonMetadataAdapter.js";
 import DicomXmlMetadataAdapter from "../../src/handlers/adapters/DicomXmlMetadataAdapter.js";
 import DicomDataWriterHandler from "../../src/handlers/terminals/DicomDataWriterHandler.js";
@@ -60,6 +61,7 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
     expect(typeof target.toInstances).toBe("function");
     expect(typeof target.withMask).toBe("function");
     expect(typeof target.withTranscoding).toBe("function");
+    expect(typeof target.withBurnedInRedaction).toBe("function");
 
     const ready = target.withMask(new Map()).toInstances();
     expect(typeof ready.withMask).toBe("undefined");
@@ -279,6 +281,21 @@ test("Test: build throws IncompatibleTranscodingAndParser", () => {
     expect(error.code).toBe(BuilderErrorCodes.IncompatibleTranscodingAndParser);
 });
 
+test("Test: build throws IncompatibleBurnedInRedactionAndParser", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromPartStream()
+            .withParser(new JsonDataParser())
+            .withBurnedInRedaction({
+                regions: []
+            })
+            .withHandler({})
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleBurnedInRedactionAndParser);
+});
+
 test("Test: repeated build with masking preserves canonical semantic handler chain", () => {
     const ready = new PipelineBuilder()
         .fromPartStream().ofDicomData()
@@ -430,6 +447,37 @@ test("Test: build composes transcoding filter for native DICOM semantic chain", 
     expect(pipeline.parser.handler instanceof DicomTranscodingFilter).toBe(true);
     expect(pipeline.parser.handler.nextHandler instanceof DicomDataWriterHandler).toBe(true);
     expect(pipeline.parser.handler.targetTransferSyntax.ID).toBe(TransferSyntax.ImplicitVRLittleEndian.ID);
+});
+
+test("Test: build composes burned-in redaction filter for native DICOM semantic chain", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .withBurnedInRedaction({
+            regions: [{ x: 0, y: 0, width: 1, height: 1 }]
+        })
+        .toDicomData()
+        .build();
+
+    expect(pipeline.parser.handler instanceof DicomBurnedInRedactionFilter).toBe(true);
+    expect(pipeline.parser.handler.nextHandler instanceof DicomDataWriterHandler).toBe(true);
+});
+
+test("Test: build composes a single burned-in redaction filter when redaction and transcoding are both configured", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .withBurnedInRedaction({
+            regions: [{ x: 0, y: 0, width: 1, height: 1 }]
+        })
+        .withTranscoding({
+            targetTransferSyntax: TransferSyntax.JPEG2000.ID
+        })
+        .toDicomData()
+        .build();
+
+    expect(pipeline.parser.handler instanceof DicomBurnedInRedactionFilter).toBe(true);
+    expect(pipeline.parser.handler.nextHandler instanceof DicomDataWriterHandler).toBe(true);
+    expect(pipeline.parser.handler instanceof DicomTranscodingFilter).toBe(true);
+    expect(pipeline.parser.handler.targetTransferSyntax.ID).toBe(TransferSyntax.JPEG2000.ID);
 });
 
 test("Test: build composes validation -> deid -> transcoding -> writer in canonical order", () => {

@@ -181,6 +181,35 @@ export default class DicomAssetsHandler {
     }
 
     /**
+     * Resolve effective frame count for payload emission.
+     * Uses NumberOfFrames as primary source and clamps to available encapsulated
+     * frame offsets when PixelData is undefined-length and offsets are available.
+     * @param {object} pixelDataAttribute PixelData attribute.
+     * @param {Image} image Image entity.
+     * @returns {number} Effective frame count.
+     */
+    resolveEffectiveFrameCount(pixelDataAttribute, image) {
+
+        var frameCount = Math.max(1, Number(image?.multiFrameModule?.numberOfFrames ?? 1));
+
+        if ((pixelDataAttribute?.valueLength == Constants.UndefinedLength)) {
+            try {
+                var pixelData = new PixelData(pixelDataAttribute);
+                var offsetCount = Math.max(0, Number(pixelData?.offsets?.length ?? 0));
+                if (offsetCount > 0) {
+                    frameCount = Math.min(frameCount, offsetCount);
+                }
+            }
+            catch (_error) {
+                // Keep primary frame-count when offset parsing fails.
+            }
+        }
+
+        return Math.max(1, frameCount);
+
+    }
+
+    /**
      * Determine if the transfer syntax likely contains frame-based image payload.
      * @param {TransferSyntax | null} transferSyntax The transfer syntax.
      * @returns {boolean} TRUE when frame processing should be attempted.
@@ -793,7 +822,7 @@ export default class DicomAssetsHandler {
         }
 
         var image = new Image(instance.dataSet);
-        var frameCount = Math.max(1, Number(image.multiFrameModule?.numberOfFrames ?? 1));
+        var frameCount = this.resolveEffectiveFrameCount(pixelDataAttribute, image);
 
         var frameIndices = this.resolveFrameIndices(frameCount, frameOptions.frames);
         var outputFormat = String(frameOptions.encode ?? 'none').toLowerCase();

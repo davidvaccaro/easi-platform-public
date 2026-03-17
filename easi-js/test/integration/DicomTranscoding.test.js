@@ -2,6 +2,8 @@ import EASI from "../../src/EASI.js";
 import Tag from "../../src/dicom/Tag.js";
 import TransferSyntax from "../../src/dicom/TransferSyntax.js";
 import Constants from "../../src/dicom/Constants.js";
+import CodecRegistry from "../../src/codecs/CodecRegistry.js";
+import RleDecoder from "../../src/codecs/decoders/RleDecoder.js";
 
 const path = require("path");
 const fs = require("fs");
@@ -584,6 +586,125 @@ test("Test: withTranscoding supports HTJ2K round-trip back to explicit-vr-little
 
 });
 
+test("Test: withBurnedInRedaction redacts configured pixel regions while preserving transfer syntax by default", async () => {
+
+    const sourceBytes = buildSyntheticExplicitLittleEndianDicom();
+
+    const redactedBytes = await EASI.pipelineBuilder()
+        .fromByteStream()
+        .ofDicomData()
+        .withBurnedInRedaction({
+            regions: [{ x: 1, y: 0, width: 1, height: 1 }]
+        })
+        .toDicomData()
+        .build()
+        .process(sourceBytes);
+
+    const redactedInstance = await EASI.pipelineBuilder()
+        .fromByteStream()
+        .ofDicomData()
+        .toInstances()
+        .build()
+        .process(redactedBytes);
+
+    expect(redactedInstance.metaSet.transferSyntaxUID.ID).toBe(TransferSyntax.ExplicitVRLittleEndian.ID);
+
+    const pixelDataAttribute = redactedInstance.dataSet.find(Tag.PixelData);
+    expect(pixelDataAttribute.valueLength).toBe(4);
+    expect(pixelDataAttribute.value instanceof Uint8Array).toBe(true);
+    expect(Array.from(pixelDataAttribute.value)).toEqual([0, 0, 2, 3]);
+
+});
+
+test("Test: withBurnedInRedaction preserves RLE source transfer syntax when RLE encoder is available", async () => {
+
+    const sourceBytes = readDicomBytes("US-PAL-8-10x-echo.dcm");
+    const concerns = [];
+
+    const redactedBytes = await EASI.pipelineBuilder()
+        .fromByteStream()
+        .ofDicomData()
+        .withBurnedInRedaction({
+            regions: [
+                { x: 0, y: 100, width: 382, height: 204 },
+                { x: 0, y: 400, width: 276, height: 342 },
+                { x: 0, y: 732, width: 116, height: 94 }
+            ],
+            onConcern: concern => concerns.push(concern)
+        })
+        .toDicomData()
+        .build()
+        .process(sourceBytes);
+
+    const redactedInstance = await EASI.pipelineBuilder()
+        .fromByteStream()
+        .ofDicomData()
+        .toInstances()
+        .build()
+        .process(redactedBytes);
+
+    expect(redactedBytes.length).toBeGreaterThan(4096);
+    expect(redactedInstance.metaSet.transferSyntaxUID.ID).toBe(TransferSyntax.RLELossless.ID);
+    expect(redactedInstance.dataSet.find(Tag.PixelData)).toBeDefined();
+    expect(firstNumericValue(redactedInstance.dataSet.find(Tag.SamplesPerPixel)?.value, null)).toBe(3);
+    var redactedPhotometric = redactedInstance.dataSet.find(Tag.PhotometricInterpretation)?.value;
+    if (Array.isArray(redactedPhotometric) == true)
+        redactedPhotometric = redactedPhotometric[0];
+    expect(String(redactedPhotometric ?? "").trim().toUpperCase()).toBe("RGB");
+    expect(redactedInstance.dataSet.find(Tag.RedPaletteColorLookupTableDescriptor)).toBeUndefined();
+    expect(redactedInstance.dataSet.find(Tag.GreenPaletteColorLookupTableDescriptor)).toBeUndefined();
+    expect(redactedInstance.dataSet.find(Tag.BluePaletteColorLookupTableDescriptor)).toBeUndefined();
+    expect(redactedInstance.dataSet.find(Tag.RedPaletteColorLookupTableData)).toBeUndefined();
+    expect(redactedInstance.dataSet.find(Tag.GreenPaletteColorLookupTableData)).toBeUndefined();
+    expect(redactedInstance.dataSet.find(Tag.BluePaletteColorLookupTableData)).toBeUndefined();
+
+    const fallbackConcern = concerns.find(concern => concern.code == "PreserveTransferSyntaxUnavailable");
+    expect(fallbackConcern).toBeUndefined();
+
+});
+
+test("Test: withBurnedInRedaction falls back from RLE preserve target when no RLE encoder is configured", async () => {
+
+    const sourceBytes = readDicomBytes("US-PAL-8-10x-echo.dcm");
+    const concerns = [];
+
+    const codecRegistry = new CodecRegistry();
+    codecRegistry.setDecoderForTransferSyntax(TransferSyntax.NONE, function() {});
+    codecRegistry.setDecoderForTransferSyntax(TransferSyntax.RLELossless, new RleDecoder());
+
+    const redactedBytes = await EASI.pipelineBuilder()
+        .fromByteStream()
+        .ofDicomData()
+        .withCodecRegistry(codecRegistry)
+        .withBurnedInRedaction({
+            regions: [
+                { x: 0, y: 100, width: 382, height: 204 },
+                { x: 0, y: 400, width: 276, height: 342 },
+                { x: 0, y: 732, width: 116, height: 94 }
+            ],
+            onConcern: concern => concerns.push(concern)
+        })
+        .toDicomData()
+        .build()
+        .process(sourceBytes);
+
+    const redactedInstance = await EASI.pipelineBuilder()
+        .fromByteStream()
+        .ofDicomData()
+        .toInstances()
+        .build()
+        .process(redactedBytes);
+
+    expect(redactedBytes.length).toBeGreaterThan(4096);
+    expect(redactedInstance.metaSet.transferSyntaxUID.ID).toBe(TransferSyntax.ExplicitVRLittleEndian.ID);
+
+    const fallbackConcern = concerns.find(concern => concern.code == "PreserveTransferSyntaxUnavailable");
+    expect(fallbackConcern).toBeDefined();
+    expect(fallbackConcern.sourceTransferSyntax).toBe(TransferSyntax.RLELossless.ID);
+    expect(fallbackConcern.targetTransferSyntax).toBe(TransferSyntax.ExplicitVRLittleEndian.ID);
+
+});
+
 test("Test: withTranscoding transcodes explicit-vr-little-endian PixelData to JPEG Baseline encapsulated syntax", async () => {
 
     const sourceBytes = buildSyntheticExplicitLittleEndianDicom();
@@ -621,6 +742,40 @@ test("Test: withTranscoding transcodes explicit-vr-little-endian PixelData to JP
     expect(pixelDataAttribute.isBulkStreamed).toBe(true);
     expect(pixelDataAttribute.value instanceof Uint8Array).toBe(true);
     expect(firstNumericValue(transcodedInstance.dataSet.find(Tag.SamplesPerPixel)?.value, null)).toBe(3);
+
+});
+
+test("Test: withTranscoding transcodes explicit-vr-little-endian PixelData to RLE Lossless encapsulated syntax", async () => {
+
+    const sourceBytes = buildSyntheticExplicitLittleEndianDicom();
+    const concerns = [];
+
+    const transcodedBytes = await EASI.pipelineBuilder()
+        .fromByteStream()
+        .ofDicomData()
+        .withTranscoding({
+            targetTransferSyntax: TransferSyntax.RLELossless.ID,
+            onConcern: concern => concerns.push(concern)
+        })
+        .toDicomData()
+        .build()
+        .process(sourceBytes);
+
+    const transcodedInstance = await EASI.pipelineBuilder()
+        .fromByteStream()
+        .ofDicomData()
+        .toInstances()
+        .build()
+        .process(transcodedBytes);
+
+    const pixelDataAttribute = transcodedInstance.dataSet.find(Tag.PixelData);
+
+    expect(concerns.find(concern => concern.code == "UnsupportedTransferSyntaxPair")).toBeUndefined();
+    expect(transcodedInstance.metaSet.transferSyntaxUID.ID).toBe(TransferSyntax.RLELossless.ID);
+    expect(pixelDataAttribute).toBeDefined();
+    expect(pixelDataAttribute.valueLength).toBe(Constants.UndefinedLength);
+    expect(pixelDataAttribute.isBulkStreamed).toBe(true);
+    expect(firstNumericValue(transcodedInstance.dataSet.find(Tag.SamplesPerPixel)?.value, null)).toBe(1);
 
 });
 

@@ -247,3 +247,110 @@ test('Test: toAssets payload mode materialize prefers end-of-instance frame emis
     expect(pixelDataMaterializedLengths.every((length) => length > 0)).toBe(true);
 
 });
+
+test('Test: toAssets decodes encapsulated RLE multi-frame pixel data from US-PAL sample', async () => {
+
+    var frameEvents = [];
+
+    var result = await EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .toAssets({
+            payload: {
+                frame: {
+                    frames: 'first',
+                    decode: 'rgba',
+                    encode: 'png'
+                },
+                onFrame: (frame) => frameEvents.push(frame),
+                collect: true
+            }
+        })
+        .build()
+        .process(readDicomBytes('US-PAL-8-10x-echo.dcm'));
+
+    expect(frameEvents.length).toBe(1);
+    expect(result.frames.length).toBe(1);
+    expect(result.frames[0].mimeType).toBe('image/png');
+    expect(result.frames[0].bytes.length).toBeGreaterThan(0);
+
+});
+
+test('Test: toAssets decodes US-PAL first frame to non-empty RGBA pixels', async () => {
+
+    var frameEvents = [];
+
+    var result = await EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .toAssets({
+            payload: {
+                frame: {
+                    frames: 'first',
+                    decode: 'rgba',
+                    encode: 'none'
+                },
+                onFrame: (frame) => frameEvents.push(frame),
+                collect: true
+            }
+        })
+        .build()
+        .process(readDicomBytes('US-PAL-8-10x-echo.dcm'));
+
+    expect(frameEvents.length).toBe(1);
+    expect(result.frames.length).toBe(1);
+    expect(result.frames[0].encoding).toBe('rgba');
+
+    var rgba = result.frames[0].bytes;
+    var rgbNonZeroCount = 0;
+    var min = 255;
+    var max = 0;
+
+    for (var i = 0; i < rgba.length; i += 4) {
+        var r = rgba[i];
+        var g = rgba[i + 1];
+        var b = rgba[i + 2];
+        var sampleMax = Math.max(r, g, b);
+        if (sampleMax > 0)
+            rgbNonZeroCount++;
+        if (sampleMax < min)
+            min = sampleMax;
+        if (sampleMax > max)
+            max = sampleMax;
+    }
+
+    expect(rgbNonZeroCount).toBeGreaterThan(0);
+    expect(max).toBeGreaterThan(min);
+
+});
+
+test('Test: toAssets emits frame for Explicit VR Big Endian US-RGB sample', async () => {
+
+    var frameEvents = [];
+
+    var result = await EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .toAssets({
+            payload: {
+                frame: {
+                    frames: 'all',
+                    decode: 'rgba',
+                    encode: 'png'
+                },
+                onFrame: (frame) => frameEvents.push(frame),
+                collect: true
+            }
+        })
+        .build()
+        .process(readDicomBytes('US-RGB-8-epicard.dcm'));
+
+    expect(frameEvents.length).toBeGreaterThan(0);
+    expect(result.frames.length).toBeGreaterThan(0);
+    expect(result.frames[0].mimeType).toBe('image/png');
+    expect(result.frames[0].bytes[0]).toBe(137);
+    expect(result.frames[0].bytes[1]).toBe(80);
+    expect(result.frames[0].bytes[2]).toBe(78);
+    expect(result.frames[0].bytes[3]).toBe(71);
+
+});

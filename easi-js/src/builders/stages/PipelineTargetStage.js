@@ -116,6 +116,17 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Enables/configures burned-in pixel redaction.
+     * @param {boolean | object | Function | Array<object> | null | false} redaction Redaction configuration.
+     * @returns {PipelineTargetStage} A new target stage object.
+     */
+    withBurnedInRedaction(redaction = true) {
+        return this.cloneCurrentStage(
+            (session) => session.withBurnedInRedaction(redaction)
+        );
+    }
+
+    /**
      * Set the current terminal handler.
      * @param {object} handler The terminal handler.
      * @returns {PipelineOutputStage} An output stage reference.

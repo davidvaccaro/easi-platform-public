@@ -5,6 +5,7 @@
 //
 
 import Exception, { GeneralErrorCodes } from "../../environment/Exception.js";
+import Tag from "../../dicom/Tag.js";
 
 export default class RleDecoder {
 
@@ -178,6 +179,33 @@ export default class RleDecoder {
     }
 
     /**
+     * Normalize photometric interpretation to canonical upper-case string.
+     * @param {string | symbol | null | undefined} value Source photometric value.
+     * @returns {string | null} Normalized value when available.
+     */
+    normalizePhotometricInterpretation(value) {
+
+        if (value == null)
+            return null;
+
+        var normalized = String(value).trim().toUpperCase();
+        var symbolMatch = /^SYMBOL\((.*)\)$/.exec(normalized);
+        if (symbolMatch != null)
+            normalized = String(symbolMatch[1] ?? "").trim().toUpperCase();
+
+        // Handle enum key form.
+        if (normalized == "PALETTECOLOR")
+            return "PALETTE COLOR";
+
+        // Normalize spacing variants.
+        if (normalized == "PALETTE_COLOR")
+            return "PALETTE COLOR";
+
+        return normalized;
+
+    }
+
+    /**
      * Decode one RLE frame to RGBA bytes.
      * @param {Uint8Array} source Source bytes.
      * @param {number} sourceStart Source start index.
@@ -231,7 +259,7 @@ export default class RleDecoder {
         var paletteRed = this.buildPaletteChannel(this.redPaletteColorLookupTableData ?? null);
         var paletteGreen = this.buildPaletteChannel(this.greenPaletteColorLookupTableData ?? null);
         var paletteBlue = this.buildPaletteChannel(this.bluePaletteColorLookupTableData ?? null);
-        var photometricInterpretation = String(this.photometricInterpretation ?? "").toUpperCase();
+        var photometricInterpretation = this.normalizePhotometricInterpretation(this.photometricInterpretation) ?? "";
         var isPaletteColor = (photometricInterpretation == "PALETTE COLOR");
         var destinationOffset = (Math.max(0, Number(destinationStart) || 0) * 4);
 
@@ -299,6 +327,68 @@ export default class RleDecoder {
 
     }
 
+    /**
+     * Resolve attribute bytes for optional palette lookup data.
+     * @param {object | null} attribute DICOM attribute.
+     * @returns {Uint8Array | null} Attribute bytes.
+     */
+    resolveAttributeBytes(attribute) {
+
+        if (attribute == null)
+            return null;
+
+        if (typeof attribute.access == "function")
+            return attribute.access();
+
+        var value = attribute.value;
+        if (value instanceof Uint8Array)
+            return value;
+
+        return null;
+
+    }
+
+    /**
+     * Initialize decoder context from a DICOM image object.
+     * @param {object | null} dicomObject DICOM image-like object.
+     */
+    initializeFromDicomObject(dicomObject = null) {
+
+        if (dicomObject == null)
+            return;
+
+        var imagePixel = dicomObject?.imagePixelModule ?? null;
+        if (imagePixel != null) {
+            this.rows = imagePixel.rows ?? this.rows;
+            this.columns = imagePixel.columns ?? this.columns;
+            this.samplesPerPixel = imagePixel.samplesPerPixel ?? this.samplesPerPixel;
+            this.bitsAllocated = imagePixel.bitsAllocated ?? this.bitsAllocated;
+            this.bitsStored = imagePixel.bitsStored ?? this.bitsStored;
+            this.pixelRepresentation = imagePixel.pixelRepresentation ?? this.pixelRepresentation;
+            this.photometricInterpretation = this.normalizePhotometricInterpretation(imagePixel.photometricInterpretation)
+                ?? this.photometricInterpretation;
+        }
+
+        var attributeSet = dicomObject?.attributeSet ?? null;
+        if ((attributeSet != null) && (typeof attributeSet.find == "function")) {
+            if (typeof attributeSet.value == "function") {
+                this.photometricInterpretation = this.normalizePhotometricInterpretation(
+                    attributeSet.value(Tag.PhotometricInterpretation, this.photometricInterpretation)
+                ) ?? this.photometricInterpretation;
+            }
+            this.redPaletteColorLookupTableData = this.resolveAttributeBytes(
+                attributeSet.find(Tag.RedPaletteColorLookupTableData)
+            ) ?? this.redPaletteColorLookupTableData;
+            this.greenPaletteColorLookupTableData = this.resolveAttributeBytes(
+                attributeSet.find(Tag.GreenPaletteColorLookupTableData)
+            ) ?? this.greenPaletteColorLookupTableData;
+            this.bluePaletteColorLookupTableData = this.resolveAttributeBytes(
+                attributeSet.find(Tag.BluePaletteColorLookupTableData)
+            ) ?? this.bluePaletteColorLookupTableData;
+        }
+
+    }
+
     constructor(dicomObject = null) {
 
         this.dicomObject = dicomObject;
@@ -313,6 +403,8 @@ export default class RleDecoder {
         this.redPaletteColorLookupTableData = null;
         this.greenPaletteColorLookupTableData = null;
         this.bluePaletteColorLookupTableData = null;
+
+        this.initializeFromDicomObject(dicomObject);
 
     }
 

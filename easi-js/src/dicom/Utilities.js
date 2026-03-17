@@ -41,12 +41,12 @@ export default class Utilities {
      * @param {Uint8Array} bytes The specified byte array.
      * @returns The unsigned integer value of the byte array.
      */
-    static bytesToUnsignedInteger(bytes) {
+    static bytesToUnsignedInteger(bytes, isLittleEndian = Runtime.isLittleEndian) {
         var dv = new DataView(bytes.buffer);
         if (bytes.length == 2)
-            return dv.getUint16(bytes.byteOffset, Runtime.isLittleEndian);
+            return dv.getUint16(bytes.byteOffset, isLittleEndian);
         else if (bytes.length == 4)
-            return dv.getUint32(bytes.byteOffset, Runtime.isLittleEndian);
+            return dv.getUint32(bytes.byteOffset, isLittleEndian);
         return undefined;
     }
 
@@ -94,8 +94,8 @@ export default class Utilities {
      * Get the byte buffer containing the DICOM Item.
      * @returns The Item byte buffer.
      */
-    static getItem() {
-        if (Runtime.isLittleEndian == true) {
+    static getItem(isLittleEndian = Runtime.isLittleEndian) {
+        if (isLittleEndian == true) {
             return Utilities.littleEndianItem;
         }
         return Utilities.bigEndianItem;
@@ -105,8 +105,8 @@ export default class Utilities {
      * Get the byte buffer containing the DICOM End Sequence.
      * @returns The End Sequence byte buffer.
      */    
-    static getEndSequence() {
-        if (Runtime.isLittleEndian == true) {
+    static getEndSequence(isLittleEndian = Runtime.isLittleEndian) {
+        if (isLittleEndian == true) {
             return Utilities.littleEndianEndSequence;
         }
         return Utilities.bigEndianEndSequence;

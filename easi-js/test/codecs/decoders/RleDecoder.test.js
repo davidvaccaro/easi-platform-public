@@ -115,3 +115,66 @@ test('Test: RleDecoder decodes 8-bit palette-color frame to RGB using LUT data',
     ]);
 
 });
+
+test('Test: RleDecoder initializes decode context from dicomObject image metadata', () => {
+
+    var segment = encodeLiteralSegment(new Uint8Array([0, 64, 128, 255]));
+    var frame = buildRleFrame([segment]);
+    var rgba = new Uint8Array(16);
+
+    var dicomObject = {
+        imagePixelModule: {
+            rows: 2,
+            columns: 2,
+            samplesPerPixel: 1,
+            bitsAllocated: 8,
+            bitsStored: 8,
+            pixelRepresentation: 0,
+            photometricInterpretation: 'MONOCHROME2'
+        },
+        attributeSet: {
+            find: function (_tag) {
+                return null;
+            }
+        }
+    };
+
+    var decoder = new RleDecoder(dicomObject);
+    decoder.decode(frame, 0, frame.length, rgba, 0);
+
+    expect(Array.from(rgba)).toEqual([
+        0, 0, 0, 255,
+        64, 64, 64, 255,
+        128, 128, 128, 255,
+        255, 255, 255, 255
+    ]);
+
+});
+
+test('Test: RleDecoder normalizes photometric interpretation from symbol and attribute-set value', () => {
+
+    var dicomObject = {
+        imagePixelModule: {
+            rows: 1,
+            columns: 1,
+            samplesPerPixel: 1,
+            bitsAllocated: 8,
+            bitsStored: 8,
+            pixelRepresentation: 0,
+            photometricInterpretation: Symbol('PALETTE COLOR')
+        },
+        attributeSet: {
+            value: function () {
+                return 'PALETTE COLOR';
+            },
+            find: function () {
+                return null;
+            }
+        }
+    };
+
+    var decoder = new RleDecoder(dicomObject);
+
+    expect(decoder.photometricInterpretation).toBe('PALETTE COLOR');
+
+});

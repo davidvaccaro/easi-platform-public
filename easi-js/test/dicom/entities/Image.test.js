@@ -383,9 +383,10 @@ test("Test: Image DecodeFrame MultiFrame Uses PixelData Offsets And Null FrameLe
 
     image.decodeFrame(destination, decoder, 1, 10, 20);
 
-    // valueOffset=8, tableLength=8, offset[1]=50 => start=66
+    // BOT offsets point to fragment item starts; decoder start uses fragment value start (+8).
+    // valueOffset=8, tableLength=8, offset[1]=50 => itemStart=66 => valueStart=74
     expect(decodeArgs[0]).toBe(pixelData);
-    expect(decodeArgs[1]).toBe(66);
+    expect(decodeArgs[1]).toBe(74);
     expect(decodeArgs[2]).toBeNull();
     expect(decodeArgs[3]).toBe(destination);
     expect(decodeArgs[4]).toBe(0);

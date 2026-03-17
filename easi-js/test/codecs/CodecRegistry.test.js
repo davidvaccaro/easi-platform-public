@@ -4,6 +4,7 @@ import Configuration from '../../src/environment/Configuration.js';
 import Jpeg2000Decoder from '../../src/codecs/decoders/Jpeg2000Decoder.js';
 import RleDecoder from '../../src/codecs/decoders/RleDecoder.js';
 import Htj2kDecoder from '../../src/codecs/decoders/Htj2kDecoder.js';
+import RleRgbaEncoder from '../../src/codecs/encoders/RleRgbaEncoder.js';
 
 class FakeDecoder {
     constructor(dicomObject) {
@@ -88,5 +89,15 @@ test('Test: Configuration seeds HTJ2K encoder aliases', () => {
     expect(configuration.getEncoderFor('htj2k')).toBeDefined();
     expect(configuration.getEncoderFor('ht-j2k')).toBeDefined();
     expect(configuration.getEncoderFor('jph')).toBeDefined();
+
+});
+
+test('Test: Configuration seeds RLE encoder aliases', () => {
+
+    var configuration = new Configuration();
+
+    expect(configuration.getEncoderFor('rle') instanceof RleRgbaEncoder).toBe(true);
+    expect(configuration.getEncoderFor('rle-lossless') instanceof RleRgbaEncoder).toBe(true);
+    expect(configuration.getEncoderFor('dicom-rle') instanceof RleRgbaEncoder).toBe(true);
 
 });

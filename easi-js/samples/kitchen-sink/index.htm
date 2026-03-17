@@ -56,6 +56,73 @@
         <br>
         <hr>
         <div>
+            <h4>Burned-In Redaction Stream Save (Regions)</h4>
+        </div>
+        <hr>
+        <div>
+            <input type="file" id="dicomBurnedInRedactionFile" name="dicomBurnedInRedactionFile" />
+        </div>
+        <br>
+        <div>
+            <span><strong>Regions (up to 4):</strong></span>
+            <div style="margin-top:6px;">
+                <label><input type="checkbox" id="burnedInRegion1Enabled" checked /> R1</label>
+                <label style="margin-left:8px;">X <input type="number" id="burnedInRegion1X" min="0" step="1" value="0" style="width:72px;" /></label>
+                <label>Y <input type="number" id="burnedInRegion1Y" min="0" step="1" value="0" style="width:72px;" /></label>
+                <label>Width <input type="number" id="burnedInRegion1Width" min="1" step="1" value="128" style="width:72px;" /></label>
+                <label>Height <input type="number" id="burnedInRegion1Height" min="1" step="1" value="64" style="width:72px;" /></label>
+            </div>
+            <div style="margin-top:6px;">
+                <label><input type="checkbox" id="burnedInRegion2Enabled" /> R2</label>
+                <label style="margin-left:8px;">X <input type="number" id="burnedInRegion2X" min="0" step="1" value="0" style="width:72px;" /></label>
+                <label>Y <input type="number" id="burnedInRegion2Y" min="0" step="1" value="0" style="width:72px;" /></label>
+                <label>Width <input type="number" id="burnedInRegion2Width" min="1" step="1" value="128" style="width:72px;" /></label>
+                <label>Height <input type="number" id="burnedInRegion2Height" min="1" step="1" value="64" style="width:72px;" /></label>
+            </div>
+            <div style="margin-top:6px;">
+                <label><input type="checkbox" id="burnedInRegion3Enabled" /> R3</label>
+                <label style="margin-left:8px;">X <input type="number" id="burnedInRegion3X" min="0" step="1" value="0" style="width:72px;" /></label>
+                <label>Y <input type="number" id="burnedInRegion3Y" min="0" step="1" value="0" style="width:72px;" /></label>
+                <label>Width <input type="number" id="burnedInRegion3Width" min="1" step="1" value="128" style="width:72px;" /></label>
+                <label>Height <input type="number" id="burnedInRegion3Height" min="1" step="1" value="64" style="width:72px;" /></label>
+            </div>
+            <div style="margin-top:6px;">
+                <label><input type="checkbox" id="burnedInRegion4Enabled" /> R4</label>
+                <label style="margin-left:8px;">X <input type="number" id="burnedInRegion4X" min="0" step="1" value="0" style="width:72px;" /></label>
+                <label>Y <input type="number" id="burnedInRegion4Y" min="0" step="1" value="0" style="width:72px;" /></label>
+                <label>Width <input type="number" id="burnedInRegion4Width" min="1" step="1" value="128" style="width:72px;" /></label>
+                <label>Height <input type="number" id="burnedInRegion4Height" min="1" step="1" value="64" style="width:72px;" /></label>
+            </div>
+        </div>
+        <br>
+        <div>
+            <span><strong>Coordinate Mode:</strong></span>
+            <label><input type="radio" name="burnedInCoordinateMode" value="auto-fit" checked /> Auto-fit</label>
+            <label><input type="radio" name="burnedInCoordinateMode" value="pixel" /> Pixel</label>
+            <label><input type="radio" name="burnedInCoordinateMode" value="normalized" /> Normalized (0-1)</label>
+        </div>
+        <div style="margin-top:4px;font-size:12px;color:#555;">
+            Region values are interpreted as X/Y/Width/Height.
+        </div>
+        <br>
+        <div>
+            <span><strong>Redaction Action:</strong></span>
+            <label><input type="radio" name="burnedInRedactionAction" value="black" checked /> Black</label>
+            <label><input type="radio" name="burnedInRedactionAction" value="white" /> White</label>
+            <label><input type="radio" name="burnedInRedactionAction" value="constant" /> Constant</label>
+            <label style="margin-left:8px;">Constant Value <input type="number" id="burnedInConstantFill" min="0" max="255" step="1" value="0" style="width:72px;" /></label>
+        </div>
+        <br>
+        <div>
+            <button id="burnedInRedactionStreamSave">Burned-In Redact and Stream Save</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="burnedInRedactionStreamOutput" rows="8" cols="80" placeholder="Burned-in redaction stream save details..."></textarea>
+        </div>
+        <br>
+        <hr>
+        <div>
             <h4>DICOM Transcoding Stream Save</h5>
         </div>
         <hr>
@@ -134,6 +201,10 @@
         <br>
         <div>
             <textarea id="assetsMetadataDump" rows="10" cols="80" placeholder="FHIR ImagingStudy output..."></textarea>
+        </div>
+        <br>
+        <div>
+            <textarea id="assetsSourceDiagnostics" rows="6" cols="80" placeholder="Asset source diagnostics..."></textarea>
         </div>
         <br>
         <div>
@@ -521,6 +592,40 @@
 
             }
 
+            function formatAssetsSourceDiagnostics(instance) {
+
+                if (instance == null)
+                    return 'No instance diagnostics available.';
+
+                var dataSet = instance?.dataSet ?? null;
+                var metaSet = instance?.metaSet ?? null;
+
+                var transferSyntaxUID = metaSet?.find?.(Tag.TransferSyntaxUID)?.value ?? null;
+                var transferSyntax = TransferSyntax.find(transferSyntaxUID ?? '') ?? null;
+                var transferSyntaxName = transferSyntax?.Name ?? 'Unknown';
+
+                var photometric = dataSet?.find?.(Tag.PhotometricInterpretation)?.value ?? null;
+                var rows = dataSet?.find?.(Tag.Rows)?.value ?? null;
+                var columns = dataSet?.find?.(Tag.Columns)?.value ?? null;
+                var samplesPerPixel = dataSet?.find?.(Tag.SamplesPerPixel)?.value ?? null;
+                var bitsAllocated = dataSet?.find?.(Tag.BitsAllocated)?.value ?? null;
+                var bitsStored = dataSet?.find?.(Tag.BitsStored)?.value ?? null;
+                var numberOfFrames = dataSet?.find?.(Tag.NumberOfFrames)?.value ?? null;
+                var pixelData = dataSet?.find?.(Tag.PixelData) ?? null;
+
+                return ''
+                    + 'Transfer Syntax UID: ' + String(transferSyntaxUID ?? 'unknown') + '\n'
+                    + 'Transfer Syntax Name: ' + String(transferSyntaxName) + '\n'
+                    + 'Photometric Interpretation: ' + String(photometric ?? 'unknown') + '\n'
+                    + 'Rows x Columns: ' + String(rows ?? 'unknown') + ' x ' + String(columns ?? 'unknown') + '\n'
+                    + 'Samples/Bits: ' + String(samplesPerPixel ?? 'unknown') + ' / '
+                    + String(bitsAllocated ?? 'unknown') + ' (stored=' + String(bitsStored ?? 'unknown') + ')\n'
+                    + 'Number Of Frames: ' + String(numberOfFrames ?? '1') + '\n'
+                    + 'PixelData Present: ' + String(pixelData != null)
+                    + ((pixelData != null) ? (' (length=' + String(pixelData.length?.() ?? 'unknown') + ')') : '');
+
+            }
+
             function buildDeidentifiedDicomFileName(fileName) {
 
                 var name = String(fileName ?? 'dicom').trim();
@@ -533,6 +638,100 @@
                     : name;
 
                 return baseName + '_deid.dcm';
+
+            }
+
+            function buildBurnedInRedactedDicomFileName(fileName) {
+
+                var name = String(fileName ?? 'dicom').trim();
+                if (name.length == 0)
+                    name = 'dicom';
+
+                var extensionIndex = name.lastIndexOf('.');
+                var baseName = (extensionIndex > 0)
+                    ? name.substring(0, extensionIndex)
+                    : name;
+
+                return baseName + '_burnedin-redacted.dcm';
+
+            }
+
+            function normalizeIntegerInput(value, fallbackValue, minimum = null, maximum = null) {
+
+                var numericValue = Number(value);
+                if (Number.isFinite(numericValue) == false)
+                    numericValue = fallbackValue;
+
+                numericValue = Math.floor(numericValue);
+
+                if ((minimum != null) && (numericValue < minimum))
+                    numericValue = minimum;
+
+                if ((maximum != null) && (numericValue > maximum))
+                    numericValue = maximum;
+
+                return numericValue;
+
+            }
+
+            function getBurnedInRegionByIndex(regionIndex) {
+
+                var isEnabled = ($('#burnedInRegion' + String(regionIndex) + 'Enabled').is(':checked') === true);
+                if (isEnabled != true)
+                    return null;
+
+                return {
+                    x: normalizeIntegerInput($('#burnedInRegion' + String(regionIndex) + 'X').val(), 0, 0, null),
+                    y: normalizeIntegerInput($('#burnedInRegion' + String(regionIndex) + 'Y').val(), 0, 0, null),
+                    width: normalizeIntegerInput($('#burnedInRegion' + String(regionIndex) + 'Width').val(), 128, 1, null),
+                    height: normalizeIntegerInput($('#burnedInRegion' + String(regionIndex) + 'Height').val(), 64, 1, null)
+                };
+
+            }
+
+            function getBurnedInRedactionRegions() {
+
+                var regions = [];
+
+                for (var regionIndex = 1; regionIndex <= 4; regionIndex++) {
+                    var region = getBurnedInRegionByIndex(regionIndex);
+                    if (region != null) {
+                        regions.push(region);
+                    }
+                }
+
+                return regions;
+
+            }
+
+            function getBurnedInRedactionAction() {
+                return $('input[name="burnedInRedactionAction"]:checked').val() || 'black';
+            }
+
+            function getBurnedInRedactionCoordinateMode() {
+                return $('input[name="burnedInCoordinateMode"]:checked').val() || 'auto-fit';
+            }
+
+            function getBurnedInConstantFill() {
+                return normalizeIntegerInput($('#burnedInConstantFill').val(), 0, 0, 255);
+            }
+
+            function getBurnedInRedactionOptions() {
+
+                var action = getBurnedInRedactionAction();
+                var regions = getBurnedInRedactionRegions();
+                var options = {
+                    mode: 'regions',
+                    action: action,
+                    coordinateMode: getBurnedInRedactionCoordinateMode(),
+                    regions: regions
+                };
+
+                if (action == 'constant') {
+                    options.fill = getBurnedInConstantFill();
+                }
+
+                return options;
 
             }
 
@@ -999,6 +1198,145 @@
 
             });
 
+            $('#burnedInRedactionStreamSave').on('click', async function () {
+
+                console.clear();
+                $('#burnedInRedactionStreamOutput').val('');
+
+                var file = $('#dicomBurnedInRedactionFile')[0]?.files?.[0];
+                if (file == null) {
+                    alert('Please select a DICOM file first.');
+                    return;
+                }
+
+                var sourceUrl = URL.createObjectURL(file);
+                var outputFileName = buildBurnedInRedactedDicomFileName(file.name);
+                var redactionOptions = getBurnedInRedactionOptions();
+                if ((Array.isArray(redactionOptions.regions) == false) || (redactionOptions.regions.length == 0)) {
+                    alert('Please enable at least one redaction region (R1-R4).');
+                    URL.revokeObjectURL(sourceUrl);
+                    return;
+                }
+                var redactionConcerns = [];
+
+                var fileHandle = null;
+                var chunkCount = 0;
+                var bytesStreamed = 0;
+
+                try {
+
+                    if (typeof window.showSaveFilePicker === 'function') {
+                        fileHandle = await window.showSaveFilePicker({
+                            suggestedName: outputFileName,
+                            types: [{
+                                description: 'DICOM files',
+                                accept: { 'application/dicom': ['.dcm', '.dicom'] }
+                            }]
+                        });
+                    }
+
+                    var pipelineBuilder = applyDicomDataValidation(
+                        EASI.pipelineBuilder()
+                            .fromHttpStream()
+                            .ofDicomData()
+                            .withBurnedInRedaction(Object.assign({}, redactionOptions, {
+                                onConcern: function (concern) {
+                                    redactionConcerns.push(concern);
+                                    console.warn('[Burned-In Redaction]', concern);
+                                }
+                            }))
+                    )
+                    .toDicomData();
+
+                    var writerOptions = {
+                        chunkSize: (64 * 1024),
+                        onChunk: function (chunk) {
+
+                            if ((chunk == null) || (chunk.length == 0))
+                                return;
+
+                            bytesStreamed += chunk.length;
+                            chunkCount += 1;
+
+                        }
+                    };
+
+                    var pipeline = null;
+                    if (fileHandle != null) {
+                        pipeline = pipelineBuilder
+                            .intoBrowserFileStream(fileHandle, writerOptions)
+                            .build();
+                    }
+                    else {
+                        pipeline = pipelineBuilder
+                            .intoByteStream(Object.assign({}, writerOptions, {
+                                collectOutput: true
+                            }))
+                            .build();
+                    }
+
+                    var result = await processWithTiming(
+                        pipeline,
+                        sourceUrl,
+                        null,
+                        'Burned-In Redaction + Stream Save'
+                    );
+
+                    if (fileHandle == null) {
+                        var outputBytes = result?.body ?? new Uint8Array(0);
+                        if (outputBytes.length == 0) {
+                            throw new Error('No output bytes were produced by the burned-in redaction pipeline.');
+                        }
+                        downloadBytesAsFile(outputBytes, outputFileName, 'application/dicom');
+                    }
+
+                    $('#burnedInRedactionStreamOutput').val(
+                        'Source: ' + file.name + '\n'
+                        + 'Output: ' + outputFileName + '\n'
+                        + 'Mode: ' + String(redactionOptions.mode ?? 'regions') + '\n'
+                        + 'Action: ' + String(redactionOptions.action ?? 'black') + '\n'
+                        + 'Coordinate mode: ' + String(redactionOptions.coordinateMode ?? 'auto-fit') + '\n'
+                        + 'Regions (' + String(redactionOptions.regions?.length ?? 0) + '): ' + JSON.stringify(redactionOptions.regions ?? []) + '\n'
+                        + ((redactionOptions.action == 'constant')
+                            ? ('Fill: ' + String(redactionOptions.fill ?? 0) + '\n')
+                            : '')
+                        + 'Concerns: ' + String(redactionConcerns.length) + '\n'
+                        + 'Chunks streamed: ' + chunkCount + '\n'
+                        + 'Bytes streamed: ' + bytesStreamed + '\n'
+                        + 'Writer result bytesWritten: ' + String(result?.bytesWritten ?? bytesStreamed)
+                    );
+
+                    console.log({
+                        sourceFile: file.name,
+                        outputFile: outputFileName,
+                        redactionOptions: redactionOptions,
+                        chunksStreamed: chunkCount,
+                        bytesStreamed: bytesStreamed,
+                        writerResult: result
+                    });
+
+                }
+                catch (err) {
+
+                    if (err?.name === 'AbortError') {
+                        $('#burnedInRedactionStreamOutput').val('Save cancelled by user.');
+                        return;
+                    }
+
+                    $('#burnedInRedactionStreamOutput').val(
+                        'Burned-in redaction stream save failed.\n'
+                        + (err?.message ?? String(err))
+                    );
+
+                    console.log(err);
+
+                }
+                finally {
+                    URL.revokeObjectURL(sourceUrl);
+                }
+
+            });
+
             $('#transcodeStreamSave').on('click', async function () {
 
                 console.clear();
@@ -1315,10 +1653,12 @@
                 }
 
                 $('#assetsMetadataDump').val('');
+                $('#assetsSourceDiagnostics').val('');
                 clearImageList();
 
                 var url = URL.createObjectURL(file);
                 var metadataOutput = [];
+                var hasSourceDiagnostics = false;
 
                 const pipeline = applyDicomDataValidation(
                     EASI.pipelineBuilder()
@@ -1327,7 +1667,7 @@
                 ).toAssets({
                             metadata: {
                                 mapping: newFhirImagingStudyMapping(),
-                                onMetadata: async function (metadata) {
+                                onMetadata: async function (metadata, scope) {
 
                                     metadataOutput.push(metadata);
                                     var displayModel = (metadataOutput.length == 1)
@@ -1335,18 +1675,29 @@
                                         : metadataOutput;
 
                                     $('#assetsMetadataDump').val(JSON.stringify(displayModel, null, 2));
+
+                                    if ((hasSourceDiagnostics == false) && (scope?.instance != null)) {
+                                        $('#assetsSourceDiagnostics').val(formatAssetsSourceDiagnostics(scope.instance));
+                                        hasSourceDiagnostics = true;
+                                    }
                                     await yieldToBrowserFrame();
 
                                 }
                             },
                             payload: {
+                                mode: 'materialize',
                                 frame: {
                                     frames: 'all',
                                     decode: 'rgba',
                                     encode: 'png'
                                 },
-                                onFrame: async function (frame) {
+                                onFrame: async function (frame, scope) {
                                     appendImageListFrame(frame);
+
+                                    if ((hasSourceDiagnostics == false) && (scope?.instance != null)) {
+                                        $('#assetsSourceDiagnostics').val(formatAssetsSourceDiagnostics(scope.instance));
+                                        hasSourceDiagnostics = true;
+                                    }
                                     await yieldToBrowserFrame();
                                 }
                             }
@@ -1359,6 +1710,11 @@
                         var assets = Array.isArray(result) ? result[0] : result;
 
                         console.log(assets);
+
+                        if ((hasSourceDiagnostics == false) && (assets?.instance != null)) {
+                            $('#assetsSourceDiagnostics').val(formatAssetsSourceDiagnostics(assets.instance));
+                            hasSourceDiagnostics = true;
+                        }
 
                     })
                     .catch(err => console.log(err))

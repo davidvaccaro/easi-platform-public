@@ -61,17 +61,8 @@ export default class EncodedData extends Data {
         if (raw == null)
             throw new Exception("Invalid raw DICOM data. Cannot append undefind or null data.", GeneralErrorCodes.InvalidParameter);
 
-        // Establish the new data
-        var newData = null;
-
-        // Prepare the new data (with a endian-swap if needed)
-        if ((this.transferSyntax != TransferSyntax.NONE) && (this.transferSyntax.IsLittleEndian != Runtime.isLittleEndian))
-            newData = Utilities.swapBytes(raw);
-        else
-            newData = raw;
-
-        // Append through the base Data implementation (capacity-managed).
-        super.append(newData);
+        // Append raw bytes as-is. Endian interpretation is handled by parser/value readers.
+        super.append(raw);
 
     }
 

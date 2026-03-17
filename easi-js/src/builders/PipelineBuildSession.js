@@ -21,6 +21,7 @@ import DicomXmlMetadataAdapter from "../handlers/adapters/DicomXmlMetadataAdapte
 import DicomDeIdentificationFilter from "../handlers/filters/DicomDeIdentificationFilter.js";
 import DicomValidationFilter from "../handlers/filters/DicomValidationFilter.js";
 import DicomTranscodingFilter from "../handlers/filters/DicomTranscodingFilter.js";
+import DicomBurnedInRedactionFilter from "../handlers/filters/DicomBurnedInRedactionFilter.js";
 import DicomDataWriterHandler from "../handlers/terminals/DicomDataWriterHandler.js";
 import JsonDataHandler from "../handlers/terminals/syntax/JsonDataHandler.js";
 import XmlDataHandler from "../handlers/terminals/syntax/XmlDataHandler.js";
@@ -394,6 +395,27 @@ export default class PipelineBuildSession {
     }
 
     /**
+     * Enables/configures burned-in pixel redaction.
+     * Supported forms:
+     * - false/null: disabled
+     * - true: enabled with default settings
+     * - function/array/object: full redaction options
+     * @param {boolean | object | Function | Array<object> | null | false} redaction Redaction configuration.
+     * @returns {PipelineBuildSession} The current session.
+     */
+    withBurnedInRedaction(redaction = true) {
+
+        if ((redaction == null) || (redaction === false)) {
+            this.burnedInRedaction = null;
+            return this;
+        }
+
+        this.burnedInRedaction = redaction;
+        return this;
+
+    }
+
+    /**
      * Set the outbound writer for restreaming pipeline output.
      * @param {object} writer The output writer.
      * @param {*} target Optional writer target.
@@ -498,7 +520,60 @@ export default class PipelineBuildSession {
         }
 
         // Compose transfer-syntax transcoding for native DICOM parse chains.
-        if (this.transcoding != null) {
+        if (this.burnedInRedaction != null) {
+
+            if ((parser instanceof DicomDataParser) == false) {
+                throw new Exception(
+                    "withBurnedInRedaction(...) currently requires native DICOM parser semantics.",
+                    BuilderErrorCodes.IncompatibleBurnedInRedactionAndParser
+                );
+            }
+
+            var redaction = this.burnedInRedaction;
+            if (redaction === true) {
+                redaction = {};
+            }
+            else if ((typeof redaction == "function") || (Array.isArray(redaction) == true)) {
+                redaction = {
+                    regions: redaction
+                };
+            }
+            else if (typeof redaction == "object") {
+                redaction = Object.assign({}, redaction);
+            }
+            else {
+                throw new Exception(
+                    "Invalid burned-in redaction options. Expected function, array, object, true, null, or false.",
+                    BuilderErrorCodes.InvalidBuildState
+                );
+            }
+
+            if (this.transcoding != null) {
+                var transcodingForRedaction = (typeof this.transcoding == "string")
+                    ? { targetTransferSyntax: this.transcoding }
+                    : Object.assign({}, this.transcoding);
+
+                var redactionTargetTransferSyntax = (
+                    redaction.targetTransferSyntax
+                    ?? transcodingForRedaction.targetTransferSyntax
+                    ?? null
+                );
+
+                redaction = Object.assign({}, transcodingForRedaction, redaction, {
+                    targetTransferSyntax: redactionTargetTransferSyntax
+                });
+            }
+
+            if ((this.codecRegistry != null) && (typeof redaction == "object") && (redaction != null)) {
+                redaction = Object.assign({}, redaction, {
+                    codecRegistry: (redaction.codecRegistry ?? this.codecRegistry)
+                });
+            }
+
+            handler = new DicomBurnedInRedactionFilter(handler, redaction);
+
+        }
+        else if (this.transcoding != null) {
 
             if ((parser instanceof DicomDataParser) == false) {
                 throw new Exception(
@@ -599,6 +674,7 @@ export default class PipelineBuildSession {
         this.codecRegistry = null;
         this.onEmit = null;
         this.bulkDataPolicy = null;
+        this.burnedInRedaction = null;
         this.writer = null;
         this.writerTarget = null;
         this.writerOptions = null;

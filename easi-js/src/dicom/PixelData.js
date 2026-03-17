@@ -33,19 +33,23 @@ export default class PixelData {
         // Handle Undefined Length versus fixed length
         if (this.attribute.valueLength == Constants.UndefinedLength) {
 
+            var isLittleEndian = (this.attribute?.transferSyntax?.IsLittleEndian != false);
+            var itemMarker = Utilities.getItem(isLittleEndian);
+            var endSequenceMarker = Utilities.getEndSequence(isLittleEndian);
+
             var index = 0;
 
             // Loop over the data buffer
             while (index < this.attribute.length()) {
 
                 // Determine the START of the next item
-                var start = this.attribute.indexOf(index, Utilities.getItem());
+                var start = this.attribute.indexOf(index, itemMarker);
                 
                 // Validate the start
                 if (start == -1) {
 
                     // Determine the END of the sequence
-                    var end = this.attribute.indexOf(index, Utilities.getEndSequence);
+                    var end = this.attribute.indexOf(index, endSequenceMarker);
 
                     // Break
                     break;
@@ -59,7 +63,7 @@ export default class PixelData {
                     break;
 
                 // Convert the bytes to length
-                var length = Utilities.bytesToUnsignedInteger(lengthBytes);
+                var length = Utilities.bytesToUnsignedInteger(lengthBytes, isLittleEndian);
 
                 // Determine the initial offset
                 var valueOffset = (start + 8);
@@ -83,19 +87,26 @@ export default class PixelData {
                                 break;
 
                             // Convert the bytes to length
-                            var offset = Utilities.bytesToUnsignedInteger(offsetBytes);
+                            var offset = Utilities.bytesToUnsignedInteger(offsetBytes, isLittleEndian);
 
                             // Append the offset
                             this.offsets.push({ 
-                                start: (valueOffset + length + offset)
+                                // BOT offsets are relative to the first fragment ITEM start.
+                                // Decoders expect the fragment VALUE start (after 8-byte item header).
+                                start: (valueOffset + length + offset + 8)
                             });
 
                         }
 
-                    }
+                        // Break since the offset table is now fully determined
+                        break;
 
-                    // Break since the offset table is now fully determined
-                    break;
+                    }
+                    else {
+                        // Empty BOT: continue scanning fragment items.
+                        index = (valueOffset + length);
+                        continue;
+                    }
 
                 }
 
@@ -105,7 +116,7 @@ export default class PixelData {
                 });
 
                 // Increment the index
-                index += (valueOffset + length);
+                index = (valueOffset + length);
 
             }
 

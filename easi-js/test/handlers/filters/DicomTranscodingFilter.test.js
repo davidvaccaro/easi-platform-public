@@ -56,6 +56,37 @@ test("Test: DicomTranscodingFilter supports RLE lossless source to JPEG 2000 los
     expect(supported).toBe(true);
 });
 
+test("Test: DicomTranscodingFilter supports explicit-vr-little-endian source to RLE lossless target when encoder is registered", () => {
+    const filter = new DicomTranscodingFilter(null, {
+        targetTransferSyntax: TransferSyntax.RLELossless.ID
+    });
+
+    const supported = filter.isSupportedSyntaxPair(
+        TransferSyntax.ExplicitVRLittleEndian,
+        TransferSyntax.RLELossless
+    );
+
+    expect(supported).toBe(true);
+});
+
+test("Test: DicomTranscodingFilter rejects RLE lossless target when RLE encoder is not registered", () => {
+    const codecRegistry = new CodecRegistry();
+    codecRegistry.setDecoderForTransferSyntax(TransferSyntax.NONE, function() {});
+    codecRegistry.setDecoderForTransferSyntax(TransferSyntax.RLELossless, function() {});
+
+    const filter = new DicomTranscodingFilter(null, {
+        targetTransferSyntax: TransferSyntax.RLELossless.ID,
+        codecRegistry
+    });
+
+    const supported = filter.isSupportedSyntaxPair(
+        TransferSyntax.ExplicitVRLittleEndian,
+        TransferSyntax.RLELossless
+    );
+
+    expect(supported).toBe(false);
+});
+
 test("Test: DicomTranscodingFilter supports explicit-vr-little-endian source to HTJ2K target", () => {
     const filter = new DicomTranscodingFilter(null, {
         targetTransferSyntax: TransferSyntax.HTJ2K.ID

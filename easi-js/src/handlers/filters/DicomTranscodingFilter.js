@@ -124,6 +124,8 @@ export default class DicomTranscodingFilter {
                 sourceAttribute: null,
                 chunks: []
             },
+            deferredSamplesPerPixelAttribute: null,
+            hasForwardedPlanarConfiguration: false,
             metaAttributes: [],
             metaTransferSyntaxLengthDelta: 0,
             hasReportedAssumedSourceTransferSyntax: false,
@@ -163,6 +165,8 @@ export default class DicomTranscodingFilter {
             sourceAttribute: null,
             chunks: []
         };
+        state.deferredSamplesPerPixelAttribute = null;
+        state.hasForwardedPlanarConfiguration = false;
         state.metaAttributes = [];
         state.metaTransferSyntaxLengthDelta = 0;
         state.hasReportedAssumedSourceTransferSyntax = false;
@@ -356,8 +360,11 @@ export default class DicomTranscodingFilter {
         if ((sourceTransferSyntax == null) || (targetTransferSyntax == null))
             return false;
 
-        if (sourceTransferSyntax.ID == targetTransferSyntax.ID)
+        if (sourceTransferSyntax.ID == targetTransferSyntax.ID) {
+            if (this.requiresPixelPayloadTranscode(sourceTransferSyntax, targetTransferSyntax) == true)
+                return this.isSupportedPixelPayloadPair(sourceTransferSyntax, targetTransferSyntax);
             return true;
+        }
 
         if (this.requiresPixelPayloadTranscode(sourceTransferSyntax, targetTransferSyntax) == true)
             return this.isSupportedPixelPayloadPair(sourceTransferSyntax, targetTransferSyntax);
@@ -479,10 +486,22 @@ export default class DicomTranscodingFilter {
     }
 
     /**
+     * Determine if one transfer syntax is DICOM RLE Lossless.
+     * @param {TransferSyntax | null} transferSyntax The candidate transfer syntax.
+     * @returns {boolean} TRUE when RLE Lossless syntax.
+     */
+    isRleTransferSyntax(transferSyntax) {
+        return ((transferSyntax?.ID ?? null) == TransferSyntax.RLELossless.ID);
+    }
+
+    /**
      * Resolve compressed-output codec name based on target transfer syntax.
      * @returns {string} Codec name.
      */
     resolveCompressedOutputCodecName() {
+        if (this.isRleTransferSyntax(this.targetTransferSyntax) == true)
+            return "rle";
+
         if (this.isJpegBaselineTransferSyntax(this.targetTransferSyntax) == true)
             return "jpeg";
 
@@ -520,7 +539,8 @@ export default class DicomTranscodingFilter {
         if ((sourceTransferSyntax == null) || (targetTransferSyntax == null))
             return false;
 
-        if (sourceTransferSyntax.ID == targetTransferSyntax.ID)
+        if ((sourceTransferSyntax.ID == targetTransferSyntax.ID)
+            && (sourceTransferSyntax.IsCompressed != true))
             return true;
 
         // Source compressed requires a registered decoder.
@@ -528,21 +548,33 @@ export default class DicomTranscodingFilter {
             && (this.hasRegisteredDecoderForTransferSyntax(sourceTransferSyntax) == false))
             return false;
 
-        // v2 target scope for compressed output includes JPEG baseline and JPEG 2000 families.
+        // v2 target scope for compressed output includes JPEG baseline, JPEG 2000 and RLE.
         if ((targetTransferSyntax.IsCompressed == true)
+            && (this.isRleTransferSyntax(targetTransferSyntax) == false)
             && (this.isJpeg2000TransferSyntax(targetTransferSyntax) == false)
             && (this.isJpegBaselineTransferSyntax(targetTransferSyntax) == false))
             return false;
 
         // If compressed output is requested, require a registered encoder for this family.
         if (targetTransferSyntax.IsCompressed == true) {
-            var outputCodec = (this.isHtj2kTransferSyntax(targetTransferSyntax) == true)
-                ? "htj2k"
-                : (this.isJpegBaselineTransferSyntax(targetTransferSyntax) == true ? "jpeg" : "jpeg2000");
+            var outputCodec = this.isRleTransferSyntax(targetTransferSyntax)
+                ? "rle"
+                : (
+                    (this.isHtj2kTransferSyntax(targetTransferSyntax) == true)
+                        ? "htj2k"
+                        : (this.isJpegBaselineTransferSyntax(targetTransferSyntax) == true ? "jpeg" : "jpeg2000")
+                );
 
             if (outputCodec == "jpeg") {
                 if ((this.codecRegistry?.hasEncoder?.("jpeg") != true)
                     && (this.codecRegistry?.hasEncoder?.("jpg") != true)) {
+                    return false;
+                }
+            }
+            else if (outputCodec == "rle") {
+                if ((this.codecRegistry?.hasEncoder?.("rle") != true)
+                    && (this.codecRegistry?.hasEncoder?.("rle-lossless") != true)
+                    && (this.codecRegistry?.hasEncoder?.("dicom-rle") != true)) {
                     return false;
                 }
             }
@@ -963,6 +995,146 @@ export default class DicomTranscodingFilter {
             || (tagID == Tag.SmallestImagePixelValue.ID)
             || (tagID == Tag.LargestImagePixelValue.ID)
         );
+    }
+
+    /**
+     * Determine if the specified tag is one of the palette lookup-table metadata attributes.
+     * @param {string | null} tagID The tag identifier.
+     * @returns {boolean} TRUE when palette lookup-table metadata tag.
+     */
+    isPaletteLookupTableTag(tagID) {
+        return (
+            (tagID == Tag.RedPaletteColorLookupTableDescriptor.ID)
+            || (tagID == Tag.GreenPaletteColorLookupTableDescriptor.ID)
+            || (tagID == Tag.BluePaletteColorLookupTableDescriptor.ID)
+            || (tagID == Tag.LargeRedPaletteColorLookupTableDescriptor.ID)
+            || (tagID == Tag.LargeGreenPaletteColorLookupTableDescriptor.ID)
+            || (tagID == Tag.LargeBluePaletteColorLookupTableDescriptor.ID)
+            || (tagID == Tag.PaletteColorLookupTableUID.ID)
+            || (tagID == Tag.RedPaletteColorLookupTableData.ID)
+            || (tagID == Tag.GreenPaletteColorLookupTableData.ID)
+            || (tagID == Tag.BluePaletteColorLookupTableData.ID)
+            || (tagID == Tag.LargeRedPaletteColorLookupTableData.ID)
+            || (tagID == Tag.LargeGreenPaletteColorLookupTableData.ID)
+            || (tagID == Tag.LargeBluePaletteColorLookupTableData.ID)
+            || (tagID == Tag.LargePaletteColorLookupTableUID.ID)
+            || (tagID == Tag.SegmentedRedPaletteColorLookupTableData.ID)
+            || (tagID == Tag.SegmentedGreenPaletteColorLookupTableData.ID)
+            || (tagID == Tag.SegmentedBluePaletteColorLookupTableData.ID)
+        );
+    }
+
+    /**
+     * Determine if palette lookup-table metadata should be suppressed in output.
+     * This applies when RGBA-based transcode materializes RGB output.
+     * @param {object} state Runtime state.
+     * @param {object} attribute Current attribute.
+     * @returns {boolean} TRUE when attribute should be suppressed from output.
+     */
+    shouldSuppressPaletteLookupTableAttribute(state, attribute) {
+
+        if ((state?.mode != "transcode") || (state?.requiresPixelTransform != true))
+            return false;
+
+        var tagID = attribute?.tag?.ID ?? null;
+        if (this.isPaletteLookupTableTag(tagID) != true)
+            return false;
+
+        var targetSamplesPerPixel = this.resolveTargetSamplesPerPixel(state);
+        return (targetSamplesPerPixel > 1);
+
+    }
+
+    /**
+     * Determine whether PlanarConfiguration must be synthesized before PixelData output.
+     * @param {object} state Runtime state.
+     * @param {object} attribute Current attribute.
+     * @returns {boolean} TRUE when synthetic planar configuration should be emitted.
+     */
+    shouldEmitSyntheticPlanarConfigurationBeforePixelData(state, attribute) {
+
+        if ((state?.mode != "transcode") || (state?.requiresPixelTransform != true))
+            return false;
+
+        if (this.isPixelDataAttribute(attribute) != true)
+            return false;
+
+        if (this.targetTransferSyntax?.IsCompressed == true)
+            return false;
+
+        if (state?.hasForwardedPlanarConfiguration == true)
+            return false;
+
+        return (this.resolveTargetSamplesPerPixel(state) > 1);
+
+    }
+
+    /**
+     * Emit one synthetic PlanarConfiguration attribute for RGB uncompressed outputs.
+     * @param {object} context Parse context.
+     * @param {object} state Runtime state.
+     * @returns {*} Status.
+     */
+    async emitSyntheticPlanarConfiguration(context, state) {
+
+        var syntheticPlanar = new Attribute(
+            Tag.PlanarConfiguration,
+            0,
+            new Uint8Array(0),
+            this.targetTransferSyntax
+        );
+
+        syntheticPlanar.value = 0;
+        syntheticPlanar.isBulkStreamed = false;
+        syntheticPlanar.isMaterialized = true;
+        syntheticPlanar.isComplete = true;
+
+        var startStatus = await this.forward("onStartAttribute", context, syntheticPlanar);
+        if (this.isTerminalStatus(startStatus) == true)
+            return startStatus;
+
+        var endStatus = await this.forward("onEndAttribute", context, syntheticPlanar);
+        if (this.isTerminalStatus(endStatus) == true)
+            return endStatus;
+
+        state.planarConfiguration = 0;
+        state.hasForwardedPlanarConfiguration = true;
+
+        return Status.CONTINUE;
+
+    }
+
+    /**
+     * Determine whether SamplesPerPixel override should be deferred until source photometric context is known.
+     * This avoids order-sensitive output when SamplesPerPixel is encoded before PhotometricInterpretation.
+     * @param {object} state Runtime state.
+     * @returns {boolean} TRUE when deferral is needed.
+     */
+    shouldDeferSamplesPerPixelOverride(state) {
+
+        var sourceSamples = this.toInteger(state?.samplesPerPixel, 1);
+        if (sourceSamples > 1)
+            return false;
+
+        var sourcePhotometric = String(state?.photometricInterpretation ?? "").trim().toUpperCase();
+        return (sourcePhotometric.length == 0);
+
+    }
+
+    /**
+     * Determine whether a deferred SamplesPerPixel attribute can be safely emitted now.
+     * @param {object} state Runtime state.
+     * @param {object} currentAttribute Current attribute being completed.
+     * @returns {boolean} TRUE when deferred SamplesPerPixel should be flushed.
+     */
+    canFlushDeferredSamplesPerPixel(state, currentAttribute) {
+
+        var sourcePhotometric = String(state?.photometricInterpretation ?? "").trim().toUpperCase();
+        if (sourcePhotometric.length > 0)
+            return true;
+
+        return (this.isPixelDataAttribute(currentAttribute) == true);
+
     }
 
     /**
@@ -1907,6 +2079,20 @@ export default class DicomTranscodingFilter {
     }
 
     /**
+     * Transform one decoded RGBA frame before encode.
+     * Subclasses can override to apply in-flight pixel operations.
+     * @param {object} context Parse context.
+     * @param {object} state Runtime state.
+     * @param {Uint8Array} rgba RGBA bytes.
+     * @param {number} frameIndex Zero-based frame index.
+     * @param {number | null} frameCount Optional frame count.
+     * @returns {Promise<Uint8Array>} Transformed RGBA bytes.
+     */
+    async transformFrameRGBA(context, state, rgba, frameIndex = 0, frameCount = null) {
+        return rgba;
+    }
+
+    /**
      * Encode RGBA frame bytes to the target transfer syntax representation.
      * @param {object} state Runtime state.
      * @param {Uint8Array} rgba RGBA bytes.
@@ -1926,6 +2112,12 @@ export default class DicomTranscodingFilter {
             if ((encoder == null) && (codecName == "jpeg")) {
                 encoder = this.codecRegistry?.getEncoder?.("jpg")
                     ?? Configuration.global.getEncoderFor("jpg");
+            }
+            else if ((encoder == null) && (codecName == "rle")) {
+                encoder = this.codecRegistry?.getEncoder?.("rle-lossless")
+                    ?? this.codecRegistry?.getEncoder?.("dicom-rle")
+                    ?? Configuration.global.getEncoderFor("rle-lossless")
+                    ?? Configuration.global.getEncoderFor("dicom-rle");
             }
 
             if (encoder == null) {
@@ -2153,6 +2345,7 @@ export default class DicomTranscodingFilter {
                             return nativeFallbackStatus;
 
                         var rgbaFallback = await this.decodeFrameToRGBA(state, sourceFrame);
+                        rgbaFallback = (await this.transformFrameRGBA(context, state, rgbaFallback, frameIndex, totalFrameCount)) ?? rgbaFallback;
                         targetFrame = await this.encodeFrameFromRGBA(state, rgbaFallback);
                         decodeCodec = state?.sourceTransferSyntax?.IsCompressed
                             ? (
@@ -2165,6 +2358,7 @@ export default class DicomTranscodingFilter {
                 }
                 else {
                     var rgba = await this.decodeFrameToRGBA(state, sourceFrame);
+                    rgba = (await this.transformFrameRGBA(context, state, rgba, frameIndex, totalFrameCount)) ?? rgba;
                     targetFrame = await this.encodeFrameFromRGBA(state, rgba);
                     decodeCodec = state?.sourceTransferSyntax?.IsCompressed
                         ? (
@@ -2342,6 +2536,16 @@ export default class DicomTranscodingFilter {
         if ((state.mode == "transcode")
             && (state.requiresPixelTransform == true)
             && (state.isInDataSet == true)
+            && (this.shouldSuppressPaletteLookupTableAttribute(state, attribute) == true)) {
+
+            attribute._transcodingSuppressOutput = true;
+            return Status.CONTINUE;
+
+        }
+
+        if ((state.mode == "transcode")
+            && (state.requiresPixelTransform == true)
+            && (state.isInDataSet == true)
             && (this.isPixelDataAttribute(attribute) == true)) {
 
             state.pixelData.transcodeActive = true;
@@ -2386,6 +2590,9 @@ export default class DicomTranscodingFilter {
     async onAppendAttribute(context, attribute) {
         context = this.ensureState(context);
 
+        if (attribute?._transcodingSuppressOutput == true)
+            return Status.CONTINUE;
+
         var state = this.getState(context);
         if (this.isActivePixelCapture(state, attribute) == true)
             return Status.CONTINUE;
@@ -2399,6 +2606,9 @@ export default class DicomTranscodingFilter {
         var state = this.getState(context);
 
         var attribute = payload?.attribute;
+        if (attribute?._transcodingSuppressOutput == true)
+            return Status.CONTINUE;
+
         if (attribute?.tag?.ID == Tag.PixelData?.ID) {
 
             if (state.isInDataSet == true) {
@@ -2503,7 +2713,41 @@ export default class DicomTranscodingFilter {
 
             this.updateImageMetadata(state, attribute);
 
+            if (attribute?._transcodingSuppressOutput == true)
+                return Status.CONTINUE;
+
+            if ((state.mode == "transcode")
+                && (state.requiresPixelTransform == true)
+                && (attribute?.tag?.ID == Tag.SamplesPerPixel.ID)
+                && (this.shouldDeferSamplesPerPixelOverride(state) == true)) {
+
+                state.deferredSamplesPerPixelAttribute = attribute;
+                return Status.CONTINUE;
+
+            }
+
+            if ((state.mode == "transcode")
+                && (state.requiresPixelTransform == true)
+                && (state.deferredSamplesPerPixelAttribute != null)
+                && (attribute?.tag?.ID != Tag.SamplesPerPixel.ID)
+                && (this.canFlushDeferredSamplesPerPixel(state, attribute) == true)) {
+
+                this.applyPixelMetadataOverride(state, state.deferredSamplesPerPixelAttribute);
+                var deferredSamplesStatus = await this.forward("onEndAttribute", context, state.deferredSamplesPerPixelAttribute);
+                if (this.isTerminalStatus(deferredSamplesStatus) == true)
+                    return deferredSamplesStatus;
+
+                state.deferredSamplesPerPixelAttribute = null;
+
+            }
+
             if (attribute?.tag?.ID == Tag.PixelData?.ID) {
+
+                if (this.shouldEmitSyntheticPlanarConfigurationBeforePixelData(state, attribute) == true) {
+                    var syntheticPlanarStatus = await this.emitSyntheticPlanarConfiguration(context, state);
+                    if (this.isTerminalStatus(syntheticPlanarStatus) == true)
+                        return syntheticPlanarStatus;
+                }
 
                 this.updateSourceTransferSyntaxFromAttribute(state, attribute);
 
@@ -2535,6 +2779,10 @@ export default class DicomTranscodingFilter {
                 && (state.requiresPixelTransform == true)
                 && (this.isPixelMetadataTag(attribute?.tag?.ID) == true)) {
                 this.applyPixelMetadataOverride(state, attribute);
+            }
+
+            if (attribute?.tag?.ID == Tag.PlanarConfiguration.ID) {
+                state.hasForwardedPlanarConfiguration = true;
             }
 
         }
@@ -2608,6 +2856,19 @@ export default class DicomTranscodingFilter {
         context = this.ensureState(context);
         var state = this.getState(context);
         state.isInDataSet = false;
+
+        if ((state.mode == "transcode")
+            && (state.requiresPixelTransform == true)
+            && (state.deferredSamplesPerPixelAttribute != null)) {
+
+            this.applyPixelMetadataOverride(state, state.deferredSamplesPerPixelAttribute);
+            var deferredSamplesStatus = await this.forward("onEndAttribute", context, state.deferredSamplesPerPixelAttribute);
+            if (this.isTerminalStatus(deferredSamplesStatus) == true)
+                return deferredSamplesStatus;
+
+            state.deferredSamplesPerPixelAttribute = null;
+
+        }
 
         return await this.forward("onEndDataSet", context);
 

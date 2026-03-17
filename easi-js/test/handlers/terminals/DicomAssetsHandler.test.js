@@ -2,6 +2,50 @@ import DicomAssetsHandler from '../../../src/handlers/terminals/DicomAssetsHandl
 import Tag from '../../../src/dicom/Tag.js';
 import Attribute from '../../../src/dicom/Attribute.js';
 import TransferSyntax from '../../../src/dicom/TransferSyntax.js';
+import Constants from '../../../src/dicom/Constants.js';
+
+function toUint32LE(value) {
+    return new Uint8Array([
+        (value & 0xFF),
+        ((value >> 8) & 0xFF),
+        ((value >> 16) & 0xFF),
+        ((value >> 24) & 0xFF)
+    ]);
+}
+
+function createEncapsulatedPixelDataAttribute(frameOffsets) {
+    var tableLength = frameOffsets.length * 4;
+    return {
+        tag: Tag.PixelData,
+        transferSyntax: TransferSyntax.RLELossless,
+        valueLength: Constants.UndefinedLength,
+        length() {
+            return 256;
+        },
+        indexOf(index, pattern) {
+            if (pattern == null)
+                return -1;
+
+            // Return BOT item start once when scanning from beginning.
+            if ((index <= 0) && (pattern.length == 4) && (pattern[0] == 0xFE) && (pattern[1] == 0xFF))
+                return 0;
+
+            return -1;
+        },
+        peek(start, length) {
+            if ((start == 4) && (length == 4)) {
+                return toUint32LE(tableLength);
+            }
+
+            if ((start >= 8) && (start < (8 + tableLength)) && (length == 4)) {
+                var offsetIndex = ((start - 8) / 4);
+                return toUint32LE(frameOffsets[offsetIndex]);
+            }
+
+            return null;
+        }
+    };
+}
 
 test('Test: DicomAssetsHandler emits onContent and collected content for encapsulated document payload', async () => {
 
@@ -92,5 +136,21 @@ test('Test: DicomAssetsHandler emits onContentChunk without materializing encaps
     expect(contentChunkEvents[0].isFirstChunk).toBe(true);
     expect(contentChunkEvents[1].isFinalChunk).toBe(true);
     expect(attribute.length()).toBe(0);
+
+});
+
+test('Test: DicomAssetsHandler resolves effective frame count from encapsulated offsets', () => {
+
+    var handler = new DicomAssetsHandler();
+    var pixelDataAttribute = createEncapsulatedPixelDataAttribute([0, 100]);
+    var image = {
+        multiFrameModule: {
+            numberOfFrames: 10
+        }
+    };
+
+    var frameCount = handler.resolveEffectiveFrameCount(pixelDataAttribute, image);
+
+    expect(frameCount).toBe(2);
 
 });

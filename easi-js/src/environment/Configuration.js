@@ -32,6 +32,7 @@ import TiffRgbaEncoder from '../codecs/encoders/TiffRgbaEncoder.js';
 import JpegRgbaEncoder from '../codecs/encoders/JpegRgbaEncoder.js';
 import Jpeg2000RgbaEncoder from '../codecs/encoders/Jpeg2000RgbaEncoder.js';
 import Htj2kRgbaEncoder from '../codecs/encoders/Htj2kRgbaEncoder.js';
+import RleRgbaEncoder from '../codecs/encoders/RleRgbaEncoder.js';
 
 export default class Configuration {
 
@@ -136,6 +137,9 @@ export default class Configuration {
         this.setEncoderFor('ht jpeg 2000', new Htj2kRgbaEncoder());
         this.setEncoderFor('ht-jpeg-2000', new Htj2kRgbaEncoder());
         this.setEncoderFor('jph', new Htj2kRgbaEncoder());
+        this.setEncoderFor('rle', new RleRgbaEncoder());
+        this.setEncoderFor('rle-lossless', new RleRgbaEncoder());
+        this.setEncoderFor('dicom-rle', new RleRgbaEncoder());
         this.setEncoderFor('png', new PngRgbaEncoder());
         this.setEncoderFor('tiff', new TiffRgbaEncoder());
         this.setEncoderFor('tif', new TiffRgbaEncoder());

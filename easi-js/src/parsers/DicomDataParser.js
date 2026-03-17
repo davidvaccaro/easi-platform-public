@@ -162,6 +162,31 @@ export default class DicomDataParser extends DataParser {
     }
 
     /**
+     * Resolve active parser endian-ness.
+     * @returns {boolean} TRUE for little-endian, FALSE for big-endian.
+     */
+    get isLittleEndianTransferSyntax() {
+        return (this.data?.transferSyntax?.IsLittleEndian != false);
+    }
+
+    /**
+     * Convert byte-array to unsigned integer using current transfer-syntax endian-ness.
+     * @param {Uint8Array} bytes Source bytes.
+     * @returns {number | undefined} Parsed integer.
+     */
+    bytesToUnsignedInteger(bytes) {
+        return Utilities.bytesToUnsignedInteger(bytes, this.isLittleEndianTransferSyntax);
+    }
+
+    /**
+     * Resolve the DICOM Item/Sequence Delimitation marker for current transfer-syntax endian-ness.
+     * @returns {number[]} Marker bytes.
+     */
+    getEndSequenceMarker() {
+        return Utilities.getEndSequence(this.isLittleEndianTransferSyntax);
+    }
+
+    /**
      * Peek the next, transfer-syntax independent, base tag details.
      * @returns The peeked local tag details.
      */
@@ -190,7 +215,10 @@ export default class DicomDataParser extends DataParser {
             bytesPeeked += Constants.ElementLength;
 
             // Establish the DICOM data-element tag identifier
-            var identifier = Tag.identifier(group, element);
+            var identifier = Tag.identifier(
+                this.bytesToUnsignedInteger(group),
+                this.bytesToUnsignedInteger(element)
+            );
 
             // Establish the DICOM Tag
             var tag = Tag.find(identifier);
@@ -211,7 +239,7 @@ export default class DicomDataParser extends DataParser {
                 bytesPeeked += Constants.ValueLength32;
 
                 // Convert the bytes to a the value-length
-                valueLength = Utilities.bytesToUnsignedInteger(length);
+                valueLength = this.bytesToUnsignedInteger(length);
 
                 // Construct the "sequence control" tag details 
                 result = {
@@ -311,7 +339,7 @@ export default class DicomDataParser extends DataParser {
                         bytesPeeked += Constants.ValueLength32;
 
                         // Convert the bytes to a the value-length
-                        valueLength = Utilities.bytesToUnsignedInteger(length);
+                        valueLength = this.bytesToUnsignedInteger(length);
 
                     }
                     else {
@@ -326,7 +354,7 @@ export default class DicomDataParser extends DataParser {
                         bytesPeeked += Constants.ValueLength16;
 
                         // Convert the bytes to a the value-length
-                        valueLength = Utilities.bytesToUnsignedInteger(length);
+                        valueLength = this.bytesToUnsignedInteger(length);
 
                     }
 
@@ -352,7 +380,7 @@ export default class DicomDataParser extends DataParser {
                     bytesPeeked += Constants.ValueLength32;
 
                     // Convert the bytes to a the value-length
-                    valueLength = Utilities.bytesToUnsignedInteger(length);
+                    valueLength = this.bytesToUnsignedInteger(length);
 
                     // Construct the "implicit" tag details 
                     result = {
@@ -1180,8 +1208,15 @@ export default class DicomDataParser extends DataParser {
             // Set the part start
             this.partStart = this.totalBytesConsumed;
 
-            // Set the current Data buffer transfer syntax
-            this.data.convert(this.dataSetTransferSyntax);
+            // Set the current Data buffer transfer syntax.
+            // Explicit VR Big Endian is parsed in-place (no byte swapping) because
+            // stream-wide pairwise swapping corrupts 32-bit fields and value bytes.
+            if (this.dataSetTransferSyntax == TransferSyntax.ExplicitVRBigEndian) {
+                this.data.transferSyntax = this.dataSetTransferSyntax;
+            }
+            else {
+                this.data.convert(this.dataSetTransferSyntax);
+            }
 
             // Start the data-set
             this.status = await this.fireStreamEvent("onStartDataSet");
@@ -1724,7 +1759,8 @@ export default class DicomDataParser extends DataParser {
                     if (this.dataElement.valueLength == Constants.UndefinedLength) {
 
                         // Determine if the current buffer contains the end sequence
-                        var index = this.data.indexOf(0, Utilities.getEndSequence());
+                        var endSequenceMarker = this.getEndSequenceMarker();
+                        var index = this.data.indexOf(0, endSequenceMarker);
 
                         if (index == -1) {
 
@@ -1749,7 +1785,7 @@ export default class DicomDataParser extends DataParser {
                             bytesConsumed += index;
 
                             // Determine the End Squence length
-                            var endSequenceLength = Utilities.getEndSequence().length;
+                            var endSequenceLength = endSequenceMarker.length;
 
                             // Consume the End Sequence
                             this.data.consume(endSequenceLength);

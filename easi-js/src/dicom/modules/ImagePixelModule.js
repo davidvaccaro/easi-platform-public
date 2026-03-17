@@ -67,8 +67,45 @@ export default class ImagePixelModule extends Module {
         if (value == null)
             return PhotometricInterpretationType.MONOCHROME1;
 
+        // If the value is already one of the known enum symbols, return it.
+        var knownValues = Object.values(PhotometricInterpretationType);
+        if (knownValues.includes(value) == true)
+            return value;
+
+        // Normalize free-text values from DICOM source data.
+        var normalized = String(value).trim().toUpperCase();
+        var lookupKey = null;
+
+        switch (normalized) {
+            case "PALETTE COLOR":
+            case "PALETTE_COLOR":
+                lookupKey = "PALETTECOLOR";
+                break;
+            case "YBR FULL":
+                lookupKey = "YBR_FULL";
+                break;
+            case "YBR FULL 422":
+                lookupKey = "YBR_FULL_422";
+                break;
+            case "YBR PARTIAL 422":
+                lookupKey = "YBR_PARTIAL_422";
+                break;
+            case "YBR PARTIAL 420":
+                lookupKey = "YBR_PARTIAL_420";
+                break;
+            case "YBR ICT":
+                lookupKey = "YBR_ICT";
+                break;
+            case "YBR RCT":
+                lookupKey = "YBR_RCT";
+                break;
+            default:
+                lookupKey = normalized.replace(/[\s-]+/g, "_");
+                break;
+        }
+
         // Determine the value
-        value = PhotometricInterpretationType[value];
+        value = PhotometricInterpretationType[lookupKey];
 
         // Validate the value
         if (value == null)

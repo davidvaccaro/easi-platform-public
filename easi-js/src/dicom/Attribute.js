@@ -19,7 +19,6 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import Runtime from '../environment/Runtime.js';
 import ValueRepresentations from './ValueRepresentation.js';
 import DataElement from '../dicom/DataElement.js';
 import Utilities from './Utilities.js';
@@ -37,25 +36,26 @@ export default class Attribute extends DataElement {
 
         // Access the "raw" data
         var data = this.access();
+        var isLittleEndian = (this.transferSyntax?.IsLittleEndian != false);
 
         // Switch the VR type
         switch (this.tag.VR) {
             
             // UL: Handle converting the RAW data to a "unsigned long" value
             case ValueRepresentations.UL:
-                return (new DataView(data.buffer)).getUint32(data.byteOffset, Runtime.isLittleEndian);
+                return (new DataView(data.buffer)).getUint32(data.byteOffset, isLittleEndian);
 
             // SL: Handle converting the RAW data to a "signed long" value
             case ValueRepresentations.SL:
-                return (new DataView(data.buffer)).getInt32(data.byteOffset, Runtime.isLittleEndian);
+                return (new DataView(data.buffer)).getInt32(data.byteOffset, isLittleEndian);
 
             // US: Handle converting the RAW data to a "unsigned short" value
             case ValueRepresentations.US:
-                return (new DataView(data.buffer)).getUint16(data.byteOffset, Runtime.isLittleEndian);
+                return (new DataView(data.buffer)).getUint16(data.byteOffset, isLittleEndian);
 
             // SS: Handle converting the RAW data to a "signed short" value
             case ValueRepresentations.SS:
-                return (new DataView(data.buffer)).getInt16(data.byteOffset, Runtime.isLittleEndian);
+                return (new DataView(data.buffer)).getInt16(data.byteOffset, isLittleEndian);
 
             // AE, SH, UI, IS, DS, CS, PN, LT: Handle converting the RAW data to a generic string value
             case ValueRepresentations.AE:
