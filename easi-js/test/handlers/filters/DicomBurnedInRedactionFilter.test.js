@@ -81,3 +81,31 @@ test("Test: DicomBurnedInRedactionFilter applies constant scalar fill action", a
     ]);
 });
 
+test("Test: DicomBurnedInRedactionFilter supports ocr-regions mode via detector", async () => {
+
+    var detector = {
+        detectRegions: jest.fn(() => [{ x: 0, y: 0, width: 1, height: 1 }])
+    };
+
+    const filter = new DicomBurnedInRedactionFilter(null, {
+        mode: BurnedInRedactionModes.OCR_REGIONS,
+        ocrRegionDetector: detector,
+        ocrRegions: {
+            paddingX: 0,
+            paddingY: 0
+        }
+    });
+
+    const rgba = new Uint8Array([
+        10, 11, 12, 255,
+        20, 21, 22, 255
+    ]);
+
+    const transformed = await filter.transformFrameRGBA(null, { columns: 2, rows: 1 }, rgba, 0, 1);
+
+    expect(detector.detectRegions).toHaveBeenCalledTimes(1);
+    expect(Array.from(transformed)).toEqual([
+        0, 0, 0, 255,
+        20, 21, 22, 255
+    ]);
+});

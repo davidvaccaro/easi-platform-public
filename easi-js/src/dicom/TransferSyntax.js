@@ -122,7 +122,7 @@ export var TransferSyntaxApplicationType = {
 // BELOW CODE GENERATED ON: 3/23/2023 11:09:45 AM
 
 export var TransferSyntaxes = {
-	'0': new TransferSyntax({ ID: '0', Name: 'None', IsLittleEndian: false, IsExplicit: false, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.All, IsRetired: false }),
+	'0': new TransferSyntax({ ID: '0', Name: 'None', IsLittleEndian: true, IsExplicit: false, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.All, IsRetired: false }),
 	'1.2.840.10008.1.2': new TransferSyntax({ ID: '1.2.840.10008.1.2', Name: 'Implicit VR Little Endian', IsLittleEndian: true, IsExplicit: false, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.All, IsRetired: false }),
 	'1.2.840.10008.1.2.1': new TransferSyntax({ ID: '1.2.840.10008.1.2.1', Name: 'Explicit VR Little Endian', IsLittleEndian: true, IsExplicit: true, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.All, IsRetired: false }),
 	'1.2.840.10008.1.2.2': new TransferSyntax({ ID: '1.2.840.10008.1.2.2', Name: 'Explicit VR Big Endian', IsLittleEndian: false, IsExplicit: true, IsCompressed: false, IsLossy: false, ApplicationType: TransferSyntaxApplicationType.All, IsRetired: true }),

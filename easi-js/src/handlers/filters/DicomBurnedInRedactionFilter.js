@@ -7,9 +7,11 @@
 import Exception, { GeneralErrorCodes } from "../../environment/Exception.js";
 import TransferSyntax from "../../dicom/TransferSyntax.js";
 import DicomTranscodingFilter from "./DicomTranscodingFilter.js";
+import OcrRegionDetector from "./ocr/OcrRegionDetector.js";
 
 export const BurnedInRedactionModes = {
-    REGIONS: "regions"
+    REGIONS: "regions",
+    OCR_REGIONS: "ocr-regions"
 };
 
 export const BurnedInRedactionCoordinateModes = {
@@ -267,6 +269,35 @@ export default class DicomBurnedInRedactionFilter extends DicomTranscodingFilter
     }
 
     /**
+     * Resolve OCR-detected regions for one frame.
+     * @param {object} state Runtime state.
+     * @param {Uint8Array} rgba RGBA frame bytes.
+     * @returns {Array<object>} Region list.
+     */
+    resolveOcrFrameRegions(state, rgba) {
+
+        if ((this.ocrRegionDetector == null)
+            || (typeof this.ocrRegionDetector.detectRegions != "function")) {
+            return [];
+        }
+
+        var columns = Math.max(1, this.toInteger(state?.columns, 1));
+        var rows = Math.max(1, this.toInteger(state?.rows, 1));
+        var regions = this.ocrRegionDetector.detectRegions(
+            rgba,
+            columns,
+            rows,
+            this.redaction?.ocrRegions ?? null
+        );
+
+        if (Array.isArray(regions) == false)
+            return [];
+
+        return this.normalizeFrameRegions(state, regions);
+
+    }
+
+    /**
      * Apply one solid fill to one region in RGBA.
      * @param {Uint8Array} rgba RGBA bytes.
      * @param {number} columns Frame width.
@@ -324,12 +355,26 @@ export default class DicomBurnedInRedactionFilter extends DicomTranscodingFilter
     async transformFrameRGBA(context, state, rgba, frameIndex = 0, frameCount = null) {
 
         var mode = this.redaction?.mode ?? BurnedInRedactionModes.REGIONS;
-        if (mode != BurnedInRedactionModes.REGIONS)
+        if ((mode != BurnedInRedactionModes.REGIONS)
+            && (mode != BurnedInRedactionModes.OCR_REGIONS)) {
             return rgba;
+        }
 
         var columns = Math.max(1, this.toInteger(state?.columns, 1));
         var rows = Math.max(1, this.toInteger(state?.rows, 1));
-        var frameRegions = await this.resolveFrameRegions(state, frameIndex, frameCount);
+        var frameRegions = [];
+
+        if (mode == BurnedInRedactionModes.REGIONS) {
+            frameRegions = await this.resolveFrameRegions(state, frameIndex, frameCount);
+        }
+        else {
+            frameRegions = this.resolveOcrFrameRegions(state, rgba);
+
+            var configuredRegions = await this.resolveFrameRegions(state, frameIndex, frameCount);
+            if (configuredRegions.length > 0) {
+                frameRegions = frameRegions.concat(configuredRegions);
+            }
+        }
 
         if (frameRegions.length == 0)
             return rgba;
@@ -431,9 +476,10 @@ export default class DicomBurnedInRedactionFilter extends DicomTranscodingFilter
         }
 
         var mode = String(normalizedOptions.mode ?? BurnedInRedactionModes.REGIONS).trim().toLowerCase();
-        if (mode != BurnedInRedactionModes.REGIONS) {
+        if ((mode != BurnedInRedactionModes.REGIONS)
+            && (mode != BurnedInRedactionModes.OCR_REGIONS)) {
             throw new Exception(
-                `Invalid burned-in redaction mode '${mode}'. Supported modes: regions.`,
+                `Invalid burned-in redaction mode '${mode}'. Supported modes: regions, ocr-regions.`,
                 GeneralErrorCodes.InvalidParameter
             );
         }
@@ -452,6 +498,23 @@ export default class DicomBurnedInRedactionFilter extends DicomTranscodingFilter
         if ((typeof regions != "function") && (Array.isArray(regions) == false)) {
             throw new Exception(
                 'Invalid burned-in redaction "regions". Expected function or array.',
+                GeneralErrorCodes.InvalidParameter
+            );
+        }
+
+        var ocrRegions = normalizedOptions.ocrRegions ?? null;
+        if ((ocrRegions != null) && (typeof ocrRegions != "object")) {
+            throw new Exception(
+                'Invalid burned-in redaction "ocrRegions". Expected object or null.',
+                GeneralErrorCodes.InvalidParameter
+            );
+        }
+
+        var ocrRegionDetector = normalizedOptions.ocrRegionDetector ?? null;
+        if ((ocrRegionDetector != null)
+            && (typeof ocrRegionDetector.detectRegions != "function")) {
+            throw new Exception(
+                'Invalid burned-in redaction "ocrRegionDetector". Expected detector with detectRegions(...).',
                 GeneralErrorCodes.InvalidParameter
             );
         }
@@ -491,10 +554,12 @@ export default class DicomBurnedInRedactionFilter extends DicomTranscodingFilter
 
         var normalizedTranscodingOptions = super.normalizeOptions(transcodingOptions);
         normalizedTranscodingOptions.preserveTransferSyntax = preserveTransferSyntax;
+        normalizedTranscodingOptions.ocrRegionDetector = ocrRegionDetector;
         normalizedTranscodingOptions.redaction = {
             mode: mode,
             action: action,
             regions: regions,
+            ocrRegions: ocrRegions,
             fill: normalizedOptions.fill ?? null,
             coordinateMode: coordinateMode,
             coordinateScaleX: normalizedOptions.coordinateScaleX ?? normalizedOptions.scaleX ?? 1,
@@ -517,12 +582,14 @@ export default class DicomBurnedInRedactionFilter extends DicomTranscodingFilter
             mode: BurnedInRedactionModes.REGIONS,
             action: BurnedInRedactionActions.BLACK,
             regions: [],
+            ocrRegions: null,
             coordinateMode: BurnedInRedactionCoordinateModes.PIXEL,
             coordinateScaleX: 1,
             coordinateScaleY: 1
         };
         this.preserveTransferSyntax = (this._options.preserveTransferSyntax === true);
         this.redactionFillRGBA = this.resolveFillRGBA(this.redaction.action, this.redaction.fill ?? null);
+        this.ocrRegionDetector = this._options.ocrRegionDetector ?? new OcrRegionDetector();
     }
 
 };

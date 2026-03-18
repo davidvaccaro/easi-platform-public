@@ -56,11 +56,40 @@
         <br>
         <hr>
         <div>
-            <h4>Burned-In Redaction Stream Save (Regions)</h4>
+            <h4>Burned-In Redaction Stream Save</h4>
         </div>
         <hr>
         <div>
             <input type="file" id="dicomBurnedInRedactionFile" name="dicomBurnedInRedactionFile" />
+        </div>
+        <br>
+        <div>
+            <span><strong>Redaction Mode:</strong></span>
+            <label><input type="radio" name="burnedInRedactionMode" value="regions" checked /> Regions</label>
+            <label><input type="radio" name="burnedInRedactionMode" value="ocr-regions" /> OCR Regions</label>
+        </div>
+        <div style="margin-top:4px;font-size:12px;color:#555;">
+            OCR Regions auto-detects likely text overlays and redacts those areas per frame.
+        </div>
+        <br>
+        <div>
+            <span><strong>OCR Tuning:</strong></span>
+            <div style="margin-top:6px;">
+                <label><input type="checkbox" id="burnedInOcrDetectDarkText" /> Detect Dark Text</label>
+                <label style="margin-left:12px;"><input type="checkbox" id="burnedInOcrUsePeripheralZones" checked /> Use Peripheral Zones</label>
+            </div>
+            <div style="margin-top:6px;">
+                <label>Min High Threshold <input type="number" id="burnedInOcrMinHighThreshold" min="0" max="255" step="1" value="176" style="width:72px;" /></label>
+                <label style="margin-left:8px;">Max Bright Channel Delta <input type="number" id="burnedInOcrMaxBrightChannelDelta" min="0" max="255" step="1" value="64" style="width:72px;" /></label>
+            </div>
+            <div style="margin-top:6px;">
+                <label>Top Zone Ratio <input type="number" id="burnedInOcrTopZoneRatio" min="0" max="1" step="0.01" value="0.22" style="width:72px;" /></label>
+                <label style="margin-left:8px;">Bottom Zone Ratio <input type="number" id="burnedInOcrBottomZoneRatio" min="0" max="1" step="0.01" value="0.20" style="width:72px;" /></label>
+            </div>
+            <div style="margin-top:6px;">
+                <label>Left Zone Ratio <input type="number" id="burnedInOcrLeftZoneRatio" min="0" max="1" step="0.01" value="0.20" style="width:72px;" /></label>
+                <label style="margin-left:8px;">Right Zone Ratio <input type="number" id="burnedInOcrRightZoneRatio" min="0" max="1" step="0.01" value="0.20" style="width:72px;" /></label>
+            </div>
         </div>
         <br>
         <div>
@@ -674,6 +703,22 @@
 
             }
 
+            function normalizeDecimalInput(value, fallbackValue, minimum = null, maximum = null) {
+
+                var numericValue = Number(value);
+                if (Number.isFinite(numericValue) == false)
+                    numericValue = fallbackValue;
+
+                if ((minimum != null) && (numericValue < minimum))
+                    numericValue = minimum;
+
+                if ((maximum != null) && (numericValue > maximum))
+                    numericValue = maximum;
+
+                return numericValue;
+
+            }
+
             function getBurnedInRegionByIndex(regionIndex) {
 
                 var isEnabled = ($('#burnedInRegion' + String(regionIndex) + 'Enabled').is(':checked') === true);
@@ -708,6 +753,10 @@
                 return $('input[name="burnedInRedactionAction"]:checked').val() || 'black';
             }
 
+            function getBurnedInRedactionMode() {
+                return $('input[name="burnedInRedactionMode"]:checked').val() || 'regions';
+            }
+
             function getBurnedInRedactionCoordinateMode() {
                 return $('input[name="burnedInCoordinateMode"]:checked').val() || 'auto-fit';
             }
@@ -716,15 +765,32 @@
                 return normalizeIntegerInput($('#burnedInConstantFill').val(), 0, 0, 255);
             }
 
+            function getBurnedInOcrRegionOptions() {
+
+                return {
+                    detectDarkText: ($('#burnedInOcrDetectDarkText').is(':checked') === true),
+                    usePeripheralZones: ($('#burnedInOcrUsePeripheralZones').is(':checked') === true),
+                    minHighThreshold: normalizeIntegerInput($('#burnedInOcrMinHighThreshold').val(), 176, 0, 255),
+                    maxBrightChannelDelta: normalizeIntegerInput($('#burnedInOcrMaxBrightChannelDelta').val(), 64, 0, 255),
+                    topZoneRatio: normalizeDecimalInput($('#burnedInOcrTopZoneRatio').val(), 0.22, 0, 1),
+                    bottomZoneRatio: normalizeDecimalInput($('#burnedInOcrBottomZoneRatio').val(), 0.20, 0, 1),
+                    leftZoneRatio: normalizeDecimalInput($('#burnedInOcrLeftZoneRatio').val(), 0.20, 0, 1),
+                    rightZoneRatio: normalizeDecimalInput($('#burnedInOcrRightZoneRatio').val(), 0.20, 0, 1)
+                };
+
+            }
+
             function getBurnedInRedactionOptions() {
 
+                var mode = getBurnedInRedactionMode();
                 var action = getBurnedInRedactionAction();
                 var regions = getBurnedInRedactionRegions();
                 var options = {
-                    mode: 'regions',
+                    mode: mode,
                     action: action,
                     coordinateMode: getBurnedInRedactionCoordinateMode(),
-                    regions: regions
+                    regions: regions,
+                    ocrRegions: getBurnedInOcrRegionOptions()
                 };
 
                 if (action == 'constant') {
@@ -1212,7 +1278,8 @@
                 var sourceUrl = URL.createObjectURL(file);
                 var outputFileName = buildBurnedInRedactedDicomFileName(file.name);
                 var redactionOptions = getBurnedInRedactionOptions();
-                if ((Array.isArray(redactionOptions.regions) == false) || (redactionOptions.regions.length == 0)) {
+                if ((redactionOptions.mode == 'regions')
+                    && ((Array.isArray(redactionOptions.regions) == false) || (redactionOptions.regions.length == 0))) {
                     alert('Please enable at least one redaction region (R1-R4).');
                     URL.revokeObjectURL(sourceUrl);
                     return;
@@ -1297,6 +1364,9 @@
                         + 'Action: ' + String(redactionOptions.action ?? 'black') + '\n'
                         + 'Coordinate mode: ' + String(redactionOptions.coordinateMode ?? 'auto-fit') + '\n'
                         + 'Regions (' + String(redactionOptions.regions?.length ?? 0) + '): ' + JSON.stringify(redactionOptions.regions ?? []) + '\n'
+                        + ((redactionOptions.mode == 'ocr-regions')
+                            ? ('OCR Options: ' + JSON.stringify(redactionOptions.ocrRegions ?? {}) + '\n')
+                            : '')
                         + ((redactionOptions.action == 'constant')
                             ? ('Fill: ' + String(redactionOptions.fill ?? 0) + '\n')
                             : '')
