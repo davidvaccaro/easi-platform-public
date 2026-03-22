@@ -2,6 +2,7 @@ import CodecRegistry from '../../src/codecs/CodecRegistry.js';
 import TransferSyntax from '../../src/dicom/TransferSyntax.js';
 import Configuration from '../../src/environment/Configuration.js';
 import Jpeg2000Decoder from '../../src/codecs/decoders/Jpeg2000Decoder.js';
+import JpegLsDecoder from '../../src/codecs/decoders/JpegLsDecoder.js';
 import RleDecoder from '../../src/codecs/decoders/RleDecoder.js';
 import Htj2kDecoder from '../../src/codecs/decoders/Htj2kDecoder.js';
 import RleRgbaEncoder from '../../src/codecs/encoders/RleRgbaEncoder.js';
@@ -80,6 +81,14 @@ test('Test: Configuration seeds HTJ2K transfer-syntax decoders', () => {
     expect(configuration.getDecoderFor(TransferSyntax.HTJ2KLossless, null) instanceof Htj2kDecoder).toBe(true);
     expect(configuration.getDecoderFor(TransferSyntax.HTJ2KLosslessRPCL, null) instanceof Htj2kDecoder).toBe(true);
     expect(configuration.getDecoderFor(TransferSyntax.HTJ2K, null) instanceof Htj2kDecoder).toBe(true);
+
+});
+
+test('Test: Configuration seeds JPEG-LS transfer-syntax decoders', () => {
+
+    var configuration = new Configuration();
+    expect(configuration.getDecoderFor(TransferSyntax.JPEGLSLossless, null) instanceof JpegLsDecoder).toBe(true);
+    expect(configuration.getDecoderFor(TransferSyntax.JPEGLSNearLossless, null) instanceof JpegLsDecoder).toBe(true);
 
 });
 

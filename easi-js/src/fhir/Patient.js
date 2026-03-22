@@ -66,6 +66,12 @@ export default class Patient extends DomainResource {
      * Sets the name value.
      */
     set name(name) {
+        if (Array.isArray(name) == true) {
+            this._name = name
+                .map(element => HumanName.coerce(element))
+                .filter(element => element != null);
+            return;
+        }
         this._name = HumanName.coerce(name);
     }
 
@@ -74,7 +80,7 @@ export default class Patient extends DomainResource {
      * @param {HumanName | string} name The name value to add.
      */
     addName(name) {
-        this.addMultiValue('name', HumanName.coerce(name));
+        this.appendMultiValue('name', HumanName.coerce(name));
     }
 
     /**
@@ -88,7 +94,13 @@ export default class Patient extends DomainResource {
      * Sets the telcom value.
      */
     set telcom(telcom) {
-        this._telcom = telcom;
+        if (Array.isArray(telcom) == true) {
+            this._telcom = telcom
+                .map(element => ContactPoint.coerce(element))
+                .filter(element => element != null);
+            return;
+        }
+        this._telcom = ContactPoint.coerce(telcom);
     }
 
     /**
@@ -96,7 +108,37 @@ export default class Patient extends DomainResource {
      * @param {ContactPoint | object | string} telcom The telcom value to add.
      */
     addTelcom(telcom) {
-        this.addMultiValue('telcom', ContactPoint.coerce(telcom));
+        this.appendMultiValue('telcom', ContactPoint.coerce(telcom));
+    }
+
+    /**
+     * Add one value to a potentially multi-valued patient property.
+     * @param {string} name Property name.
+     * @param {*} value The value to append.
+     */
+    appendMultiValue(name, value) {
+
+        if (value == null)
+            return;
+
+        var current = this[name];
+
+        if (current == null) {
+            this[name] = value;
+            return;
+        }
+
+        var values = Array.isArray(current) ? current : [current];
+
+        if (Array.isArray(value) == true) {
+            values.push(...value);
+        }
+        else {
+            values.push(value);
+        }
+
+        this[name] = values;
+
     }
 
     /**

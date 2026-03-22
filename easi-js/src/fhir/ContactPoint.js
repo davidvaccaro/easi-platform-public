@@ -20,7 +20,7 @@
 //
 
 import Element from "./Element.js"
-import CodeableConcept from "./CodeableConcept.js";
+import StringUtils from "../utils/StringUtils.js";
 
 export default class ContactPoint extends Element {
   
@@ -99,7 +99,78 @@ export default class ContactPoint extends Element {
      * @param {ContactPoint | object | string} value The specified value.
      */
     static coerce(value) {
-        throw new Error("Not Implemented Yet");
+
+        // Handle NOOP NULL or existing ContactPoint.
+        if ((value == null) || (value instanceof ContactPoint)) {
+            return value;
+        }
+
+        var result = new ContactPoint();
+
+        // Handle coercing from string.
+        if (typeof value === 'string') {
+
+            var text = value.trim();
+            if (StringUtils.isValid(text) == false)
+                return null;
+
+            result.value = text;
+
+            // Basic heuristic for common FHIR ContactPoint.system.
+            if (text.includes('@') == true) {
+                result.system = 'email';
+            }
+            else if (/^https?:\/\//i.test(text) == true) {
+                result.system = 'url';
+            }
+            else {
+                result.system = 'phone';
+            }
+
+            return result;
+
+        }
+
+        // Handle coercing from plain object.
+        if (typeof value === 'object') {
+
+            if (StringUtils.isValid(String(value.system ?? '')) == true)
+                result.system = String(value.system).trim();
+            if (StringUtils.isValid(String(value.value ?? '')) == true)
+                result.value = String(value.value).trim();
+            if (StringUtils.isValid(String(value.use ?? '')) == true)
+                result.use = String(value.use).trim();
+            if (Number.isFinite(Number(value.rank)) == true)
+                result.rank = Number(value.rank);
+            if (value.period != null)
+                result.period = value.period;
+
+            // Support common alternate key names seen in feed payloads.
+            if ((result.system == null) && (StringUtils.isValid(String(value.type ?? '')) == true))
+                result.system = String(value.type).trim();
+            if ((result.value == null) && (StringUtils.isValid(String(value.contact ?? '')) == true))
+                result.value = String(value.contact).trim();
+
+            // If no useful content was provided, return null.
+            if ((result.system == null)
+                && (result.value == null)
+                && (result.use == null)
+                && (result.rank == null)
+                && (result.period == null)) {
+                return null;
+            }
+
+            // Default system when only a value exists.
+            if ((result.system == null) && (result.value != null))
+                result.system = 'phone';
+
+            return result;
+
+        }
+
+        // Unsupported input type.
+        return null;
+
     }
 
     constructor() {

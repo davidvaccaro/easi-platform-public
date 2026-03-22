@@ -18,14 +18,17 @@ function toUint32LE(value) {
     ]);
 }
 
-function createEncapsulatedPixelDataAttribute(frameOffsets) {
+function createEncapsulatedPixelDataAttribute(frameOffsets, sourceBytes = new Uint8Array(256)) {
     var tableLength = frameOffsets.length * 4;
     return {
         tag: Tag.PixelData,
         transferSyntax: TransferSyntax.NONE,
         valueLength: Constants.UndefinedLength,
+        access() {
+            return sourceBytes;
+        },
         length() {
-            return 256;
+            return sourceBytes.length;
         },
         indexOf(index, pattern) {
             return 0;
@@ -361,8 +364,8 @@ test("Test: Image DecodeFrame Replaces Both Window Values When Either Is Null", 
 
 test("Test: Image DecodeFrame MultiFrame Uses PixelData Offsets And Null FrameLength", () => {
     var frameOffsets = [0, 50];
-    var pixelData = new Uint8Array([7, 8, 9, 10, 11, 12]);
-    var pixelDataAttribute = createEncapsulatedPixelDataAttribute(frameOffsets);
+    var pixelData = new Uint8Array(256);
+    var pixelDataAttribute = createEncapsulatedPixelDataAttribute(frameOffsets, pixelData);
     var image = new Image(createAttributeSet({
         [Tag.Modality.ID]: 'CT',
         [Tag.NumberOfFrames.ID]: '2',
@@ -387,7 +390,41 @@ test("Test: Image DecodeFrame MultiFrame Uses PixelData Offsets And Null FrameLe
     // valueOffset=8, tableLength=8, offset[1]=50 => itemStart=66 => valueStart=74
     expect(decodeArgs[0]).toBe(pixelData);
     expect(decodeArgs[1]).toBe(74);
-    expect(decodeArgs[2]).toBeNull();
+    expect(decodeArgs[2]).toBe(256);
+    expect(decodeArgs[3]).toBe(destination);
+    expect(decodeArgs[4]).toBe(0);
+    expect(decodeArgs[5]).toBe(10);
+    expect(decodeArgs[6]).toBe(20);
+});
+
+test("Test: Image DecodeFrame SingleFrame Encapsulated Uses PixelData Offsets", () => {
+    var frameOffsets = [0];
+    var pixelData = new Uint8Array(192);
+    var pixelDataAttribute = createEncapsulatedPixelDataAttribute(frameOffsets, pixelData);
+    var image = new Image(createAttributeSet({
+        [Tag.Modality.ID]: 'CR',
+        [Tag.NumberOfFrames.ID]: '1',
+        [Tag.Rows.ID]: 1,
+        [Tag.Columns.ID]: 1,
+        [Tag.SamplesPerPixel.ID]: 1,
+        [Tag.BitsAllocated.ID]: 8,
+        [Tag.PixelData.ID]: pixelData
+    }, pixelDataAttribute));
+    var destination = new Uint8Array(16);
+    var decodeArgs = null;
+    var decoder = {
+        decode() {
+            decodeArgs = Array.from(arguments);
+            return true;
+        }
+    };
+
+    image.decodeFrame(destination, decoder, 0, 10, 20);
+
+    // valueOffset=8, tableLength=4, offset[0]=0 => itemStart=12 => valueStart=20
+    expect(decodeArgs[0]).toBe(pixelData);
+    expect(decodeArgs[1]).toBe(20);
+    expect(decodeArgs[2]).toBe(192);
     expect(decodeArgs[3]).toBe(destination);
     expect(decodeArgs[4]).toBe(0);
     expect(decodeArgs[5]).toBe(10);

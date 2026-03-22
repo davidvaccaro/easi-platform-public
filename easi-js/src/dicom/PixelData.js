@@ -38,6 +38,7 @@ export default class PixelData {
             var endSequenceMarker = Utilities.getEndSequence(isLittleEndian);
 
             var index = 0;
+            var isFirstItem = true;
 
             // Loop over the data buffer
             while (index < this.attribute.length()) {
@@ -68,8 +69,9 @@ export default class PixelData {
                 // Determine the initial offset
                 var valueOffset = (start + 8);
 
-                // Handle Basic Offset Table
-                if (this.offsets.length == 0) {
+                // Handle Basic Offset Table (first item only)
+                if (isFirstItem == true) {
+                    isFirstItem = false;
 
                     // If there is a populated Basic Offset Table offsets, the the offsets are stored in the table to process and exit
                     if (length != 0) {

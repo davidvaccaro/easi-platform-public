@@ -27,6 +27,7 @@ import ModalityLookUpTableModule from '../modules/ModalityLookUpTableModule.js'
 import PixelData from '../PixelData.js';
 import Tag from '../Tag.js'
 import Entity from './Entity.js';
+import Constants from '../Constants.js';
 
 export default class Image extends Entity {
 
@@ -109,8 +110,29 @@ export default class Image extends Entity {
         // Establish an instance of the decoder configured for the given transfer-syntax
         decoder = (decoder != null) ? decoder : Configuration.global.getDecoderFor(attribute.transferSyntax, this);
 
-        // Decode the whole frame
-        if (this.isMultiFrame == false) {
+        // Handle encapsulated pixel data (undefined-length) using parsed frame offsets.
+        if (attribute.valueLength == Constants.UndefinedLength) {
+
+            var sourceBytes = attribute.access();
+            var pixelData = new PixelData(attribute);
+            var offset = pixelData.offsets[frame];
+
+            if ((offset == null) || (typeof offset.start != 'number')) {
+                throw new Error(
+                    `Missing PixelData frame offset for frame ${frame}. Available offsets: ${pixelData.offsets.length}.`
+                );
+            }
+
+            var stop = ((frame + 1) < pixelData.offsets.length)
+                ? pixelData.offsets[frame + 1].start
+                : sourceBytes.length;
+
+            // Decode the specified encapsulated frame bytes.
+            res = decoder.decode(sourceBytes, offset.start, stop, destination, 0, windowCenter, windowWidth);
+
+        }
+        // Decode uncompressed single-frame pixel data.
+        else if (this.isMultiFrame == false) {
 
             // Establish the SIZE of a given frame
             var frameSize = this.imagePixelModule.imageSize;
@@ -121,20 +143,18 @@ export default class Image extends Entity {
         }
         else {
 
-            // Establish the Pixel Data accessor
-            var pixelData = new PixelData(attribute);
+            var frameSize = this.imagePixelModule.imageSize;
+            var frameStart = Math.max(0, frame * frameSize);
+            var frameStop = (frameStart + frameSize);
 
-            // Access the frame offset
-            var offset = pixelData.offsets[frame];
-
-            if ((offset == null) || (typeof offset.start != 'number')) {
+            if ((frameStart < 0) || (frameStart >= this.imagePixelModule.pixelData.length)) {
                 throw new Error(
-                    `Missing PixelData frame offset for frame ${frame}. Available offsets: ${pixelData.offsets.length}.`
+                    `Missing PixelData frame offset for frame ${frame}. Available offsets: 1.`
                 );
             }
 
-            // Decode the specified frame
-            res = decoder.decode(this.imagePixelModule.pixelData, offset.start, null, destination, 0, windowCenter, windowWidth)
+            // Decode the specified fixed-length frame.
+            res = decoder.decode(this.imagePixelModule.pixelData, frameStart, frameStop, destination, 0, windowCenter, windowWidth);
 
         }
 

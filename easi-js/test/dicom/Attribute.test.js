@@ -41,3 +41,23 @@ test("Test: Attribute UN Value", () => {
     let attribute = new Attribute(Tag.SelectorUNValue, data.length, data, TransferSyntax.NONE);
     expect(attribute.value).toStrictEqual(data);
 });
+
+test("Test: Attribute UL short value does not throw and defaults to zero", () => {
+    let attribute = new Attribute(
+        Tag.FileMetaInformationGroupLength,
+        2,
+        new Uint8Array([255, 1]),
+        TransferSyntax.NONE
+    );
+    expect(attribute.value).toBe(0);
+});
+
+test("Test: Attribute US short value does not throw and defaults to zero", () => {
+    let attribute = new Attribute(
+        Tag.Rows,
+        1,
+        new Uint8Array([255]),
+        TransferSyntax.NONE
+    );
+    expect(attribute.value).toBe(0);
+});

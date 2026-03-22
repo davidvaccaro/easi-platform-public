@@ -30,6 +30,51 @@ test("Test: DicomTranscodingFilter supports explicit-vr-big-endian to JPEG 2000 
     expect(supported).toBe(true);
 });
 
+test("Test: DicomTranscodingFilter supports explicit-vr-big-endian to explicit-vr-little-endian syntax pair", () => {
+    const filter = new DicomTranscodingFilter(null, {
+        targetTransferSyntax: TransferSyntax.ExplicitVRLittleEndian.ID
+    });
+
+    const supported = filter.isSupportedSyntaxPair(
+        TransferSyntax.ExplicitVRBigEndian,
+        TransferSyntax.ExplicitVRLittleEndian
+    );
+
+    expect(supported).toBe(true);
+});
+
+test("Test: DicomTranscodingFilter supports deflated-explicit-vr-little-endian source to explicit-vr-little-endian target", () => {
+    const filter = new DicomTranscodingFilter(null, {
+        targetTransferSyntax: TransferSyntax.ExplicitVRLittleEndian.ID
+    });
+
+    const supported = filter.isSupportedSyntaxPair(
+        TransferSyntax.DeflatedExplicitVRLittleEndian,
+        TransferSyntax.ExplicitVRLittleEndian
+    );
+
+    expect(supported).toBe(true);
+    expect(
+        filter.requiresPixelPayloadTranscode(
+            TransferSyntax.DeflatedExplicitVRLittleEndian,
+            TransferSyntax.ExplicitVRLittleEndian
+        )
+    ).toBe(false);
+});
+
+test("Test: DicomTranscodingFilter rejects deflated-explicit-vr-little-endian target", () => {
+    const filter = new DicomTranscodingFilter(null, {
+        targetTransferSyntax: TransferSyntax.DeflatedExplicitVRLittleEndian.ID
+    });
+
+    const supported = filter.isSupportedSyntaxPair(
+        TransferSyntax.ExplicitVRLittleEndian,
+        TransferSyntax.DeflatedExplicitVRLittleEndian
+    );
+
+    expect(supported).toBe(false);
+});
+
 test("Test: DicomTranscodingFilter supports JPEG lossless source to JPEG 2000 target when decoder is registered", () => {
     const filter = new DicomTranscodingFilter(null, {
         targetTransferSyntax: TransferSyntax.JPEG2000.ID
@@ -37,6 +82,19 @@ test("Test: DicomTranscodingFilter supports JPEG lossless source to JPEG 2000 ta
 
     const supported = filter.isSupportedSyntaxPair(
         TransferSyntax.JPEGLosslessSV1,
+        TransferSyntax.JPEG2000
+    );
+
+    expect(supported).toBe(true);
+});
+
+test("Test: DicomTranscodingFilter supports JPEG-LS source to JPEG 2000 target when decoder is registered", () => {
+    const filter = new DicomTranscodingFilter(null, {
+        targetTransferSyntax: TransferSyntax.JPEG2000.ID
+    });
+
+    const supported = filter.isSupportedSyntaxPair(
+        TransferSyntax.JPEGLSLossless,
         TransferSyntax.JPEG2000
     );
 
@@ -255,6 +313,19 @@ test("Test: DicomTranscodingFilter transcodes explicit-vr-little-endian to impli
     expect(forwardedText).toBe(TransferSyntax.ImplicitVRLittleEndian.ID);
 });
 
+test("Test: DicomTranscodingFilter supports implicit-vr-little-endian to explicit-vr-little-endian by syntax rewrite", () => {
+    const filter = new DicomTranscodingFilter(null, {
+        targetTransferSyntax: TransferSyntax.ExplicitVRLittleEndian.ID
+    });
+
+    const supported = filter.isSupportedSyntaxPair(
+        TransferSyntax.ImplicitVRLittleEndian,
+        TransferSyntax.ExplicitVRLittleEndian
+    );
+
+    expect(supported).toBe(true);
+});
+
 test("Test: DicomTranscodingFilter emits onFrame for streamed PixelData when frame boundaries are derivable", async () => {
     const frames = [];
     const filter = new DicomTranscodingFilter(null, {
@@ -377,4 +448,77 @@ test("Test: DicomTranscodingFilter rescales window metadata when pixel data is t
     expect(forwarded.bitsStored).toBe(8);
     expect(Number(forwarded.windowCenter)).toBeCloseTo(62.271, 3);
     expect(Number(forwarded.windowWidth)).toBeCloseTo(124.542, 3);
+});
+
+test("Test: DicomTranscodingFilter endian-swap path preserves 16-bit metadata and swaps pixel bytes", async () => {
+    const forwarded = {
+        bitsAllocated: null,
+        bitsStored: null,
+        photometricInterpretation: null,
+        pixelDataTransferSyntax: null,
+        pixelDataBytes: null
+    };
+
+    const nextHandler = {
+        onEndAttribute: (context, attribute) => {
+            var tagID = attribute?.tag?.ID;
+
+            if (tagID == Tag.BitsAllocated?.ID)
+                forwarded.bitsAllocated = attribute.value;
+            else if (tagID == Tag.BitsStored?.ID)
+                forwarded.bitsStored = attribute.value;
+            else if (tagID == Tag.PhotometricInterpretation?.ID)
+                forwarded.photometricInterpretation = attribute.value;
+            else if (tagID == Tag.PixelData?.ID) {
+                forwarded.pixelDataTransferSyntax = attribute?.transferSyntax?.ID ?? null;
+                forwarded.pixelDataBytes = (typeof attribute?.access == "function")
+                    ? attribute.access()
+                    : (attribute?.value ?? null);
+            }
+
+            return null;
+        }
+    };
+
+    const filter = new DicomTranscodingFilter(nextHandler, {
+        targetTransferSyntax: TransferSyntax.ExplicitVRLittleEndian.ID
+    });
+
+    const sourceTransferSyntax = TransferSyntax.ExplicitVRBigEndian;
+    const context = await filter.onStartInstance(null);
+
+    await filter.onStartMetaSet(context);
+    await filter.onEndAttribute(
+        context,
+        makeAttribute(
+            Tag.TransferSyntaxUID,
+            sourceTransferSyntax.ID,
+            TransferSyntax.ExplicitVRLittleEndian
+        )
+    );
+    await filter.onEndMetaSet(context);
+    await filter.onStartDataSet(context);
+
+    await filter.onEndAttribute(context, makeAttribute(Tag.Rows, 1, sourceTransferSyntax));
+    await filter.onEndAttribute(context, makeAttribute(Tag.Columns, 2, sourceTransferSyntax));
+    await filter.onEndAttribute(context, makeAttribute(Tag.SamplesPerPixel, 1, sourceTransferSyntax));
+    await filter.onEndAttribute(context, makeAttribute(Tag.PhotometricInterpretation, "MONOCHROME2", sourceTransferSyntax));
+    await filter.onEndAttribute(context, makeAttribute(Tag.BitsAllocated, 16, sourceTransferSyntax));
+    await filter.onEndAttribute(context, makeAttribute(Tag.BitsStored, 16, sourceTransferSyntax));
+    await filter.onEndAttribute(context, makeAttribute(Tag.PixelRepresentation, 0, sourceTransferSyntax));
+
+    const pixelDataAttribute = makeAttribute(Tag.PixelData, null, sourceTransferSyntax);
+    await filter.onStartAttribute(context, pixelDataAttribute);
+    await filter.onAttributeChunk(context, {
+        attribute: pixelDataAttribute,
+        chunk: new Uint8Array([0x01, 0x02, 0x0A, 0x0B]),
+        isFinalChunk: true
+    });
+    await filter.onEndAttribute(context, pixelDataAttribute);
+
+    expect(forwarded.bitsAllocated).toBe(16);
+    expect(forwarded.bitsStored).toBe(16);
+    expect(forwarded.photometricInterpretation).toBe("MONOCHROME2");
+    expect(forwarded.pixelDataTransferSyntax).toBe(TransferSyntax.ExplicitVRLittleEndian.ID);
+    expect(Array.from(forwarded.pixelDataBytes ?? [])).toEqual([0x02, 0x01, 0x0B, 0x0A]);
 });

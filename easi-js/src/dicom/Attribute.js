@@ -37,25 +37,34 @@ export default class Attribute extends DataElement {
         // Access the "raw" data
         var data = this.access();
         var isLittleEndian = (this.transferSyntax?.IsLittleEndian != false);
+        var dataView = new DataView(data.buffer, data.byteOffset, data.byteLength);
 
         // Switch the VR type
         switch (this.tag.VR) {
             
             // UL: Handle converting the RAW data to a "unsigned long" value
             case ValueRepresentations.UL:
-                return (new DataView(data.buffer)).getUint32(data.byteOffset, isLittleEndian);
+                if (data.byteLength < 4)
+                    return 0;
+                return dataView.getUint32(0, isLittleEndian);
 
             // SL: Handle converting the RAW data to a "signed long" value
             case ValueRepresentations.SL:
-                return (new DataView(data.buffer)).getInt32(data.byteOffset, isLittleEndian);
+                if (data.byteLength < 4)
+                    return 0;
+                return dataView.getInt32(0, isLittleEndian);
 
             // US: Handle converting the RAW data to a "unsigned short" value
             case ValueRepresentations.US:
-                return (new DataView(data.buffer)).getUint16(data.byteOffset, isLittleEndian);
+                if (data.byteLength < 2)
+                    return 0;
+                return dataView.getUint16(0, isLittleEndian);
 
             // SS: Handle converting the RAW data to a "signed short" value
             case ValueRepresentations.SS:
-                return (new DataView(data.buffer)).getInt16(data.byteOffset, isLittleEndian);
+                if (data.byteLength < 2)
+                    return 0;
+                return dataView.getInt16(0, isLittleEndian);
 
             // AE, SH, UI, IS, DS, CS, PN, LT: Handle converting the RAW data to a generic string value
             case ValueRepresentations.AE:

@@ -28,6 +28,12 @@ test("Test: Convert Transfer Syntax Endianess", () => {
     expect(accessed[3]).toBe(3);
 });
 
+test("Test: Convert Ignores Invalid Transfer Syntax", () => {
+    let data = new EncodedData([1, 2, 3, 4], TransferSyntax.ExplicitVRLittleEndian);
+    expect(() => data.convert(undefined)).not.toThrow();
+    expect(data.transferSyntax).toBe(TransferSyntax.ExplicitVRLittleEndian);
+});
+
 test("Test: Append Data", () => {
     let data = new EncodedData([1, 2, 3, 4]);
     data.append([5, 6, 7, 8]);

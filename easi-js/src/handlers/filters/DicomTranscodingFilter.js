@@ -104,6 +104,7 @@ export default class DicomTranscodingFilter {
             sourceTransferSyntax: this.sourceTransferSyntax ?? TransferSyntax.NONE,
             mode: "pending",
             requiresPixelTransform: false,
+            pixelTransformStrategy: "none",
             rows: null,
             columns: null,
             samplesPerPixel: 1,
@@ -145,6 +146,7 @@ export default class DicomTranscodingFilter {
         state.sourceTransferSyntax = this.sourceTransferSyntax ?? TransferSyntax.NONE;
         state.mode = "pending";
         state.requiresPixelTransform = false;
+        state.pixelTransformStrategy = "none";
         state.rows = null;
         state.columns = null;
         state.samplesPerPixel = 1;
@@ -360,6 +362,11 @@ export default class DicomTranscodingFilter {
         if ((sourceTransferSyntax == null) || (targetTransferSyntax == null))
             return false;
 
+        // Data-set deflate output requires explicit stream re-deflation support,
+        // which is not yet implemented by the writer path.
+        if (this.isDeflatedDataSetTransferSyntax(targetTransferSyntax) == true)
+            return false;
+
         if (sourceTransferSyntax.ID == targetTransferSyntax.ID) {
             if (this.requiresPixelPayloadTranscode(sourceTransferSyntax, targetTransferSyntax) == true)
                 return this.isSupportedPixelPayloadPair(sourceTransferSyntax, targetTransferSyntax);
@@ -372,12 +379,8 @@ export default class DicomTranscodingFilter {
         if (sourceTransferSyntax.IsLittleEndian != targetTransferSyntax.IsLittleEndian)
             return false;
 
-        // Keep metadata streaming-safe by only allowing transfer-syntax UID rewrites
-        // that fit in the original encoded UI byte-length.
-        var sourceUIDLength = this.resolveUIEncodedLength(sourceTransferSyntax.ID);
-        var targetUIDLength = this.resolveUIEncodedLength(targetTransferSyntax.ID);
-        if (targetUIDLength > sourceUIDLength)
-            return false;
+        // DicomDataWriterHandler recomputes value lengths while serializing,
+        // so syntax-only UID rewrites can grow/shrink safely.
 
         return true;
 
@@ -495,6 +498,30 @@ export default class DicomTranscodingFilter {
     }
 
     /**
+     * Determine if one transfer syntax represents data-set level deflate (not PixelData encapsulation).
+     * @param {TransferSyntax | null} transferSyntax The candidate transfer syntax.
+     * @returns {boolean} TRUE when transfer syntax is Deflated Explicit VR Little Endian.
+     */
+    isDeflatedDataSetTransferSyntax(transferSyntax) {
+
+        var id = transferSyntax?.ID ?? null;
+        if (id == null)
+            return false;
+
+        return (id == TransferSyntax.DeflatedExplicitVRLittleEndian.ID);
+
+    }
+
+    /**
+     * Determine if one transfer syntax implies pixel payload compression.
+     * @param {TransferSyntax | null} transferSyntax The candidate transfer syntax.
+     * @returns {boolean} TRUE when PixelData is encapsulated/compressed.
+     */
+    isPixelPayloadCompressedTransferSyntax(transferSyntax) {
+        return ((transferSyntax?.IsCompressed == true) && (this.isDeflatedDataSetTransferSyntax(transferSyntax) == false));
+    }
+
+    /**
      * Resolve compressed-output codec name based on target transfer syntax.
      * @returns {string} Codec name.
      */
@@ -524,8 +551,52 @@ export default class DicomTranscodingFilter {
         if (sourceTransferSyntax.ID == targetTransferSyntax.ID)
             return false;
 
-        return ((sourceTransferSyntax.IsCompressed == true) || (targetTransferSyntax.IsCompressed == true));
+        var sourcePixelCompressed = this.isPixelPayloadCompressedTransferSyntax(sourceTransferSyntax);
+        var targetPixelCompressed = this.isPixelPayloadCompressedTransferSyntax(targetTransferSyntax);
+        if ((sourcePixelCompressed == true) || (targetPixelCompressed == true))
+            return true;
 
+        return (sourceTransferSyntax.IsLittleEndian != targetTransferSyntax.IsLittleEndian);
+
+    }
+
+    /**
+     * Resolve the pixel transform strategy for this syntax pair.
+     * @param {TransferSyntax | null} sourceTransferSyntax Source transfer syntax.
+     * @param {TransferSyntax | null} targetTransferSyntax Target transfer syntax.
+     * @returns {"none" | "rgba" | "endian-swap"} Transform strategy.
+     */
+    resolvePixelTransformStrategy(sourceTransferSyntax, targetTransferSyntax) {
+
+        if ((sourceTransferSyntax == null) || (targetTransferSyntax == null))
+            return "none";
+
+        if (sourceTransferSyntax.ID == targetTransferSyntax.ID)
+            return "none";
+
+        var sourcePixelCompressed = this.isPixelPayloadCompressedTransferSyntax(sourceTransferSyntax);
+        var targetPixelCompressed = this.isPixelPayloadCompressedTransferSyntax(targetTransferSyntax);
+        if ((sourcePixelCompressed == true) || (targetPixelCompressed == true))
+            return "rgba";
+
+        if (sourceTransferSyntax.IsLittleEndian != targetTransferSyntax.IsLittleEndian)
+            return "endian-swap";
+
+        return "none";
+
+    }
+
+    /**
+     * Determine whether RGBA-specific metadata overrides should be applied.
+     * @param {object} state Runtime state.
+     * @returns {boolean} TRUE when RGBA metadata override path is active.
+     */
+    shouldApplyRgbaPixelMetadataOverride(state) {
+        return (
+            (state?.mode == "transcode")
+            && (state?.requiresPixelTransform == true)
+            && (state?.pixelTransformStrategy == "rgba")
+        );
     }
 
     /**
@@ -544,19 +615,19 @@ export default class DicomTranscodingFilter {
             return true;
 
         // Source compressed requires a registered decoder.
-        if ((sourceTransferSyntax.IsCompressed == true)
+        if ((this.isPixelPayloadCompressedTransferSyntax(sourceTransferSyntax) == true)
             && (this.hasRegisteredDecoderForTransferSyntax(sourceTransferSyntax) == false))
             return false;
 
         // v2 target scope for compressed output includes JPEG baseline, JPEG 2000 and RLE.
-        if ((targetTransferSyntax.IsCompressed == true)
+        if ((this.isPixelPayloadCompressedTransferSyntax(targetTransferSyntax) == true)
             && (this.isRleTransferSyntax(targetTransferSyntax) == false)
             && (this.isJpeg2000TransferSyntax(targetTransferSyntax) == false)
             && (this.isJpegBaselineTransferSyntax(targetTransferSyntax) == false))
             return false;
 
         // If compressed output is requested, require a registered encoder for this family.
-        if (targetTransferSyntax.IsCompressed == true) {
+        if (this.isPixelPayloadCompressedTransferSyntax(targetTransferSyntax) == true) {
             var outputCodec = this.isRleTransferSyntax(targetTransferSyntax)
                 ? "rle"
                 : (
@@ -942,7 +1013,7 @@ export default class DicomTranscodingFilter {
         if (this.isJpeg2000TransferSyntax(this.targetTransferSyntax) != true)
             return false;
 
-        if (state?.sourceTransferSyntax?.IsCompressed == true)
+        if (this.isPixelPayloadCompressedTransferSyntax(state?.sourceTransferSyntax) == true)
             return false;
 
         var samplesPerPixel = Math.max(1, this.toInteger(state?.samplesPerPixel, 1));
@@ -969,7 +1040,7 @@ export default class DicomTranscodingFilter {
         if (state?.sourceTransferSyntax == null)
             return false;
 
-        if (state.sourceTransferSyntax.IsCompressed == true)
+        if (this.isPixelPayloadCompressedTransferSyntax(state.sourceTransferSyntax) == true)
             return false;
 
         var samplesPerPixel = Math.max(1, this.toInteger(state?.samplesPerPixel, 1));
@@ -1033,7 +1104,7 @@ export default class DicomTranscodingFilter {
      */
     shouldSuppressPaletteLookupTableAttribute(state, attribute) {
 
-        if ((state?.mode != "transcode") || (state?.requiresPixelTransform != true))
+        if (this.shouldApplyRgbaPixelMetadataOverride(state) != true)
             return false;
 
         var tagID = attribute?.tag?.ID ?? null;
@@ -1053,7 +1124,7 @@ export default class DicomTranscodingFilter {
      */
     shouldEmitSyntheticPlanarConfigurationBeforePixelData(state, attribute) {
 
-        if ((state?.mode != "transcode") || (state?.requiresPixelTransform != true))
+        if (this.shouldApplyRgbaPixelMetadataOverride(state) != true)
             return false;
 
         if (this.isPixelDataAttribute(attribute) != true)
@@ -1300,9 +1371,13 @@ export default class DicomTranscodingFilter {
 
         if (this.isSupportedSyntaxPair(sourceTransferSyntax, this.targetTransferSyntax) == true) {
             state.mode = "transcode";
-            state.requiresPixelTransform = this.requiresPixelPayloadTranscode(sourceTransferSyntax, this.targetTransferSyntax);
+            state.pixelTransformStrategy = this.resolvePixelTransformStrategy(sourceTransferSyntax, this.targetTransferSyntax);
+            state.requiresPixelTransform = (state.pixelTransformStrategy != "none");
             return Status.CONTINUE;
         }
+
+        state.pixelTransformStrategy = "none";
+        state.requiresPixelTransform = false;
 
         if ((this.fallback == TranscodingFallbackModes.PASSTHROUGH)
             || (this.fallback == TranscodingFallbackModes.SKIP_FRAME)) {
@@ -1848,7 +1923,7 @@ export default class DicomTranscodingFilter {
      */
     resolveSourceFrames(state, sourceBytes) {
 
-        if (state?.sourceTransferSyntax?.IsCompressed == true) {
+        if (this.isPixelPayloadCompressedTransferSyntax(state?.sourceTransferSyntax) == true) {
             var expectedFrameCount = Math.max(1, this.toInteger(state.numberOfFrames, 1));
             return this.extractEncapsulatedFrames(sourceBytes, expectedFrameCount);
         }
@@ -1960,7 +2035,7 @@ export default class DicomTranscodingFilter {
         var columns = Math.max(1, this.toInteger(state.columns, 1));
         var rgba = new Uint8Array(rows * columns * 4);
 
-        if (state?.sourceTransferSyntax?.IsCompressed == true) {
+        if (this.isPixelPayloadCompressedTransferSyntax(state?.sourceTransferSyntax) == true) {
 
             var decoder = this.codecRegistry.getDecoderForTransferSyntax(state.sourceTransferSyntax, null);
             var decodeOptions = Object.assign({}, this.resolveCodecOptions("decode") ?? {});
@@ -2237,6 +2312,47 @@ export default class DicomTranscodingFilter {
     }
 
     /**
+     * Swap byte order of one uncompressed native frame when source/target endian differ.
+     * @param {object} state Runtime state.
+     * @param {Uint8Array} frameBytes Source frame bytes.
+     * @returns {Uint8Array} Endian-adjusted frame bytes.
+     */
+    swapNativeFrameEndianness(state, frameBytes) {
+
+        if ((frameBytes instanceof Uint8Array) == false)
+            return new Uint8Array(0);
+
+        var sourceLittleEndian = (state?.sourceTransferSyntax?.IsLittleEndian != false);
+        var targetLittleEndian = (this.targetTransferSyntax?.IsLittleEndian != false);
+        if (sourceLittleEndian == targetLittleEndian)
+            return frameBytes.slice(0);
+
+        var bitsAllocated = Math.max(1, this.toInteger(state?.bitsAllocated, 8));
+        var bytesPerSample = Math.max(1, Math.ceil(bitsAllocated / 8));
+        if (bytesPerSample <= 1)
+            return frameBytes.slice(0);
+
+        var swapped = frameBytes.slice(0);
+        var sampleCount = Math.floor(swapped.length / bytesPerSample);
+
+        for (var sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+            var start = (sampleIndex * bytesPerSample);
+            var stop = (start + bytesPerSample - 1);
+
+            while (start < stop) {
+                var hold = swapped[start];
+                swapped[start] = swapped[stop];
+                swapped[stop] = hold;
+                start += 1;
+                stop -= 1;
+            }
+        }
+
+        return swapped;
+
+    }
+
+    /**
      * Replay original PixelData events to next handler for passthrough recovery.
      * @param {object} context Parse context.
      * @param {object} state Runtime state.
@@ -2309,7 +2425,10 @@ export default class DicomTranscodingFilter {
 
         var targetFrames = [];
         var totalFrameCount = sourceFrames.length;
-        var useNativeMonochromePath = this.canUseNativeMonochromePath(state);
+        var useNativeMonochromePath = (
+            (state?.pixelTransformStrategy == "rgba")
+            && (this.canUseNativeMonochromePath(state) == true)
+        );
 
         for (var frameIndex = 0; frameIndex < sourceFrames.length; frameIndex++) {
 
@@ -2321,7 +2440,11 @@ export default class DicomTranscodingFilter {
                 var targetFrame = null;
                 var decodeCodec = null;
 
-                if (useNativeMonochromePath == true) {
+                if (state?.pixelTransformStrategy == "endian-swap") {
+                    targetFrame = this.swapNativeFrameEndianness(state, sourceFrame);
+                    decodeCodec = "native";
+                }
+                else if (useNativeMonochromePath == true) {
                     try {
                         targetFrame = await this.encodeNativeMonochromeFrame(state, sourceFrame);
                         decodeCodec = "native";
@@ -2717,7 +2840,7 @@ export default class DicomTranscodingFilter {
                 return Status.CONTINUE;
 
             if ((state.mode == "transcode")
-                && (state.requiresPixelTransform == true)
+                && (this.shouldApplyRgbaPixelMetadataOverride(state) == true)
                 && (attribute?.tag?.ID == Tag.SamplesPerPixel.ID)
                 && (this.shouldDeferSamplesPerPixelOverride(state) == true)) {
 
@@ -2727,7 +2850,7 @@ export default class DicomTranscodingFilter {
             }
 
             if ((state.mode == "transcode")
-                && (state.requiresPixelTransform == true)
+                && (this.shouldApplyRgbaPixelMetadataOverride(state) == true)
                 && (state.deferredSamplesPerPixelAttribute != null)
                 && (attribute?.tag?.ID != Tag.SamplesPerPixel.ID)
                 && (this.canFlushDeferredSamplesPerPixel(state, attribute) == true)) {
@@ -2776,7 +2899,7 @@ export default class DicomTranscodingFilter {
             }
 
             if ((state.mode == "transcode")
-                && (state.requiresPixelTransform == true)
+                && (this.shouldApplyRgbaPixelMetadataOverride(state) == true)
                 && (this.isPixelMetadataTag(attribute?.tag?.ID) == true)) {
                 this.applyPixelMetadataOverride(state, attribute);
             }
@@ -2858,7 +2981,7 @@ export default class DicomTranscodingFilter {
         state.isInDataSet = false;
 
         if ((state.mode == "transcode")
-            && (state.requiresPixelTransform == true)
+            && (this.shouldApplyRgbaPixelMetadataOverride(state) == true)
             && (state.deferredSamplesPerPixelAttribute != null)) {
 
             this.applyPixelMetadataOverride(state, state.deferredSamplesPerPixelAttribute);

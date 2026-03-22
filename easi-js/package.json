@@ -19,7 +19,11 @@
         "bench:streaming": "RUN_STREAMING_BENCHMARKS=true jest test/benchmarks/StreamingPerformance.test.js --runInBand --coverage=false",
         "bench:bulk-policy": "node --expose-gc test/benchmarks/runDicomBulkPolicyProbe.js",
         "bench:compare": "node test/benchmarks/compareStreamingBenchmarks.js",
-        "kitchen-sink": "node samples/kitchen-sink/server.js"
+        "kitchen-sink": "node samples/kitchen-sink/server.js",
+        "harness:test-library": "node tools/harness/runTestLibraryHarness.js",
+        "harness:monitor": "node tools/harness/monitorHarnessRun.js",
+        "harness:orchestrate": "node tools/harness/orchestrateHarnessRuns.js",
+        "harness:merge": "node tools/harness/mergeHarnessRuns.js"
     },
     "jest": {
         "collectCoverage": true,

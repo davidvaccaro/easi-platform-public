@@ -19,7 +19,7 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import { PhotometricInterpretationType } from '../../dicom/Tag.js'
+import Tag, { PhotometricInterpretationType } from '../../dicom/Tag.js'
 import Modality from '../../dicom/Modality.js';
 
 export default class DicomNativePixelDataToRGBADecoder {
@@ -275,6 +275,413 @@ export default class DicomNativePixelDataToRGBADecoder {
     }
 
     /**
+     * Decode one 8-bit YBR_FULL source range to RGBA bytes.
+     * Supports both interleaved (PlanarConfiguration=0) and planar (PlanarConfiguration=1).
+     * @param {Uint8Array} source Source DICOM YBR_FULL bytes.
+     * @param {number} sourceStart Source start index.
+     * @param {number} sourceStop Source stop index.
+     * @param {Uint8Array} destination Destination RGBA buffer.
+     * @param {number} destinationStart Destination pixel index offset.
+     * @returns {boolean} TRUE when decode succeeds.
+     */
+    decode8BitDICOMYBRFullToRGBA(source, sourceStart, sourceStop, destination, destinationStart) {
+
+        var start = Math.max(0, Number(sourceStart) || 0);
+        var stop = Math.min(source.length, Number(sourceStop) || source.length);
+        if (stop <= start)
+            return false;
+
+        var planarConfiguration = Number(this.dicomObject.imagePixelModule.planarConfiguration ?? 0);
+        var destinationIndex = Math.max(0, Number(destinationStart) || 0);
+        var samplesPerPixel = Math.max(1, Number(this.dicomObject.imagePixelModule.samplesPerPixel ?? 3));
+        if (samplesPerPixel < 3)
+            return false;
+
+        var writePixel = (y, cb, cr) => {
+            var centeredCb = (Number(cb) || 0) - 128;
+            var centeredCr = (Number(cr) || 0) - 128;
+
+            var red = this.toByte((Number(y) || 0) + (1.402 * centeredCr));
+            var green = this.toByte((Number(y) || 0) - (0.344136 * centeredCb) - (0.714136 * centeredCr));
+            var blue = this.toByte((Number(y) || 0) + (1.772 * centeredCb));
+
+            destination[(destinationIndex * 4) + 0] = red;
+            destination[(destinationIndex * 4) + 1] = green;
+            destination[(destinationIndex * 4) + 2] = blue;
+            destination[(destinationIndex * 4) + 3] = 255;
+            destinationIndex++;
+        };
+
+        if (planarConfiguration == 1) {
+
+            var pixelCount = Math.floor((stop - start) / samplesPerPixel);
+            var yStart = start;
+            var cbStart = (start + pixelCount);
+            var crStart = (start + (pixelCount * 2));
+
+            for (var pixel = 0; pixel < pixelCount; pixel++) {
+                writePixel(
+                    source[yStart + pixel] ?? 0,
+                    source[cbStart + pixel] ?? 0,
+                    source[crStart + pixel] ?? 0
+                );
+            }
+
+            return true;
+
+        }
+
+        for (var i = start; i < stop; i += samplesPerPixel) {
+            writePixel(
+                source[i + 0] ?? 0,
+                source[i + 1] ?? 0,
+                source[i + 2] ?? 0
+            );
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Clamp to one 8-bit value.
+     * @param {number} value The source value.
+     * @returns {number} The clamped byte.
+     */
+    toByte(value) {
+
+        var numeric = Number(value);
+        if (Number.isFinite(numeric) == false)
+            return 0;
+        if (numeric < 0)
+            return 0;
+        if (numeric > 255)
+            return 255;
+        return Math.round(numeric);
+
+    }
+
+    /**
+     * Scale one LUT sample to byte precision.
+     * @param {number} sample Source sample value.
+     * @param {number} bitsPerEntry Bits per LUT entry.
+     * @returns {number} One 8-bit sample.
+     */
+    scaleLookupSample(sample, bitsPerEntry) {
+
+        var bits = Math.max(1, Math.min(16, Number(bitsPerEntry) || 8));
+        var value = Number(sample);
+        if (Number.isFinite(value) == false)
+            value = 0;
+
+        if (bits <= 8) {
+            return this.toByte(value);
+        }
+
+        var maxValue = ((1 << bits) - 1);
+        if (maxValue <= 0)
+            return 0;
+
+        return this.toByte((value / maxValue) * 255);
+
+    }
+
+    /**
+     * Read one palette descriptor triplet.
+     * @param {object | null} attribute Descriptor attribute.
+     * @returns {{ entries: number, firstMapped: number, bitsPerEntry: number } | null} Descriptor.
+     */
+    readPaletteDescriptor(attribute) {
+
+        if (attribute == null)
+            return null;
+
+        var bytes = attribute.access();
+        if ((bytes == null) || (bytes.length < 6))
+            return null;
+
+        var isLittleEndian = (attribute?.transferSyntax?.IsLittleEndian != false);
+        var view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+        var entries = view.getUint16(0, isLittleEndian);
+        var firstMapped = view.getInt16(2, isLittleEndian);
+        var bitsPerEntry = view.getUint16(4, isLittleEndian);
+
+        if (entries == 0)
+            entries = 65536;
+        if (bitsPerEntry == 0)
+            bitsPerEntry = 16;
+
+        return {
+            entries: entries,
+            firstMapped: firstMapped,
+            bitsPerEntry: bitsPerEntry
+        };
+
+    }
+
+    /**
+     * Decode one direct (non-segmented) palette channel.
+     * @param {Uint8Array} bytes The channel bytes.
+     * @param {number} entries Expected entries.
+     * @param {number} bitsPerEntry Bits per entry.
+     * @param {boolean} isLittleEndian Byte-order flag.
+     * @returns {Uint8Array | null} 8-bit channel.
+     */
+    decodeDirectPaletteChannel(bytes, entries, bitsPerEntry, isLittleEndian) {
+
+        if ((bytes instanceof Uint8Array) == false)
+            return null;
+
+        if (entries <= 0)
+            return null;
+
+        var channel = new Uint8Array(entries);
+
+        // 16-bit storage (common for LUT data with OW VR).
+        if (bytes.length >= (entries * 2)) {
+
+            var view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+            for (var i = 0; i < entries; i++) {
+
+                var sample = view.getUint16((i * 2), isLittleEndian);
+
+                if (bitsPerEntry <= 8) {
+                    // Handle both low-byte and high-byte 8-bit packing forms.
+                    sample = (sample > 255) ? (sample >> 8) : (sample & 0xFF);
+                }
+
+                channel[i] = this.scaleLookupSample(sample, bitsPerEntry);
+
+            }
+
+            return channel;
+
+        }
+
+        // 8-bit storage.
+        var count = Math.min(entries, bytes.length);
+        for (var j = 0; j < count; j++) {
+            channel[j] = this.scaleLookupSample(bytes[j], bitsPerEntry);
+        }
+
+        // Pad any missing entries with the last available value.
+        var pad = (count > 0) ? channel[count - 1] : 0;
+        for (var k = count; k < entries; k++) {
+            channel[k] = pad;
+        }
+
+        return channel;
+
+    }
+
+    /**
+     * Decode one segmented palette channel.
+     * Supports opcodes 0 (discrete) and 1 (linear).
+     * @param {Uint8Array} bytes Segmented bytes.
+     * @param {number} entries Expected entries.
+     * @param {number} bitsPerEntry Bits per entry.
+     * @param {boolean} isLittleEndian Byte-order flag.
+     * @returns {Uint8Array | null} 8-bit channel.
+     */
+    decodeSegmentedPaletteChannel(bytes, entries, bitsPerEntry, isLittleEndian) {
+
+        if ((bytes instanceof Uint8Array) == false)
+            return null;
+
+        if (entries <= 0)
+            return null;
+
+        var units = [];
+
+        if (bitsPerEntry <= 8) {
+            units = Array.from(bytes);
+        }
+        else {
+            if ((bytes.length % 2) != 0)
+                return null;
+            var view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+            for (var i = 0; i < (bytes.length / 2); i++) {
+                units.push(view.getUint16((i * 2), isLittleEndian));
+            }
+        }
+
+        var expanded = [];
+        var index = 0;
+
+        while ((index < units.length) && (expanded.length < entries)) {
+
+            var opcode = units[index++];
+
+            if (opcode == 0) {
+                var copyCount = Math.max(0, Number(units[index++] ?? 0));
+                for (var copy = 0; (copy < copyCount) && (index < units.length) && (expanded.length < entries); copy++) {
+                    expanded.push(units[index++]);
+                }
+                continue;
+            }
+
+            if (opcode == 1) {
+                var runCount = Math.max(0, Number(units[index++] ?? 0));
+                var endValue = Number(units[index++] ?? 0);
+                var startValue = (expanded.length > 0) ? Number(expanded[expanded.length - 1]) : 0;
+
+                for (var run = 1; (run <= runCount) && (expanded.length < entries); run++) {
+                    var interpolated = startValue + (((endValue - startValue) * run) / Math.max(1, runCount));
+                    expanded.push(interpolated);
+                }
+                continue;
+            }
+
+            // Opcode 2 (indirect) and unknown opcodes are not currently supported.
+            break;
+
+        }
+
+        if (expanded.length == 0)
+            return null;
+
+        var channel = new Uint8Array(entries);
+        var count = Math.min(entries, expanded.length);
+
+        for (var mapped = 0; mapped < count; mapped++) {
+            channel[mapped] = this.scaleLookupSample(expanded[mapped], bitsPerEntry);
+        }
+
+        var pad = channel[Math.max(0, count - 1)] ?? 0;
+        for (var fill = count; fill < entries; fill++) {
+            channel[fill] = pad;
+        }
+
+        return channel;
+
+    }
+
+    /**
+     * Resolve 8-bit palette channels for PALETTE COLOR decode.
+     * @returns {{ red: Uint8Array, green: Uint8Array, blue: Uint8Array, firstMapped: number } | null}
+     */
+    resolvePaletteChannels() {
+
+        var attributeSet = this.dicomObject?.attributeSet ?? null;
+        if (attributeSet == null)
+            return null;
+
+        var descriptorAttribute = (
+            attributeSet.find(Tag.RedPaletteColorLookupTableDescriptor)
+            ?? attributeSet.find(Tag.GreenPaletteColorLookupTableDescriptor)
+            ?? attributeSet.find(Tag.BluePaletteColorLookupTableDescriptor)
+        );
+        var descriptor = this.readPaletteDescriptor(descriptorAttribute);
+        if (descriptor == null)
+            return null;
+
+        var isLittleEndian = (descriptorAttribute?.transferSyntax?.IsLittleEndian != false);
+
+        var redDirect = attributeSet.find(Tag.RedPaletteColorLookupTableData)?.access() ?? null;
+        var greenDirect = attributeSet.find(Tag.GreenPaletteColorLookupTableData)?.access() ?? null;
+        var blueDirect = attributeSet.find(Tag.BluePaletteColorLookupTableData)?.access() ?? null;
+
+        var redSegmented = attributeSet.find(Tag.SegmentedRedPaletteColorLookupTableData)?.access() ?? null;
+        var greenSegmented = attributeSet.find(Tag.SegmentedGreenPaletteColorLookupTableData)?.access() ?? null;
+        var blueSegmented = attributeSet.find(Tag.SegmentedBluePaletteColorLookupTableData)?.access() ?? null;
+
+        var red = this.decodeDirectPaletteChannel(redDirect, descriptor.entries, descriptor.bitsPerEntry, isLittleEndian)
+            ?? this.decodeSegmentedPaletteChannel(redSegmented, descriptor.entries, descriptor.bitsPerEntry, isLittleEndian);
+        var green = this.decodeDirectPaletteChannel(greenDirect, descriptor.entries, descriptor.bitsPerEntry, isLittleEndian)
+            ?? this.decodeSegmentedPaletteChannel(greenSegmented, descriptor.entries, descriptor.bitsPerEntry, isLittleEndian);
+        var blue = this.decodeDirectPaletteChannel(blueDirect, descriptor.entries, descriptor.bitsPerEntry, isLittleEndian)
+            ?? this.decodeSegmentedPaletteChannel(blueSegmented, descriptor.entries, descriptor.bitsPerEntry, isLittleEndian);
+
+        if (red == null)
+            return null;
+        if (green == null)
+            green = red;
+        if (blue == null)
+            blue = red;
+
+        return {
+            red,
+            green,
+            blue,
+            firstMapped: descriptor.firstMapped
+        };
+
+    }
+
+    /**
+     * Decode PALETTE COLOR source bytes into RGBA bytes.
+     * @param {Uint8Array} source Source pixel bytes.
+     * @param {number} sourceStart Source start index.
+     * @param {number} sourceStop Source stop index.
+     * @param {Uint8Array} destination Destination RGBA bytes.
+     * @param {number} destinationStart Destination pixel index.
+     * @returns {boolean} TRUE when decode succeeds.
+     */
+    decodeDICOMPaletteColorToRGBA(source, sourceStart, sourceStop, destination, destinationStart) {
+
+        var channels = this.resolvePaletteChannels();
+        if (channels == null)
+            return false;
+
+        var start = Math.max(0, Number(sourceStart) || 0);
+        var stop = Math.min(source.length, Number(sourceStop) || source.length);
+        if (stop <= start)
+            return false;
+
+        var bitsPerPixel = Math.max(1, Number(this.dicomObject.imagePixelModule.bitsStored ?? 8) || 8);
+        var samplesPerPixel = Math.max(1, Number(this.dicomObject.imagePixelModule.samplesPerPixel ?? 1) || 1);
+        if (samplesPerPixel != 1)
+            return false;
+
+        var destinationIndex = Math.max(0, Number(destinationStart) || 0);
+        var pixelMask = (bitsPerPixel <= 16) ? this.generatePixelMask(16, bitsPerPixel) : 65535;
+        var firstMapped = Number(channels.firstMapped ?? 0);
+
+        if (bitsPerPixel <= 8) {
+
+            for (var i = start; i < stop; i++) {
+
+                var sample8 = (Math.floor(source[i]) & 0xFF);
+                var paletteIndex8 = (sample8 - firstMapped);
+                if (paletteIndex8 < 0)
+                    paletteIndex8 = 0;
+                if (paletteIndex8 >= channels.red.length)
+                    paletteIndex8 = (channels.red.length - 1);
+
+                destination[(destinationIndex * 4) + 0] = channels.red[paletteIndex8] ?? 0;
+                destination[(destinationIndex * 4) + 1] = channels.green[paletteIndex8] ?? 0;
+                destination[(destinationIndex * 4) + 2] = channels.blue[paletteIndex8] ?? 0;
+                destination[(destinationIndex * 4) + 3] = 255;
+                destinationIndex++;
+
+            }
+
+            return true;
+
+        }
+
+        for (var j = start; j < stop; j += 2) {
+
+            var sample16 = ((source[j] | (source[j + 1] << 8)) & pixelMask);
+            var paletteIndex16 = (sample16 - firstMapped);
+            if (paletteIndex16 < 0)
+                paletteIndex16 = 0;
+            if (paletteIndex16 >= channels.red.length)
+                paletteIndex16 = (channels.red.length - 1);
+
+            destination[(destinationIndex * 4) + 0] = channels.red[paletteIndex16] ?? 0;
+            destination[(destinationIndex * 4) + 1] = channels.green[paletteIndex16] ?? 0;
+            destination[(destinationIndex * 4) + 2] = channels.blue[paletteIndex16] ?? 0;
+            destination[(destinationIndex * 4) + 3] = 255;
+            destinationIndex++;
+
+        }
+
+        return true;
+
+    }
+
+    /**
      * Decode the specificed data to the output buffer.
      * @param {Uint8Array} source The Uint8Array that serves as the source of the decode operation.
      * @param {number} sourceStart The index into the input array to START reading decode input.
@@ -320,6 +727,23 @@ export default class DicomNativePixelDataToRGBADecoder {
                     );
                 }
                 break;
+
+            case PhotometricInterpretationType.YBR_FULL:
+
+                // Handle 8-bit YBR_FULL native pixel data.
+                if (this.dicomObject.imagePixelModule.bitsStored <= 8) {
+                    return this.decode8BitDICOMYBRFullToRGBA(
+                        source, sourceStart, sourceStop,
+                        destination, destinationStart
+                    );
+                }
+                break;
+
+            case PhotometricInterpretationType.PALETTECOLOR:
+                return this.decodeDICOMPaletteColorToRGBA(
+                    source, sourceStart, sourceStop,
+                    destination, destinationStart
+                );
 
         }
 

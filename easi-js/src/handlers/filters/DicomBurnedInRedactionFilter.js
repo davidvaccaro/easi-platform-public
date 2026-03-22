@@ -449,6 +449,14 @@ export default class DicomBurnedInRedactionFilter extends DicomTranscodingFilter
     }
 
     /**
+     * Redaction always operates in RGBA frame space, regardless of syntax pair.
+     * @returns {"rgba"} RGBA transform strategy.
+     */
+    resolvePixelTransformStrategy(sourceTransferSyntax, targetTransferSyntax) {
+        return "rgba";
+    }
+
+    /**
      * Normalize redaction options into a transcoding-compatible options payload.
      * @param {boolean | object | Function | Array<object>} options Raw options.
      * @returns {object} Normalized options.

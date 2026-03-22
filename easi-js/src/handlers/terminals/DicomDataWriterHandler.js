@@ -22,6 +22,7 @@
 import Constants from "../../dicom/Constants.js";
 import Tag from "../../dicom/Tag.js";
 import TransferSyntax from "../../dicom/TransferSyntax.js";
+import ValueRepresentations from "../../dicom/ValueRepresentation.js";
 
 const ExplicitLongLengthVRs = new Set(['OB', 'OD', 'OF', 'OL', 'OV', 'OW', 'SQ', 'UC', 'UR', 'UT', 'UN']);
 
@@ -32,6 +33,26 @@ const TextPadNullVRs = new Set(['UI']);
 const NumericVRs = new Set(['US', 'SS', 'UL', 'SL', 'UV', 'SV', 'FL', 'FD']);
 
 export default class DicomDataWriterHandler {
+
+    /**
+     * Resolve the effective value-representation for a tag/data-element.
+     * @param {Tag|Attribute|AttributeSequence|null} source The source object.
+     * @returns {ValueRepresentation} The resolved value-representation.
+     */
+    resolveValueRepresentation(source) {
+
+        var valueRepresentation = source?.vr
+            ?? source?.valueRepresentation
+            ?? source?.tag?.VR
+            ?? source?.VR
+            ?? null;
+
+        if (valueRepresentation == null)
+            valueRepresentation = ValueRepresentations.UN;
+
+        return valueRepresentation;
+
+    }
 
     /**
      * Emit a chunk to the configured output callback and/or in-memory collection.
@@ -296,7 +317,8 @@ export default class DicomDataWriterHandler {
      */
     resolveAttributeValueBytes(attribute) {
 
-        var vrID = (attribute?.tag?.VR?.ID != null) ? attribute.tag.VR.ID : null;
+        var valueRepresentation = this.resolveValueRepresentation(attribute);
+        var vrID = valueRepresentation?.ID ?? null;
         var transferSyntax = attribute.transferSyntax;
 
         // Preserve original raw bytes when no override is present.
@@ -408,9 +430,18 @@ export default class DicomDataWriterHandler {
      */
     serializeHeader(tag, valueRepresentation, valueLength, transferSyntax) {
 
+        if (valueRepresentation == null)
+            valueRepresentation = ValueRepresentations.UN;
+
         var vrID = valueRepresentation?.ID || null;
         var isControlTag = ((tag?.Group == 0xFFFE) && ((tag == Tag.Item) || (tag == Tag.ItemDelimitationItem) || (tag == Tag.SequenceDelimitationItem)));
         var isExplicit = this.isExplicit(transferSyntax);
+
+        if ((isExplicit == true) && (isControlTag == false) && ((vrID == null) || (vrID.length < 2))) {
+            valueRepresentation = ValueRepresentations.UN;
+            vrID = valueRepresentation.ID;
+        }
+
         var usesLongLength = isControlTag || (isExplicit == false) || ExplicitLongLengthVRs.has(vrID);
         var headerLength = usesLongLength ? ((isExplicit && (isControlTag == false)) ? 12 : 8) : 8;
 
@@ -464,7 +495,12 @@ export default class DicomDataWriterHandler {
         var valueBytes = this.resolveAttributeValueBytes(attribute);
         var isUndefinedLength = (attribute.valueLength == Constants.UndefinedLength);
         var valueLength = isUndefinedLength ? Constants.UndefinedLength : valueBytes.length;
-        var headerBytes = this.serializeHeader(attribute.tag, attribute.tag.VR, valueLength, attribute.transferSyntax);
+        var headerBytes = this.serializeHeader(
+            attribute.tag,
+            this.resolveValueRepresentation(attribute),
+            valueLength,
+            attribute.transferSyntax
+        );
 
         await this.emit(headerBytes);
         await this.emit(valueBytes);
@@ -495,7 +531,7 @@ export default class DicomDataWriterHandler {
 
         await this.emit(this.serializeHeader(
             attribute.tag,
-            attribute.tag.VR,
+            this.resolveValueRepresentation(attribute),
             attribute.valueLength,
             attribute.transferSyntax
         ));
@@ -558,7 +594,7 @@ export default class DicomDataWriterHandler {
         // Always write undefined-length sequences so nested length recalculation is unnecessary.
         await this.emit(this.serializeHeader(
             sequence.tag,
-            sequence.tag.VR,
+            this.resolveValueRepresentation(sequence),
             Constants.UndefinedLength,
             sequence.transferSyntax
         ));

@@ -877,6 +877,13 @@
                 );
             }
 
+            function isJpegLsTransferSyntaxID(transferSyntaxID) {
+                return (
+                    (transferSyntaxID == TransferSyntax.JPEGLSLossless.ID)
+                    || (transferSyntaxID == TransferSyntax.JPEGLSNearLossless.ID)
+                );
+            }
+
             async function ensureOpenJpegRuntime() {
 
                 var openjpegModule = globalThis?.EASIOpenJPEGModule ?? null;
@@ -955,6 +962,146 @@
 
             }
 
+            function isJpegLsRuntimeModule(moduleCandidate) {
+
+                if (moduleCandidate == null)
+                    return false;
+
+                var moduleObject = moduleCandidate;
+                if ((moduleObject?.default != null) && (typeof moduleObject.default == 'object' || typeof moduleObject.default == 'function'))
+                    moduleObject = moduleObject.default;
+
+                if (typeof moduleObject == 'function')
+                    return true;
+
+                if (typeof moduleObject?.decode == 'function')
+                    return true;
+
+                if (typeof moduleObject?.decodeFrame == 'function')
+                    return true;
+
+                if (typeof moduleObject?.JpegLsDecoder == 'function')
+                    return true;
+
+                if (typeof moduleObject?.JPEGLSDecoder == 'function')
+                    return true;
+
+                if (typeof moduleObject?.JPEG_LS_Decoder == 'function')
+                    return true;
+
+                if (typeof moduleObject?.CharLSDecoder == 'function')
+                    return true;
+
+                if (typeof moduleObject?.Decoder == 'function')
+                    return true;
+
+                return false;
+
+            }
+
+            function resolveJpegLsFactory() {
+                return (
+                    globalThis?.EASIJpegLsFactory
+                    ?? globalThis?.EASIJPEGLSFactory
+                    ?? globalThis?.CharLSWASM
+                    ?? globalThis?.CharLSWasm
+                    ?? globalThis?.charlswasm
+                    ?? null
+                );
+            }
+
+            async function loadScriptOnce(scriptId, scriptUrl) {
+
+                return await new Promise(function (resolve, reject) {
+                    var existingScript = document.getElementById(scriptId);
+                    if (existingScript != null) {
+                        if (existingScript.getAttribute('data-loaded') == 'true') {
+                            resolve();
+                            return;
+                        }
+
+                        existingScript.addEventListener('load', function () { resolve(); }, { once: true });
+                        existingScript.addEventListener('error', function () { reject(new Error('Failed loading script: ' + scriptUrl)); }, { once: true });
+                        return;
+                    }
+
+                    var script = document.createElement('script');
+                    script.id = scriptId;
+                    script.src = scriptUrl;
+                    script.async = true;
+                    script.onload = function () {
+                        script.setAttribute('data-loaded', 'true');
+                        resolve();
+                    };
+                    script.onerror = function () {
+                        reject(new Error('Failed loading script: ' + scriptUrl));
+                    };
+                    document.head.appendChild(script);
+                });
+
+            }
+
+            async function ensureJpegLsRuntime() {
+
+                var jpegLsModule = globalThis?.EASIJpegLsModule ?? globalThis?.EASIJPEGLSModule ?? null;
+                if (isJpegLsRuntimeModule(jpegLsModule) == true)
+                    return jpegLsModule;
+
+                if (globalThis.__easiJpegLsLoadingPromise == null) {
+                    globalThis.__easiJpegLsLoadingPromise = (async function () {
+
+                        var jpegLsFactory = resolveJpegLsFactory();
+                        if (typeof jpegLsFactory != 'function') {
+
+                            var scriptCandidates = [
+                                '/easi-js/node_modules/@cornerstonejs/codec-charls/dist/dynamic-import/charlswasm_decode.js',
+                                '/easi-js/node_modules/@cornerstonejs/codec-charls/dist/charlswasm_decode.js',
+                                '/easi-js/node_modules/@cornerstonejs/codec-charls/dist/charlswasm.js'
+                            ];
+
+                            for (var scriptIndex = 0; scriptIndex < scriptCandidates.length; scriptIndex++) {
+                                var scriptUrl = scriptCandidates[scriptIndex];
+                                try {
+                                    await loadScriptOnce('easi-jpegls-wasm-script-' + String(scriptIndex), scriptUrl);
+                                }
+                                catch {
+                                    continue;
+                                }
+
+                                jpegLsFactory = resolveJpegLsFactory();
+                                if (typeof jpegLsFactory == 'function')
+                                    break;
+                            }
+                        }
+
+                        if (typeof jpegLsFactory != 'function') {
+                            throw new Error('JPEG-LS factory export is unavailable.');
+                        }
+
+                        globalThis.EASIJpegLsFactory = jpegLsFactory;
+                        globalThis.EASIJPEGLSFactory = jpegLsFactory;
+
+                        var loadedModule = await jpegLsFactory({});
+                        if ((isJpegLsRuntimeModule(loadedModule) != true) && (isJpegLsRuntimeModule(loadedModule?.default) == true))
+                            loadedModule = loadedModule.default;
+
+                        if (isJpegLsRuntimeModule(loadedModule) != true)
+                            throw new Error('JPEG-LS module does not expose a compatible decode surface.');
+
+                        globalThis.EASIJpegLsModule = loadedModule;
+                        globalThis.EASIJPEGLSModule = loadedModule;
+                        return loadedModule;
+
+                    })().catch(function (error) {
+                        globalThis.__easiJpegLsLoadingPromise = null;
+                        throw error;
+                    });
+                }
+
+                return await globalThis.__easiJpegLsLoadingPromise;
+
+            }
+
             function buildTranscodedDicomFileName(fileName, targetTransferSyntaxID) {
 
                 var name = String(fileName ?? 'dicom').trim();
@@ -1016,6 +1163,18 @@
                 var instanceResult = await probePipeline.process(bytes);
                 var instance = Array.isArray(instanceResult) ? instanceResult[0] : instanceResult;
                 return instance?.metaSet?.transferSyntaxUID?.ID ?? null;
+
+            }
+
+            async function ensureSourceDecoderRuntimes(sourceTransferSyntaxID) {
+
+                if (isJpeg2000TransferSyntaxID(sourceTransferSyntaxID) == true) {
+                    await ensureOpenJpegRuntime();
+                }
+
+                if (isJpegLsTransferSyntaxID(sourceTransferSyntaxID) == true) {
+                    await ensureJpegLsRuntime();
+                }
 
             }
 
@@ -1427,6 +1586,9 @@
                 var compressionRatio = getTranscodeCompressionRatio();
                 var stageOneNeedsOpenJpeg = isJpeg2000TransferSyntaxID(targetTransferSyntaxID);
                 var stageTwoNeedsOpenJpeg = ((roundTripEnabled === true) && isJpeg2000TransferSyntaxID(roundTripTargetTransferSyntaxID));
+                var stageOneNeedsJpegLs = false;
+                var stageTwoNeedsJpegLs = false;
+                var sourceObservedTransferSyntax = null;
                 var outputFileName = roundTripEnabled
                     ? buildRoundTripDicomFileName(file.name, targetTransferSyntaxID, roundTripTargetTransferSyntaxID)
                     : buildTranscodedDicomFileName(file.name, targetTransferSyntaxID);
@@ -1441,8 +1603,23 @@
 
                 try {
 
+                    try {
+                        var sourceProbeBytes = new Uint8Array(await file.arrayBuffer());
+                        sourceObservedTransferSyntax = await inspectTransferSyntaxFromBytes(sourceProbeBytes);
+                    }
+                    catch (probeError) {
+                        console.warn('Unable to inspect source transfer syntax prior to transcoding.', probeError);
+                    }
+
+                    stageOneNeedsJpegLs = isJpegLsTransferSyntaxID(sourceObservedTransferSyntax);
+                    stageTwoNeedsJpegLs = ((roundTripEnabled === true) && isJpegLsTransferSyntaxID(targetTransferSyntaxID));
+
                     if ((stageOneNeedsOpenJpeg == true) || (stageTwoNeedsOpenJpeg == true)) {
                         await ensureOpenJpegRuntime();
+                    }
+
+                    if ((stageOneNeedsJpegLs == true) || (stageTwoNeedsJpegLs == true)) {
+                        await ensureJpegLsRuntime();
                     }
 
                     if (typeof window.showSaveFilePicker === 'function') {
@@ -1584,6 +1761,7 @@
 
                     $('#transcodeStreamOutput').val(
                         'Source: ' + file.name + '\n'
+                        + 'Source observed Transfer Syntax: ' + String(sourceObservedTransferSyntax ?? 'unknown') + '\n'
                         + 'Output: ' + outputFileName + '\n'
                         + 'Round-trip enabled: ' + String(roundTripEnabled) + '\n'
                         + 'Stage 1 target Transfer Syntax: ' + targetTransferSyntaxID + '\n'
@@ -1697,6 +1875,18 @@
                         }
                     }
 
+                    var jpegLsUnavailable = (
+                        String(err?.message ?? '').toLowerCase().includes('jpeg-ls decoding failed')
+                        || String(err?.message ?? '').toLowerCase().includes('jpeg-ls factory export is unavailable')
+                        || String(err?.message ?? '').toLowerCase().includes('jpeg-ls module does not expose')
+                    );
+
+                    if (jpegLsUnavailable == true) {
+                        message += '\n\nNote: JPEG-LS source decoding is enabled, but no JPEG-LS runtime/backend is configured. '
+                            + 'Provide a JPEG-LS module/factory (for example via globalThis.EASIJpegLsModule or globalThis.EASIJpegLsFactory), '
+                            + 'or install a browser runtime package such as @cornerstonejs/codec-charls for kitchen-sink auto-loading.';
+                    }
+
                     $('#transcodeStreamOutput').val(
                         message
                     );
@@ -1711,7 +1901,7 @@
             });
 
             // Handle Extract Assets File
-            $('#extractAssets').on('click', function () {
+            $('#extractAssets').on('click', async function () {
 
                 // Cleare the console
                 console.clear();
@@ -1729,12 +1919,25 @@
                 var url = URL.createObjectURL(file);
                 var metadataOutput = [];
                 var hasSourceDiagnostics = false;
+                var sourceObservedTransferSyntax = null;
 
-                const pipeline = applyDicomDataValidation(
-                    EASI.pipelineBuilder()
-                        .fromHttpStream()
-                        .ofDicomData()
-                ).toAssets({
+                try {
+
+                    try {
+                        var sourceProbeBytes = new Uint8Array(await file.arrayBuffer());
+                        sourceObservedTransferSyntax = await inspectTransferSyntaxFromBytes(sourceProbeBytes);
+                    }
+                    catch (probeError) {
+                        console.warn('Unable to inspect source transfer syntax prior to asset extraction.', probeError);
+                    }
+
+                    await ensureSourceDecoderRuntimes(sourceObservedTransferSyntax);
+
+                    const pipeline = applyDicomDataValidation(
+                        EASI.pipelineBuilder()
+                            .fromHttpStream()
+                            .ofDicomData()
+                    ).toAssets({
                             metadata: {
                                 mapping: newFhirImagingStudyMapping(),
                                 onMetadata: async function (metadata, scope) {
@@ -1771,29 +1974,62 @@
                                     await yieldToBrowserFrame();
                                 }
                             }
-                        })
-                .build();
+                            })
+                    .build();
 
-                processWithTiming(pipeline, url, null, "Extract Assets")
-                    .then(result => {
+                    var result = await processWithTiming(pipeline, url, null, "Extract Assets");
 
-                        var assets = Array.isArray(result) ? result[0] : result;
+                    var assets = Array.isArray(result) ? result[0] : result;
 
-                        console.log(assets);
+                    console.log(assets);
 
-                        if ((hasSourceDiagnostics == false) && (assets?.instance != null)) {
-                            $('#assetsSourceDiagnostics').val(formatAssetsSourceDiagnostics(assets.instance));
-                            hasSourceDiagnostics = true;
-                        }
+                    if ((hasSourceDiagnostics == false) && (assets?.instance != null)) {
+                        $('#assetsSourceDiagnostics').val(formatAssetsSourceDiagnostics(assets.instance));
+                        hasSourceDiagnostics = true;
+                    }
 
-                    })
-                    .catch(err => console.log(err))
-                    .finally(() => URL.revokeObjectURL(url));
+                }
+                catch (err) {
+
+                    var message = (
+                        'Asset extraction failed.\n'
+                        + (err?.message ?? String(err))
+                    );
+
+                    var jpeg2000Unavailable = (
+                        String(err?.message ?? '').toLowerCase().includes('jpeg 2000 encoding is unavailable')
+                        || String(err?.message ?? '').toLowerCase().includes('jpeg 2000 decoding is unavailable')
+                        || String(err?.message ?? '').toLowerCase().includes('openjpeg factory export is unavailable')
+                    );
+                    if (jpeg2000Unavailable == true) {
+                        message += '\n\nNote: Source appears to require JPEG 2000/HTJ2K decoding, but no OpenJPEG runtime/backend is configured.';
+                    }
+
+                    var jpegLsUnavailable = (
+                        String(err?.message ?? '').toLowerCase().includes('jpeg-ls decoding failed')
+                        || String(err?.message ?? '').toLowerCase().includes('jpeg-ls factory export is unavailable')
+                        || String(err?.message ?? '').toLowerCase().includes('jpeg-ls module does not expose')
+                    );
+                    if (jpegLsUnavailable == true) {
+                        message += '\n\nNote: Source appears to require JPEG-LS decoding, but no JPEG-LS runtime/backend is configured.';
+                    }
+
+                    if (sourceObservedTransferSyntax != null) {
+                        message += '\n\nSource observed Transfer Syntax: ' + String(sourceObservedTransferSyntax);
+                    }
+
+                    $('#assetsSourceDiagnostics').val(message);
+                    console.log(err);
+
+                }
+                finally {
+                    URL.revokeObjectURL(url);
+                }
 
             });
 
             // Handle Asset Archive File
-            $('#createAssetArchive').on('click', function () {
+            $('#createAssetArchive').on('click', async function () {
 
                 console.clear();
 
@@ -1806,12 +2042,25 @@
                 $('#assetArchiveOutput').val('');
 
                 var url = URL.createObjectURL(file);
+                var sourceObservedTransferSyntax = null;
 
-                const pipeline = applyDicomDataValidation(
-                    EASI.pipelineBuilder()
-                        .fromHttpStream()
-                        .ofDicomData()
-                ).toAssetArchive({
+                try {
+
+                    try {
+                        var sourceProbeBytes = new Uint8Array(await file.arrayBuffer());
+                        sourceObservedTransferSyntax = await inspectTransferSyntaxFromBytes(sourceProbeBytes);
+                    }
+                    catch (probeError) {
+                        console.warn('Unable to inspect source transfer syntax prior to asset archive creation.', probeError);
+                    }
+
+                    await ensureSourceDecoderRuntimes(sourceObservedTransferSyntax);
+
+                    const pipeline = applyDicomDataValidation(
+                        EASI.pipelineBuilder()
+                            .fromHttpStream()
+                            .ofDicomData()
+                    ).toAssetArchive({
                             metadata: {
                                 mapping: newFhirImagingStudyMapping()
                             },
@@ -1822,33 +2071,62 @@
                                     encode: 'tiff'
                                 }
                             }
-                        })
-                .build();
+                            })
+                    .build();
 
-                processWithTiming(pipeline, url, null, "Create Asset Archive")
-                    .then(function (result) {
+                    var result = await processWithTiming(pipeline, url, null, "Create Asset Archive");
+                    var archiveBytes = Array.isArray(result) ? result[0] : result;
+                    downloadBytesAsFile(archiveBytes, buildArchiveFileName(file.name));
 
-                        var archiveBytes = Array.isArray(result) ? result[0] : result;
-                        downloadBytesAsFile(archiveBytes, buildArchiveFileName(file.name));
+                    $('#assetArchiveOutput').val(
+                        'Archive created successfully.\n'
+                        + 'File: ' + buildArchiveFileName(file.name) + '\n'
+                        + 'Size: ' + (archiveBytes?.length ?? 0) + ' bytes'
+                        + '\nSource observed Transfer Syntax: ' + String(sourceObservedTransferSyntax ?? 'unknown')
+                    );
 
-                        $('#assetArchiveOutput').val(
-                            'Archive created successfully.\n'
-                            + 'File: ' + buildArchiveFileName(file.name) + '\n'
-                            + 'Size: ' + (archiveBytes?.length ?? 0) + ' bytes'
-                        );
-
-                        console.log({
-                            archiveFileName: buildArchiveFileName(file.name),
-                            archiveSize: archiveBytes?.length ?? 0
-                        });
-
-                    })
-                    .catch(function (err) {
-                        console.log(err);
-                    })
-                    .finally(function () {
-                        URL.revokeObjectURL(url);
+                    console.log({
+                        archiveFileName: buildArchiveFileName(file.name),
+                        archiveSize: archiveBytes?.length ?? 0
                     });
+
+                }
+                catch (err) {
+
+                    var message = (
+                        'Asset archive creation failed.\n'
+                        + (err?.message ?? String(err))
+                    );
+
+                    var jpeg2000Unavailable = (
+                        String(err?.message ?? '').toLowerCase().includes('jpeg 2000 encoding is unavailable')
+                        || String(err?.message ?? '').toLowerCase().includes('jpeg 2000 decoding is unavailable')
+                        || String(err?.message ?? '').toLowerCase().includes('openjpeg factory export is unavailable')
+                    );
+                    if (jpeg2000Unavailable == true) {
+                        message += '\n\nNote: Source appears to require JPEG 2000/HTJ2K decoding, but no OpenJPEG runtime/backend is configured.';
+                    }
+
+                    var jpegLsUnavailable = (
+                        String(err?.message ?? '').toLowerCase().includes('jpeg-ls decoding failed')
+                        || String(err?.message ?? '').toLowerCase().includes('jpeg-ls factory export is unavailable')
+                        || String(err?.message ?? '').toLowerCase().includes('jpeg-ls module does not expose')
+                    );
+                    if (jpegLsUnavailable == true) {
+                        message += '\n\nNote: Source appears to require JPEG-LS decoding, but no JPEG-LS runtime/backend is configured.';
+                    }
+
+                    if (sourceObservedTransferSyntax != null) {
+                        message += '\n\nSource observed Transfer Syntax: ' + String(sourceObservedTransferSyntax);
+                    }
+
+                    $('#assetArchiveOutput').val(message);
+                    console.log(err);
+
+                }
+                finally {
+                    URL.revokeObjectURL(url);
+                }
 
             });
 

@@ -34,6 +34,10 @@ export default class EncodedData extends Data {
      */
     convert(newTransferSyntax) {
 
+        // Ignore invalid transfer syntax values defensively.
+        if ((newTransferSyntax == null) || (typeof newTransferSyntax !== 'object'))
+            return;
+
         // Check for NOOP
         if (this.transferSyntax == newTransferSyntax)
             return;

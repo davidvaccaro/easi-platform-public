@@ -211,8 +211,19 @@ export default class Tag {
 
 		// Validate the tag
 		if (tag == null) {
-			console.log("Failed to find tag: " + id);
-			return null;
+			tag = new Tag({
+				ID: id,
+				Tag: '(' + groupKey + ', ' + elementKey + ')',
+				Group: group,
+				Element: element,
+				VR: ValueRepresentations.UN,
+				VM: { Exact: 1 },
+				Name: 'Unknown Tag',
+				IsProtected: false,
+				BasicProtectionAction: null,
+				IsRetired: false,
+				IsPrivate: (Tag.isPrivateCreatorIDTag(group, element) || Tag.isPrivateTag(group, element))
+			});
 		}
 
 		// Return the tag POJO
