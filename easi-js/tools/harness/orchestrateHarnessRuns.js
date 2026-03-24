@@ -196,7 +196,7 @@ function printHelp() {
     console.log('  --file-timeout-ms <n>       Per-file hard timeout (default: 8000).');
     console.log('  --validation-goal <goal>    permissive|strict (default: permissive).');
     console.log(`  --transcode-target <uid>    Target syntax UID (default: ${TransferSyntax.ExplicitVRLittleEndian.ID}).`);
-    console.log('  --thumbnail-limit <n>       Thumbnail limit per chunk run (default: 250).');
+    console.log('  --thumbnail-limit <n>       Thumbnail limit per chunk run (default: 25000).');
     console.log('  --progress-every <n>        Progress interval for each chunk run (default: 50).');
     console.log('  --checkpoint-every <n>      Checkpoint interval for each chunk run (default: 250).');
     console.log('  --continue-on-error <bool>  Continue chunk sequence if one chunk fails (default: true).');
@@ -229,7 +229,7 @@ function parseArguments(argv) {
         fileTimeoutMs: 8000,
         validationGoal: 'permissive',
         transcodeTargetSyntax: TransferSyntax.ExplicitVRLittleEndian.ID,
-        thumbnailLimit: 250,
+        thumbnailLimit: 25000,
         progressEvery: 50,
         checkpointEvery: 250,
         continueOnError: true,
@@ -336,7 +336,7 @@ function parseArguments(argv) {
         }
 
         if (token == '--thumbnail-limit') {
-            options.thumbnailLimit = toNumber(argv[++i], 250);
+            options.thumbnailLimit = toNumber(argv[++i], 25000);
             continue;
         }
 
@@ -415,7 +415,7 @@ function parseArguments(argv) {
         options.fileTimeoutMs = Math.max(1, Math.floor(options.fileTimeoutMs));
 
     if (Number.isFinite(options.thumbnailLimit) == false)
-        options.thumbnailLimit = 250;
+        options.thumbnailLimit = 25000;
     else
         options.thumbnailLimit = Math.max(0, Math.floor(options.thumbnailLimit));
 

@@ -1263,7 +1263,7 @@ function printHelp() {
     console.log('  --exclude-match <regex>     Regex exclusion applied to absolute file paths.');
     console.log('  --include-ext <csv>         Restrict file extensions (example: dcm,ima,new).');
     console.log('  --all-files <bool>          Include all non-ignored file extensions (default: true).');
-    console.log('  --thumbnail-limit <n>       Max extracted frame thumbnails (default: 250).');
+    console.log('  --thumbnail-limit <n>       Max extracted frame thumbnails (default: 25000).');
     console.log('  --progress-every <n>        Progress logging interval (default: 25).');
     console.log('  --checkpoint-every <n>      Checkpoint summary write interval in processed files (default: 250).');
     console.log('  --skip-on-parse-fail <bool> Skip downstream scenarios when parse fails (default: true).');
@@ -1294,7 +1294,7 @@ function parseArguments(argv) {
         excludeMatchPattern: null,
         includeExtensions: null,
         allFiles: true,
-        thumbnailLimit: 250,
+        thumbnailLimit: 25000,
         progressEvery: 25,
         checkpointEvery: 250,
         skipOnParseFailure: true,
@@ -1374,7 +1374,7 @@ function parseArguments(argv) {
         }
 
         if (token == '--thumbnail-limit') {
-            options.thumbnailLimit = Math.max(0, toNumber(argv[++i], 250));
+            options.thumbnailLimit = Math.max(0, toNumber(argv[++i], 25000));
             continue;
         }
 

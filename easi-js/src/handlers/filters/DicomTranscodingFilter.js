@@ -114,6 +114,9 @@ export default class DicomTranscodingFilter {
             pixelRepresentation: 0,
             planarConfiguration: 0,
             photometricInterpretation: null,
+            redPaletteColorLookupTableDescriptor: null,
+            greenPaletteColorLookupTableDescriptor: null,
+            bluePaletteColorLookupTableDescriptor: null,
             redPaletteColorLookupTableData: null,
             greenPaletteColorLookupTableData: null,
             bluePaletteColorLookupTableData: null,
@@ -126,6 +129,7 @@ export default class DicomTranscodingFilter {
                 chunks: []
             },
             deferredSamplesPerPixelAttribute: null,
+            deferredPhotometricInterpretationAttribute: null,
             hasForwardedPlanarConfiguration: false,
             metaAttributes: [],
             metaTransferSyntaxLengthDelta: 0,
@@ -156,6 +160,9 @@ export default class DicomTranscodingFilter {
         state.pixelRepresentation = 0;
         state.planarConfiguration = 0;
         state.photometricInterpretation = null;
+        state.redPaletteColorLookupTableDescriptor = null;
+        state.greenPaletteColorLookupTableDescriptor = null;
+        state.bluePaletteColorLookupTableDescriptor = null;
         state.redPaletteColorLookupTableData = null;
         state.greenPaletteColorLookupTableData = null;
         state.bluePaletteColorLookupTableData = null;
@@ -168,6 +175,7 @@ export default class DicomTranscodingFilter {
             chunks: []
         };
         state.deferredSamplesPerPixelAttribute = null;
+        state.deferredPhotometricInterpretationAttribute = null;
         state.hasForwardedPlanarConfiguration = false;
         state.metaAttributes = [];
         state.metaTransferSyntaxLengthDelta = 0;
@@ -956,6 +964,21 @@ export default class DicomTranscodingFilter {
             return;
         }
 
+        if (tagID == Tag.RedPaletteColorLookupTableDescriptor.ID) {
+            state.redPaletteColorLookupTableDescriptor = this.readPaletteDescriptor(attribute);
+            return;
+        }
+
+        if (tagID == Tag.GreenPaletteColorLookupTableDescriptor.ID) {
+            state.greenPaletteColorLookupTableDescriptor = this.readPaletteDescriptor(attribute);
+            return;
+        }
+
+        if (tagID == Tag.BluePaletteColorLookupTableDescriptor.ID) {
+            state.bluePaletteColorLookupTableDescriptor = this.readPaletteDescriptor(attribute);
+            return;
+        }
+
         if (tagID == Tag.RedPaletteColorLookupTableData.ID) {
             state.redPaletteColorLookupTableData = attribute.access?.()?.slice?.(0) ?? attribute.value ?? null;
             return;
@@ -1034,17 +1057,9 @@ export default class DicomTranscodingFilter {
      * @returns {boolean} TRUE when metadata should be preserved.
      */
     shouldPreserveLosslessPixelMetadata(state) {
-        if (this.isJpeg2000TransferSyntax(this.targetTransferSyntax) != true)
-            return false;
-
-        if (state?.sourceTransferSyntax == null)
-            return false;
-
-        if (this.isPixelPayloadCompressedTransferSyntax(state.sourceTransferSyntax) == true)
-            return false;
-
-        var samplesPerPixel = Math.max(1, this.toInteger(state?.samplesPerPixel, 1));
-        return (samplesPerPixel == 1);
+        // Preserve source pixel metadata only when the native monochrome path is used.
+        // RGBA normalization paths should emit normalized MONOCHROME2-compatible metadata.
+        return (this.canUseNativeMonochromePath(state) == true);
     }
 
     /**
@@ -1202,6 +1217,53 @@ export default class DicomTranscodingFilter {
 
         var sourcePhotometric = String(state?.photometricInterpretation ?? "").trim().toUpperCase();
         if (sourcePhotometric.length > 0)
+            return true;
+
+        return (this.isPixelDataAttribute(currentAttribute) == true);
+
+    }
+
+    /**
+     * Determine whether PhotometricInterpretation override should be deferred until source pixel depth is known.
+     * This avoids premature MONOCHROME2 normalization before native 16-bit monochrome pathway is resolved.
+     * @param {object} state Runtime state.
+     * @returns {boolean} TRUE when deferral is needed.
+     */
+    shouldDeferPhotometricInterpretationOverride(state) {
+
+        if (this.isJpeg2000TransferSyntax(this.targetTransferSyntax) != true)
+            return false;
+
+        var sourceTransferSyntax = this.resolveTransferSyntax(state?.sourceTransferSyntax);
+        if (this.isPixelPayloadCompressedTransferSyntax(sourceTransferSyntax) == true)
+            return false;
+
+        var sourceSamples = this.toInteger(state?.samplesPerPixel, 1);
+        if (sourceSamples > 1)
+            return false;
+
+        var sourcePhotometric = String(state?.photometricInterpretation ?? "")
+            .trim()
+            .toUpperCase();
+        if ((sourcePhotometric != "MONOCHROME1")
+            && (sourcePhotometric != "MONOCHROME2"))
+            return false;
+
+        var bitsAllocated = this.toInteger(state?.bitsAllocated, 0);
+        return (bitsAllocated <= 0);
+
+    }
+
+    /**
+     * Determine whether deferred PhotometricInterpretation can be safely emitted now.
+     * @param {object} state Runtime state.
+     * @param {object} currentAttribute Current attribute being completed.
+     * @returns {boolean} TRUE when deferred PhotometricInterpretation should be flushed.
+     */
+    canFlushDeferredPhotometricInterpretation(state, currentAttribute) {
+
+        var bitsAllocated = this.toInteger(state?.bitsAllocated, 0);
+        if (bitsAllocated > 0)
             return true;
 
         return (this.isPixelDataAttribute(currentAttribute) == true);
@@ -2024,6 +2086,273 @@ export default class DicomTranscodingFilter {
     }
 
     /**
+     * Read one palette descriptor triplet from an attribute.
+     * @param {object | null} attribute Descriptor attribute.
+     * @returns {{ entries: number, firstMapped: number, bitsPerEntry: number } | null}
+     */
+    readPaletteDescriptor(attribute) {
+
+        if (attribute == null)
+            return null;
+
+        var bytes = attribute.access?.();
+        if ((bytes instanceof Uint8Array) && (bytes.length >= 6)) {
+            var isLittleEndian = (attribute?.transferSyntax?.IsLittleEndian != false);
+            var view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+            var entries = view.getUint16(0, isLittleEndian);
+            var firstMapped = view.getInt16(2, isLittleEndian);
+            var bitsPerEntry = view.getUint16(4, isLittleEndian);
+
+            if (entries == 0)
+                entries = 65536;
+            if (bitsPerEntry == 0)
+                bitsPerEntry = 16;
+
+            return { entries, firstMapped, bitsPerEntry };
+        }
+
+        var entryValue = this.toInteger(attribute?.value, null);
+        if (entryValue == null)
+            return null;
+
+        if (entryValue == 0)
+            entryValue = 65536;
+
+        return {
+            entries: entryValue,
+            firstMapped: 0,
+            bitsPerEntry: 16
+        };
+
+    }
+
+    /**
+     * Resolve one effective palette descriptor from runtime state.
+     * @param {object} state Runtime state.
+     * @returns {{ entries: number, firstMapped: number, bitsPerEntry: number } | null}
+     */
+    resolvePaletteDescriptor(state) {
+
+        var descriptor = state?.redPaletteColorLookupTableDescriptor
+            ?? state?.greenPaletteColorLookupTableDescriptor
+            ?? state?.bluePaletteColorLookupTableDescriptor
+            ?? null;
+
+        if (descriptor != null)
+            return descriptor;
+
+        var fallbackBytes = state?.redPaletteColorLookupTableData
+            ?? state?.greenPaletteColorLookupTableData
+            ?? state?.bluePaletteColorLookupTableData
+            ?? null;
+
+        if ((fallbackBytes instanceof Uint8Array) != true)
+            return null;
+
+        var entries = ((fallbackBytes.length % 2) == 0)
+            ? Math.floor(fallbackBytes.length / 2)
+            : fallbackBytes.length;
+
+        return {
+            entries: Math.max(1, entries),
+            firstMapped: 0,
+            bitsPerEntry: ((fallbackBytes.length % 2) == 0) ? 16 : 8
+        };
+
+    }
+
+    /**
+     * Scale one LUT sample to byte precision.
+     * @param {number} sample Source sample value.
+     * @param {number} bitsPerEntry Bits per LUT entry.
+     * @returns {number} One 8-bit sample.
+     */
+    scaleLookupSample(sample, bitsPerEntry) {
+
+        var bits = Math.max(1, Math.min(16, this.toInteger(bitsPerEntry, 8)));
+        var value = Number(sample);
+        if (Number.isFinite(value) == false)
+            value = 0;
+
+        if (bits <= 8) {
+            if (value < 0)
+                return 0;
+            if (value > 255)
+                return 255;
+            return Math.round(value);
+        }
+
+        var maxValue = ((1 << bits) - 1);
+        if (maxValue <= 0)
+            return 0;
+
+        var normalized = (value / maxValue) * 255;
+        if (normalized < 0)
+            return 0;
+        if (normalized > 255)
+            return 255;
+        return Math.round(normalized);
+
+    }
+
+    /**
+     * Decode direct palette channel data to 8-bit channel values.
+     * @param {Uint8Array | null} bytes Palette bytes.
+     * @param {{ entries: number, bitsPerEntry: number }} descriptor Palette descriptor.
+     * @param {boolean} isLittleEndian Byte order flag.
+     * @returns {Uint8Array | null} One 8-bit palette channel.
+     */
+    decodeDirectPaletteChannel(bytes, descriptor, isLittleEndian) {
+
+        if ((bytes instanceof Uint8Array) == false)
+            return null;
+
+        var entries = Math.max(1, this.toInteger(descriptor?.entries, 1));
+        var bitsPerEntry = Math.max(1, this.toInteger(descriptor?.bitsPerEntry, 8));
+        var channel = new Uint8Array(entries);
+
+        if (bytes.length >= (entries * 2)) {
+            var view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+            for (var index = 0; index < entries; index++) {
+                var sample = view.getUint16((index * 2), isLittleEndian);
+
+                if (bitsPerEntry <= 8) {
+                    // Support both high-byte and low-byte packed 8-bit LUT forms.
+                    sample = (sample > 255) ? (sample >> 8) : (sample & 0xFF);
+                }
+
+                channel[index] = this.scaleLookupSample(sample, bitsPerEntry);
+            }
+            return channel;
+        }
+
+        var count = Math.min(entries, bytes.length);
+        for (var byteIndex = 0; byteIndex < count; byteIndex++) {
+            channel[byteIndex] = this.scaleLookupSample(bytes[byteIndex], bitsPerEntry);
+        }
+
+        var padValue = (count > 0) ? channel[count - 1] : 0;
+        for (var fillIndex = count; fillIndex < entries; fillIndex++) {
+            channel[fillIndex] = padValue;
+        }
+
+        return channel;
+
+    }
+
+    /**
+     * Resolve PALETTE COLOR lookup channels from runtime state.
+     * @param {object} state Runtime state.
+     * @returns {{ red: Uint8Array, green: Uint8Array, blue: Uint8Array, firstMapped: number } | null}
+     */
+    resolvePaletteChannels(state) {
+
+        var descriptor = this.resolvePaletteDescriptor(state);
+        if (descriptor == null)
+            return null;
+
+        var isLittleEndian = (state?.sourceTransferSyntax?.IsLittleEndian != false);
+
+        var red = this.decodeDirectPaletteChannel(
+            state?.redPaletteColorLookupTableData ?? null,
+            descriptor,
+            isLittleEndian
+        );
+        if (red == null)
+            return null;
+
+        var green = this.decodeDirectPaletteChannel(
+            state?.greenPaletteColorLookupTableData ?? null,
+            descriptor,
+            isLittleEndian
+        ) ?? red;
+
+        var blue = this.decodeDirectPaletteChannel(
+            state?.bluePaletteColorLookupTableData ?? null,
+            descriptor,
+            isLittleEndian
+        ) ?? red;
+
+        return {
+            red,
+            green,
+            blue,
+            firstMapped: this.toInteger(descriptor.firstMapped, 0)
+        };
+
+    }
+
+    /**
+     * Decode one uncompressed PALETTE COLOR frame to RGBA.
+     * @param {object} state Runtime state.
+     * @param {Uint8Array} frameBytes Source frame bytes.
+     * @param {Uint8Array} rgba Destination RGBA bytes.
+     * @returns {boolean} TRUE when decode succeeds.
+     */
+    decodePaletteColorFrameToRGBA(state, frameBytes, rgba) {
+
+        var channels = this.resolvePaletteChannels(state);
+        if (channels == null)
+            return false;
+
+        var rows = Math.max(1, this.toInteger(state.rows, 1));
+        var columns = Math.max(1, this.toInteger(state.columns, 1));
+        var pixelCount = (rows * columns);
+        var bitsAllocated = Math.max(1, this.toInteger(state.bitsAllocated, 8));
+        var bitsStored = Math.max(1, this.toInteger(state.bitsStored ?? bitsAllocated, bitsAllocated));
+        var littleEndian = (state?.sourceTransferSyntax?.IsLittleEndian != false);
+        var firstMapped = this.toInteger(channels.firstMapped, 0);
+        var mask = (bitsStored >= 16) ? 0xFFFF : ((1 << bitsStored) - 1);
+
+        if (bitsAllocated <= 8) {
+            for (var pixelIndex8 = 0; pixelIndex8 < pixelCount; pixelIndex8++) {
+                var sample8 = (frameBytes[pixelIndex8] ?? 0) & mask;
+                var lutIndex8 = (sample8 - firstMapped);
+                if (lutIndex8 < 0)
+                    lutIndex8 = 0;
+                if (lutIndex8 >= channels.red.length)
+                    lutIndex8 = (channels.red.length - 1);
+
+                var destinationOffset8 = (pixelIndex8 * 4);
+                rgba[destinationOffset8 + 0] = channels.red[lutIndex8] ?? 0;
+                rgba[destinationOffset8 + 1] = channels.green[lutIndex8] ?? (channels.red[lutIndex8] ?? 0);
+                rgba[destinationOffset8 + 2] = channels.blue[lutIndex8] ?? (channels.red[lutIndex8] ?? 0);
+                rgba[destinationOffset8 + 3] = 255;
+            }
+            return true;
+        }
+
+        if (bitsAllocated == 16) {
+            for (var pixelIndex16 = 0; pixelIndex16 < pixelCount; pixelIndex16++) {
+                var sourceOffset16 = (pixelIndex16 * 2);
+                if ((sourceOffset16 + 1) >= frameBytes.length)
+                    break;
+
+                var sample16 = littleEndian
+                    ? (frameBytes[sourceOffset16] | (frameBytes[sourceOffset16 + 1] << 8))
+                    : ((frameBytes[sourceOffset16] << 8) | frameBytes[sourceOffset16 + 1]);
+                sample16 = (sample16 & mask);
+
+                var lutIndex16 = (sample16 - firstMapped);
+                if (lutIndex16 < 0)
+                    lutIndex16 = 0;
+                if (lutIndex16 >= channels.red.length)
+                    lutIndex16 = (channels.red.length - 1);
+
+                var destinationOffset16 = (pixelIndex16 * 4);
+                rgba[destinationOffset16 + 0] = channels.red[lutIndex16] ?? 0;
+                rgba[destinationOffset16 + 1] = channels.green[lutIndex16] ?? (channels.red[lutIndex16] ?? 0);
+                rgba[destinationOffset16 + 2] = channels.blue[lutIndex16] ?? (channels.red[lutIndex16] ?? 0);
+                rgba[destinationOffset16 + 3] = 255;
+            }
+            return true;
+        }
+
+        return false;
+
+    }
+
+    /**
      * Decode one source frame bytes to RGBA.
      * @param {object} state Runtime state.
      * @param {Uint8Array} frameBytes Source frame bytes.
@@ -2052,6 +2381,7 @@ export default class DicomTranscodingFilter {
             decodeOptions.bluePaletteColorLookupTableData = state.bluePaletteColorLookupTableData ?? null;
             this.configureCodecInstance(decoder, decodeOptions);
             decoder.decode(frameBytes, 0, frameBytes.length, rgba, 0);
+            this.normalizeMonochromePolarity(rgba, state);
             return rgba;
 
         }
@@ -2064,6 +2394,13 @@ export default class DicomTranscodingFilter {
         var planarConfiguration = Math.max(0, this.toInteger(state.planarConfiguration, 0));
         var littleEndian = (state?.sourceTransferSyntax?.IsLittleEndian != false);
         var pixelCount = (rows * columns);
+        var photometricInterpretation = String(state?.photometricInterpretation ?? "").trim().toUpperCase();
+
+        if ((samplesPerPixel == 1) && (photometricInterpretation == "PALETTE COLOR")) {
+            if (this.decodePaletteColorFrameToRGBA(state, frameBytes, rgba) == true) {
+                return rgba;
+            }
+        }
 
         if ((samplesPerPixel == 1) && (bitsAllocated == 8)) {
             for (var i = 0; i < pixelCount; i++) {
@@ -2074,6 +2411,7 @@ export default class DicomTranscodingFilter {
                 rgba[destinationOffset + 2] = gray;
                 rgba[destinationOffset + 3] = 255;
             }
+            this.normalizeMonochromePolarity(rgba, state);
             return rgba;
         }
 
@@ -2116,6 +2454,7 @@ export default class DicomTranscodingFilter {
                 rgba[destinationOffset + 3] = 255;
             }
 
+            this.normalizeMonochromePolarity(rgba, state);
             return rgba;
 
         }
@@ -2150,6 +2489,49 @@ export default class DicomTranscodingFilter {
             "Unsupported uncompressed source pixel layout for transcoding.",
             GeneralErrorCodes.NotImplemented
         );
+
+    }
+
+    /**
+     * Determine whether source monochrome polarity should be normalized to MONOCHROME2 semantics.
+     * @param {object} state Runtime state.
+     * @returns {boolean} TRUE when source polarity is MONOCHROME1.
+     */
+    shouldNormalizeMonochromePolarity(state) {
+
+        if (this.shouldPreserveLosslessPixelMetadata(state) == true)
+            return false;
+
+        var samplesPerPixel = Math.max(1, this.toInteger(state?.samplesPerPixel, 1));
+        if (samplesPerPixel != 1)
+            return false;
+
+        var photometricInterpretation = String(state?.photometricInterpretation ?? "")
+            .trim()
+            .toUpperCase();
+
+        return (photometricInterpretation == "MONOCHROME1");
+
+    }
+
+    /**
+     * Normalize decoded monochrome frame polarity to MONOCHROME2 by inverting RGB channels when needed.
+     * @param {Uint8Array} rgba RGBA frame bytes.
+     * @param {object} state Runtime state.
+     */
+    normalizeMonochromePolarity(rgba, state) {
+
+        if ((rgba instanceof Uint8Array) != true)
+            return;
+
+        if (this.shouldNormalizeMonochromePolarity(state) != true)
+            return;
+
+        for (var byteIndex = 0; (byteIndex + 3) < rgba.length; byteIndex += 4) {
+            rgba[byteIndex + 0] = (255 - (rgba[byteIndex + 0] ?? 0));
+            rgba[byteIndex + 1] = (255 - (rgba[byteIndex + 1] ?? 0));
+            rgba[byteIndex + 2] = (255 - (rgba[byteIndex + 2] ?? 0));
+        }
 
     }
 
@@ -2580,6 +2962,40 @@ export default class DicomTranscodingFilter {
 
     }
 
+    /**
+     * Finalize one captured PixelData attribute by transcoding and forwarding output.
+     * Supports parser flows that complete undefined-length attributes via onAppendAttribute.
+     * @param {object} context Parse context.
+     * @param {object} state Runtime state.
+     * @param {object} attribute PixelData attribute.
+     * @returns {*} Status.
+     */
+    async finalizeCapturedPixelDataAttribute(context, state, attribute) {
+
+        if (this.shouldEmitSyntheticPlanarConfigurationBeforePixelData(state, attribute) == true) {
+            var syntheticPlanarStatus = await this.emitSyntheticPlanarConfiguration(context, state);
+            if (this.isTerminalStatus(syntheticPlanarStatus) == true)
+                return syntheticPlanarStatus;
+        }
+
+        this.updateSourceTransferSyntaxFromAttribute(state, attribute);
+
+        var pixelModeStatus = await this.evaluateMode(context, state);
+        if (this.isTerminalStatus(pixelModeStatus) == true)
+            return pixelModeStatus;
+
+        var transcodeStatus = await this.transcodePixelDataAttribute(context, state, attribute);
+
+        state.pixelData.transcodeActive = false;
+        state.pixelData.sourceAttribute = null;
+        state.pixelData.chunks = [];
+        state.pixelData.bytesSeen = 0;
+        state.pixelData.framesEmitted = 0;
+
+        return transcodeStatus;
+
+    }
+
     async onReset(context) {
         return await this.forward("onReset", context);
     }
@@ -2717,8 +3133,15 @@ export default class DicomTranscodingFilter {
             return Status.CONTINUE;
 
         var state = this.getState(context);
-        if (this.isActivePixelCapture(state, attribute) == true)
+        if (this.isActivePixelCapture(state, attribute) == true) {
+
+            // Undefined-length PixelData may complete through append events instead of end events.
+            if (attribute?.isComplete == true) {
+                return await this.finalizeCapturedPixelDataAttribute(context, state, attribute);
+            }
+
             return Status.CONTINUE;
+        }
 
         return await this.forward("onAppendAttribute", context, attribute);
     }
@@ -2851,6 +3274,31 @@ export default class DicomTranscodingFilter {
 
             if ((state.mode == "transcode")
                 && (this.shouldApplyRgbaPixelMetadataOverride(state) == true)
+                && (attribute?.tag?.ID == Tag.PhotometricInterpretation.ID)
+                && (this.shouldDeferPhotometricInterpretationOverride(state) == true)) {
+
+                state.deferredPhotometricInterpretationAttribute = attribute;
+                return Status.CONTINUE;
+
+            }
+
+            if ((state.mode == "transcode")
+                && (this.shouldApplyRgbaPixelMetadataOverride(state) == true)
+                && (state.deferredPhotometricInterpretationAttribute != null)
+                && (attribute?.tag?.ID != Tag.PhotometricInterpretation.ID)
+                && (this.canFlushDeferredPhotometricInterpretation(state, attribute) == true)) {
+
+                this.applyPixelMetadataOverride(state, state.deferredPhotometricInterpretationAttribute);
+                var deferredPhotometricStatus = await this.forward("onEndAttribute", context, state.deferredPhotometricInterpretationAttribute);
+                if (this.isTerminalStatus(deferredPhotometricStatus) == true)
+                    return deferredPhotometricStatus;
+
+                state.deferredPhotometricInterpretationAttribute = null;
+
+            }
+
+            if ((state.mode == "transcode")
+                && (this.shouldApplyRgbaPixelMetadataOverride(state) == true)
                 && (state.deferredSamplesPerPixelAttribute != null)
                 && (attribute?.tag?.ID != Tag.SamplesPerPixel.ID)
                 && (this.canFlushDeferredSamplesPerPixel(state, attribute) == true)) {
@@ -2865,11 +3313,8 @@ export default class DicomTranscodingFilter {
             }
 
             if (attribute?.tag?.ID == Tag.PixelData?.ID) {
-
-                if (this.shouldEmitSyntheticPlanarConfigurationBeforePixelData(state, attribute) == true) {
-                    var syntheticPlanarStatus = await this.emitSyntheticPlanarConfiguration(context, state);
-                    if (this.isTerminalStatus(syntheticPlanarStatus) == true)
-                        return syntheticPlanarStatus;
+                if (this.isActivePixelCapture(state, attribute) == true) {
+                    return await this.finalizeCapturedPixelDataAttribute(context, state, attribute);
                 }
 
                 this.updateSourceTransferSyntaxFromAttribute(state, attribute);
@@ -2878,14 +3323,10 @@ export default class DicomTranscodingFilter {
                 if (this.isTerminalStatus(pixelModeStatus) == true)
                     return pixelModeStatus;
 
-                if (this.isActivePixelCapture(state, attribute) == true) {
-                    var transcodeStatus = await this.transcodePixelDataAttribute(context, state, attribute);
-
-                    state.pixelData.transcodeActive = false;
-                    state.pixelData.sourceAttribute = null;
-                    state.pixelData.chunks = [];
-
-                    return transcodeStatus;
+                if (this.shouldEmitSyntheticPlanarConfigurationBeforePixelData(state, attribute) == true) {
+                    var syntheticPlanarStatus = await this.emitSyntheticPlanarConfiguration(context, state);
+                    if (this.isTerminalStatus(syntheticPlanarStatus) == true)
+                        return syntheticPlanarStatus;
                 }
 
                 this.applyTransferSyntaxOverride(state, attribute);
@@ -2979,6 +3420,19 @@ export default class DicomTranscodingFilter {
         context = this.ensureState(context);
         var state = this.getState(context);
         state.isInDataSet = false;
+
+        if ((state.mode == "transcode")
+            && (this.shouldApplyRgbaPixelMetadataOverride(state) == true)
+            && (state.deferredPhotometricInterpretationAttribute != null)) {
+
+            this.applyPixelMetadataOverride(state, state.deferredPhotometricInterpretationAttribute);
+            var deferredPhotometricStatus = await this.forward("onEndAttribute", context, state.deferredPhotometricInterpretationAttribute);
+            if (this.isTerminalStatus(deferredPhotometricStatus) == true)
+                return deferredPhotometricStatus;
+
+            state.deferredPhotometricInterpretationAttribute = null;
+
+        }
 
         if ((state.mode == "transcode")
             && (this.shouldApplyRgbaPixelMetadataOverride(state) == true)

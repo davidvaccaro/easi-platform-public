@@ -128,6 +128,100 @@ export default class Binarize {
     }
 
     /**
+     * Determine whether one pixel index belongs to configured peripheral zones.
+     * @param {number} pixelIndex Pixel index.
+     * @param {number} columns Frame columns.
+     * @param {number} rows Frame rows.
+     * @param {object} options Options.
+     * @returns {boolean} TRUE when peripheral.
+     */
+    isPeripheralPixel(pixelIndex, columns, rows, options = {}) {
+
+        var normalizedColumns = Math.max(1, Math.floor(this.toNumeric(columns, 1)));
+        var normalizedRows = Math.max(1, Math.floor(this.toNumeric(rows, 1)));
+        if (pixelIndex < 0)
+            return false;
+
+        var x = (pixelIndex % normalizedColumns);
+        var y = Math.floor(pixelIndex / normalizedColumns);
+        if (y >= normalizedRows)
+            return false;
+
+        var topZoneRatio = this.resolvePercentile(options.topZoneRatio, 0.24);
+        var bottomZoneRatio = this.resolvePercentile(options.bottomZoneRatio, 0.24);
+        var leftZoneRatio = this.resolvePercentile(options.leftZoneRatio, 0.24);
+        var rightZoneRatio = this.resolvePercentile(options.rightZoneRatio, 0.28);
+
+        var topZoneLimit = Math.max(0, Math.floor(normalizedRows * topZoneRatio));
+        var bottomZoneStart = Math.max(0, (normalizedRows - Math.floor(normalizedRows * bottomZoneRatio)));
+        var leftZoneLimit = Math.max(0, Math.floor(normalizedColumns * leftZoneRatio));
+        var rightZoneStart = Math.max(0, (normalizedColumns - Math.floor(normalizedColumns * rightZoneRatio)));
+
+        if (y <= topZoneLimit)
+            return true;
+        if (y >= bottomZoneStart)
+            return true;
+        if (x <= leftZoneLimit)
+            return true;
+        if (x >= rightZoneStart)
+            return true;
+
+        return false;
+
+    }
+
+    /**
+     * Resolve adaptive bright-text channel-delta threshold.
+     * @param {Uint8Array} rgba RGBA bytes.
+     * @param {Uint8Array} luma Luma bytes.
+     * @param {object} thresholds Thresholds.
+     * @param {number} minAlpha Minimum alpha.
+     * @param {number} columns Frame columns.
+     * @param {number} rows Frame rows.
+     * @param {object} options Options.
+     * @returns {number} Threshold.
+     */
+    resolveAdaptiveBrightChannelDeltaThreshold(rgba, luma, thresholds, minAlpha, columns, rows, options = {}) {
+
+        var minSamples = Math.max(8, Math.floor(this.toNumeric(options.autoBrightChannelDeltaMinSamples, 32)));
+        var quantile = this.resolvePercentile(options.autoBrightChannelDeltaQuantile, 0.35);
+        var padding = Math.max(0, Math.floor(this.toNumeric(options.autoBrightChannelDeltaPadding, 8)));
+        var minimum = this.clamp(Math.floor(this.toNumeric(options.autoBrightChannelDeltaMin, 12)), 0, 255);
+        var maximum = this.clamp(Math.floor(this.toNumeric(options.autoBrightChannelDeltaMax, 96)), minimum, 255);
+        var peripheralOnly = (options.autoBrightChannelDeltaPeripheralOnly !== false);
+
+        var histogram = new Uint32Array(256);
+        var sampleCount = 0;
+        for (var index = 0; index < luma.length; index++) {
+            var offset = (index * 4);
+            var alpha = rgba[offset + 3] ?? 255;
+            if (alpha < minAlpha)
+                continue;
+            if (luma[index] < thresholds.high)
+                continue;
+            if ((peripheralOnly === true)
+                && (this.isPeripheralPixel(index, columns, rows, options) !== true)) {
+                continue;
+            }
+
+            var red = rgba[offset + 0] ?? 0;
+            var green = rgba[offset + 1] ?? 0;
+            var blue = rgba[offset + 2] ?? 0;
+            var delta = (Math.max(red, green, blue) - Math.min(red, green, blue));
+            histogram[this.clamp(delta, 0, 255)] += 1;
+            sampleCount += 1;
+        }
+
+        if (sampleCount < minSamples)
+            return maximum;
+
+        var percentileDelta = this.resolvePercentileThreshold(histogram, sampleCount, quantile);
+        var adaptiveThreshold = this.clamp((percentileDelta + padding), minimum, maximum);
+        return adaptiveThreshold;
+
+    }
+
+    /**
      * Resolve binarization thresholds.
      * @param {Uint8Array} luma Luminance bytes.
      * @param {object} options Binarization options.
@@ -183,16 +277,37 @@ export default class Binarize {
      * @param {object} options Binarization options.
      * @returns {Uint8Array} Binary mask (0/1).
      */
-    createMask(rgba, luma, thresholds, options = {}) {
+    createMask(rgba, luma, thresholds, columns, rows, options = {}) {
 
         var detectBrightText = (options.detectBrightText !== false);
         var detectDarkText = (options.detectDarkText !== false);
         var minAlpha = this.clamp(Math.floor(this.toNumeric(options.minAlpha, 8)), 0, 255);
-        var maxBrightChannelDelta = this.clamp(
-            Math.floor(this.toNumeric(options.maxBrightChannelDelta, 48)),
-            0,
-            255
-        );
+        var configuredMaxBrightChannelDelta = this.resolveThreshold(options.maxBrightChannelDelta, null);
+        var autoBrightChannelDeltaEnabled = (options.autoBrightChannelDeltaEnabled !== false);
+        var maxBrightChannelDelta = null;
+
+        if ((detectBrightText == true)
+            && (autoBrightChannelDeltaEnabled == true)) {
+            maxBrightChannelDelta = this.resolveAdaptiveBrightChannelDeltaThreshold(
+                rgba,
+                luma,
+                thresholds,
+                minAlpha,
+                columns,
+                rows,
+                options
+            );
+            if (configuredMaxBrightChannelDelta != null)
+                maxBrightChannelDelta = Math.min(maxBrightChannelDelta, configuredMaxBrightChannelDelta);
+        }
+
+        if (maxBrightChannelDelta == null) {
+            maxBrightChannelDelta = this.clamp(
+                Math.floor(this.toNumeric((configuredMaxBrightChannelDelta ?? 48), 48)),
+                0,
+                255
+            );
+        }
 
         var mask = new Uint8Array(luma.length);
         if ((detectBrightText == false) && (detectDarkText == false))
@@ -251,7 +366,7 @@ export default class Binarize {
         var normalizedRows = Math.max(1, Math.floor(this.toNumeric(rows, 1)));
         var luma = this.buildLuma(rgba);
         var thresholds = this.resolveThresholds(luma, options);
-        var mask = this.createMask(rgba, luma, thresholds, options);
+        var mask = this.createMask(rgba, luma, thresholds, normalizedColumns, normalizedRows, options);
 
         return {
             columns: normalizedColumns,

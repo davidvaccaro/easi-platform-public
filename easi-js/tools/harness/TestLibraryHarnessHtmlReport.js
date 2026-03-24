@@ -924,18 +924,65 @@ function renderRedactionToolPage(options = {}) {
         <div style="margin-bottom:0.4rem;">
             <label><input type="checkbox" id="ocrDetectDarkText" /> Detect Dark Text</label>
             <label style="margin-left:12px;"><input type="checkbox" id="ocrUsePeripheralZones" checked /> Use Peripheral Zones</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="ocrRedactOutsideBounds" /> Redact Outside Imaging Bounds</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="ocrPromoteTopBandFromDetections" /> Promote Top Bands</label>
         </div>
         <div style="margin-bottom:0.4rem;">
-            <label>Min High Threshold <input type="number" id="ocrMinHighThreshold" min="0" max="255" step="1" value="176" style="width:72px;" /></label>
-            <label style="margin-left:8px;">Max Bright Channel Delta <input type="number" id="ocrMaxBrightChannelDelta" min="0" max="255" step="1" value="64" style="width:72px;" /></label>
+            <label><input type="checkbox" id="ocrRejectInsideImagingBounds" checked /> Reject OCR Mostly Inside Imaging Bounds</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="ocrGlyphScoreGateEnabled" checked /> Enable Glyph Score Gate</label>
+            <label style="margin-left:12px;"><input type="checkbox" id="ocrForegroundColorConsistencyGateEnabled" checked /> Enable Foreground Color Gate</label>
         </div>
         <div style="margin-bottom:0.4rem;">
-            <label>Top Zone Ratio <input type="number" id="ocrTopZoneRatio" min="0" max="1" step="0.01" value="0.22" style="width:72px;" /></label>
-            <label style="margin-left:8px;">Bottom Zone Ratio <input type="number" id="ocrBottomZoneRatio" min="0" max="1" step="0.01" value="0.20" style="width:72px;" /></label>
+            <label>Min High Threshold <input type="number" id="ocrMinHighThreshold" min="0" max="255" step="1" value="148" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Max Bright Channel Delta <input type="number" id="ocrMaxBrightChannelDelta" min="0" max="255" step="1" value="255" style="width:72px;" /></label>
+        </div>
+        <div style="margin-bottom:0.4rem;">
+            <label>Top Zone Ratio <input type="number" id="ocrTopZoneRatio" min="0" max="1" step="0.01" value="0.24" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Bottom Zone Ratio <input type="number" id="ocrBottomZoneRatio" min="0" max="1" step="0.01" value="0.24" style="width:72px;" /></label>
         </div>
         <div>
-            <label>Left Zone Ratio <input type="number" id="ocrLeftZoneRatio" min="0" max="1" step="0.01" value="0.20" style="width:72px;" /></label>
-            <label style="margin-left:8px;">Right Zone Ratio <input type="number" id="ocrRightZoneRatio" min="0" max="1" step="0.01" value="0.20" style="width:72px;" /></label>
+            <label>Left Zone Ratio <input type="number" id="ocrLeftZoneRatio" min="0" max="1" step="0.01" value="0.24" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Right Zone Ratio <input type="number" id="ocrRightZoneRatio" min="0" max="1" step="0.01" value="0.28" style="width:72px;" /></label>
+        </div>
+        <div style="margin-top:0.45rem; margin-bottom:0.4rem;">
+            <label>Min Glyph Score <input type="number" id="ocrMinGlyphScore" min="0" max="1" step="0.01" value="0.20" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Min Glyph Score (Inside Imaging) <input type="number" id="ocrMinGlyphScoreInsideImaging" min="0" max="1" step="0.01" value="0.60" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Min Glyph Score (Boundary Ring) <input type="number" id="ocrMinGlyphScoreBoundaryRing" min="0" max="1" step="0.01" value="0.28" style="width:72px;" /></label>
+        </div>
+        <div style="margin-bottom:0.4rem;">
+            <label>Min Inside Overlap For Glyph Gate <input type="number" id="ocrMinInsideOverlapForGlyphGate" min="0" max="1" step="0.01" value="0.35" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Max Inside Overlap Ratio <input type="number" id="ocrMaxOcrInsideImagingOverlapRatio" min="0" max="1" step="0.01" value="0.65" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Max Inside Area Ratio <input type="number" id="ocrMaxOcrInsideImagingAreaRatio" min="0" max="1" step="0.001" value="0.006" style="width:72px;" /></label>
+        </div>
+        <div>
+            <label><input type="checkbox" id="ocrBoundaryRingEnabled" checked /> Enable Boundary Ring</label>
+            <label style="margin-left:8px;">Boundary Ring Width (px) <input type="number" id="ocrBoundaryRingWidth" min="1" max="512" step="1" value="12" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Boundary Ring Width Ratio <input type="number" id="ocrBoundaryRingWidthRatio" min="0" max="1" step="0.001" value="0.025" style="width:72px;" /></label>
+        </div>
+        <div style="margin-top:0.45rem; margin-bottom:0.4rem;">
+            <label>Foreground Luma Window <input type="number" id="ocrForegroundLumaWindow" min="1" max="255" step="1" value="40" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Min Foreground Luma <input type="number" id="ocrMinForegroundLuma" min="0" max="255" step="1" value="96" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Color Quantization Step <input type="number" id="ocrForegroundColorQuantizationStep" min="1" max="255" step="1" value="16" style="width:72px;" /></label>
+        </div>
+        <div style="margin-bottom:0.4rem;">
+            <label>Min Foreground Pixels (Inside) <input type="number" id="ocrMinForegroundPixelCountInsideImaging" min="1" max="1000000" step="1" value="10" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Min Foreground Pixels (Boundary) <input type="number" id="ocrMinForegroundPixelCountBoundaryRing" min="1" max="1000000" step="1" value="6" style="width:72px;" /></label>
+        </div>
+        <div style="margin-bottom:0.4rem;">
+            <label>Max Luma StdDev (Inside) <input type="number" id="ocrMaxForegroundLumaStdDevInsideImaging" min="0" max="255" step="0.1" value="28" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Max Luma StdDev (Boundary) <input type="number" id="ocrMaxForegroundLumaStdDevBoundaryRing" min="0" max="255" step="0.1" value="38" style="width:72px;" /></label>
+        </div>
+        <div style="margin-bottom:0.4rem;">
+            <label>Min Dominant Color Ratio (Inside) <input type="number" id="ocrMinDominantColorRatioInsideImaging" min="0" max="1" step="0.01" value="0.28" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Min Dominant Color Ratio (Boundary) <input type="number" id="ocrMinDominantColorRatioBoundaryRing" min="0" max="1" step="0.01" value="0.20" style="width:72px;" /></label>
+        </div>
+        <div style="margin-bottom:0.4rem;">
+            <label>Min Top-3 Color Coverage (Inside) <input type="number" id="ocrMinTopColorCoverageInsideImaging" min="0" max="1" step="0.01" value="0.46" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Min Top-3 Color Coverage (Boundary) <input type="number" id="ocrMinTopColorCoverageBoundaryRing" min="0" max="1" step="0.01" value="0.34" style="width:72px;" /></label>
+        </div>
+        <div>
+            <label>Max Foreground Palette Ratio (Inside) <input type="number" id="ocrMaxForegroundPaletteRatioInsideImaging" min="0" max="1" step="0.01" value="0.55" style="width:72px;" /></label>
+            <label style="margin-left:8px;">Max Foreground Palette Ratio (Boundary) <input type="number" id="ocrMaxForegroundPaletteRatioBoundaryRing" min="0" max="1" step="0.01" value="0.70" style="width:72px;" /></label>
         </div>
     </div>
 
@@ -966,8 +1013,57 @@ function renderRedactionToolPage(options = {}) {
         </div>
         <div style="margin-bottom:0.5rem;">
             <label>Output File Name <input type="text" id="outputFileName" value="redacted.dcm" style="width:280px;" /></label>
+            <label style="margin-left:8px;"><input type="checkbox" id="streamSaveDirectly" /> Stream Save Directly (File Picker)</label>
         </div>
         <textarea id="redactionLog" rows="12" style="width:100%;" placeholder="Redaction output and concerns..."></textarea>
+    </div>
+
+    <div class="panel">
+        <h2>Preview (Post-Redaction)</h2>
+        <div style="margin-bottom:0.5rem;">
+            <label><input type="checkbox" id="previewEnabled" checked /> Generate Preview</label>
+            <label style="margin-left:8px;">Format
+                <select id="previewFormat">
+                    <option value="jpeg">JPEG</option>
+                    <option value="png" selected>PNG</option>
+                    <option value="tiff">TIFF</option>
+                </select>
+            </label>
+            <label style="margin-left:8px;">Preview Size
+                <select id="previewScalePercent">
+                    <option value="100">100%</option>
+                    <option value="125">125%</option>
+                    <option value="150" selected>150%</option>
+                    <option value="200">200%</option>
+                </select>
+            </label>
+            <label style="margin-left:8px;">Max Frames
+                <input type="number" id="previewMaxFrames" min="1" max="128" step="1" value="12" style="width:72px;" />
+            </label>
+            <button id="clearPreviewButton" style="margin-left:8px;">Clear Preview</button>
+        </div>
+        <div id="previewStatus" style="margin-bottom:0.5rem; font-size:0.85rem; color:#475569;">Preview not generated yet.</div>
+        <div id="previewImageList" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+        <div id="previewComparePanel" style="display:none; margin-top:0.8rem;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:0.4rem;">
+                <div id="previewCompareTitle" style="font-weight:600;">Before/After Compare</div>
+                <button id="previewComparePrev" type="button" style="padding:2px 8px;">Prev</button>
+                <span id="previewCompareFrameLabel" style="font-size:0.85rem; color:#475569;">Frame 1 / 1</span>
+                <button id="previewCompareNext" type="button" style="padding:2px 8px;">Next</button>
+            </div>
+            <div style="margin-bottom:0.4rem;">
+                <label>Split
+                    <input type="range" id="previewCompareSplit" min="0" max="100" step="1" value="50" style="width:220px; vertical-align:middle;" />
+                </label>
+                <span id="previewCompareSplitValue" style="margin-left:6px; font-size:0.85rem; color:#475569;">50%</span>
+            </div>
+            <div id="previewCompareStage" style="position:relative; display:inline-block; border:1px solid #dbe0ea; border-radius:4px; overflow:hidden; background:#000;">
+                <img id="previewCompareOriginal" alt="Original reference" style="display:block;" />
+                <div id="previewCompareMask" style="position:absolute; top:0; left:0; height:100%; overflow:hidden; border-right:2px solid #f59e0b;">
+                    <img id="previewCompareRedacted" alt="Redacted preview" style="display:block;" />
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -978,15 +1074,39 @@ function renderRedactionToolPage(options = {}) {
         const sourceMeta = document.getElementById('redactionSourceMeta');
         const runButton = document.getElementById('runRedactionButton');
         const outputFileNameInput = document.getElementById('outputFileName');
+        const streamSaveDirectlyInput = document.getElementById('streamSaveDirectly');
         const downloadLink = document.getElementById('downloadRedactedLink');
         const redactionLog = document.getElementById('redactionLog');
         const thumbContainer = document.getElementById('redactionThumbContainer');
         const thumbImage = document.getElementById('redactionThumb');
+        const previewEnabledInput = document.getElementById('previewEnabled');
+        const previewFormatInput = document.getElementById('previewFormat');
+        const previewScaleInput = document.getElementById('previewScalePercent');
+        const previewMaxFramesInput = document.getElementById('previewMaxFrames');
+        const clearPreviewButton = document.getElementById('clearPreviewButton');
+        const previewStatus = document.getElementById('previewStatus');
+        const previewImageList = document.getElementById('previewImageList');
+        const previewComparePanel = document.getElementById('previewComparePanel');
+        const previewCompareTitle = document.getElementById('previewCompareTitle');
+        const previewComparePrevButton = document.getElementById('previewComparePrev');
+        const previewCompareNextButton = document.getElementById('previewCompareNext');
+        const previewCompareFrameLabel = document.getElementById('previewCompareFrameLabel');
+        const previewCompareSplitInput = document.getElementById('previewCompareSplit');
+        const previewCompareSplitValue = document.getElementById('previewCompareSplitValue');
+        const previewCompareStage = document.getElementById('previewCompareStage');
+        const previewCompareOriginalImage = document.getElementById('previewCompareOriginal');
+        const previewCompareMask = document.getElementById('previewCompareMask');
+        const previewCompareRedactedImage = document.getElementById('previewCompareRedacted');
         const regionsPanel = document.getElementById('regionsPanel');
         const ocrPanel = document.getElementById('ocrPanel');
 
         const MaxConcernSamples = 250;
         let outputBlobUrl = null;
+        let previewObjectUrls = [];
+        let previewFirstRedactedObjectUrl = null;
+        let previewOriginalFrameUrls = [];
+        let previewRedactedFrameUrls = [];
+        let previewCompareFrameIndex = 0;
 
         function appendLog(message) {
             const line = String(message ?? '');
@@ -997,6 +1117,346 @@ function renderRedactionToolPage(options = {}) {
 
         function clearLog() {
             redactionLog.value = '';
+        }
+
+        function setPreviewStatus(message) {
+            previewStatus.textContent = String(message ?? '');
+        }
+
+        function hideComparePanel() {
+            previewComparePanel.style.display = 'none';
+            previewCompareOriginalImage.removeAttribute('src');
+            previewCompareRedactedImage.removeAttribute('src');
+            previewCompareMask.style.width = '0px';
+            previewCompareSplitValue.textContent = '50%';
+            previewCompareFrameLabel.textContent = 'Frame 0 / 0';
+            previewComparePrevButton.disabled = true;
+            previewCompareNextButton.disabled = true;
+        }
+
+        function updateCompareSplitMask() {
+            if (previewComparePanel.style.display === 'none')
+                return;
+
+            const splitPercent = normalizeInteger(previewCompareSplitInput?.value, 50, 0, 100);
+            const stageWidth = Math.max(1, Math.floor(previewCompareStage.getBoundingClientRect().width));
+            const maskWidth = Math.max(0, Math.floor(stageWidth * (splitPercent / 100)));
+            previewCompareMask.style.width = String(maskWidth) + 'px';
+            previewCompareSplitValue.textContent = String(splitPercent) + '%';
+        }
+
+        function getFrameSourceForIndex(sources, frameIndex, fallbackSource = '') {
+            if (Array.isArray(sources) !== true)
+                return String(fallbackSource ?? '').trim();
+
+            const normalizedIndex = normalizeInteger(frameIndex, 0, 0, null);
+            const candidate = String(sources[normalizedIndex] ?? '').trim();
+            if (candidate.length > 0)
+                return candidate;
+
+            for (let sourceIndex = 0; sourceIndex < sources.length; sourceIndex++) {
+                const source = String(sources[sourceIndex] ?? '').trim();
+                if (source.length > 0)
+                    return source;
+            }
+
+            return String(fallbackSource ?? '').trim();
+        }
+
+        function getCompareFrameCount() {
+            const redactedCount = previewRedactedFrameUrls.length;
+            const originalCount = previewOriginalFrameUrls.length;
+            return Math.max(redactedCount, originalCount, (previewFirstRedactedObjectUrl != null) ? 1 : 0);
+        }
+
+        function setCompareFrame(frameIndex, previewOptions = null) {
+            const frameCount = getCompareFrameCount();
+            if (frameCount <= 0) {
+                hideComparePanel();
+                return;
+            }
+
+            previewCompareFrameIndex = normalizeInteger(frameIndex, 0, 0, Math.max(0, frameCount - 1));
+
+            const fallbackOriginalSource = String(thumbImage?.src ?? '').trim();
+            const originalSource = getFrameSourceForIndex(
+                previewOriginalFrameUrls,
+                previewCompareFrameIndex,
+                fallbackOriginalSource
+            );
+            const redactedSource = getFrameSourceForIndex(
+                previewRedactedFrameUrls,
+                previewCompareFrameIndex,
+                String(previewFirstRedactedObjectUrl ?? '')
+            );
+
+            if ((originalSource.length === 0) || (redactedSource.length === 0)) {
+                hideComparePanel();
+                return;
+            }
+
+            previewCompareOriginalImage.src = originalSource;
+            previewCompareRedactedImage.src = redactedSource;
+            previewCompareOriginalImage.setAttribute('data-preview-image', 'true');
+            previewCompareRedactedImage.setAttribute('data-preview-image', 'true');
+            applyPreviewScaleToImage(previewCompareOriginalImage, previewOptions?.scalePercent ?? previewScaleInput?.value);
+            applyPreviewScaleToImage(previewCompareRedactedImage, previewOptions?.scalePercent ?? previewScaleInput?.value);
+            previewComparePanel.style.display = 'block';
+            previewCompareTitle.textContent = 'Before/After Compare';
+            previewCompareFrameLabel.textContent = 'Frame ' + String(previewCompareFrameIndex + 1) + ' / ' + String(frameCount);
+            previewComparePrevButton.disabled = (previewCompareFrameIndex <= 0);
+            previewCompareNextButton.disabled = (previewCompareFrameIndex >= (frameCount - 1));
+
+            requestAnimationFrame(() => updateCompareSplitMask());
+        }
+
+        function showComparePanel(previewOptions = null) {
+            setCompareFrame(0, previewOptions);
+        }
+
+        function clearPreviewList() {
+            for (let i = 0; i < previewObjectUrls.length; i++) {
+                URL.revokeObjectURL(previewObjectUrls[i]);
+            }
+            previewObjectUrls = [];
+            previewFirstRedactedObjectUrl = null;
+            previewOriginalFrameUrls = [];
+            previewRedactedFrameUrls = [];
+            previewCompareFrameIndex = 0;
+            previewImageList.innerHTML = '';
+            hideComparePanel();
+            setPreviewStatus('Preview cleared.');
+        }
+
+        function normalizePreviewScalePercent(value) {
+            const normalized = normalizeInteger(value, 150, 100, 200);
+            if (normalized === 100)
+                return 100;
+            if (normalized === 125)
+                return 125;
+            if (normalized === 150)
+                return 150;
+            if (normalized === 200)
+                return 200;
+            return 150;
+        }
+
+        function previewScaleFactor(scalePercent) {
+            return (normalizePreviewScalePercent(scalePercent) / 100);
+        }
+
+        function applyPreviewScaleToImage(image, scalePercent) {
+            if (image == null)
+                return;
+            const factor = previewScaleFactor(scalePercent);
+            image.style.width = String(Math.round(320 * factor)) + 'px';
+            image.style.height = 'auto';
+        }
+
+        function applyPreviewScaleToExistingImages(scalePercent) {
+            const images = previewImageList.querySelectorAll('img[data-preview-image=\"true\"]');
+            for (let imageIndex = 0; imageIndex < images.length; imageIndex++) {
+                applyPreviewScaleToImage(images[imageIndex], scalePercent);
+            }
+            applyPreviewScaleToImage(previewCompareOriginalImage, scalePercent);
+            applyPreviewScaleToImage(previewCompareRedactedImage, scalePercent);
+            requestAnimationFrame(() => updateCompareSplitMask());
+        }
+
+        function appendPreviewFrame(frame, fallbackIndex = null, previewOptions = null, kind = 'redacted', includeCard = true) {
+            const bytes = frame?.bytes;
+            if ((bytes == null) || (bytes.length == 0))
+                return;
+
+            const mimeType = String(frame?.mimeType ?? 'image/png');
+            const blob = new Blob([bytes], { type: mimeType });
+            const objectUrl = URL.createObjectURL(blob);
+            previewObjectUrls.push(objectUrl);
+            if ((kind === 'redacted') && (previewFirstRedactedObjectUrl == null))
+                previewFirstRedactedObjectUrl = objectUrl;
+            const frameIndex = Number(frame?.index ?? fallbackIndex ?? 0);
+            const normalizedFrameIndex = normalizeInteger(frameIndex, 0, 0, null);
+
+            if (kind === 'original') {
+                previewOriginalFrameUrls[normalizedFrameIndex] = objectUrl;
+            }
+            else {
+                previewRedactedFrameUrls[normalizedFrameIndex] = objectUrl;
+            }
+
+            if (includeCard === true) {
+                const frameContainer = document.createElement('div');
+                frameContainer.style.display = 'inline-block';
+                frameContainer.style.border = '1px solid #dbe0ea';
+                frameContainer.style.padding = '6px';
+                frameContainer.style.background = '#fafafa';
+                frameContainer.style.borderRadius = '4px';
+
+                const frameTitle = document.createElement('div');
+                frameTitle.textContent = 'Frame ' + String(normalizedFrameIndex + 1);
+                frameTitle.style.fontSize = '12px';
+                frameTitle.style.marginBottom = '4px';
+                frameContainer.appendChild(frameTitle);
+
+                const image = document.createElement('img');
+                image.src = objectUrl;
+                image.alt = 'Preview Frame ' + String(normalizedFrameIndex + 1);
+                image.setAttribute('data-preview-image', 'true');
+                image.style.display = 'block';
+                applyPreviewScaleToImage(image, previewOptions?.scalePercent ?? previewScaleInput?.value);
+                frameContainer.appendChild(image);
+
+                previewImageList.appendChild(frameContainer);
+            }
+        }
+
+        function appendPreviewOriginalReference(previewOptions = null) {
+            const source = String(thumbImage?.src ?? '').trim();
+            if (source.length === 0)
+                return;
+
+            const frameContainer = document.createElement('div');
+            frameContainer.style.display = 'inline-block';
+            frameContainer.style.border = '1px solid #dbe0ea';
+            frameContainer.style.padding = '6px';
+            frameContainer.style.background = '#f7fafc';
+            frameContainer.style.borderRadius = '4px';
+
+            const frameTitle = document.createElement('div');
+            frameTitle.textContent = 'Original (Reference)';
+            frameTitle.style.fontSize = '12px';
+            frameTitle.style.marginBottom = '4px';
+            frameTitle.style.fontWeight = '600';
+            frameContainer.appendChild(frameTitle);
+
+            const image = document.createElement('img');
+            image.src = source;
+            image.alt = 'Original Reference';
+            image.setAttribute('data-preview-image', 'true');
+            image.style.display = 'block';
+            applyPreviewScaleToImage(image, previewOptions?.scalePercent ?? previewScaleInput?.value);
+            frameContainer.appendChild(image);
+
+            previewImageList.appendChild(frameContainer);
+        }
+
+        function getPreviewOptions() {
+            const previewEnabled = (previewEnabledInput?.checked === true);
+            const previewFormat = String(previewFormatInput?.value ?? 'png').trim().toLowerCase();
+            const scalePercent = normalizePreviewScalePercent(previewScaleInput?.value);
+            const maxFrames = normalizeInteger(previewMaxFramesInput?.value, 12, 1, 128);
+            return {
+                enabled: previewEnabled,
+                format: previewFormat,
+                scalePercent,
+                maxFrames
+            };
+        }
+
+        function concatenateChunks(chunks, totalLength) {
+            if (Array.isArray(chunks) == false)
+                return new Uint8Array(0);
+
+            const normalizedTotalLength = normalizeInteger(totalLength, 0, 0, null);
+            if (normalizedTotalLength <= 0)
+                return new Uint8Array(0);
+
+            const bytes = new Uint8Array(normalizedTotalLength);
+            let offset = 0;
+            for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex++) {
+                const chunk = chunks[chunkIndex];
+                const chunkLength = Number(chunk?.length ?? 0);
+                if (chunkLength <= 0)
+                    continue;
+                bytes.set(chunk, offset);
+                offset += chunkLength;
+            }
+            return bytes;
+        }
+
+        function createPreviewFrameSelector(maxFrames) {
+            if (maxFrames <= 1)
+                return 'first';
+
+            return {
+                start: 0,
+                end: (maxFrames - 1),
+                step: 1
+            };
+        }
+
+        async function extractPreviewFramesFromSource(sourceStageBuilder, sourceValue, previewOptions, frameKind = 'redacted', includeCards = false) {
+            let previewFrameCount = 0;
+            const frameSelector = createPreviewFrameSelector(previewOptions.maxFrames);
+
+            const assetsPipeline = sourceStageBuilder
+                .ofDicomData()
+                .toAssets({
+                    payload: {
+                        mode: 'materialize',
+                        frame: {
+                            frames: frameSelector,
+                            decode: 'rgba',
+                            encode: previewOptions.format
+                        },
+                        onFrame: async (frame) => {
+                            appendPreviewFrame(frame, previewFrameCount, previewOptions, frameKind, includeCards);
+                            previewFrameCount += 1;
+                            await new Promise((resolve) => setTimeout(resolve, 0));
+                        }
+                    }
+                })
+                .build();
+
+            await assetsPipeline.process(sourceValue);
+            return previewFrameCount;
+        }
+
+        async function renderPreviewFromDicomBytes(dicomBytes, previewOptions, originalInputSource = null) {
+            if ((dicomBytes instanceof Uint8Array) !== true)
+                throw new Error('Preview source bytes are not available.');
+
+            clearPreviewList();
+            setPreviewStatus('Generating preview frames...');
+            appendPreviewOriginalReference(previewOptions);
+
+            let originalPreviewFrameCount = 0;
+            if (originalInputSource?.mode === 'fetch') {
+                setPreviewStatus('Generating original preview frames from source...');
+                originalPreviewFrameCount = await extractPreviewFramesFromSource(
+                    EASI.pipelineBuilder().fromHttpStream(),
+                    originalInputSource.value,
+                    previewOptions,
+                    'original',
+                    false
+                );
+            }
+            else if (originalInputSource?.mode === 'byte') {
+                setPreviewStatus('Generating original preview frames from source...');
+                originalPreviewFrameCount = await extractPreviewFramesFromSource(
+                    EASI.pipelineBuilder().fromByteStream(),
+                    originalInputSource.value,
+                    previewOptions,
+                    'original',
+                    false
+                );
+            }
+
+            setPreviewStatus('Generating redacted preview frames...');
+            const redactedPreviewFrameCount = await extractPreviewFramesFromSource(
+                EASI.pipelineBuilder().fromByteStream(),
+                dicomBytes,
+                previewOptions,
+                'redacted',
+                true
+            );
+            showComparePanel(previewOptions);
+            setPreviewStatus(
+                'Preview generated: original=' + String(originalPreviewFrameCount)
+                + ', redacted=' + String(redactedPreviewFrameCount)
+                + ' frame(s), format=' + String(previewOptions.format)
+                + ', size=' + String(previewOptions.scalePercent) + '%.'
+            );
         }
 
         function normalizeInteger(value, fallbackValue, minimum = null, maximum = null) {
@@ -1048,12 +1508,51 @@ function renderRedactionToolPage(options = {}) {
             return {
                 detectDarkText: (document.getElementById('ocrDetectDarkText')?.checked === true),
                 usePeripheralZones: (document.getElementById('ocrUsePeripheralZones')?.checked === true),
-                minHighThreshold: normalizeInteger(document.getElementById('ocrMinHighThreshold')?.value, 176, 0, 255),
-                maxBrightChannelDelta: normalizeInteger(document.getElementById('ocrMaxBrightChannelDelta')?.value, 64, 0, 255),
-                topZoneRatio: normalizeDecimal(document.getElementById('ocrTopZoneRatio')?.value, 0.22, 0, 1),
-                bottomZoneRatio: normalizeDecimal(document.getElementById('ocrBottomZoneRatio')?.value, 0.20, 0, 1),
-                leftZoneRatio: normalizeDecimal(document.getElementById('ocrLeftZoneRatio')?.value, 0.20, 0, 1),
-                rightZoneRatio: normalizeDecimal(document.getElementById('ocrRightZoneRatio')?.value, 0.20, 0, 1)
+                redactOutsideImagingBounds: (document.getElementById('ocrRedactOutsideBounds')?.checked === true),
+                promoteTopBandFromDetections: (document.getElementById('ocrPromoteTopBandFromDetections')?.checked === true),
+                rejectOcrInsideImagingBounds: (document.getElementById('ocrRejectInsideImagingBounds')?.checked === true),
+                glyphScoreGateEnabled: (document.getElementById('ocrGlyphScoreGateEnabled')?.checked === true),
+                foregroundColorConsistencyGateEnabled: (document.getElementById('ocrForegroundColorConsistencyGateEnabled')?.checked === true),
+                minHighThreshold: normalizeInteger(document.getElementById('ocrMinHighThreshold')?.value, 148, 0, 255),
+                maxBrightChannelDelta: normalizeInteger(document.getElementById('ocrMaxBrightChannelDelta')?.value, 255, 0, 255),
+                topZoneRatio: normalizeDecimal(document.getElementById('ocrTopZoneRatio')?.value, 0.24, 0, 1),
+                bottomZoneRatio: normalizeDecimal(document.getElementById('ocrBottomZoneRatio')?.value, 0.24, 0, 1),
+                leftZoneRatio: normalizeDecimal(document.getElementById('ocrLeftZoneRatio')?.value, 0.24, 0, 1),
+                rightZoneRatio: normalizeDecimal(document.getElementById('ocrRightZoneRatio')?.value, 0.28, 0, 1),
+                minGlyphScore: normalizeDecimal(document.getElementById('ocrMinGlyphScore')?.value, 0.2, 0, 1),
+                minGlyphScoreInsideImaging: normalizeDecimal(document.getElementById('ocrMinGlyphScoreInsideImaging')?.value, 0.58, 0, 1),
+                minGlyphScoreBoundaryRing: normalizeDecimal(document.getElementById('ocrMinGlyphScoreBoundaryRing')?.value, 0.28, 0, 1),
+                minInsideOverlapForGlyphGate: normalizeDecimal(document.getElementById('ocrMinInsideOverlapForGlyphGate')?.value, 0.3, 0, 1),
+                maxOcrInsideImagingOverlapRatio: normalizeDecimal(document.getElementById('ocrMaxOcrInsideImagingOverlapRatio')?.value, 0.65, 0, 1),
+                maxOcrInsideImagingAreaRatio: normalizeDecimal(document.getElementById('ocrMaxOcrInsideImagingAreaRatio')?.value, 0.006, 0, 1),
+                noBoundsBottomOnlyGuardEnabled: true,
+                noBoundsBottomOnlyMinGlyphScore: 0.45,
+                noBoundsBottomOnlyMinComponentCount: 2,
+                noBoundsBottomOnlyMaxComponentCoverage: 0.45,
+                noBoundsBottomOnlyMaxHeightRatio: 0.035,
+                surroundBackgroundGateEnabled: true,
+                surroundBackgroundCoreOnly: true,
+                surroundBackgroundRingPadding: 3,
+                surroundBackgroundDarkLumaMax: 72,
+                surroundBackgroundMinDarkRatio: 0.55,
+                surroundBackgroundMinSampleCount: 32,
+                surroundBackgroundBypassGlyphScore: 0.8,
+                boundaryRingEnabled: (document.getElementById('ocrBoundaryRingEnabled')?.checked === true),
+                boundaryRingWidth: normalizeInteger(document.getElementById('ocrBoundaryRingWidth')?.value, 12, 1, 4096),
+                boundaryRingWidthRatio: normalizeDecimal(document.getElementById('ocrBoundaryRingWidthRatio')?.value, 0.025, 0, 1),
+                foregroundLumaWindow: normalizeInteger(document.getElementById('ocrForegroundLumaWindow')?.value, 40, 1, 255),
+                minForegroundLuma: normalizeInteger(document.getElementById('ocrMinForegroundLuma')?.value, 96, 0, 255),
+                foregroundColorQuantizationStep: normalizeInteger(document.getElementById('ocrForegroundColorQuantizationStep')?.value, 16, 1, 255),
+                minForegroundPixelCountInsideImaging: normalizeInteger(document.getElementById('ocrMinForegroundPixelCountInsideImaging')?.value, 10, 1, null),
+                minForegroundPixelCountBoundaryRing: normalizeInteger(document.getElementById('ocrMinForegroundPixelCountBoundaryRing')?.value, 6, 1, null),
+                maxForegroundLumaStdDevInsideImaging: normalizeDecimal(document.getElementById('ocrMaxForegroundLumaStdDevInsideImaging')?.value, 28, 0, 255),
+                maxForegroundLumaStdDevBoundaryRing: normalizeDecimal(document.getElementById('ocrMaxForegroundLumaStdDevBoundaryRing')?.value, 38, 0, 255),
+                minDominantColorRatioInsideImaging: normalizeDecimal(document.getElementById('ocrMinDominantColorRatioInsideImaging')?.value, 0.28, 0, 1),
+                minDominantColorRatioBoundaryRing: normalizeDecimal(document.getElementById('ocrMinDominantColorRatioBoundaryRing')?.value, 0.2, 0, 1),
+                minTopColorCoverageInsideImaging: normalizeDecimal(document.getElementById('ocrMinTopColorCoverageInsideImaging')?.value, 0.46, 0, 1),
+                minTopColorCoverageBoundaryRing: normalizeDecimal(document.getElementById('ocrMinTopColorCoverageBoundaryRing')?.value, 0.34, 0, 1),
+                maxForegroundPaletteRatioInsideImaging: normalizeDecimal(document.getElementById('ocrMaxForegroundPaletteRatioInsideImaging')?.value, 0.55, 0, 1),
+                maxForegroundPaletteRatioBoundaryRing: normalizeDecimal(document.getElementById('ocrMaxForegroundPaletteRatioBoundaryRing')?.value, 0.7, 0, 1)
             };
         }
 
@@ -1186,6 +1685,7 @@ function renderRedactionToolPage(options = {}) {
                 appendLog('Mode: ' + String(redactionOptions.mode));
 
                 const startedAt = performance.now();
+                const previewOptions = getPreviewOptions();
 
                 const sourceStage = (inputSource.mode === 'fetch')
                     ? EASI.pipelineBuilder().fromHttpStream()
@@ -1193,10 +1693,13 @@ function renderRedactionToolPage(options = {}) {
 
                 const outputFileName = String(outputFileNameInput.value ?? 'redacted.dcm').trim() || 'redacted.dcm';
                 const canStreamToBrowserFile = (typeof window.showSaveFilePicker === 'function');
+                const useStreamSaveDirectly = ((streamSaveDirectlyInput?.checked === true) && (canStreamToBrowserFile === true));
                 let outputBytes = null;
                 let streamedBytesWritten = 0;
+                let streamedPreviewChunks = [];
+                let streamedPreviewLength = 0;
 
-                if (canStreamToBrowserFile === true) {
+                if (useStreamSaveDirectly === true) {
                     appendLog('Choose destination file...');
 
                     const outputHandle = await window.showSaveFilePicker({
@@ -1222,8 +1725,13 @@ function renderRedactionToolPage(options = {}) {
                                 collectOutput: false,
                                 onChunk: async (chunk) => {
                                     const chunkLength = Number(chunk?.length ?? 0);
-                                    if (chunkLength > 0)
+                                    if (chunkLength > 0) {
                                         streamedBytesWritten += chunkLength;
+                                        if (previewOptions.enabled === true) {
+                                            streamedPreviewChunks.push(new Uint8Array(chunk));
+                                            streamedPreviewLength += chunkLength;
+                                        }
+                                    }
                                     await outputWritable.write(chunk);
                                 }
                             })
@@ -1293,9 +1801,29 @@ function renderRedactionToolPage(options = {}) {
                 else {
                     appendLog('Saved via browser file stream.');
                 }
+
+                let previewSourceBytes = outputBytes;
+                if ((previewSourceBytes == null) && (previewOptions.enabled === true) && (streamedPreviewLength > 0)) {
+                    previewSourceBytes = concatenateChunks(streamedPreviewChunks, streamedPreviewLength);
+                }
+
+                if (previewOptions.enabled === true) {
+                    if ((previewSourceBytes == null) || (previewSourceBytes.length == 0)) {
+                        setPreviewStatus('Preview skipped: redacted bytes are unavailable.');
+                        appendLog('Preview skipped: no redacted bytes available.');
+                    }
+                    else {
+                        appendLog('Generating preview...');
+                        await renderPreviewFromDicomBytes(previewSourceBytes, previewOptions, inputSource);
+                    }
+                }
+                else {
+                    setPreviewStatus('Preview disabled.');
+                }
             }
             catch (error) {
                 appendLog('Error: ' + String(error?.message ?? error));
+                setPreviewStatus('Preview failed: ' + String(error?.message ?? error));
             }
             finally {
                 runButton.disabled = false;
@@ -1308,10 +1836,26 @@ function renderRedactionToolPage(options = {}) {
         sourcePathInput.addEventListener('input', updateSourceMeta);
         sourceFileInput.addEventListener('change', updateSourceMeta);
         runButton.addEventListener('click', runRedaction);
+        clearPreviewButton.addEventListener('click', clearPreviewList);
+        previewScaleInput.addEventListener('change', () => {
+            const scalePercent = normalizePreviewScalePercent(previewScaleInput?.value);
+            applyPreviewScaleToExistingImages(scalePercent);
+            setPreviewStatus('Preview size set to ' + String(scalePercent) + '%.');
+        });
+        previewCompareSplitInput.addEventListener('input', updateCompareSplitMask);
+        previewCompareOriginalImage.addEventListener('load', updateCompareSplitMask);
+        previewCompareRedactedImage.addEventListener('load', updateCompareSplitMask);
+        previewComparePrevButton.addEventListener('click', () => {
+            setCompareFrame(previewCompareFrameIndex - 1);
+        });
+        previewCompareNextButton.addEventListener('click', () => {
+            setCompareFrame(previewCompareFrameIndex + 1);
+        });
 
         applyQueryParameters();
         updateModePanels();
         updateSourceMeta();
+        hideComparePanel();
     </script>
     `;
 

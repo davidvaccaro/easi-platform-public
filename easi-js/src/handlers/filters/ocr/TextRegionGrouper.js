@@ -57,6 +57,40 @@ export default class TextRegionGrouper {
     }
 
     /**
+     * Determine whether two axis-aligned regions intersect.
+     * @param {object} first First region.
+     * @param {object} second Second region.
+     * @returns {boolean} TRUE when regions intersect.
+     */
+    intersects(first, second) {
+
+        if ((first == null) || (second == null))
+            return false;
+
+        var firstLeft = this.toInteger(first?.x, 0);
+        var firstTop = this.toInteger(first?.y, 0);
+        var firstRight = (firstLeft + Math.max(0, this.toInteger(first?.width, 0)));
+        var firstBottom = (firstTop + Math.max(0, this.toInteger(first?.height, 0)));
+
+        var secondLeft = this.toInteger(second?.x, 0);
+        var secondTop = this.toInteger(second?.y, 0);
+        var secondRight = (secondLeft + Math.max(0, this.toInteger(second?.width, 0)));
+        var secondBottom = (secondTop + Math.max(0, this.toInteger(second?.height, 0)));
+
+        if (firstRight <= secondLeft)
+            return false;
+        if (secondRight <= firstLeft)
+            return false;
+        if (firstBottom <= secondTop)
+            return false;
+        if (secondBottom <= firstTop)
+            return false;
+
+        return true;
+
+    }
+
+    /**
      * Determine whether one component intersects configured peripheral search zones.
      * @param {object} component Component.
      * @param {number} columns Frame columns.
@@ -124,12 +158,27 @@ export default class TextRegionGrouper {
         if ((right <= left) || (bottom <= top))
             return null;
 
-        return {
+        var expanded = {
             x: left,
             y: top,
             width: (right - left),
             height: (bottom - top)
         };
+
+        if (region?._componentCount != null)
+            expanded._componentCount = this.toInteger(region._componentCount, 0);
+        if (region?._componentAreaTotal != null) {
+            expanded._componentAreaTotal = this.toInteger(region._componentAreaTotal, 0);
+        }
+        if (region?._componentMeanArea != null) {
+            expanded._componentMeanArea = this.toNumeric(region._componentMeanArea, 0);
+        }
+        if (expanded._componentAreaTotal != null) {
+            var expandedArea = Math.max(1, (expanded.width * expanded.height));
+            expanded._componentCoverage = (expanded._componentAreaTotal / expandedArea);
+        }
+
+        return expanded;
 
     }
 
@@ -216,7 +265,8 @@ export default class TextRegionGrouper {
                 x: this.toInteger(component.x, 0),
                 y: this.toInteger(component.y, 0),
                 width: Math.max(0, this.toInteger(component.width, 0)),
-                height: Math.max(0, this.toInteger(component.height, 0))
+                height: Math.max(0, this.toInteger(component.height, 0)),
+                _componentArea: Math.max(0, this.toInteger(component?.area, 0))
             });
         }
 
@@ -230,11 +280,79 @@ export default class TextRegionGrouper {
 
         var paddingX = Math.max(0, this.toInteger(options.paddingX, 4));
         var paddingY = Math.max(0, this.toInteger(options.paddingY, 4));
+        var preferSmallRegions = (options.preferSmallRegions !== false);
+        var smallRegionCoverageThreshold = this.clamp(
+            this.toNumeric(options.smallRegionCoverageThreshold, 0.24),
+            0,
+            1
+        );
+        var smallRegionMinComponentCount = Math.max(1, this.toInteger(options.smallRegionMinComponentCount, 2));
+        var smallRegionPaddingX = Math.max(0, this.toInteger(options.smallRegionPaddingX, 2));
+        var smallRegionPaddingY = Math.max(0, this.toInteger(options.smallRegionPaddingY, 2));
         var minRegionArea = Math.max(1, this.toInteger(options.minRegionArea, 64));
 
         var regions = [];
         for (var regionIndex = 0; regionIndex < merged.length; regionIndex++) {
-            var expanded = this.expandAndClamp(merged[regionIndex], normalizedColumns, normalizedRows, paddingX, paddingY);
+            var mergedRegion = merged[regionIndex];
+            var componentCount = 0;
+            var componentAreaTotal = 0;
+            var regionComponents = [];
+            for (var componentIndex = 0; componentIndex < filtered.length; componentIndex++) {
+                var filteredComponent = filtered[componentIndex];
+                if (this.intersects(filteredComponent, mergedRegion) != true)
+                    continue;
+
+                componentCount += 1;
+                componentAreaTotal += Math.max(
+                    0,
+                    this.toInteger(filteredComponent?._componentArea, (filteredComponent.width * filteredComponent.height))
+                );
+                regionComponents.push(filteredComponent);
+            }
+
+            var mergedRegionArea = Math.max(
+                1,
+                Math.max(0, this.toInteger(mergedRegion.width, 0)) * Math.max(0, this.toInteger(mergedRegion.height, 0))
+            );
+            mergedRegion = Object.assign({}, mergedRegion, {
+                _componentCount: componentCount,
+                _componentAreaTotal: componentAreaTotal,
+                _componentCoverage: (componentAreaTotal / mergedRegionArea),
+                _componentMeanArea: (componentCount > 0) ? (componentAreaTotal / componentCount) : 0
+            });
+
+            // Favor small, precise boxes for sparse merged regions by splitting back
+            // to component-scale boxes with light padding.
+            if ((preferSmallRegions === true)
+                && (componentCount >= smallRegionMinComponentCount)
+                && (mergedRegion._componentCoverage < smallRegionCoverageThreshold)) {
+
+                for (var splitIndex = 0; splitIndex < regionComponents.length; splitIndex++) {
+                    var regionComponent = regionComponents[splitIndex];
+                    var splitRegion = this.expandAndClamp(
+                        regionComponent,
+                        normalizedColumns,
+                        normalizedRows,
+                        smallRegionPaddingX,
+                        smallRegionPaddingY
+                    );
+                    if (splitRegion == null)
+                        continue;
+                    if ((splitRegion.width * splitRegion.height) < minRegionArea)
+                        continue;
+
+                    var splitArea = Math.max(1, (splitRegion.width * splitRegion.height));
+                    splitRegion._componentCount = 1;
+                    splitRegion._componentAreaTotal = Math.max(0, this.toInteger(regionComponent?._componentArea, splitArea));
+                    splitRegion._componentCoverage = (splitRegion._componentAreaTotal / splitArea);
+                    splitRegion._componentMeanArea = splitRegion._componentAreaTotal;
+                    regions.push(splitRegion);
+                }
+
+                continue;
+            }
+
+            var expanded = this.expandAndClamp(mergedRegion, normalizedColumns, normalizedRows, paddingX, paddingY);
             if (expanded == null)
                 continue;
 

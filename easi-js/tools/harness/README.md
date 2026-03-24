@@ -20,6 +20,8 @@ By default this scans `../data/test-library` recursively and writes output under
 - `test/output/harness/run-<timestamp>/report.html`
 - `test/output/harness/run-<timestamp>/report-<modality>-pNNN.html`
 
+Default thumbnail extraction limit is `25000` frames per run (override with `--thumbnail-limit`).
+
 By default for full-library sweeps, worker isolation is auto-enabled for reliability.
 
 ## Orchestrated Chunk Runs

@@ -522,3 +522,152 @@ test("Test: DicomTranscodingFilter endian-swap path preserves 16-bit metadata an
     expect(forwarded.pixelDataTransferSyntax).toBe(TransferSyntax.ExplicitVRLittleEndian.ID);
     expect(Array.from(forwarded.pixelDataBytes ?? [])).toEqual([0x02, 0x01, 0x0B, 0x0A]);
 });
+
+test("Test: DicomTranscodingFilter finalizes captured undefined-length PixelData when completion arrives via onAppendAttribute", async () => {
+
+    class ProbeFilter extends DicomTranscodingFilter {
+
+        constructor(nextHandler, options) {
+            super(nextHandler, options);
+            this.transcodeInvocationCount = 0;
+        }
+
+        async evaluateMode(context, state) {
+            state.mode = "transcode";
+            state.pixelTransformStrategy = "rgba";
+            state.requiresPixelTransform = true;
+            return Status.CONTINUE;
+        }
+
+        async transcodePixelDataAttribute(context, state, attribute) {
+            this.transcodeInvocationCount += 1;
+            return Status.CONTINUE;
+        }
+
+    }
+
+    const filter = new ProbeFilter(null, {
+        targetTransferSyntax: TransferSyntax.ImplicitVRLittleEndian.ID
+    });
+
+    const context = await filter.onStartInstance(null);
+    await filter.onStartDataSet(context);
+
+    const pixelDataAttribute = makeAttribute(Tag.PixelData, null, TransferSyntax.ExplicitVRLittleEndian);
+    pixelDataAttribute.valueLength = 0xFFFFFFFF;
+    pixelDataAttribute.isComplete = false;
+
+    await filter.onStartAttribute(context, pixelDataAttribute);
+    await filter.onAttributeChunk(context, {
+        attribute: pixelDataAttribute,
+        chunk: new Uint8Array([1, 2, 3, 4]),
+        isFinalChunk: true
+    });
+
+    pixelDataAttribute.isComplete = true;
+    const appendStatus = await filter.onAppendAttribute(context, pixelDataAttribute);
+
+    expect(appendStatus === null || appendStatus === Status.CONTINUE).toBe(true);
+    expect(filter.transcodeInvocationCount).toBe(1);
+    expect(filter.getState(context).pixelData.transcodeActive).toBe(false);
+
+    // If an end event also arrives, it should not trigger duplicate transcode work.
+    await filter.onEndAttribute(context, pixelDataAttribute);
+    expect(filter.transcodeInvocationCount).toBe(1);
+
+});
+
+test("Test: DicomTranscodingFilter normalizes MONOCHROME1 source polarity during RGBA decode", async () => {
+    const filter = new DicomTranscodingFilter(null, {
+        targetTransferSyntax: TransferSyntax.ExplicitVRLittleEndian.ID
+    });
+
+    const state = {
+        sourceTransferSyntax: TransferSyntax.ExplicitVRLittleEndian,
+        rows: 1,
+        columns: 2,
+        samplesPerPixel: 1,
+        bitsAllocated: 8,
+        bitsStored: 8,
+        photometricInterpretation: "MONOCHROME1"
+    };
+
+    const rgba = await filter.decodeFrameToRGBA(state, new Uint8Array([0, 255]));
+    expect(Array.from(rgba.slice(0, 8))).toEqual([
+        255, 255, 255, 255,
+        0, 0, 0, 255
+    ]);
+});
+
+test("Test: DicomTranscodingFilter preserves lossless pixel metadata only for native 16-bit monochrome path", () => {
+    const filter = new DicomTranscodingFilter(null, {
+        targetTransferSyntax: TransferSyntax.JPEG2000Lossless.ID
+    });
+
+    const nativeState = {
+        sourceTransferSyntax: TransferSyntax.ExplicitVRLittleEndian,
+        samplesPerPixel: 1,
+        bitsAllocated: 16
+    };
+
+    const rgbaState = {
+        sourceTransferSyntax: TransferSyntax.ExplicitVRLittleEndian,
+        samplesPerPixel: 1,
+        bitsAllocated: 8
+    };
+
+    expect(filter.shouldPreserveLosslessPixelMetadata(nativeState)).toBe(true);
+    expect(filter.shouldPreserveLosslessPixelMetadata(rgbaState)).toBe(false);
+});
+
+test("Test: DicomTranscodingFilter does not normalize MONOCHROME1 polarity when preserving native metadata", async () => {
+    const filter = new DicomTranscodingFilter(null, {
+        targetTransferSyntax: TransferSyntax.JPEG2000Lossless.ID
+    });
+
+    const state = {
+        sourceTransferSyntax: TransferSyntax.ExplicitVRLittleEndian,
+        rows: 1,
+        columns: 2,
+        samplesPerPixel: 1,
+        bitsAllocated: 16,
+        bitsStored: 16,
+        photometricInterpretation: "MONOCHROME1"
+    };
+
+    const rgba = await filter.decodeFrameToRGBA(state, new Uint8Array([0x00, 0x00, 0xFF, 0xFF]));
+    expect(Array.from(rgba.slice(0, 8))).toEqual([
+        0, 0, 0, 255,
+        255, 255, 255, 255
+    ]);
+});
+
+test("Test: DicomTranscodingFilter decodes uncompressed 16-bit PALETTE COLOR to RGBA using palette LUTs", async () => {
+    const filter = new DicomTranscodingFilter(null, {
+        targetTransferSyntax: TransferSyntax.ExplicitVRLittleEndian.ID
+    });
+
+    const state = {
+        sourceTransferSyntax: TransferSyntax.ExplicitVRLittleEndian,
+        rows: 1,
+        columns: 2,
+        samplesPerPixel: 1,
+        bitsAllocated: 16,
+        bitsStored: 16,
+        photometricInterpretation: "PALETTE COLOR",
+        redPaletteColorLookupTableDescriptor: { entries: 2, firstMapped: 0, bitsPerEntry: 16 },
+        greenPaletteColorLookupTableDescriptor: { entries: 2, firstMapped: 0, bitsPerEntry: 16 },
+        bluePaletteColorLookupTableDescriptor: { entries: 2, firstMapped: 0, bitsPerEntry: 16 },
+        redPaletteColorLookupTableData: new Uint8Array([0x00, 0x00, 0xFF, 0xFF]),
+        greenPaletteColorLookupTableData: new Uint8Array([0x00, 0x00, 0xFF, 0xFF]),
+        bluePaletteColorLookupTableData: new Uint8Array([0x00, 0x00, 0xFF, 0xFF])
+    };
+
+    // Two 16-bit indexes: 0x0000 and 0x0001 (little-endian).
+    const rgba = await filter.decodeFrameToRGBA(state, new Uint8Array([0x00, 0x00, 0x01, 0x00]));
+
+    expect(Array.from(rgba.slice(0, 8))).toEqual([
+        0, 0, 0, 255,
+        255, 255, 255, 255
+    ]);
+});
