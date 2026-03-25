@@ -29,6 +29,11 @@ This document should distinguish:
 | Native DICOM bytes | DICOM parser + de-identify handler + DICOM data writer handler | De-identified native DICOM bytes | Implemented pattern (`easi-js`) |
 | Native DICOM bytes | DICOM parser + lint handler | Validation/lint report | Planned |
 | Native DICOM bytes | DICOM parser + manifest handler | Lightweight manifest / index | Planned |
+| DIMSE source association (PACS) | DICOM parser | Instance handler | DICOM `Instance` model | Planned (`dimse.md` draft) |
+| DIMSE source association (PACS) | DICOM parser + de-identify filter + DICOM data writer terminal | De-identified native DICOM bytes | Planned (`dimse.md` draft) |
+| DIMSE source association (PACS) | DICOM parser + mapping handler | Mapped output (e.g. FHIR) | Planned (`dimse.md` draft) |
+| Native DICOM bytes | DICOM parser + filters + DICOM data writer terminal + DIMSE destination association | Streamed C-STORE to PACS/VNA | Planned (`dimse.md` draft) |
+| DIMSE source association (PACS) | DICOM parser + filters + DICOM data writer terminal + DIMSE destination association | PACS -> process -> PACS relay | Planned (`dimse.md` draft) |
 
 ## Notes
 

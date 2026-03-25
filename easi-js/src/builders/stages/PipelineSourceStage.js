@@ -4,6 +4,7 @@ import ByteStreamReader from "../../readers/ByteStreamReader.js";
 import FileStreamReader from "../../readers/FileStreamReader.js";
 import WebSocketStreamReader from "../../readers/WebSocketStreamReader.js";
 import NodeStreamAdapterReader from "../../readers/NodeStreamAdapterReader.js";
+import DimseAssociationReader from "../../readers/DimseAssociationReader.js";
 
 import PipelineBuilderStage from "./PipelineBuilderStage.js";
 import PipelineFormatStage from "./PipelineFormatStage.js";
@@ -56,6 +57,16 @@ export default class PipelineSourceStage extends PipelineBuilderStage {
     /** @returns {PipelineFormatStage} */
     fromNodeStreamAdapter() {
         return this.withReader(new NodeStreamAdapterReader(new PartStreamReader()));
+    }
+
+    /**
+     * Set the source transport to DIMSE association input.
+     * @param {object | null} association Default DIMSE source association options.
+     * @param {object | null} transport Optional DIMSE source transport adapter.
+     * @returns {PipelineFormatStage}
+     */
+    fromDimseAssociation(association = null, transport = null) {
+        return this.withReader(new DimseAssociationReader(association, transport, new PartStreamReader()));
     }
 
 }

@@ -24,7 +24,7 @@ Must implement:
 
 - Reader/Parser/Handler pipeline model
 - Status semantics (`CONTINUE`, `STOP`, `JUMP`, `FAIL`, `SUCCESS`) as specified
-- Builder contract core methods (`from...`, `to...`, `with...`, `build()`)
+- Builder contract core methods (`from...`, `to...`, `with...`, `into...`, `build()`)
 
 ### Level 2: DICOM Core Scenarios
 
@@ -42,6 +42,7 @@ May include:
 - Native DICOM write output
 - Dump parsing
 - Handler chaining (de-identification, linting, manifesting)
+- DIMSE transport extensions (source and/or destination profiles, see `dimse.md`)
 
 ## Test Assets And Fixtures (Draft)
 

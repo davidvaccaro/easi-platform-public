@@ -37,7 +37,7 @@ Normative EASI content includes:
 
 - pipeline model
 - lifecycle and status semantics
-- builder intent semantics (`from...`, `to...`, `with...`, `build()`)
+- builder intent semantics (`from...`, `to...`, `with...`, `into...`, `build()`)
 - compatibility and error behavior expectations
 - conformance levels and conformance assertions
 
@@ -69,7 +69,7 @@ EASI Core v0.1 defines:
 3. Status flow-control semantics:
    - `CONTINUE`, `SUCCESS`, `STOP`, `JUMP`, `FAIL`
 4. Core builder semantics:
-   - `from...`, `to...`, `with...`, `build()`
+   - `from...`, `to...`, `with...`, `into...`, `build()`
 5. Parser/adapter/filter/terminal compatibility behavior
 6. Conformance levels and baseline scenario expectations
 
@@ -124,9 +124,10 @@ EASI standardizes the builder intent model:
 - `from...`: choose source format / parser family
 - `to...`: choose terminal behavior / output strategy
 - `with...`: configure explicit options, overrides, callbacks, and pipeline stages
+- `into...`: choose destination transport/writer packaging for emitted output when applicable
 - `build()`: validate and compose the pipeline (fail-fast)
 
-Reference implementations may provide additional convenience entry points, but the `from` / `to` / `with` / `build` intent model is the recognizable core.
+Reference implementations may provide additional convenience entry points, but the `from` / `to` / `with` / `into` / `build` intent model is the recognizable core.
 
 ## Conformance Levels (Normative Model)
 
@@ -227,6 +228,8 @@ The exact casing differs, but the EASI interaction model remains recognizable.
   - `Reader -> JSON Parser -> DICOM JSON Metadata Adapter -> DICOM Terminal`
 - Native DICOM de-identify and emit native DICOM bytes:
   - `Reader -> DICOM Parser -> Validation Filter (optional) -> DeIdentification Filter -> DICOM Data Writer Terminal -> Writer (optional)`
+- DIMSE PACS source to DIMSE PACS destination:
+  - `DIMSE Source -> DICOM Parser -> [Filters] -> DICOM Data Writer Terminal -> DIMSE Destination`
 
 ## Specification Document Map
 
@@ -244,6 +247,8 @@ Use this `README` as the primary overview and entry point. Use the supporting do
   - builder intent, composition, and `build()` behavior
 - [`transcoding.md`](./transcoding.md)
   - draft normative `withTranscoding(...)` contract, including `onFrame` and `onConcern` payloads
+- [`dimse.md`](./dimse.md)
+  - draft DIMSE transport extension contract for PACS/RIS/VNA pipeline composition
 - [`conformance.md`](./conformance.md)
   - conformance levels, assertions, and implementation allowances
 

@@ -11,6 +11,7 @@ The builder provides a declarative way to configure:
 - source stream type (`fromXxx`)
 - source format (`ofXxx`)
 - output strategy (`toXxx`) via a terminal handler
+- destination stream/writer transport (`intoXxx`) when emitted output should be streamed outward
 - optional handler chain stages (for example de-identification)
 - optional output packaging/writer composition where supported by the implementation
 - optional parser/handler overrides (`withXxx`)
@@ -59,6 +60,20 @@ Normative intent:
 - Any parser override behavior must be documented explicitly
 - `toXxx` does not preclude additional handler stages being composed around the terminal handler during `build()`
 
+### Destination Selection (`into...`)
+
+Examples:
+
+- `intoPartStream(...)`
+- `intoHttpStream(...)`
+- `intoDimseAssociation(...)`
+
+Normative intent:
+
+- `intoXxx` configures destination writer/transport behavior for terminal output
+- `intoXxx` MUST be validated against terminal output type compatibility during `build()`
+- `intoXxx` does not replace `toXxx`; it composes after terminal emission
+
 ### Overrides (`with...`)
 
 Examples:
@@ -83,11 +98,12 @@ Normative intent:
 1. Validate that a parser is available (configured or defaulted)
 2. Determine or default the terminal handler when omitted (if a default exists for the selected parser)
 3. Create/configure a reader
-4. Compose configured handler chain stages around the terminal handler (if any)
-5. Wire `reader.parser`
-6. Wire `parser.handler` to the head of the composed chain (or the terminal handler when no chain stages exist)
-7. Apply builder options to parser/reader/handler as defined
-8. Return the configured reader
+4. Determine/configure destination writer/transport composition when `intoXxx` is specified
+5. Compose configured handler chain stages around the terminal handler (if any)
+6. Wire `reader.parser`
+7. Wire `parser.handler` to the head of the composed chain (or the terminal handler when no chain stages exist)
+8. Apply builder options to parser/reader/handler/writer as defined
+9. Return the configured pipeline (or configured reader in implementations where reader is the process host)
 
 ## Precedence Rules (Draft)
 
@@ -105,7 +121,7 @@ Current implementation behavior should be documented before this is frozen.
 ### Core (recommended to freeze first)
 
 - `pipelineBuilder()`
-- `fromXxx`, `ofXxx`, `toXxx`, `withXxx`, `build()`
+- `fromXxx`, `ofXxx`, `toXxx`, `withXxx`, `intoXxx`, `build()`
 - handler-chain composition semantics
 - status propagation through handler chains
 

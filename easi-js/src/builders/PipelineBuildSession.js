@@ -5,6 +5,7 @@
 //
 
 import PartStreamReader from "../readers/PartStreamReader.js";
+import DimseAssociationReader from "../readers/DimseAssociationReader.js";
 
 import DicomDataParser from "../parsers/DicomDataParser.js";
 import JsonDataParser from "../parsers/JsonDataParser.js";
@@ -25,6 +26,7 @@ import DicomBurnedInRedactionFilter from "../handlers/filters/DicomBurnedInRedac
 import DicomDataWriterHandler from "../handlers/terminals/DicomDataWriterHandler.js";
 import JsonDataHandler from "../handlers/terminals/syntax/JsonDataHandler.js";
 import XmlDataHandler from "../handlers/terminals/syntax/XmlDataHandler.js";
+import DimseAssociationWriter from "../writers/DimseAssociationWriter.js";
 
 import Exception from "../environment/Exception.js";
 import DiagnosticUtils from "../utils/DiagnosticUtils.js";
@@ -213,6 +215,40 @@ export default class PipelineBuildSession {
             throw new Exception(
                 `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
                 BuilderErrorCodes.IncompatibleParserAndHandler
+            );
+        }
+
+    }
+
+    /**
+     * Validates compatibility of known reader and parser pairings.
+     * @param {object} reader The configured reader.
+     * @param {object} parser The configured parser.
+     */
+    validateReaderParserCompatibility(reader, parser) {
+
+        if ((reader instanceof DimseAssociationReader)
+            && ((parser instanceof DicomDataParser) == false)) {
+            throw new Exception(
+                `Reader '${DiagnosticUtils.getTypeName(reader)}' is not compatible with parser '${DiagnosticUtils.getTypeName(parser)}'.`,
+                BuilderErrorCodes.IncompatibleReaderAndParser
+            );
+        }
+
+    }
+
+    /**
+     * Validates compatibility of known writer and terminal handler pairings.
+     * @param {object} writer The configured writer.
+     * @param {object | null} terminalHandler The resolved terminal handler.
+     */
+    validateWriterTerminalCompatibility(writer, terminalHandler) {
+
+        if ((writer instanceof DimseAssociationWriter)
+            && ((terminalHandler instanceof DicomDataWriterHandler) == false)) {
+            throw new Exception(
+                `Writer '${DiagnosticUtils.getTypeName(writer)}' is not compatible with terminal handler '${DiagnosticUtils.getTypeName(terminalHandler)}'.`,
+                BuilderErrorCodes.IncompatibleWriterAndHandler
             );
         }
 
@@ -498,6 +534,9 @@ export default class PipelineBuildSession {
             ? this.reader
             : new PartStreamReader();
 
+        // Validate compatibility of known reader/parser combinations.
+        this.validateReaderParserCompatibility(reader, this.parser);
+
         // Validate `onEmit` compatibility.
         if ((this.onEmit != null) && (this.supportsOnEmit(reader) == false)) {
             throw new Exception(
@@ -640,6 +679,7 @@ export default class PipelineBuildSession {
         if (this.writer != null) {
 
             const terminalHandler = this.resolveTerminalHandler(handler);
+            this.validateWriterTerminalCompatibility(this.writer, terminalHandler);
 
             // If terminal DICOM data writing is already chunking to an explicit callback,
             // keep its native output and do not wrap with a post-result writer sink.

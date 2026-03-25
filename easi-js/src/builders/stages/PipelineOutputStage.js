@@ -7,6 +7,7 @@ import BrowserFileStreamWriter from "../../writers/BrowserFileStreamWriter.js";
 import NodeStreamAdapterWriter from "../../writers/NodeStreamAdapterWriter.js";
 import WebSocketStreamWriter from "../../writers/WebSocketStreamWriter.js";
 import HttpStreamWriter from "../../writers/HttpStreamWriter.js";
+import DimseAssociationWriter from "../../writers/DimseAssociationWriter.js";
 
 /**
  * Output stage.
@@ -94,6 +95,16 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
      */
     intoHttpStream(request, options = null) {
         return this.withWriter(new HttpStreamWriter(), request, options);
+    }
+
+    /**
+     * Route terminal output to a DIMSE association destination sink.
+     * @param {object | null} association The DIMSE destination association options.
+     * @param {object | null} options Optional write options.
+     * @returns {PipelineOutputStage} A new output stage object.
+     */
+    intoDimseAssociation(association = null, options = null) {
+        return this.withWriter(new DimseAssociationWriter(), association, options);
     }
 
     /**

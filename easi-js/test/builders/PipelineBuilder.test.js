@@ -7,6 +7,7 @@ import ByteStreamReader from "../../src/readers/ByteStreamReader.js";
 import FileStreamReader from "../../src/readers/FileStreamReader.js";
 import WebSocketStreamReader from "../../src/readers/WebSocketStreamReader.js";
 import NodeStreamAdapterReader from "../../src/readers/NodeStreamAdapterReader.js";
+import DimseAssociationReader from "../../src/readers/DimseAssociationReader.js";
 import Pipeline from "../../src/pipelines/Pipeline.js";
 import DicomInstanceHandler from "../../src/handlers/terminals/DicomInstanceHandler.js";
 import DicomEntityHandler from "../../src/handlers/terminals/DicomEntityHandler.js";
@@ -45,6 +46,7 @@ function captureBuildError(builderOrAction) {
 test("Test: staged interfaces expose only legal methods per stage", () => {
     const source = new PipelineBuilder();
     expect(typeof source.fromPartStream).toBe("function");
+    expect(typeof source.fromDimseAssociation).toBe("function");
     expect(typeof source.ofDicomData).toBe("undefined");
     expect(typeof source.toInstances).toBe("undefined");
     expect(typeof source.withMask).toBe("undefined");
@@ -66,6 +68,7 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
     const ready = target.withMask(new Map()).toInstances();
     expect(typeof ready.withMask).toBe("undefined");
     expect(typeof ready.intoByteStream).toBe("function");
+    expect(typeof ready.intoDimseAssociation).toBe("function");
     expect(typeof ready.intoBrowserFileStream).toBe("function");
     expect(typeof ready.build).toBe("function");
     expect(ready._operations).toBeUndefined();
@@ -641,6 +644,76 @@ test("Test: fromNodeStreamAdapter builds with NodeStreamAdapterReader transport"
     expect(pipeline.reader instanceof NodeStreamAdapterReader).toBe(true);
     expect(pipeline.parser instanceof DicomDataParser).toBe(true);
     expect(pipeline.parser.handler instanceof DicomInstanceHandler).toBe(true);
+});
+
+test("Test: fromDimseAssociation builds with DimseAssociationReader transport", () => {
+    const pipeline = new PipelineBuilder()
+        .fromDimseAssociation({
+            host: "127.0.0.1",
+            port: 104,
+            callingAeTitle: "EASI",
+            calledAeTitle: "PACS"
+        })
+        .ofDicomData()
+        .toInstances()
+        .build();
+
+    expect(pipeline.reader instanceof DimseAssociationReader).toBe(true);
+    expect(pipeline.parser instanceof DicomDataParser).toBe(true);
+    expect(pipeline.parser.handler instanceof DicomInstanceHandler).toBe(true);
+});
+
+test("Test: build throws IncompatibleReaderAndParser for DIMSE reader with JSON parser", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromDimseAssociation({
+                host: "127.0.0.1",
+                port: 104,
+                callingAeTitle: "EASI",
+                calledAeTitle: "PACS"
+            })
+            .ofJsonData()
+            .toJsonValue()
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleReaderAndParser);
+});
+
+test("Test: build throws IncompatibleWriterAndHandler for DIMSE writer without DICOM data terminal", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromPartStream()
+            .ofDicomData()
+            .toInstances()
+            .intoDimseAssociation({
+                host: "127.0.0.1",
+                port: 104,
+                callingAeTitle: "EASI",
+                calledAeTitle: "PACS"
+            })
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleWriterAndHandler);
+});
+
+test("Test: intoDimseAssociation builds with DimseAssociationWriter when terminal emits DICOM bytes", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .toDicomData()
+        .intoDimseAssociation({
+            host: "127.0.0.1",
+            port: 104,
+            callingAeTitle: "EASI",
+            calledAeTitle: "PACS"
+        })
+        .build();
+
+    expect(pipeline instanceof Pipeline).toBe(true);
+    expect(pipeline.parser instanceof DicomDataParser).toBe(true);
+    expect(pipeline.parser.handler instanceof DicomDataWriterHandler).toBe(true);
 });
 
 test("Test: withBulkDataPolicy applies parser bulk-data policy when parser supports it", () => {
