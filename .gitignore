@@ -2,5 +2,6 @@ data/dicoms/local/*
 data/dicoms/test-library/*
 data/test-library/*
 easi-js/test/output/
+**/tempCodeRunnerFile.js
 
 .fake

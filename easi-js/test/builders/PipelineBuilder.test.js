@@ -366,6 +366,18 @@ test("Test: toFHIRImagingStudy builds with DicomToFHIRImagingStudyMapping", () =
 
     expect(pipeline.parser.handler instanceof DicomMappingHandler).toBe(true);
     expect(pipeline.parser.handler.mapping instanceof DicomToFHIRImagingStudyMapping).toBe(true);
+    expect(pipeline.parser.handler.mapping.profile).toBe("full");
+});
+
+test("Test: toFHIRImagingStudy supports study-summary profile", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toFHIRImagingStudy("study-summary")
+        .build();
+
+    expect(pipeline.parser.handler instanceof DicomMappingHandler).toBe(true);
+    expect(pipeline.parser.handler.mapping instanceof DicomToFHIRImagingStudyMapping).toBe(true);
+    expect(pipeline.parser.handler.mapping.profile).toBe("study-summary");
 });
 
 test("Test: build composes metadata adapter -> deid -> writer when masking JSON metadata", () => {
@@ -647,13 +659,21 @@ test("Test: fromNodeStreamAdapter builds with NodeStreamAdapterReader transport"
 });
 
 test("Test: fromDimseAssociation builds with DimseAssociationReader transport", () => {
+    const sourceTransport = {
+        read() {
+            return Promise.resolve({
+                data: new Uint8Array([0x00])
+            });
+        }
+    };
+
     const pipeline = new PipelineBuilder()
         .fromDimseAssociation({
             host: "127.0.0.1",
             port: 104,
             callingAeTitle: "EASI",
             calledAeTitle: "PACS"
-        })
+        }, sourceTransport)
         .ofDicomData()
         .toInstances()
         .build();
@@ -664,6 +684,14 @@ test("Test: fromDimseAssociation builds with DimseAssociationReader transport", 
 });
 
 test("Test: build throws IncompatibleReaderAndParser for DIMSE reader with JSON parser", () => {
+    const sourceTransport = {
+        read() {
+            return Promise.resolve({
+                data: new Uint8Array([0x00])
+            });
+        }
+    };
+
     const error = captureBuildError(
         new PipelineBuilder()
             .fromDimseAssociation({
@@ -671,7 +699,7 @@ test("Test: build throws IncompatibleReaderAndParser for DIMSE reader with JSON 
                 port: 104,
                 callingAeTitle: "EASI",
                 calledAeTitle: "PACS"
-            })
+            }, sourceTransport)
             .ofJsonData()
             .toJsonValue()
     );
@@ -681,6 +709,16 @@ test("Test: build throws IncompatibleReaderAndParser for DIMSE reader with JSON 
 });
 
 test("Test: build throws IncompatibleWriterAndHandler for DIMSE writer without DICOM data terminal", () => {
+    const destinationTransport = {
+        write() {
+            return Promise.resolve({
+                ok: true,
+                dimseStatus: 0x0000,
+                bytesWritten: 0
+            });
+        }
+    };
+
     const error = captureBuildError(
         new PipelineBuilder()
             .fromPartStream()
@@ -691,6 +729,8 @@ test("Test: build throws IncompatibleWriterAndHandler for DIMSE writer without D
                 port: 104,
                 callingAeTitle: "EASI",
                 calledAeTitle: "PACS"
+            }, {
+                transport: destinationTransport
             })
     );
 
@@ -699,6 +739,16 @@ test("Test: build throws IncompatibleWriterAndHandler for DIMSE writer without D
 });
 
 test("Test: intoDimseAssociation builds with DimseAssociationWriter when terminal emits DICOM bytes", () => {
+    const destinationTransport = {
+        write() {
+            return Promise.resolve({
+                ok: true,
+                dimseStatus: 0x0000,
+                bytesWritten: 0
+            });
+        }
+    };
+
     const pipeline = new PipelineBuilder()
         .fromPartStream()
         .ofDicomData()
@@ -708,12 +758,49 @@ test("Test: intoDimseAssociation builds with DimseAssociationWriter when termina
             port: 104,
             callingAeTitle: "EASI",
             calledAeTitle: "PACS"
+        }, {
+            transport: destinationTransport
         })
         .build();
 
     expect(pipeline instanceof Pipeline).toBe(true);
     expect(pipeline.parser instanceof DicomDataParser).toBe(true);
     expect(pipeline.parser.handler instanceof DicomDataWriterHandler).toBe(true);
+});
+
+test("Test: build throws InvalidBuildState for DIMSE reader without source transport", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromDimseAssociation({
+                host: "127.0.0.1",
+                port: 104,
+                callingAeTitle: "EASI",
+                calledAeTitle: "PACS"
+            })
+            .ofDicomData()
+            .toInstances()
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.InvalidBuildState);
+});
+
+test("Test: build throws InvalidBuildState for DIMSE writer without destination transport", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromPartStream()
+            .ofDicomData()
+            .toDicomData()
+            .intoDimseAssociation({
+                host: "127.0.0.1",
+                port: 104,
+                callingAeTitle: "EASI",
+                calledAeTitle: "PACS"
+            })
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.InvalidBuildState);
 });
 
 test("Test: withBulkDataPolicy applies parser bulk-data policy when parser supports it", () => {

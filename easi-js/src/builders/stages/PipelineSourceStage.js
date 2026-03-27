@@ -62,7 +62,7 @@ export default class PipelineSourceStage extends PipelineBuilderStage {
     /**
      * Set the source transport to DIMSE association input.
      * @param {object | null} association Default DIMSE source association options.
-     * @param {object | null} transport Optional DIMSE source transport adapter.
+     * @param {object | null} transport DIMSE source transport adapter.
      * @returns {PipelineFormatStage}
      */
     fromDimseAssociation(association = null, transport = null) {

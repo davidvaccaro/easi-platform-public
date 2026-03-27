@@ -40,6 +40,16 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         return this;
     }
 
+    /**
+     * Sets the ImagingStudy mapping profile.
+     * @param {'full' | 'study-summary'} profile The mapping profile.
+     * @returns {DicomToFHIRImagingStudyMapping} The current mapping.
+     */
+    setProfile(profile) {
+        this.profile = this.normalizeProfile(profile);
+        return this;
+    }
+
     start(context) {
 
         // Call the super
@@ -50,6 +60,7 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         context.series = new ImagingSeries();
         context.instance = new ImagingInstance();
         context.patient = new Patient();
+        context.study.status = 'available';
         context.currentStudy = null;
         context.currentSeries = null;
         context.currentInstance = null;
@@ -77,6 +88,31 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         else {
 
             // TODO - Merge the two studies
+
+        }
+
+        if (this.profile === 'study-summary') {
+
+            // Resolve subject output (contained patient / reference / none).
+            this.applySubject(study, context);
+
+            // Normalize top-level FHIR values for study-summary output.
+            this.normalizeStudy(study);
+            study.series = [];
+
+            context.currentStudy = study;
+            context.currentSeries = null;
+            context.currentInstance = null;
+
+            // Apply computed mappings (for example reference templates).
+            super.end(context);
+
+            // Clear temporary references from context.
+            context.currentStudy = null;
+            context.currentSeries = null;
+            context.currentInstance = null;
+
+            return context.final;
 
         }
 
@@ -126,6 +162,7 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
 
         // Resolve subject output (contained patient / reference / none).
         this.applySubject(study, context);
+        this.normalizeStudy(study);
 
         // Refresh aggregate counts
         study.numberOfSeries = study.series.length;
@@ -166,6 +203,169 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         }
 
         return total;
+
+    }
+
+    /**
+     * Normalizes one study identifier string to the FHIR UID identifier representation.
+     * @param {*} value The identifier source value.
+     * @returns {string | null} The normalized value.
+     */
+    normalizeStudyIdentifierValue(value) {
+
+        var text = (value == null) ? null : String(value).trim();
+        if ((text == null) || (text.length == 0))
+            return null;
+
+        if (text.toLowerCase().startsWith('urn:oid:') == true)
+            return text;
+
+        if (text.toLowerCase().startsWith('urn:') == true)
+            return text;
+
+        return `urn:oid:${text}`;
+
+    }
+
+    /**
+     * Normalizes one identifier collection to FHIR identifier object array.
+     * @param {*} identifier The source identifier value.
+     * @returns {Array<object>} The normalized identifier array.
+     */
+    normalizeStudyIdentifierCollection(identifier) {
+
+        var values = Array.isArray(identifier) ? identifier : [identifier];
+        var normalized = [];
+        var seen = new Set();
+
+        for (var i = 0; i < values.length; i++) {
+
+            var current = values[i];
+            if (current == null)
+                continue;
+
+            if (typeof current === 'object') {
+
+                var currentValue = (current.value != null)
+                    ? current.value
+                    : current.identifier;
+                var normalizedValue = this.normalizeStudyIdentifierValue(currentValue);
+                if (normalizedValue == null)
+                    continue;
+
+                if (seen.has(normalizedValue) == true)
+                    continue;
+
+                seen.add(normalizedValue);
+                normalized.push({
+                    system: current.system ?? 'urn:dicom:uid',
+                    value: normalizedValue
+                });
+                continue;
+
+            }
+
+            var value = this.normalizeStudyIdentifierValue(current);
+            if (value == null)
+                continue;
+            if (seen.has(value) == true)
+                continue;
+            seen.add(value);
+
+            normalized.push({
+                system: 'urn:dicom:uid',
+                value: value
+            });
+
+        }
+
+        return normalized;
+
+    }
+
+    /**
+     * Converts one scalar/array modality value to FHIR modality coding array.
+     * @param {*} modality The source modality value.
+     * @returns {Array<object>} The modality coding array.
+     */
+    normalizeStudyModalities(modality) {
+
+        var values = Array.isArray(modality) ? modality : [modality];
+        var modalities = [];
+        var seen = new Set();
+
+        for (var i = 0; i < values.length; i++) {
+
+            if (values[i] == null)
+                continue;
+
+            var parts = String(values[i]).split('\\');
+            for (var p = 0; p < parts.length; p++) {
+
+                var code = String(parts[p]).trim();
+                if (code.length == 0)
+                    continue;
+
+                if (seen.has(code) == true)
+                    continue;
+                seen.add(code);
+
+                modalities.push({
+                    system: 'http://dicom.nema.org/resources/ontology/DCM',
+                    code: code
+                });
+
+            }
+
+        }
+
+        return modalities;
+
+    }
+
+    /**
+     * Parses one DICOM integer-like value.
+     * @param {*} value The source value.
+     * @returns {number | null} The parsed value.
+     */
+    parseDicomInteger(value) {
+
+        if (value == null)
+            return null;
+
+        var number = Number(value);
+        if (Number.isFinite(number) == false)
+            return null;
+
+        return Math.trunc(number);
+
+    }
+
+    /**
+     * Normalizes the study-level FHIR representation.
+     * @param {ImagingStudy} study The current study.
+     */
+    normalizeStudy(study) {
+
+        if (study == null)
+            return;
+
+        study.identifier = this.normalizeStudyIdentifierCollection(study.identifier);
+
+        if (study.modality != null) {
+            study.modality = this.normalizeStudyModalities(study.modality);
+        }
+        else {
+            study.modality = [];
+        }
+
+        var numberOfSeries = this.parseDicomInteger(study.numberOfSeries);
+        if (numberOfSeries != null)
+            study.numberOfSeries = numberOfSeries;
+
+        var numberOfInstances = this.parseDicomInteger(study.numberOfInstances);
+        if (numberOfInstances != null)
+            study.numberOfInstances = numberOfInstances;
 
     }
 
@@ -345,6 +545,21 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
     }
 
     /**
+     * Normalize one ImagingStudy mapping profile.
+     * @param {string} profile The requested profile.
+     * @returns {'full' | 'study-summary'} The normalized profile.
+     */
+    normalizeProfile(profile) {
+
+        var normalized = (typeof profile === 'string') ? profile.trim().toLowerCase() : null;
+        if ((normalized !== 'full') && (normalized !== 'study-summary'))
+            throw new Error(`Invalid ImagingStudy mapping profile "${profile}". Expected "full" or "study-summary".`);
+
+        return normalized;
+
+    }
+
+    /**
      * Called when mapping definitions change.
      * Captures additional DICOM template token dependencies introduced by hierarchy reference templates.
      */
@@ -376,6 +591,7 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         };
         this.endpointTemplatePolicy = 'omit';
         this.subjectMode = 'contained';
+        this.profile = 'full';
 
         // Add computed hierarchy references.
         this.addComputed("currentStudy.endpoint", {
@@ -396,6 +612,10 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
 
         // Setup the Study-level Mappings
         this.addTag(Tag.StudyInstanceUID, "study.identifier");
+        this.addTag(Tag.StudyDescription, "study.description");
+        this.addTag(Tag.ModalitiesInStudy, "study.modality");
+        this.addTag(Tag.NumberOfStudyRelatedSeries, "study.numberOfSeries");
+        this.addTag(Tag.NumberOfStudyRelatedInstances, "study.numberOfInstances");
 
         // Setup the Series-level Mappings
         this.addTag(Tag.SeriesInstanceUID, "series.uid");
@@ -423,6 +643,8 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
             this.setEndpointTemplatePolicy(options.endpointTemplatePolicy);
         if (options?.subjectMode != null)
             this.setSubjectMode(options.subjectMode);
+        if (options?.profile != null)
+            this.setProfile(options.profile);
         if (options?.referenceTemplates != null)
             this.setReferenceTemplates(options.referenceTemplates);
 

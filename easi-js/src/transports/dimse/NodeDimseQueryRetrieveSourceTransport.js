@@ -711,6 +711,61 @@ function selectAcceptedTransferSyntaxUid(requestedTransferSyntaxUids, preferredT
 
 }
 
+function normalizeAeTitle(value) {
+
+    if ((value == null) || (typeof value !== "string"))
+        return null;
+
+    var normalized = value.trim().toUpperCase();
+    return (normalized.length > 0) ? normalized : null;
+
+}
+
+function normalizeRemoteAddress(value) {
+
+    if ((value == null) || (typeof value !== "string"))
+        return null;
+
+    var normalized = value.trim().toLowerCase();
+    if (normalized.length == 0)
+        return null;
+
+    if (normalized == "::1")
+        return "127.0.0.1";
+
+    if (normalized.startsWith("::ffff:") == true)
+        return normalized.substring("::ffff:".length);
+
+    return normalized;
+
+}
+
+function normalizePolicyStringSet(values, normalizer) {
+
+    var result = new Set();
+
+    if (Array.isArray(values) == false)
+        return result;
+
+    for (var i = 0; i < values.length; i++) {
+        var normalized = normalizer(values[i]);
+        if ((normalized != null) && (normalized.length > 0))
+            result.add(normalized);
+    }
+
+    return result;
+
+}
+
+function buildAssociateRjPdu(result = 0x01, source = 0x01, reason = 0x01) {
+    return makePdu(PDU_TYPES.A_ASSOCIATE_RJ, new Uint8Array([
+        0x00,
+        (result & 0xFF),
+        (source & 0xFF),
+        (reason & 0xFF)
+    ]));
+}
+
 function buildPart10FromDataSet(dataSetBytes, metadata = {}) {
 
     var transferSyntaxUid = metadata.transferSyntaxUid || EXPLICIT_VR_LE;
@@ -932,7 +987,7 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
         }
 
         if (Array.isArray(queryOptions.storageSopClassUids) == false) {
-            queryOptions.storageSopClassUids = (queryOptions.operation == "c-move")
+            queryOptions.storageSopClassUids = ((queryOptions.operation == "c-move") || (queryOptions.operation == "c-find"))
                 ? []
                 : DEFAULT_STORAGE_SOP_CLASS_UIDS.slice();
         }
@@ -963,6 +1018,13 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
 
         if (queryOptions.moveStoreIdleGraceMs == null) {
             queryOptions.moveStoreIdleGraceMs = 250;
+        }
+
+        if (queryOptions.onConcern == null) {
+            queryOptions.onConcern = null;
+        }
+        else if (typeof queryOptions.onConcern !== "function") {
+            throw new Exception("Invalid DIMSE onConcern callback.", GeneralErrorCodes.InvalidParameter);
         }
 
         return queryOptions;
@@ -1145,7 +1207,7 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
                 transferSyntaxUids: queryOptions.queryTransferSyntaxUids.slice()
             });
         }
-        else {
+        else if (queryOptions.operation == "c-get") {
             contexts.push({
                 id: nextContextId(),
                 kind: "get",
@@ -1503,12 +1565,58 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
     }
 
     /**
+     * Receive one C-FIND identifier data-set that follows a pending response.
+     * @param {object} queue PDU queue.
+     * @param {object} state PDV event state.
+     * @param {number} findContextId FIND presentation context ID.
+     * @returns {Promise<Uint8Array>} Identifier data-set bytes.
+     */
+    async receiveFindIdentifierDataSet(queue, state, findContextId) {
+
+        while (true) {
+
+            var event = await this.nextDimseEvent(queue, state);
+
+            if (event.type == "abort") {
+                throw new Exception("DIMSE association aborted while waiting for C-FIND identifier data-set.", GeneralErrorCodes.GeneralError);
+            }
+
+            if (event.type == "release-rq") {
+                throw new Exception("Unexpected A-RELEASE-RQ while waiting for C-FIND identifier data-set.", GeneralErrorCodes.GeneralError);
+            }
+
+            if (event.type != "pdv") {
+                continue;
+            }
+
+            if (event.contextId != findContextId) {
+                continue;
+            }
+
+            if (event.isCommand == true) {
+                continue;
+            }
+
+            return event.bytes;
+
+        }
+
+    }
+
+    /**
      * Read one C-FIND response sequence until final status.
      * @param {object} queue PDU queue.
      * @param {object} state PDV event state.
      * @param {number} findContextId FIND presentation context ID.
+     * @param {{ collectIdentifiers?: boolean, transferSyntaxUid?: string | null, sopClassUid?: string | null } | null} options Optional receive options.
+     * @returns {Promise<Array<Uint8Array>>} Collected Part-10 C-FIND identifier payloads.
      */
-    async receiveFindResponses(queue, state, findContextId) {
+    async receiveFindResponses(queue, state, findContextId, options = null) {
+
+        var collectIdentifiers = ((options != null) && (options.collectIdentifiers === true));
+        var transferSyntaxUid = (options?.transferSyntaxUid || EXPLICIT_VR_LE);
+        var sopClassUid = (options?.sopClassUid || "");
+        var identifiers = [];
 
         while (true) {
 
@@ -1529,12 +1637,26 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
             }
 
             var status = decodeCommandUS(elements, "00000900", 0xFFFF);
+            // Some SCPs may use non-standard non-0x0000 values to indicate
+            // "identifier present". Only 0x0101 is the explicit "no dataset".
+            var hasIdentifierDataSet = (decodeCommandUS(elements, "00000800", 0x0101) != 0x0101);
+
             if ((status == 0xFF00) || (status == 0xFF01)) {
+
+                if ((collectIdentifiers == true) && (hasIdentifierDataSet == true)) {
+                    var identifierDataSet = await this.receiveFindIdentifierDataSet(queue, state, findContextId);
+                    identifiers.push(buildPart10FromDataSet(identifierDataSet, {
+                        transferSyntaxUid,
+                        sopClassUid,
+                        sopInstanceUid: `2.25.${Date.now()}${identifiers.length + 1}`
+                    }));
+                }
+
                 continue;
             }
 
             if ((status == 0x0000) || ((status & 0xF000) == 0xB000)) {
-                return;
+                return identifiers;
             }
 
             throw new Exception(`C-FIND failed with status 0x${status.toString(16).toUpperCase()}.`, GeneralErrorCodes.GeneralError);
@@ -1596,8 +1718,14 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
                     if (dataSetType == 0x0101) {
                         var noDataContext = acceptedContexts.get(event.contextId) || null;
                         var noDataTransferSyntax = noDataContext?.transferSyntaxUid || EXPLICIT_VR_LE;
+                        var noDataSopClassUid = (
+                            (sopClassUid != null)
+                            && (String(sopClassUid).trim().length > 0)
+                        )
+                            ? sopClassUid
+                            : (noDataContext?.abstractSyntaxUid || "");
                         instances.push(buildPart10FromDataSet(new Uint8Array(0), {
-                            sopClassUid,
+                            sopClassUid: noDataSopClassUid,
                             sopInstanceUid,
                             transferSyntaxUid: noDataTransferSyntax
                         }));
@@ -1638,9 +1766,15 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
 
             var acceptedContext = acceptedContexts.get(event.contextId) || null;
             var transferSyntaxUid = acceptedContext?.transferSyntaxUid || EXPLICIT_VR_LE;
+            var storeSopClassUid = (
+                (pendingStore?.sopClassUid != null)
+                && (String(pendingStore.sopClassUid).trim().length > 0)
+            )
+                ? pendingStore.sopClassUid
+                : (acceptedContext?.abstractSyntaxUid || "");
 
             instances.push(buildPart10FromDataSet(event.bytes, {
-                sopClassUid: pendingStore.sopClassUid,
+                sopClassUid: storeSopClassUid,
                 sopInstanceUid: pendingStore.sopInstanceUid,
                 transferSyntaxUid
             }));
@@ -1655,6 +1789,102 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
             await this.sendDimseRequest(socket, event.contextId, maxPduLength, storeRsp, null);
             pendingStores.delete(event.contextId);
 
+        }
+
+    }
+
+    /**
+     * Evaluate inbound C-STORE association policy.
+     * @param {object} request Parsed associate-rq details.
+     * @param {object} socket Incoming socket.
+     * @param {object} state Move-store state object.
+     * @param {object} options Store SCP options.
+     * @returns {{ accepted: boolean, reason?: string }} Decision.
+     */
+    evaluateStoreAssociationPolicy(request, socket, state, options) {
+
+        var policy = options?.policy || null;
+        if (policy == null) {
+            return { accepted: true };
+        }
+
+        var remoteAddress = normalizeRemoteAddress(socket?.remoteAddress);
+        var callingAeTitle = normalizeAeTitle(request?.callingAeTitle);
+        var calledAeTitle = normalizeAeTitle(request?.calledAeTitle);
+        var expectedCalledAeTitle = normalizeAeTitle(options?.calledAeTitle);
+
+        if ((policy.maxActiveAssociations > 0)
+            && (Number(state?.activeConnections?.size || 0) > policy.maxActiveAssociations)) {
+            return { accepted: false, reason: "max-active-associations" };
+        }
+
+        if ((policy.allowedRemoteHosts.size > 0)
+            && ((remoteAddress == null) || (policy.allowedRemoteHosts.has(remoteAddress) == false))) {
+            return { accepted: false, reason: "remote-host-not-allowed" };
+        }
+
+        if ((remoteAddress != null) && (policy.deniedRemoteHosts.has(remoteAddress) == true)) {
+            return { accepted: false, reason: "remote-host-denied" };
+        }
+
+        if ((policy.allowedCallingAeTitles.size > 0)
+            && ((callingAeTitle == null) || (policy.allowedCallingAeTitles.has(callingAeTitle) == false))) {
+            return { accepted: false, reason: "calling-ae-not-allowed" };
+        }
+
+        if ((callingAeTitle != null) && (policy.deniedCallingAeTitles.has(callingAeTitle) == true)) {
+            return { accepted: false, reason: "calling-ae-denied" };
+        }
+
+        if ((expectedCalledAeTitle != null)
+            && (calledAeTitle != null)
+            && (calledAeTitle !== expectedCalledAeTitle)) {
+            return { accepted: false, reason: "called-ae-mismatch" };
+        }
+
+        return { accepted: true };
+
+    }
+
+    /**
+     * Emit one DIMSE concern callback (best-effort).
+     * @param {object | null} options Store/query options.
+     * @param {object | null} concern Concern payload.
+     */
+    emitConcern(options, concern = null) {
+
+        if ((concern == null) || (typeof concern !== "object"))
+            return;
+
+        var callback = options?.onConcern;
+        if (typeof callback !== "function")
+            return;
+
+        try {
+            callback(concern);
+        }
+        catch (_error) {
+            // Ignore callback failures so transport execution remains stable.
+        }
+
+    }
+
+    /**
+     * Reject one inbound association request using A-ASSOCIATE-RJ (or immediate socket close).
+     * @param {object} socket Incoming socket.
+     * @param {object} options Store SCP options.
+     */
+    async rejectStoreAssociation(socket, options = null) {
+
+        var rejectWithAssociationRj = (options?.policy?.rejectWithAssociationRj !== false);
+
+        if (rejectWithAssociationRj == true) {
+            try {
+                await this.writePdu(socket, buildAssociateRjPdu(0x01, 0x01, 0x01));
+            }
+            catch (_error) {
+                // Ignore write failures and still close the socket.
+            }
         }
 
     }
@@ -1676,6 +1906,29 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
         var preferredTransferSyntaxUids = Array.isArray(queryOptions.storageTransferSyntaxUids)
             ? queryOptions.storageTransferSyntaxUids.slice()
             : [];
+        var moveStoreTls = ((queryOptions.moveStoreTls != null) && (queryOptions.moveStoreTls !== false))
+            ? queryOptions.moveStoreTls
+            : null;
+        var rawPolicy = ((queryOptions.moveStorePolicy != null) && (typeof queryOptions.moveStorePolicy === "object"))
+            ? queryOptions.moveStorePolicy
+            : {};
+        var policy = {
+            allowedCallingAeTitles: normalizePolicyStringSet(rawPolicy.allowedCallingAeTitles, normalizeAeTitle),
+            deniedCallingAeTitles: normalizePolicyStringSet(rawPolicy.deniedCallingAeTitles, normalizeAeTitle),
+            allowedRemoteHosts: normalizePolicyStringSet(rawPolicy.allowedRemoteHosts, normalizeRemoteAddress),
+            deniedRemoteHosts: normalizePolicyStringSet(rawPolicy.deniedRemoteHosts, normalizeRemoteAddress),
+            maxActiveAssociations: Number(rawPolicy.maxActiveAssociations || 0),
+            associationTimeoutMs: Number(rawPolicy.associationTimeoutMs || 30000),
+            rejectWithAssociationRj: (rawPolicy.rejectWithAssociationRj !== false)
+        };
+
+        if ((Number.isFinite(policy.maxActiveAssociations) == false) || (policy.maxActiveAssociations < 0)) {
+            policy.maxActiveAssociations = 0;
+        }
+
+        if ((Number.isFinite(policy.associationTimeoutMs) == false) || (policy.associationTimeoutMs <= 0)) {
+            policy.associationTimeoutMs = 30000;
+        }
 
         var moveStore = {
             host,
@@ -1684,10 +1937,12 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
                 instances: [],
                 activeConnections: new Set(),
                 lastReceivedAt: 0,
-                lastError: null
+                lastError: null,
+                policyRejections: []
             },
             server: null,
             closed: false,
+            policy,
             async close() {
                 if ((this.server == null) || (this.closed == true)) {
                     return;
@@ -1705,7 +1960,13 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
             }
         };
 
-        moveStore.server = net.createServer((socket) => {
+        var handleIncomingSocket = (socket) => {
+
+            if ((moveStore.policy.associationTimeoutMs > 0) && (typeof socket.setTimeout === "function")) {
+                socket.setTimeout(moveStore.policy.associationTimeoutMs, () => {
+                    socket.destroy(new Exception("DIMSE incoming C-STORE association timed out.", GeneralErrorCodes.GeneralError));
+                });
+            }
 
             moveStore.state.activeConnections.add(socket);
 
@@ -1713,7 +1974,9 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
                 calledAeTitle: queryOptions.moveStoreCalledAeTitle,
                 maxPduLength,
                 allowedSopClassUids,
-                preferredTransferSyntaxUids
+                preferredTransferSyntaxUids,
+                policy: moveStore.policy,
+                onConcern: queryOptions.onConcern
             }).catch((error) => {
                 moveStore.state.lastError = (error != null)
                     ? error
@@ -1722,7 +1985,17 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
                 moveStore.state.activeConnections.delete(socket);
             });
 
-        });
+        };
+
+        if (moveStoreTls != null) {
+            var tlsOptions = (typeof moveStoreTls === "object")
+                ? Object.assign({}, moveStoreTls)
+                : {};
+            moveStore.server = tls.createServer(tlsOptions, handleIncomingSocket);
+        }
+        else {
+            moveStore.server = net.createServer(handleIncomingSocket);
+        }
 
         moveStore.server.on("error", (error) => {
             moveStore.state.lastError = error;
@@ -1765,6 +2038,39 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
             var request = parseAssociateRqPayload(associateRq.payload);
             if (request == null) {
                 throw new Exception("Invalid C-STORE association payload.", GeneralErrorCodes.GeneralError);
+            }
+
+            var policyDecision = this.evaluateStoreAssociationPolicy(request, socket, state, options);
+            if (policyDecision.accepted !== true) {
+
+                var rejectionRecord = {
+                    reason: policyDecision.reason || "policy-rejected",
+                    callingAeTitle: request.callingAeTitle || null,
+                    calledAeTitle: request.calledAeTitle || null,
+                    remoteAddress: normalizeRemoteAddress(socket?.remoteAddress),
+                    at: Date.now()
+                };
+
+                if (Array.isArray(state?.policyRejections) == true) {
+                    state.policyRejections.push(rejectionRecord);
+                }
+
+                this.emitConcern(options, {
+                    severity: "warning",
+                    category: "Security",
+                    code: "MoveStoreAssociationRejected",
+                    actionTaken: "rejected",
+                    scope: "Transport",
+                    message: `Rejected inbound C-STORE association (${rejectionRecord.reason}).`,
+                    reason: rejectionRecord.reason,
+                    callingAeTitle: rejectionRecord.callingAeTitle,
+                    calledAeTitle: rejectionRecord.calledAeTitle,
+                    remoteAddress: rejectionRecord.remoteAddress
+                });
+
+                await this.rejectStoreAssociation(socket, options);
+                return;
+
             }
 
             var acceptedContexts = new Map();
@@ -1855,9 +2161,15 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
                     if (dataSetType == 0x0101) {
                         var acceptedNoData = acceptedContexts.get(event.contextId) || null;
                         var noDataTransferSyntax = acceptedNoData?.transferSyntaxUid || EXPLICIT_VR_LE;
+                        var noDataSopClassUid = (
+                            (sopClassUid != null)
+                            && (String(sopClassUid).trim().length > 0)
+                        )
+                            ? sopClassUid
+                            : (acceptedNoData?.abstractSyntaxUid || "");
 
                         state.instances.push(buildPart10FromDataSet(new Uint8Array(0), {
-                            sopClassUid,
+                            sopClassUid: noDataSopClassUid,
                             sopInstanceUid,
                             transferSyntaxUid: noDataTransferSyntax
                         }));
@@ -1886,9 +2198,15 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
 
                 var acceptedContext = acceptedContexts.get(event.contextId) || null;
                 var transferSyntaxUid = acceptedContext?.transferSyntaxUid || EXPLICIT_VR_LE;
+                var storeSopClassUid = (
+                    (pendingStore?.sopClassUid != null)
+                    && (String(pendingStore.sopClassUid).trim().length > 0)
+                )
+                    ? pendingStore.sopClassUid
+                    : (acceptedContext?.abstractSyntaxUid || "");
 
                 state.instances.push(buildPart10FromDataSet(event.bytes, {
-                    sopClassUid: pendingStore.sopClassUid,
+                    sopClassUid: storeSopClassUid,
                     sopInstanceUid: pendingStore.sopInstanceUid,
                     transferSyntaxUid
                 }));
@@ -2036,12 +2354,14 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
      * @param {Array<Uint8Array>} instances Retrieved Part-10 instance byte arrays.
      * @param {object} queryOptions Query options.
      * @param {object | null} association Association metadata.
+     * @param {object | null} diagnostics DIMSE diagnostics metadata.
      * @returns {object} Read envelope.
      */
-    buildReadEnvelope(instances, queryOptions, association) {
+    buildReadEnvelope(instances, queryOptions, association, diagnostics = null) {
 
         if ((instances == null) || (instances.length == 0)) {
-            throw new Exception("DIMSE C-GET completed with no instances returned.", GeneralErrorCodes.GeneralError);
+            var operation = String(queryOptions?.operation || "c-get").toUpperCase();
+            throw new Exception(`DIMSE ${operation} completed with no results returned.`, GeneralErrorCodes.GeneralError);
         }
 
         if (instances.length == 1) {
@@ -2051,7 +2371,8 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
                 metadata: {
                     count: 1,
                     sourceAssociation: association || null,
-                    query: queryOptions
+                    query: queryOptions,
+                    dimse: diagnostics
                 }
             });
         }
@@ -2065,7 +2386,8 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
             metadata: {
                 count: instances.length,
                 sourceAssociation: association || null,
-                query: queryOptions
+                query: queryOptions,
+                dimse: diagnostics
             }
         };
 
@@ -2081,7 +2403,15 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
 
         this.validateAssociation(association);
 
+        var startedAtMs = Date.now();
         var queryOptions = this.resolveQueryOptions(association, options);
+        var operation = String(queryOptions.operation || "c-get").toLowerCase();
+        var diagnostics = {
+            operation,
+            startedAtMs,
+            durationMs: 0,
+            moveStore: null
+        };
         var model = this.resolveQueryModel(queryOptions);
 
         var associate = this.buildAssociateRq(association, model, queryOptions);
@@ -2105,7 +2435,6 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
             var acInfo = this.parseAssociateAc(ac.payload, associate.contexts);
 
             var findContext = this.resolveAcceptedContextByKind(acInfo.contexts, "find");
-            var operation = String(queryOptions.operation || "c-get").toLowerCase();
 
             var operationContext = null;
             if (operation == "c-move") {
@@ -2113,6 +2442,9 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
             }
             else if (operation == "c-get") {
                 operationContext = this.resolveAcceptedContextByKind(acInfo.contexts, "get");
+            }
+            else if (operation == "c-find") {
+                operationContext = findContext;
             }
             else {
                 throw new Exception(`Unsupported DIMSE query operation '${operation}'.`, GeneralErrorCodes.InvalidParameter);
@@ -2126,7 +2458,7 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
             var messageId = Number(queryOptions.messageIdStart || 1);
             var priority = Number(queryOptions.priority || 0);
 
-            if (queryOptions.performFind == true) {
+            if ((queryOptions.performFind == true) && (operation != "c-find")) {
 
                 if (findContext == null) {
                     throw new Exception("DIMSE C-FIND presentation context was rejected by peer.", GeneralErrorCodes.GeneralError);
@@ -2154,11 +2486,35 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
 
             if (operation == "c-move") {
                 moveStore = await this.startMoveStoreServer(association, queryOptions);
+                diagnostics.moveStore = {
+                    host: moveStore.host,
+                    port: moveStore.port,
+                    calledAeTitle: normalizeAeTitle(queryOptions.moveStoreCalledAeTitle),
+                    policyRejections: []
+                };
             }
 
             var instances = [];
 
-            if (operation == "c-get") {
+            if (operation == "c-find") {
+
+                var findOnlyCommand = encodeRequestCommand(0x0020, messageId, model.findSopClassUid, true, priority);
+                var findOnlyIdentifierDataSet = buildQueryIdentifierDataset(queryOptions, operationContext.transferSyntaxUid);
+                await this.sendDimseRequest(socket, operationContext.context.id, acInfo.maxPduLength, findOnlyCommand, findOnlyIdentifierDataSet);
+
+                instances = await this.receiveFindResponses(
+                    scope.queue,
+                    state,
+                    operationContext.context.id,
+                    {
+                        collectIdentifiers: true,
+                        transferSyntaxUid: operationContext.transferSyntaxUid,
+                        sopClassUid: model.findSopClassUid
+                    }
+                );
+
+            }
+            else if (operation == "c-get") {
 
                 var getCommand = encodeRequestCommand(0x0010, messageId, model.getSopClassUid, true, priority);
                 var getIdentifierDataSet = buildQueryIdentifierDataset(queryOptions, operationContext.transferSyntaxUid);
@@ -2189,6 +2545,12 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
                 await this.waitForMoveStoreCompletion(moveStore, queryOptions);
                 instances = moveStore.state.instances.slice();
 
+                if ((diagnostics.moveStore != null) && (moveStore?.state != null)) {
+                    diagnostics.moveStore.policyRejections = Array.isArray(moveStore.state.policyRejections)
+                        ? moveStore.state.policyRejections.slice()
+                        : [];
+                }
+
             }
 
             try {
@@ -2200,7 +2562,8 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
                 }
             }
 
-            return this.buildReadEnvelope(instances, queryOptions, association || null);
+            diagnostics.durationMs = (Date.now() - startedAtMs);
+            return this.buildReadEnvelope(instances, queryOptions, association || null, diagnostics);
 
         }
         finally {

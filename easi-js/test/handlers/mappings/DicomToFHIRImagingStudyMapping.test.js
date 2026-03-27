@@ -75,3 +75,44 @@ test('Test: DicomToFHIRImagingStudyMapping supports subjectMode none', async () 
     expect(result.contained.length).toBe(0);
 
 });
+
+test('Test: DicomToFHIRImagingStudyMapping supports study-summary profile', async () => {
+
+    var mapping = new DicomToFHIRImagingStudyMapping({
+        profile: 'study-summary',
+        subjectMode: 'none'
+    });
+
+    var metadata = JSON.stringify({
+        '0020000D': { vr: 'UI', Value: ['1.2.3'] },
+        '00081030': { vr: 'LO', Value: ['CT CHEST'] },
+        '00080061': { vr: 'CS', Value: ['CT', 'MR'] },
+        '00201206': { vr: 'IS', Value: ['4'] },
+        '00201208': { vr: 'IS', Value: ['228'] },
+        '0020000E': { vr: 'UI', Value: ['1.2.3.1'] },
+        '00080018': { vr: 'UI', Value: ['1.2.3.1.1'] }
+    });
+
+    var result = await EASI
+        .pipelineBuilder()
+        .fromPartStream()
+        .ofDicomMetadata()
+        .toMapping(mapping)
+        .build()
+        .process((new TextEncoder()).encode(metadata));
+
+    expect(result instanceof ImagingStudy).toBe(true);
+    expect(Array.isArray(result.identifier)).toBe(true);
+    expect(result.identifier[0]).toEqual({
+        system: 'urn:dicom:uid',
+        value: 'urn:oid:1.2.3'
+    });
+    expect(Array.isArray(result.modality)).toBe(true);
+    expect(result.modality.length).toBe(2);
+    expect(result.modality[0].code).toBe('CT');
+    expect(result.numberOfSeries).toBe(4);
+    expect(result.numberOfInstances).toBe(228);
+    expect(Array.isArray(result.series)).toBe(true);
+    expect(result.series.length).toBe(0);
+
+});

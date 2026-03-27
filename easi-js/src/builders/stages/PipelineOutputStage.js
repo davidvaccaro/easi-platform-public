@@ -100,11 +100,20 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
     /**
      * Route terminal output to a DIMSE association destination sink.
      * @param {object | null} association The DIMSE destination association options.
-     * @param {object | null} options Optional write options.
+     * @param {object | null} options Optional write options (`options.transport` should provide DIMSE transport).
      * @returns {PipelineOutputStage} A new output stage object.
      */
     intoDimseAssociation(association = null, options = null) {
-        return this.withWriter(new DimseAssociationWriter(), association, options);
+
+        var transport = null;
+        if ((options != null)
+            && (typeof options === "object")
+            && (Object.prototype.hasOwnProperty.call(options, "transport") == true)) {
+            transport = options.transport;
+        }
+
+        return this.withWriter(new DimseAssociationWriter(transport), association, options);
+
     }
 
     /**

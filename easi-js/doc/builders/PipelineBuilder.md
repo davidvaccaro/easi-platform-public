@@ -1,14 +1,13 @@
 # `PipelineBuilder` Class
 
-The `PipelineBuilder` class provides a fluent API for composing and configuring `PartStreamReader` instances.
+`PipelineBuilder` is the staged fluent API entry point for creating an EASI `Pipeline`.
 
----
+The stages are:
 
-## Inheritance
-
-```text
-PipelineBuilder → (none)
-```
+1. Source stage (`from*`, `withReader`)
+2. Format stage (`of*`, `withParser`)
+3. Target stage (`to*`, `with*` transform options, `withHandler`)
+4. Output stage (`into*`, `withWriter`, `build`)
 
 ## Constructor
 
@@ -16,236 +15,176 @@ PipelineBuilder → (none)
 new PipelineBuilder()
 ```
 
-## Properties
+Typically you create it through `EASI.pipelineBuilder()`.
 
-| Property | Type    | Description |
-|----------|---------|-------------|
-| `handler` | `*` | Instance property initialized in constructor. |
-| `isStrict` | `*` | Instance property initialized in constructor. |
-| `reader` | `*` | Instance property initialized in constructor. |
-| `parser` | `*` | Instance property initialized in constructor. |
-| `onEmit` | `*` | Instance property initialized in constructor. |
-
-## Methods
-
-### `withParser(parser)`
-
-Set the current parser.
-
-#### Parameters
-
-| Parameter | Type    | Description |
-|-----------|---------|-------------|
-| `parser` | `DicomDataParser | JsonDataParser` | The parser used to parsed elements. |
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `withReader(reader)`
-
-Set the current reader.
-
-#### Parameters
-
-| Parameter | Type    | Description |
-|-----------|---------|-------------|
-| `reader` | `object` | The reader used to process source input. |
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `withHandler(handler)`
-
-Set the current handler.
-
-#### Parameters
-
-| Parameter | Type    | Description |
-|-----------|---------|-------------|
-| `handler` | `DicomInstanceHandler | DicomJsonMetadataAdapter | DicomMappingHandler | DicomSelectingHandler` | The handler used to handle parsed elements. |
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `withOnEmit(onEmit)`
-
-Sets the "onEmit" callback for the stream-read session.
-
-#### Parameters
-
-| Parameter | Type    | Description |
-|-----------|---------|-------------|
-| `onEmit` | `Function` | The callback invoked whenever the pipeline emits a parsed result. |
-
-#### Returns
-
-*(None — return value not explicitly documented.)*
-
----
-
-### `withIsStrict(isStrict)`
-
-Sets the the status indicating that this parser is perfomring "strict" parsing.
-
-#### Parameters
-
-| Parameter | Type    | Description |
-|-----------|---------|-------------|
-| `isStrict` | `boolean` | Indicates that the parsing should be performed "strictly" |
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `fromPartStream()`
-
-Sets the current build to use the part-stream reader source type.
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `ofDicomData()`
-
-Sets the current build to parse native DICOM byte data.
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `ofDicomMetadata()`
-
-Sets the current build to parse DICOM JSON metadata.
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `ofDicomXmlMetadata()`
-
-Sets the current build to parse DICOM XML metadata.
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `toInstances()`
-
-Sets the current build to stream-parse to DICOM instances.
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `toMapping(mapping)`
-
-Sets the current build to stream-parse to a mapping.
-
-#### Parameters
-
-| Parameter | Type    | Description |
-|-----------|---------|-------------|
-| `mapping` | `*` | Parameter accepted by method. |
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `toSelection(selection)`
-
-Sets the current build to stream-parse to a selection.
-
-#### Parameters
-
-| Parameter | Type    | Description |
-|-----------|---------|-------------|
-| `selection` | `*` | Parameter accepted by method. |
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `toFHIRImagingStudies()`
-
-Sets the current build to stream-parse to a FHIR ImagingStudy resource.
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The reference to the current builder. |
-
----
-
-### `build()`
-
-Build a new pipeline instance.
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | The new pipeline instance. |
-
-## Usage Example
+## Core Fluent Flow
 
 ```js
-import EASI from '../../src/EASI.js';
+import EASI from "../../src/EASI.js";
 
 const pipeline = EASI
   .pipelineBuilder()
-  .fromPartStream().ofDicomData()
-  .withIsStrict(true)
+  .fromPartStream()
+  .ofDicomData()
   .toInstances()
   .build();
-
-const result = await pipeline.process('https://example.org/study/instance.dcm');
 ```
----
+
+## Source Stage Methods
+
+Use one of these before choosing format:
+
+- `fromPartStream()`
+- `fromHttpStream()`
+- `fromByteStream()`
+- `fromFileStream()`
+- `fromWebSocketStream()`
+- `fromNodeStreamAdapter()`
+- `fromDimseAssociation(association?, transport?)`
+- `withReader(reader)`
+
+## Format Stage Methods
+
+Use one of these after source:
+
+- `ofDicomData()`
+- `ofDicomMetadata()`
+- `ofDicomXmlMetadata()`
+- `ofJsonData()`
+- `ofXmlData()`
+- `withParser(parser)`
+
+## Target Stage Methods
+
+Terminal target methods:
+
+- `toInstances()`
+- `toEntities()`
+- `toSelection(selection)`
+- `toMapping(mapping)`
+- `toFHIRImagingStudy(profile = "full")`
+- `toDicomData(options?)`
+- `toJsonValue()`
+- `toAssets(options?)`
+- `toAssetArchive(options?)`
+- `withHandler(handler)`
+
+Transform/filter configuration methods (applied before terminal output):
+
+- `withOnEmit(callback)`
+- `withIsStrict(boolean)`
+- `withMask(mask)`
+- `withDeIdentification(mask?)`
+- `withBulkDataPolicy(policy)`
+- `withValidation(validationConfig?)`
+- `withTranscoding(transcodingConfig?)`
+- `withBurnedInRedaction(redactionConfig?)`
+- `withCodecRegistry(codecRegistry)`
+
+## Output Stage Methods
+
+Outbound restreaming:
+
+- `intoByteStream(options?)`
+- `intoPartStream(options?)`
+- `intoFileStream(filePath, options?)`
+- `intoBrowserFileStream(target, options?)`
+- `intoNodeStreamAdapter(writable, options?)`
+- `intoWebSocketStream(socket, options?)`
+- `intoHttpStream(request, options?)`
+- `intoDimseAssociation(association?, options?)`
+- `withWriter(writer, target?, options?)`
+
+Finalize:
+
+- `build()`
+
+## DIMSE Notes
+
+### DIMSE source
+
+`fromDimseAssociation(...)` requires a source transport implementing:
+
+- `read(association, options?)`
+
+Use `NodeDimseQueryRetrieveSourceTransport` for C-FIND/C-GET/C-MOVE source retrieval, or `NodeDimseCStoreScpSourceTransport` for incoming C-STORE SCP ingestion.
+
+### DIMSE destination
+
+`intoDimseAssociation(...)` requires a destination transport implementing:
+
+- `write(association, payload, options?)`
+
+Use `NodeDimseCStoreScuTransport` for C-STORE SCU destination write.
+
+### Compatibility guardrails
+
+Build-time validation enforces:
+
+- DIMSE reader must be paired with native DICOM parser (`ofDicomData()`).
+- DIMSE writer must be paired with terminal DICOM byte emission (`toDicomData(...)`).
+- DIMSE source and destination transports are required (no default stubs).
+
+## Example: C-FIND Study Discovery -> FHIR ImagingStudy (Study Summary)
+
+```js
+import EASI from "../../src/EASI.js";
+import NodeDimseQueryRetrieveSourceTransport
+  from "../../src/transports/dimse/NodeDimseQueryRetrieveSourceTransport.js";
+
+const pipeline = EASI
+  .pipelineBuilder()
+  .fromDimseAssociation(
+    { host: "127.0.0.1", port: 4242, callingAeTitle: "EASI_JS", calledAeTitle: "ORTHANC" },
+    new NodeDimseQueryRetrieveSourceTransport()
+  )
+  .ofDicomData()
+  .toFHIRImagingStudy("study-summary")
+  .build();
+
+const result = await pipeline.process({
+  operation: "cfind",
+  level: "STUDY",
+  keys: { Modality: "CT" }
+});
+```
+
+## Example: C-MOVE relay with in-flight de-identification
+
+```js
+import EASI from "../../src/EASI.js";
+import Tag from "../../src/dicom/Tag.js";
+import NodeDimseQueryRetrieveSourceTransport
+  from "../../src/transports/dimse/NodeDimseQueryRetrieveSourceTransport.js";
+import NodeDimseCStoreScuTransport
+  from "../../src/transports/dimse/NodeDimseCStoreScuTransport.js";
+
+const sourceTransport = new NodeDimseQueryRetrieveSourceTransport();
+const destinationTransport = new NodeDimseCStoreScuTransport();
+
+const pipeline = EASI
+  .pipelineBuilder()
+  .fromDimseAssociation(
+    { host: "127.0.0.1", port: 4242, callingAeTitle: "EASI_JS", calledAeTitle: "ORTHANC" },
+    sourceTransport
+  )
+  .ofDicomData()
+  .toDicomData({ collectOutput: false })
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .intoDimseAssociation(
+    { host: "127.0.0.1", port: 4242, callingAeTitle: "EASI_JS", calledAeTitle: "ORTHANC" },
+    { transport: destinationTransport }
+  )
+  .build();
+
+await pipeline.process({
+  operation: "cmove",
+  level: "IMAGE",
+  destinationAeTitle: "EASI_MOVE_DEST",
+  keys: {
+    StudyInstanceUID: "<study-uid>",
+    SeriesInstanceUID: "<series-uid>",
+    SOPInstanceUID: "<instance-uid>"
+  }
+});
+```

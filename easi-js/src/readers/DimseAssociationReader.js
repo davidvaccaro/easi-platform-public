@@ -7,7 +7,6 @@
 import Exception from '../environment/Exception.js';
 import { GeneralErrorCodes } from '../environment/Exception.js';
 import PartStreamReader from './PartStreamReader.js';
-import StubDimseSourceTransport from '../transports/dimse/StubDimseSourceTransport.js';
 
 export default class DimseAssociationReader {
 
@@ -143,12 +142,12 @@ export default class DimseAssociationReader {
     /**
      * Construct one DIMSE association reader.
      * @param {object | null} association Default DIMSE source association options.
-     * @param {object | null} transport Optional DIMSE source transport adapter.
+     * @param {object | null} transport DIMSE source transport adapter.
      * @param {PartStreamReader | null} partReader Optional part reader.
      */
     constructor(association = null, transport = null, partReader = null) {
         this._association = association;
-        this._transport = (transport != null) ? transport : new StubDimseSourceTransport();
+        this._transport = transport;
         this._partReader = (partReader != null) ? partReader : new PartStreamReader();
     }
 

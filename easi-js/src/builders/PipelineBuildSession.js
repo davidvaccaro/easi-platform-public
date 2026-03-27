@@ -112,6 +112,28 @@ export default class PipelineBuildSession {
     }
 
     /**
+     * Determines if the DIMSE source transport appears valid.
+     * @param {object | null} transport The DIMSE source transport.
+     * @returns {boolean} True when transport implements read().
+     */
+    isValidDimseSourceTransport(transport) {
+        return ((transport != null)
+            && (typeof transport === "object")
+            && (typeof transport.read === "function"));
+    }
+
+    /**
+     * Determines if the DIMSE destination transport appears valid.
+     * @param {object | null} transport The DIMSE destination transport.
+     * @returns {boolean} True when transport implements write().
+     */
+    isValidDimseDestinationTransport(transport) {
+        return ((transport != null)
+            && (typeof transport === "object")
+            && (typeof transport.write === "function"));
+    }
+
+    /**
      * Resolve the deepest next-handler in a handler chain.
      * @param {object} handler The current top handler.
      * @returns {object | null} The terminal handler.
@@ -545,6 +567,17 @@ export default class PipelineBuildSession {
             );
         }
 
+        // DIMSE source transport must be explicitly configured.
+        if (reader instanceof DimseAssociationReader) {
+            const sourceTransport = reader.resolveTransport(null);
+            if (this.isValidDimseSourceTransport(sourceTransport) == false) {
+                throw new Exception(
+                    "PipelineBuilder.build requires a DIMSE source transport when using fromDimseAssociation(...).",
+                    BuilderErrorCodes.InvalidBuildState
+                );
+            }
+        }
+
         // Set the internal reader `onPart` from the public pipeline `onEmit` callback.
         reader.onPart = this.onEmit;
 
@@ -680,6 +713,17 @@ export default class PipelineBuildSession {
 
             const terminalHandler = this.resolveTerminalHandler(handler);
             this.validateWriterTerminalCompatibility(this.writer, terminalHandler);
+
+            // DIMSE destination transport must be explicitly configured.
+            if (this.writer instanceof DimseAssociationWriter) {
+                const destinationTransport = this.writer.resolveTransport(this.writerOptions);
+                if (this.isValidDimseDestinationTransport(destinationTransport) == false) {
+                    throw new Exception(
+                        "PipelineBuilder.build requires a DIMSE destination transport when using intoDimseAssociation(...).",
+                        BuilderErrorCodes.InvalidBuildState
+                    );
+                }
+            }
 
             // If terminal DICOM data writing is already chunking to an explicit callback,
             // keep its native output and do not wrap with a post-result writer sink.

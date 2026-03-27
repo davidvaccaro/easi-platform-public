@@ -215,10 +215,13 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
         ));
     }
 
-    /** @returns {PipelineOutputStage} */
-    toFHIRImagingStudy() {
+    /**
+     * @param {'full' | 'study-summary'} [profile='full'] ImagingStudy mapping profile.
+     * @returns {PipelineOutputStage}
+     */
+    toFHIRImagingStudy(profile = 'full') {
         return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
-            new DicomMappingHandler(new DicomToFHIRImagingStudyMapping())
+            new DicomMappingHandler(new DicomToFHIRImagingStudyMapping({ profile }))
         ));
     }
 

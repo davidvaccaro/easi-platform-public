@@ -116,13 +116,68 @@ function encodeCommandUL(group, element, value) {
     return encodeCommandElement(group, element, toUint32LE(value));
 }
 
-function encodeFindRspCommand(sopClassUid, messageIdBeingRespondedTo, status = 0x0000) {
+function encodeTextValue(vr, value) {
+
+    var padByte = (vr == "UI") ? 0x00 : 0x20;
+    return padEven(toTextBytes(value || ""), padByte);
+
+}
+
+function encodeExplicitVRElement(tagId, vr, valueBytes) {
+
+    var group = parseInt(tagId.substring(0, 4), 16);
+    var element = parseInt(tagId.substring(4, 8), 16);
+
+    var shortVr = (vr == "AE")
+        || (vr == "AS")
+        || (vr == "AT")
+        || (vr == "CS")
+        || (vr == "DA")
+        || (vr == "DS")
+        || (vr == "DT")
+        || (vr == "FL")
+        || (vr == "FD")
+        || (vr == "IS")
+        || (vr == "LO")
+        || (vr == "LT")
+        || (vr == "PN")
+        || (vr == "SH")
+        || (vr == "SL")
+        || (vr == "SS")
+        || (vr == "ST")
+        || (vr == "TM")
+        || (vr == "UI")
+        || (vr == "UL")
+        || (vr == "US");
+
+    if (shortVr == true) {
+        return concatBytes([
+            toUint16LE(group),
+            toUint16LE(element),
+            toTextBytes(vr),
+            toUint16LE(valueBytes.length),
+            valueBytes
+        ]);
+    }
+
+    return concatBytes([
+        toUint16LE(group),
+        toUint16LE(element),
+        toTextBytes(vr),
+        new Uint8Array([0x00, 0x00]),
+        toUint32LE(valueBytes.length),
+        valueBytes
+    ]);
+
+}
+
+function encodeFindRspCommand(sopClassUid, messageIdBeingRespondedTo, status = 0x0000, hasDataSet = false) {
 
     var body = concatBytes([
         encodeCommandUI(0x0000, 0x0002, sopClassUid),
         encodeCommandUS(0x0000, 0x0100, 0x8020), // C-FIND-RSP
         encodeCommandUS(0x0000, 0x0120, messageIdBeingRespondedTo),
-        encodeCommandUS(0x0000, 0x0800, 0x0101),
+        encodeCommandUS(0x0000, 0x0800, hasDataSet ? 0x0000 : 0x0101),
         encodeCommandUS(0x0000, 0x0900, status)
     ]);
 
@@ -552,7 +607,7 @@ function parsePart10Meta(bytes) {
 
 }
 
-function createMockDimseQueryRetrieveScp(storePayload) {
+function createMockDimseQueryRetrieveScp(storePayload, findResultDataSets = null) {
 
     var requestDetails = null;
     var sawFind = false;
@@ -670,16 +725,42 @@ function createMockDimseQueryRetrieveScp(storePayload) {
 
                             sawFind = true;
                             var findMessageId = decodeCommandUS(elements, "00000110", 1);
+                            var responses = (Array.isArray(findResultDataSets) == true) ? findResultDataSets : null;
 
-                            socket.write(Buffer.from(buildPDataCommandPdu(
-                                findContextId,
-                                encodeFindRspCommand(STUDY_ROOT_FIND_UID, findMessageId, 0xFF00)
-                            )));
+                            if ((responses != null) && (responses.length > 0)) {
 
-                            socket.write(Buffer.from(buildPDataCommandPdu(
-                                findContextId,
-                                encodeFindRspCommand(STUDY_ROOT_FIND_UID, findMessageId, 0x0000)
-                            )));
+                                for (var findIndex = 0; findIndex < responses.length; findIndex++) {
+                                    socket.write(Buffer.from(buildPDataCommandPdu(
+                                        findContextId,
+                                        encodeFindRspCommand(STUDY_ROOT_FIND_UID, findMessageId, 0xFF00, true)
+                                    )));
+
+                                    socket.write(Buffer.from(buildPDataDataSetPdu(
+                                        findContextId,
+                                        responses[findIndex],
+                                        true
+                                    )));
+                                }
+
+                                socket.write(Buffer.from(buildPDataCommandPdu(
+                                    findContextId,
+                                    encodeFindRspCommand(STUDY_ROOT_FIND_UID, findMessageId, 0x0000)
+                                )));
+
+                            }
+                            else {
+
+                                socket.write(Buffer.from(buildPDataCommandPdu(
+                                    findContextId,
+                                    encodeFindRspCommand(STUDY_ROOT_FIND_UID, findMessageId, 0xFF00)
+                                )));
+
+                                socket.write(Buffer.from(buildPDataCommandPdu(
+                                    findContextId,
+                                    encodeFindRspCommand(STUDY_ROOT_FIND_UID, findMessageId, 0x0000)
+                                )));
+
+                            }
 
                             continue;
 
@@ -1087,6 +1168,118 @@ test("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND + C-GET and em
 
 });
 
+test("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND only and emits identifier instances", async () => {
+
+    const sampleBytes = readDicomBytes("0002.DCM");
+    const sampleMeta = parsePart10Meta(sampleBytes);
+
+    const storePayload = {
+        sopClassUid: sampleMeta.sopClassUid,
+        sopInstanceUid: sampleMeta.sopInstanceUid,
+        part10Bytes: sampleBytes,
+        dataSetBytes: sampleBytes.subarray(sampleMeta.dataSetOffset),
+        transferSyntaxUid: sampleMeta.transferSyntaxUid || EXPLICIT_VR_LE
+    };
+
+    const firstSopInstanceUid = "1.2.826.0.1.3680043.2.1125.1";
+    const secondSopInstanceUid = "1.2.826.0.1.3680043.2.1125.2";
+
+    const findResultDataSets = [
+        concatBytes([
+            encodeExplicitVRElement("00080052", "CS", encodeTextValue("CS", "IMAGE")),
+            encodeExplicitVRElement("0020000D", "UI", encodeTextValue("UI", "1.2.826.0.1.3680043.2.1125.100")),
+            encodeExplicitVRElement("0020000E", "UI", encodeTextValue("UI", "1.2.826.0.1.3680043.2.1125.100.1")),
+            encodeExplicitVRElement("00080018", "UI", encodeTextValue("UI", firstSopInstanceUid))
+        ]),
+        concatBytes([
+            encodeExplicitVRElement("00080052", "CS", encodeTextValue("CS", "IMAGE")),
+            encodeExplicitVRElement("0020000D", "UI", encodeTextValue("UI", "1.2.826.0.1.3680043.2.1125.100")),
+            encodeExplicitVRElement("0020000E", "UI", encodeTextValue("UI", "1.2.826.0.1.3680043.2.1125.100.2")),
+            encodeExplicitVRElement("00080018", "UI", encodeTextValue("UI", secondSopInstanceUid))
+        ])
+    ];
+
+    const mockScp = createMockDimseQueryRetrieveScp(storePayload, findResultDataSets);
+    const endpoint = await mockScp.start();
+
+    try {
+
+        const sourceAssociation = {
+            host: endpoint.host,
+            port: endpoint.port,
+            callingAeTitle: "EASI_QR",
+            calledAeTitle: "MOCK_SCP"
+        };
+
+        const transport = new NodeDimseQueryRetrieveSourceTransport();
+        const emitted = [];
+
+        const asInstances = (value) => {
+            if (value == null) {
+                return [];
+            }
+            if (Array.isArray(value) == true) {
+                return value.filter((item) => item?.dataSet != null);
+            }
+            if (value?.dataSet != null) {
+                return [value];
+            }
+            return [];
+        };
+
+        const collectSopInstanceUids = (values) => {
+            var ordered = [];
+            var seen = new Set();
+            for (var i = 0; i < values.length; i++) {
+                var instances = asInstances(values[i]);
+                for (var j = 0; j < instances.length; j++) {
+                    var uid = instances[j].dataSet?.value(Tag.SOPInstanceUID) || null;
+                    if ((uid != null) && (seen.has(uid) == false)) {
+                        seen.add(uid);
+                        ordered.push(uid);
+                    }
+                }
+            }
+            return ordered;
+        };
+
+        const pipeline = EASI.pipelineBuilder()
+            .fromDimseAssociation(sourceAssociation, transport)
+            .ofDicomData()
+            .withOnEmit((instance) => {
+                emitted.push(instance);
+            })
+            .toInstances()
+            .build();
+
+        const result = await pipeline.process(null, {
+            operation: "c-find",
+            performFind: false,
+            queryRetrieveModel: "study-root",
+            queryRetrieveLevel: "IMAGE",
+            studyInstanceUid: "1.2.826.0.1.3680043.2.1125.100",
+            queryTransferSyntaxUids: [EXPLICIT_VR_LE]
+        });
+
+        var emittedSopInstanceUids = collectSopInstanceUids(emitted);
+        var resultSopInstanceUids = collectSopInstanceUids([result]);
+
+        expect(result).not.toBeNull();
+        expect(Array.isArray(emittedSopInstanceUids)).toBe(true);
+        expect(emittedSopInstanceUids).toEqual([firstSopInstanceUid, secondSopInstanceUid]);
+        expect(resultSopInstanceUids).toContain(secondSopInstanceUid);
+
+        expect(mockScp.state.sawFind).toBe(true);
+        expect(mockScp.state.sawGet).toBe(false);
+        expect(mockScp.state.sawStoreResponse).toBe(false);
+
+    }
+    finally {
+        await mockScp.stop();
+    }
+
+});
+
 test("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND + C-MOVE and receives retrieved instance through local store SCP", async () => {
 
     const sampleBytes = readDicomBytes("0002.DCM");
@@ -1179,5 +1372,58 @@ test("Test: NodeDimseQueryRetrieveSourceTransport validates required association
     }
 
     throw new Error("Expected invalid association read to throw.");
+
+});
+
+test("Test: NodeDimseQueryRetrieveSourceTransport validates onConcern callback type", () => {
+
+    const transport = new NodeDimseQueryRetrieveSourceTransport();
+
+    try {
+        transport.resolveQueryOptions({
+            host: "127.0.0.1",
+            port: 104,
+            callingAeTitle: "EASI",
+            calledAeTitle: "ORTHANC"
+        }, {
+            operation: "c-find",
+            onConcern: "not-a-function"
+        });
+    }
+    catch (error) {
+        expect(error instanceof Exception).toBe(true);
+        expect(error.code).toBe(GeneralErrorCodes.InvalidParameter);
+        return;
+    }
+
+    throw new Error("Expected invalid onConcern callback to throw.");
+
+});
+
+test("Test: NodeDimseQueryRetrieveSourceTransport buildReadEnvelope includes DIMSE diagnostics metadata", () => {
+
+    const transport = new NodeDimseQueryRetrieveSourceTransport();
+    const bytes = new Uint8Array([1, 2, 3, 4]);
+    const diagnostics = {
+        operation: "c-store-scp",
+        startedAtMs: Date.now(),
+        durationMs: 7,
+        moveStore: {
+            host: "127.0.0.1",
+            port: 4104,
+            calledAeTitle: "EASI_MOVE_DEST",
+            policyRejections: []
+        }
+    };
+
+    const envelope = transport.buildReadEnvelope([bytes], { operation: "c-store-scp" }, {
+        host: "127.0.0.1",
+        port: 4104,
+        calledAeTitle: "EASI_MOVE_DEST"
+    }, diagnostics);
+
+    expect(envelope).toBeDefined();
+    expect(envelope.metadata).toBeDefined();
+    expect(envelope.metadata.dimse).toEqual(diagnostics);
 
 });

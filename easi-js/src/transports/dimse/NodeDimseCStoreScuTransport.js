@@ -281,6 +281,119 @@ function parsePart10Meta(bytes) {
 
 }
 
+function isLikelyUidText(value) {
+
+    if ((typeof value !== "string") || (value.length == 0)) {
+        return false;
+    }
+
+    var trimmed = value.replace(/\0/g, "").trim();
+    if (trimmed.length == 0) {
+        return false;
+    }
+
+    return (/^[0-9]+(\.[0-9]+)+$/.test(trimmed) == true);
+
+}
+
+function decodeUidBytes(valueBytes) {
+    return (new TextDecoder()).decode(valueBytes).replace(/\0/g, "").trim();
+}
+
+function tryReadUidElementAt(dataSetBytes, offset, isLittleEndian, isExplicitVr, group, element) {
+
+    if ((offset + 8) > dataSetBytes.length) {
+        return null;
+    }
+
+    var view = new DataView(dataSetBytes.buffer, dataSetBytes.byteOffset + offset, Math.min(12, dataSetBytes.length - offset));
+    var parsedGroup = view.getUint16(0, isLittleEndian);
+    var parsedElement = view.getUint16(2, isLittleEndian);
+
+    if ((parsedGroup != group) || (parsedElement != element)) {
+        return null;
+    }
+
+    var valueLength = 0;
+    var valueOffset = 0;
+
+    if (isExplicitVr == true) {
+
+        if ((offset + 8) > dataSetBytes.length) {
+            return null;
+        }
+
+        var vr0 = dataSetBytes[offset + 4];
+        var vr1 = dataSetBytes[offset + 5];
+        if ((vr0 != 0x55) || (vr1 != 0x49)) {
+            return null;
+        }
+
+        valueLength = (new DataView(dataSetBytes.buffer, dataSetBytes.byteOffset + offset + 6, 2)).getUint16(0, isLittleEndian);
+        valueOffset = offset + 8;
+
+    }
+    else {
+
+        valueLength = (new DataView(dataSetBytes.buffer, dataSetBytes.byteOffset + offset + 4, 4)).getUint32(0, isLittleEndian);
+        valueOffset = offset + 8;
+
+    }
+
+    if ((valueLength <= 0) || (valueLength > 256)) {
+        return null;
+    }
+
+    var valueStop = valueOffset + valueLength;
+    if (valueStop > dataSetBytes.length) {
+        return null;
+    }
+
+    var uid = decodeUidBytes(dataSetBytes.subarray(valueOffset, valueStop));
+    if (isLikelyUidText(uid) == false) {
+        return null;
+    }
+
+    return uid;
+
+}
+
+function extractUidFromDataSet(dataSetBytes, group, element, maxScanBytes = 131072) {
+
+    if ((dataSetBytes == null) || (dataSetBytes.length < 8)) {
+        return null;
+    }
+
+    var scanLength = dataSetBytes.length;
+    if ((Number.isFinite(Number(maxScanBytes)) == true) && (Number(maxScanBytes) > 0)) {
+        scanLength = Math.min(scanLength, Number(maxScanBytes));
+    }
+
+    var maxOffset = Math.max(0, scanLength - 8);
+
+    for (var offset = 0; offset <= maxOffset; offset++) {
+
+        var uid = tryReadUidElementAt(dataSetBytes, offset, true, true, group, element);
+        if (uid != null) {
+            return uid;
+        }
+
+        uid = tryReadUidElementAt(dataSetBytes, offset, true, false, group, element);
+        if (uid != null) {
+            return uid;
+        }
+
+        uid = tryReadUidElementAt(dataSetBytes, offset, false, true, group, element);
+        if (uid != null) {
+            return uid;
+        }
+
+    }
+
+    return null;
+
+}
+
 function createPromiseQueue() {
 
     var values = [];
@@ -381,15 +494,45 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
 
         var parsedMeta = parsePart10Meta(sourceBytes);
 
-        var sopClassUid = options.sopClassUid
-            ?? parsedMeta?.sopClassUid
-            ?? null;
-        var sopInstanceUid = options.sopInstanceUid
-            ?? parsedMeta?.sopInstanceUid
-            ?? null;
+        var sopClassUid = options.sopClassUid ?? null;
+        var sopInstanceUid = options.sopInstanceUid ?? null;
         var transferSyntaxUid = options.transferSyntaxUid
             ?? parsedMeta?.transferSyntaxUid
             ?? "1.2.840.10008.1.2.1";
+
+        var dataSetOffset = options.dataSetOffset;
+        if (dataSetOffset == null) {
+            dataSetOffset = parsedMeta?.dataSetOffset ?? 0;
+        }
+        if ((Number.isFinite(Number(dataSetOffset)) == false) || (Number(dataSetOffset) < 0) || (Number(dataSetOffset) > sourceBytes.length)) {
+            throw new Exception("Invalid C-STORE data-set offset.", GeneralErrorCodes.InvalidParameter);
+        }
+
+        var dataSetBytes = sourceBytes.subarray(Number(dataSetOffset));
+
+        // Prefer data-set UIDs over File Meta UIDs so C-STORE command fields
+        // always match the transmitted data-set after in-pipeline mutations
+        // (for example de-identification UID reassignment).
+        var dataSetSopClassUid = null;
+        var dataSetSopInstanceUid = null;
+
+        if (((typeof sopClassUid !== "string") || (sopClassUid.length == 0))
+            || ((typeof sopInstanceUid !== "string") || (sopInstanceUid.length == 0))) {
+            dataSetSopClassUid = extractUidFromDataSet(dataSetBytes, 0x0008, 0x0016);
+            dataSetSopInstanceUid = extractUidFromDataSet(dataSetBytes, 0x0008, 0x0018);
+        }
+
+        if ((typeof sopClassUid !== "string") || (sopClassUid.length == 0)) {
+            sopClassUid = dataSetSopClassUid
+                ?? parsedMeta?.sopClassUid
+                ?? null;
+        }
+
+        if ((typeof sopInstanceUid !== "string") || (sopInstanceUid.length == 0)) {
+            sopInstanceUid = dataSetSopInstanceUid
+                ?? parsedMeta?.sopInstanceUid
+                ?? null;
+        }
 
         if ((typeof sopClassUid !== "string") || (sopClassUid.length == 0)) {
             throw new Exception("Unable to resolve SOP Class UID for C-STORE request.", GeneralErrorCodes.InvalidParameter);
@@ -403,19 +546,11 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
             throw new Exception("Unable to resolve Transfer Syntax UID for C-STORE request.", GeneralErrorCodes.InvalidParameter);
         }
 
-        var dataSetOffset = options.dataSetOffset;
-        if (dataSetOffset == null) {
-            dataSetOffset = parsedMeta?.dataSetOffset ?? 0;
-        }
-        if ((Number.isFinite(Number(dataSetOffset)) == false) || (Number(dataSetOffset) < 0) || (Number(dataSetOffset) > sourceBytes.length)) {
-            throw new Exception("Invalid C-STORE data-set offset.", GeneralErrorCodes.InvalidParameter);
-        }
-
         return {
             sopClassUid,
             sopInstanceUid,
             transferSyntaxUid,
-            dataSetBytes: sourceBytes.subarray(Number(dataSetOffset)),
+            dataSetBytes,
             parsedMeta
         };
 
@@ -877,7 +1012,9 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
                     sopClassUid: payload.sopClassUid,
                     sopInstanceUid: payload.sopInstanceUid,
                     transferSyntaxUid: payload.transferSyntaxUid,
-                    acceptedTransferSyntaxUid: acInfo.acceptedTransferSyntaxUid
+                    acceptedTransferSyntaxUid: acInfo.acceptedTransferSyntaxUid,
+                    sourceMetaSopClassUid: payload?.parsedMeta?.sopClassUid ?? null,
+                    sourceMetaSopInstanceUid: payload?.parsedMeta?.sopInstanceUid ?? null
                 }
             });
 

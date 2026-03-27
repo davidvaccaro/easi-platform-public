@@ -280,6 +280,145 @@ function readDicomBytes(fileName) {
     return new Uint8Array(fs.readFileSync(filePath));
 }
 
+function readPart10DataSetOffset(bytes) {
+
+    if ((bytes == null) || (bytes.length < 132))
+        return 0;
+
+    if ((bytes[128] != 0x44) || (bytes[129] != 0x49) || (bytes[130] != 0x43) || (bytes[131] != 0x4D))
+        return 0;
+
+    var offset = 132;
+
+    while ((offset + 8) <= bytes.length) {
+
+        var group = (new DataView(bytes.buffer, bytes.byteOffset + offset, 2)).getUint16(0, true);
+        if (group != 0x0002)
+            return offset;
+
+        var vr0 = bytes[offset + 4];
+        var vr1 = bytes[offset + 5];
+        var vr = String.fromCharCode(vr0) + String.fromCharCode(vr1);
+        var longVr = (vr == "OB") || (vr == "OD") || (vr == "OF") || (vr == "OL") || (vr == "OV")
+            || (vr == "OW") || (vr == "SQ") || (vr == "UC") || (vr == "UR") || (vr == "UT") || (vr == "UN");
+        var headerLength = longVr ? 12 : 8;
+
+        if ((offset + headerLength) > bytes.length)
+            return offset;
+
+        var valueLength = longVr
+            ? (new DataView(bytes.buffer, bytes.byteOffset + offset + 8, 4)).getUint32(0, true)
+            : (new DataView(bytes.buffer, bytes.byteOffset + offset + 6, 2)).getUint16(0, true);
+        var valueStop = offset + headerLength + valueLength;
+
+        if (valueStop > bytes.length)
+            return offset;
+
+        offset = valueStop;
+
+    }
+
+    return Math.min(offset, bytes.length);
+
+}
+
+function readPart10MetaSopInstanceUid(bytes) {
+
+    if ((bytes == null) || (bytes.length < 132))
+        return "";
+
+    if ((bytes[128] != 0x44) || (bytes[129] != 0x49) || (bytes[130] != 0x43) || (bytes[131] != 0x4D))
+        return "";
+
+    var offset = 132;
+    while ((offset + 8) <= bytes.length) {
+
+        var group = (new DataView(bytes.buffer, bytes.byteOffset + offset, 2)).getUint16(0, true);
+        var element = (new DataView(bytes.buffer, bytes.byteOffset + offset + 2, 2)).getUint16(0, true);
+
+        if (group != 0x0002)
+            break;
+
+        var vr0 = bytes[offset + 4];
+        var vr1 = bytes[offset + 5];
+        var vr = String.fromCharCode(vr0) + String.fromCharCode(vr1);
+        var longVr = (vr == "OB") || (vr == "OD") || (vr == "OF") || (vr == "OL") || (vr == "OV")
+            || (vr == "OW") || (vr == "SQ") || (vr == "UC") || (vr == "UR") || (vr == "UT") || (vr == "UN");
+        var headerLength = longVr ? 12 : 8;
+
+        if ((offset + headerLength) > bytes.length)
+            break;
+
+        var valueLength = longVr
+            ? (new DataView(bytes.buffer, bytes.byteOffset + offset + 8, 4)).getUint32(0, true)
+            : (new DataView(bytes.buffer, bytes.byteOffset + offset + 6, 2)).getUint16(0, true);
+        var valueStart = offset + headerLength;
+        var valueStop = valueStart + valueLength;
+
+        if (valueStop > bytes.length)
+            break;
+
+        if ((group == 0x0002) && (element == 0x0003)) {
+            return (new TextDecoder()).decode(bytes.subarray(valueStart, valueStop)).replace(/\0/g, "").trim();
+        }
+
+        offset = valueStop;
+
+    }
+
+    return "";
+
+}
+
+function findAsciiAtOrAfter(bytes, text, startOffset = 0) {
+
+    var pattern = toTextBytes(text);
+    if ((pattern.length == 0) || (startOffset >= bytes.length))
+        return -1;
+
+    var max = bytes.length - pattern.length;
+    for (var index = Math.max(0, startOffset); index <= max; index++) {
+
+        var matched = true;
+        for (var i = 0; i < pattern.length; i++) {
+            if (bytes[index + i] != pattern[i]) {
+                matched = false;
+                break;
+            }
+        }
+
+        if (matched == true)
+            return index;
+
+    }
+
+    return -1;
+
+}
+
+function mutateUidPreservingLength(uid) {
+
+    var value = String(uid ?? "");
+    var result = "";
+
+    for (var i = 0; i < value.length; i++) {
+        var c = value.charAt(i);
+        if ((c >= '0') && (c <= '9')) {
+            result += (c == '9') ? '8' : '9';
+        }
+        else {
+            result += c;
+        }
+    }
+
+    if (result === value) {
+        result = value + ".9";
+    }
+
+    return result;
+
+}
+
 function createMockDimseStoreScp() {
 
     var requestDetails = null;
@@ -455,3 +594,68 @@ test("Test: NodeDimseCStoreScuTransport validates required association fields", 
 
     throw new Error("Expected association validation to fail.");
 });
+
+test("Test: NodeDimseCStoreScuTransport prefers data-set SOP Instance UID over mismatched File Meta UID", async () => {
+
+    var mock = createMockDimseStoreScp();
+    await new Promise((resolve, reject) => {
+        mock.server.listen(0, "127.0.0.1", () => resolve());
+        mock.server.once("error", reject);
+    });
+
+    var address = mock.server.address();
+    var port = address.port;
+
+    try {
+
+        const sourceBytes = readDicomBytes("0002.DCM");
+
+        const originalSopInstanceUid = readPart10MetaSopInstanceUid(sourceBytes);
+        expect(typeof originalSopInstanceUid).toBe("string");
+        expect(originalSopInstanceUid.length).toBeGreaterThan(0);
+
+        const replacementSopInstanceUid = mutateUidPreservingLength(originalSopInstanceUid);
+        expect(replacementSopInstanceUid.length).toBe(originalSopInstanceUid.length);
+        expect(replacementSopInstanceUid).not.toBe(originalSopInstanceUid);
+
+        const dataSetOffset = readPart10DataSetOffset(sourceBytes);
+        const patchedBytes = new Uint8Array(sourceBytes);
+        const dataSetUidIndex = findAsciiAtOrAfter(patchedBytes, originalSopInstanceUid, dataSetOffset);
+        expect(dataSetUidIndex).toBeGreaterThan(-1);
+
+        patchedBytes.set(toTextBytes(replacementSopInstanceUid), dataSetUidIndex);
+
+        const transport = new NodeDimseCStoreScuTransport();
+        const pipeline = EASI.pipelineBuilder()
+            .fromByteStream()
+            .ofDicomData()
+            .toDicomData()
+            .intoDimseAssociation({
+                host: "127.0.0.1",
+                port,
+                callingAeTitle: "EASI_SCU",
+                calledAeTitle: "MOCK_SCP",
+                associationTimeoutMs: 5000
+            }, {
+                transport
+            })
+            .build();
+
+        const result = await pipeline.process(patchedBytes);
+        expect(result.ok).toBe(true);
+        expect(result.dimseStatus).toBe(0x0000);
+
+        var state = mock.getState();
+        const commandElements = parseCommandElements(state.commandBytes);
+        const commandSopInstanceUid = decodeCommandUI(commandElements, "00001000", "");
+        expect(commandSopInstanceUid).toBe(replacementSopInstanceUid);
+        expect(commandSopInstanceUid).not.toBe(originalSopInstanceUid);
+
+    }
+    finally {
+        await new Promise((resolve) => {
+            mock.server.close(() => resolve());
+        });
+    }
+
+}, 20000);

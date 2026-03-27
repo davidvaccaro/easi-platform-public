@@ -256,6 +256,8 @@ Use this `README` as the primary overview and entry point. Use the supporting do
 
 - [`scenario-matrix.md`](./scenario-matrix.md)
   - implemented vs planned source/output combinations and roadmap tracking
+- [`dicom-capability-statement.md`](./dicom-capability-statement.md)
+  - implementation-facing statement of current `easi-js` DICOM support
 
 ## Relationship to Implementations
 

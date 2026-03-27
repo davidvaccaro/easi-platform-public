@@ -56,6 +56,153 @@
         <br>
         <hr>
         <div>
+            <h4>DIMSE Related Actions</h4>
+        </div>
+        <hr>
+        <div>
+            <label>
+                Orthanc HTTP URL
+                <input type="text" id="dimseOrthancHttpUrl" value="http://localhost:8042" size="42" />
+            </label>
+        </div>
+        <br>
+        <div>
+            <label>
+                DIMSE Host
+                <input type="text" id="dimseHost" value="127.0.0.1" size="14" />
+            </label>
+            <label style="margin-left:8px;">
+                Port
+                <input type="number" id="dimsePort" min="1" max="65535" step="1" value="4242" style="width:96px;" />
+            </label>
+            <label style="margin-left:8px;">
+                Called AE
+                <input type="text" id="dimseCalledAeTitle" value="ORTHANC" size="12" />
+            </label>
+            <label style="margin-left:8px;">
+                Calling AE
+                <input type="text" id="dimseCallingAeTitle" value="EASI_JS" size="12" />
+            </label>
+        </div>
+        <br>
+        <div>
+            <label>
+                Query/Retrieve Model
+                <select id="dimseQrModel">
+                    <option value="study-root" selected>Study Root</option>
+                    <option value="patient-root">Patient Root</option>
+                </select>
+            </label>
+        </div>
+        <div style="margin-top:6px;">
+            <span><strong>Pipeline Output:</strong></span>
+            <label><input type="radio" name="dimseOutputMode" value="instance" checked /> Instance</label>
+            <label><input type="radio" name="dimseOutputMode" value="fhir-imaging-study" /> FHIR ImagingStudy</label>
+        </div>
+        <div style="margin-top:8px;">
+            <span><strong>DIMSE C-FIND Study Discovery:</strong></span>
+            <label style="margin-left:8px;">
+                Modality
+                <input type="text" id="dimseFindModality" size="8" value="MR" />
+            </label>
+            <span style="margin-left:8px;font-size:12px;color:#555;">
+                (optional; examples: MR, CT, US, XA)
+            </span>
+        </div>
+        <div style="margin-top:6px;">
+            <button id="dimseCFindStudies">DIMSE C-FIND Studies by Modality</button>
+        </div>
+        <div style="margin-top:6px;">
+            <textarea id="dimseFindOutput" rows="14" cols="110" placeholder="DIMSE C-FIND output..."></textarea>
+        </div>
+        <div style="margin-top:4px;font-size:12px;color:#555;">
+            Optional UIDs: leave blank to auto-discover one Orthanc instance first.
+        </div>
+        <br />
+        <div>
+            <span><strong>DIMSE C-GET Instance Retrieve:</strong></span>
+        </div>
+        <div style="margin-top:8px;">
+            <label>
+                Study Instance UID
+                <input type="text" id="dimseStudyInstanceUid" size="96" value="1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110" />
+            </label>
+        </div>
+        <div style="margin-top:6px;">
+            <label>
+                Series Instance UID
+                <input type="text" id="dimseSeriesInstanceUid" size="96" value="1.2.840.113619.2.416.274526644159878389490005373725162966144" />
+            </label>
+        </div>
+        <div style="margin-top:6px;">
+            <label>
+                SOP Instance UID
+                <input type="text" id="dimseSopInstanceUid" size="96" value="1.2.840.113619.2.416.112733676467352283670809522901727305191" />
+            </label>
+        </div>
+        <br>
+        <div>
+            <button id="dimseCGetInstance">DIMSE C-GET Parse Instance</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="dimseOutput" rows="14" cols="110" placeholder="DIMSE C-GET output..."></textarea>
+        </div>
+        <br>
+        <div>
+            <span><strong>DIMSE C-MOVE Relay Options</strong></span>
+        </div>
+        <div style="margin-top:6px;">
+            <label>
+                Move Destination AE
+                <input type="text" id="dimseMoveDestinationAeTitle" value="EASI_MOVE_DEST" size="14" />
+            </label>
+            <label style="margin-left:8px;">
+                Move Store Host
+                <input type="text" id="dimseMoveStoreHost" value="127.0.0.1" size="14" />
+            </label>
+            <label style="margin-left:8px;">
+                Move Store Port
+                <input type="number" id="dimseMoveStorePort" min="1" max="65535" step="1" value="4104" style="width:96px;" />
+            </label>
+            <label style="margin-left:8px;">
+                Move Store Called AE
+                <input type="text" id="dimseMoveStoreCalledAeTitle" value="EASI_MOVE_DEST" size="14" />
+            </label>
+        </div>
+        <div style="margin-top:6px;">
+            <label><input type="checkbox" id="dimseRelayReassignUids" checked /> Reassign Study/Series/SOP UIDs</label>
+        </div>
+        <div style="margin-top:6px;">
+            <span><strong>Relay Destination (C-STORE):</strong></span>
+            <label style="margin-left:8px;">
+                Host
+                <input type="text" id="dimseDestinationHost" value="127.0.0.1" size="14" />
+            </label>
+            <label style="margin-left:8px;">
+                Port
+                <input type="number" id="dimseDestinationPort" min="1" max="65535" step="1" value="4242" style="width:96px;" />
+            </label>
+            <label style="margin-left:8px;">
+                Called AE
+                <input type="text" id="dimseDestinationCalledAeTitle" value="ORTHANC" size="12" />
+            </label>
+            <label style="margin-left:8px;">
+                Calling AE
+                <input type="text" id="dimseDestinationCallingAeTitle" value="EASI_JS" size="12" />
+            </label>
+        </div>
+        <br>
+        <div>
+            <button id="dimseCMoveRelayDeidentify">DIMSE C-MOVE De-Identify Relay to Destination</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="dimseRelayOutput" rows="14" cols="110" placeholder="DIMSE C-MOVE relay output..."></textarea>
+        </div>
+        <br>
+        <hr>
+        <div>
             <h4>Burned-In Redaction Stream Save</h4>
         </div>
         <hr>
@@ -438,9 +585,9 @@
         $(function () {
 
             var dicomWebBaseUrl = 'http://localhost:8042/dicom-web';
-            var studyUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110';
-            var seriesUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110/series/1.2.840.113619.2.416.274526644159878389490005373725162966144';
-            var instanceUrl = 'http://localhost:8042/dicom-web/studies/1.2.840.113711.2964254.1.9032.770727829.26.2116281012.1353110/series/1.2.840.113619.2.416.274526644159878389490005373725162966144/instances/1.2.840.113619.2.416.112733676467352283670809522901727305191';
+            var studyUrl = 'http://localhost:8042/dicom-web/studies/2.25.222990216284154747410040663568019207660';
+            var seriesUrl = 'http://localhost:8042/dicom-web/studies/2.25.222990216284154747410040663568019207660/series/1.2.840.113619.2.416.274526644159878389490005373725162966144';
+            var instanceUrl = 'http://localhost:8042/dicom-web/studies/2.25.222990216284154747410040663568019207660/series/1.2.840.113619.2.416.274526644159878389490005373725162966144/instances/1.2.840.113619.2.416.112733676467352283670809522901727305191';
             
             // Set the top-level exception handler
             window.onerror = function (message, source, lineno, columnno, error) {
@@ -506,6 +653,42 @@
                     throw err;
                 });
 
+            }
+
+            function getTrimmedInput(selector) {
+
+                var value = $(selector).val();
+                if (value == null)
+                    return null;
+
+                var text = String(value).trim();
+                if (text.length == 0)
+                    return null;
+
+                return text;
+
+            }
+
+            function getIntegerInput(selector, fallback) {
+
+                var text = getTrimmedInput(selector);
+                if (text == null)
+                    return fallback;
+
+                var value = Number(text);
+                if (Number.isFinite(value) == false)
+                    return fallback;
+
+                value = Math.trunc(value);
+                if ((value <= 0) || (value > 65535))
+                    return fallback;
+
+                return value;
+
+            }
+
+            function getDimseOutputMode() {
+                return $('input[name="dimseOutputMode"]:checked').val() || 'instance';
             }
 
             function getFhirSubjectMode() {
@@ -1305,6 +1488,341 @@
                 processWithTiming(pipeline, instanceUrl)
                     .then(result => console.log(result))
                     .catch(err => console.log(err));
+
+            });
+
+            $('#dimseCFindStudies').on('click', async function () {
+
+                console.clear();
+                $('#dimseFindOutput').val('Running DIMSE C-FIND study request...');
+
+                var payload = {
+                    dimseAssociation: {
+                        host: getTrimmedInput('#dimseHost') ?? '127.0.0.1',
+                        port: getIntegerInput('#dimsePort', 4242),
+                        calledAeTitle: getTrimmedInput('#dimseCalledAeTitle') ?? 'ORTHANC',
+                        callingAeTitle: getTrimmedInput('#dimseCallingAeTitle') ?? 'EASI_JS'
+                    },
+                    outputMode: getDimseOutputMode(),
+                    queryRetrieveModel: getTrimmedInput('#dimseQrModel') ?? 'study-root',
+                    modality: getTrimmedInput('#dimseFindModality')
+                };
+
+                try {
+
+                    var start = new Date().getTime();
+
+                    var response = await fetch('/easi-js/samples/kitchen-sink/api/dimse/cfind-studies', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    var body = null;
+                    try {
+                        body = await response.json();
+                    }
+                    catch {
+                        body = null;
+                    }
+
+                    if ((response.ok != true) || (body?.success !== true)) {
+                        var message = body?.message ?? `DIMSE C-FIND failed with HTTP ${response.status}.`;
+                        throw new Error(message);
+                    }
+
+                    var elapsed = (new Date().getTime() - start);
+
+                    $('#dimseFindOutput').val(
+                        'DIMSE C-FIND succeeded.\n'
+                        + 'Elapsed (browser): ' + elapsed + ' ms\n'
+                        + 'Association: ' + (body?.association?.callingAeTitle ?? 'UNKNOWN')
+                        + ' -> '
+                        + (body?.association?.calledAeTitle ?? 'UNKNOWN')
+                        + ' @ '
+                        + (body?.association?.host ?? 'UNKNOWN')
+                        + ':'
+                        + String(body?.association?.port ?? '?')
+                        + '\n'
+                        + 'Pipeline Output: ' + String(body?.outputMode ?? payload.outputMode)
+                        + '\n'
+                        + 'Query Model: ' + String(body?.request?.queryRetrieveModel ?? 'N/A') + '\n'
+                        + 'Query Level: ' + String(body?.request?.queryRetrieveLevel ?? 'N/A') + '\n'
+                        + 'Modality Filter: ' + String(body?.request?.modality ?? 'none') + '\n'
+                        + 'Concerns: ' + String(body?.concernCount ?? 0) + '\n'
+                        + 'Result Count: ' + String(body?.resultCount ?? 0)
+                        + '\n\nSummary:\n'
+                        + JSON.stringify(body?.resultSummary ?? [], null, 2)
+                        + '\n\nTiming (server):\n'
+                        + JSON.stringify(body?.timingsMs ?? {}, null, 2)
+                    );
+
+                    if (body?.outputMode === 'fhir-imaging-study') {
+                        $('#dimseFindOutput').val(
+                            $('#dimseFindOutput').val()
+                            + '\n\nFHIR ImagingStudies:\n'
+                            + JSON.stringify(body?.fhirImagingStudies ?? [], null, 2)
+                        );
+                    }
+                    else {
+                        $('#dimseFindOutput').val(
+                            $('#dimseFindOutput').val()
+                            + '\n\nInstance Summaries:\n'
+                            + JSON.stringify(body?.instanceSummaries ?? [], null, 2)
+                        );
+                    }
+
+                    if ((Array.isArray(body?.concerns) == true) && (body.concerns.length > 0)) {
+                        $('#dimseFindOutput').val(
+                            $('#dimseFindOutput').val()
+                            + '\n\nConcerns:\n'
+                            + JSON.stringify(body.concerns, null, 2)
+                        );
+                    }
+
+                    console.log('[DIMSE C-FIND]', body);
+
+                }
+                catch (error) {
+
+                    $('#dimseFindOutput').val(
+                        'DIMSE C-FIND failed.\n'
+                        + String(error?.message ?? error)
+                        + '\n\n'
+                        + (error?.stack ?? '')
+                    );
+
+                    console.error(error);
+
+                }
+
+            });
+
+            $('#dimseCGetInstance').on('click', async function () {
+
+                console.clear();
+                $('#dimseOutput').val('Running DIMSE C-GET request...');
+
+                var payload = {
+                    orthancHttpUrl: getTrimmedInput('#dimseOrthancHttpUrl') ?? 'http://localhost:8042',
+                    dimseAssociation: {
+                        host: getTrimmedInput('#dimseHost') ?? '127.0.0.1',
+                        port: getIntegerInput('#dimsePort', 4242),
+                        calledAeTitle: getTrimmedInput('#dimseCalledAeTitle') ?? 'ORTHANC',
+                        callingAeTitle: getTrimmedInput('#dimseCallingAeTitle') ?? 'EASI_JS'
+                    },
+                    outputMode: getDimseOutputMode(),
+                    queryRetrieveModel: getTrimmedInput('#dimseQrModel') ?? 'study-root',
+                    studyInstanceUid: getTrimmedInput('#dimseStudyInstanceUid'),
+                    seriesInstanceUid: getTrimmedInput('#dimseSeriesInstanceUid'),
+                    sopInstanceUid: getTrimmedInput('#dimseSopInstanceUid')
+                };
+
+                try {
+
+                    var start = new Date().getTime();
+
+                    var response = await fetch('/easi-js/samples/kitchen-sink/api/dimse/cget-instance', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    var body = null;
+                    try {
+                        body = await response.json();
+                    }
+                    catch {
+                        body = null;
+                    }
+
+                    if ((response.ok != true) || (body?.success !== true)) {
+                        var message = body?.message ?? `DIMSE C-GET failed with HTTP ${response.status}.`;
+                        throw new Error(message);
+                    }
+
+                    var elapsed = (new Date().getTime() - start);
+
+                    $('#dimseOutput').val(
+                        'DIMSE C-GET succeeded.\n'
+                        + 'Elapsed (browser): ' + elapsed + ' ms\n'
+                        + 'Used Orthanc discovery: ' + String(body.usedOrthancDiscovery === true) + '\n'
+                        + 'Association: ' + (body?.association?.callingAeTitle ?? 'UNKNOWN')
+                        + ' -> '
+                        + (body?.association?.calledAeTitle ?? 'UNKNOWN')
+                        + ' @ '
+                        + (body?.association?.host ?? 'UNKNOWN')
+                        + ':'
+                        + String(body?.association?.port ?? '?')
+                        + '\n'
+                        + 'Pipeline Output: ' + String(body?.outputMode ?? payload.outputMode)
+                        + '\n'
+                        + 'Study UID: ' + String(body?.request?.studyInstanceUid ?? 'N/A') + '\n'
+                        + 'Series UID: ' + String(body?.request?.seriesInstanceUid ?? 'N/A') + '\n'
+                        + 'SOP UID: ' + String(body?.request?.sopInstanceUid ?? 'N/A') + '\n'
+                        + 'Concerns: ' + String(body?.concernCount ?? 0) + '\n'
+                        + '\nSummary:\n'
+                        + JSON.stringify(body?.resultSummary ?? {}, null, 2)
+                        + '\n\nTiming (server):\n'
+                        + JSON.stringify(body?.timingsMs ?? {}, null, 2)
+                    );
+
+                    if (body?.outputMode === 'fhir-imaging-study') {
+                        $('#dimseOutput').val(
+                            $('#dimseOutput').val()
+                            + '\n\nFHIR ImagingStudy:\n'
+                            + JSON.stringify(body?.fhirImagingStudy ?? {}, null, 2)
+                        );
+                    }
+
+                    if ((Array.isArray(body?.concerns) == true) && (body.concerns.length > 0)) {
+                        $('#dimseOutput').val(
+                            $('#dimseOutput').val()
+                            + '\n\nConcerns:\n'
+                            + JSON.stringify(body.concerns, null, 2)
+                        );
+                    }
+
+                    console.log('[DIMSE C-GET]', body);
+
+                }
+                catch (error) {
+
+                    $('#dimseOutput').val(
+                        'DIMSE C-GET failed.\n'
+                        + String(error?.message ?? error)
+                        + '\n\n'
+                        + (error?.stack ?? '')
+                    );
+
+                    console.error(error);
+
+                }
+
+            });
+
+            $('#dimseCMoveRelayDeidentify').on('click', async function () {
+
+                console.clear();
+                $('#dimseRelayOutput').val('Running DIMSE C-MOVE de-identification relay...');
+
+                var payload = {
+                    orthancHttpUrl: getTrimmedInput('#dimseOrthancHttpUrl') ?? 'http://localhost:8042',
+                    sourceAssociation: {
+                        host: getTrimmedInput('#dimseHost') ?? '127.0.0.1',
+                        port: getIntegerInput('#dimsePort', 4242),
+                        calledAeTitle: getTrimmedInput('#dimseCalledAeTitle') ?? 'ORTHANC',
+                        callingAeTitle: getTrimmedInput('#dimseCallingAeTitle') ?? 'EASI_JS'
+                    },
+                    destinationAssociation: {
+                        host: getTrimmedInput('#dimseDestinationHost') ?? '127.0.0.1',
+                        port: getIntegerInput('#dimseDestinationPort', 4242),
+                        calledAeTitle: getTrimmedInput('#dimseDestinationCalledAeTitle') ?? 'ORTHANC',
+                        callingAeTitle: getTrimmedInput('#dimseDestinationCallingAeTitle') ?? 'EASI_JS'
+                    },
+                    queryRetrieveModel: getTrimmedInput('#dimseQrModel') ?? 'study-root',
+                    studyInstanceUid: getTrimmedInput('#dimseStudyInstanceUid'),
+                    seriesInstanceUid: getTrimmedInput('#dimseSeriesInstanceUid'),
+                    sopInstanceUid: getTrimmedInput('#dimseSopInstanceUid'),
+                    moveDestinationAeTitle: getTrimmedInput('#dimseMoveDestinationAeTitle') ?? 'EASI_MOVE_DEST',
+                    moveStoreHost: getTrimmedInput('#dimseMoveStoreHost') ?? '127.0.0.1',
+                    moveStorePort: getIntegerInput('#dimseMoveStorePort', 4104),
+                    moveStoreCalledAeTitle: getTrimmedInput('#dimseMoveStoreCalledAeTitle') ?? 'EASI_MOVE_DEST',
+                    reassignUids: ($('#dimseRelayReassignUids').is(':checked') === true)
+                };
+
+                try {
+
+                    var start = new Date().getTime();
+
+                    var response = await fetch('/easi-js/samples/kitchen-sink/api/dimse/cmove-deidentify-relay', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    var body = null;
+                    try {
+                        body = await response.json();
+                    }
+                    catch {
+                        body = null;
+                    }
+
+                    if ((response.ok != true) || (body?.success !== true)) {
+                        var message = body?.message ?? `DIMSE C-MOVE relay failed with HTTP ${response.status}.`;
+                        throw new Error(message);
+                    }
+
+                    var elapsed = (new Date().getTime() - start);
+
+                    $('#dimseRelayOutput').val(
+                        'DIMSE C-MOVE relay succeeded.\n'
+                        + 'Elapsed (browser): ' + elapsed + ' ms\n'
+                        + 'Used Orthanc discovery: ' + String(body.usedOrthancDiscovery === true) + '\n'
+                        + 'Source AE: ' + (body?.sourceAssociation?.callingAeTitle ?? 'UNKNOWN')
+                        + ' -> '
+                        + (body?.sourceAssociation?.calledAeTitle ?? 'UNKNOWN')
+                        + ' @ '
+                        + (body?.sourceAssociation?.host ?? 'UNKNOWN')
+                        + ':'
+                        + String(body?.sourceAssociation?.port ?? '?')
+                        + '\n'
+                        + 'Destination AE: ' + (body?.destinationAssociation?.callingAeTitle ?? 'UNKNOWN')
+                        + ' -> '
+                        + (body?.destinationAssociation?.calledAeTitle ?? 'UNKNOWN')
+                        + ' @ '
+                        + (body?.destinationAssociation?.host ?? 'UNKNOWN')
+                        + ':'
+                        + String(body?.destinationAssociation?.port ?? '?')
+                        + '\n'
+                        + 'Move Destination AE: ' + String(body?.request?.moveDestinationAeTitle ?? 'N/A') + '\n'
+                        + 'Move Store Endpoint: ' + String(body?.request?.moveStoreHost ?? 'N/A')
+                        + ':'
+                        + String(body?.request?.moveStorePort ?? 'N/A')
+                        + ' (Called AE: '
+                        + String(body?.request?.moveStoreCalledAeTitle ?? 'N/A')
+                        + ')\n'
+                        + 'Source SOP UID: ' + String(body?.relayResult?.sourceSopInstanceUid ?? 'N/A') + '\n'
+                        + 'Destination SOP UID: ' + String(body?.relayResult?.destinationSopInstanceUid ?? 'N/A') + '\n'
+                        + 'DIMSE Status: ' + String(body?.relayResult?.dimseStatus ?? 'N/A') + '\n'
+                        + 'Concerns: ' + String(body?.concernCount ?? 0) + '\n'
+                        + 'Bytes Written: ' + String(body?.relayResult?.bytesWritten ?? 'N/A')
+                        + '\n\nRelay Result:\n'
+                        + JSON.stringify(body?.relayResult ?? {}, null, 2)
+                        + '\n\nTiming (server):\n'
+                        + JSON.stringify(body?.timingsMs ?? {}, null, 2)
+                    );
+
+                    if ((Array.isArray(body?.concerns) == true) && (body.concerns.length > 0)) {
+                        $('#dimseRelayOutput').val(
+                            $('#dimseRelayOutput').val()
+                            + '\n\nConcerns:\n'
+                            + JSON.stringify(body.concerns, null, 2)
+                        );
+                    }
+
+                    console.log('[DIMSE C-MOVE Relay]', body);
+
+                }
+                catch (error) {
+
+                    $('#dimseRelayOutput').val(
+                        'DIMSE C-MOVE relay failed.\n'
+                        + String(error?.message ?? error)
+                        + '\n\n'
+                        + (error?.stack ?? '')
+                    );
+
+                    console.error(error);
+
+                }
 
             });
 

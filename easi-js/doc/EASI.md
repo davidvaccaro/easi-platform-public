@@ -35,21 +35,102 @@ Use `fromHttpStream()` for URL/fetch transport and `fromPartStream()` for direct
 | Parse Input Format | Emit Output Format | Pipeline Recipe |
 |--------------------|--------------------|-----------------|
 | DICOM bytes (Part-10 / native) | DICOM `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toInstances()` |
+| DICOM bytes (Part-10 / native) | DICOM `Entity` / `Array<Entity>` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toEntities()` |
 | DICOM bytes (Part-10 / native) | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toSelection(selection)` |
 | DICOM bytes (Part-10 / native) | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toMapping(mapping)` |
-| DICOM bytes (Part-10 / native) | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toFHIRImagingStudies()` |
+| DICOM bytes (Part-10 / native) | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toFHIRImagingStudy()` |
 | DICOM bytes (Part-10 / native) | Native DICOM byte stream | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toDicomData(options)` |
 | DICOM JSON metadata | DICOM `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toInstances()` |
+| DICOM JSON metadata | DICOM `Entity` / `Array<Entity>` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toEntities()` |
 | DICOM JSON metadata | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toSelection(selection)` |
 | DICOM JSON metadata | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toMapping(mapping)` |
-| DICOM JSON metadata | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toFHIRImagingStudies()` |
+| DICOM JSON metadata | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toFHIRImagingStudy()` |
 | DICOM XML metadata | DICOM `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toInstances()` |
+| DICOM XML metadata | DICOM `Entity` / `Array<Entity>` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toEntities()` |
 | DICOM XML metadata | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toSelection(selection)` |
 | DICOM XML metadata | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toMapping(mapping)` |
-| DICOM XML metadata | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toFHIRImagingStudies()` |
-| Generic JSON text/bytes | JavaScript value/object/array | `EASI.pipelineBuilder().fromPartStream().withParser(new JsonDataParser()).withHandler(new JsonDataHandler())` |
+| DICOM XML metadata | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toFHIRImagingStudy()` |
+| Generic JSON text/bytes | JavaScript value/object/array | `EASI.pipelineBuilder().fromPartStream().ofJsonData().toJsonValue()` |
+| Generic XML text/bytes | JavaScript object/array representation | `EASI.pipelineBuilder().fromPartStream().ofXmlData().toJsonValue()` |
+| DIMSE C-FIND (study query) | Study summary FHIR `ImagingStudy[]` | `EASI.pipelineBuilder().fromDimseAssociation(assoc, srcTransport).ofDicomData().toFHIRImagingStudy("study-summary")` |
+| DIMSE C-GET / C-MOVE source | DICOM `Instance` / FHIR mapping / byte stream | `EASI.pipelineBuilder().fromDimseAssociation(assoc, srcTransport).ofDicomData().toInstances()` |
+| DICOM bytes or DIMSE source | DIMSE C-STORE destination | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toDicomData().intoDimseAssociation(destAssoc, { transport: destTransport })` |
 
 > Pipeline-based scenarios are finalized with `.build().process(source)`.
+
+## DIMSE Recipes
+
+### C-FIND -> FHIR Study Summaries
+
+```js
+import EASI from "easi-dicom";
+import NodeDimseQueryRetrieveSourceTransport from "../src/transports/dimse/NodeDimseQueryRetrieveSourceTransport.js";
+
+const sourceAssociation = {
+  host: "127.0.0.1",
+  port: 4242,
+  callingAeTitle: "EASI_JS",
+  calledAeTitle: "ORTHANC"
+};
+
+const pipeline = EASI
+  .pipelineBuilder()
+  .fromDimseAssociation(sourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+  .ofDicomData()
+  .toFHIRImagingStudy("study-summary")
+  .build();
+
+const studies = await pipeline.process({
+  operation: "cfind",
+  level: "STUDY",
+  keys: { Modality: "CT" }
+});
+```
+
+### C-MOVE source -> in-flight de-identification -> C-STORE destination
+
+```js
+import EASI from "easi-dicom";
+import Tag from "../src/dicom/Tag.js";
+import NodeDimseQueryRetrieveSourceTransport from "../src/transports/dimse/NodeDimseQueryRetrieveSourceTransport.js";
+import NodeDimseCStoreScuTransport from "../src/transports/dimse/NodeDimseCStoreScuTransport.js";
+
+const sourceAssociation = {
+  host: "127.0.0.1",
+  port: 4242,
+  callingAeTitle: "EASI_JS",
+  calledAeTitle: "ORTHANC"
+};
+
+const destinationAssociation = {
+  host: "127.0.0.1",
+  port: 4242,
+  callingAeTitle: "EASI_JS",
+  calledAeTitle: "ORTHANC"
+};
+
+const pipeline = EASI
+  .pipelineBuilder()
+  .fromDimseAssociation(sourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData({ collectOutput: false })
+  .intoDimseAssociation(destinationAssociation, {
+    transport: new NodeDimseCStoreScuTransport()
+  })
+  .build();
+
+await pipeline.process({
+  operation: "cmove",
+  level: "IMAGE",
+  destinationAeTitle: "EASI_MOVE_DEST",
+  keys: {
+    StudyInstanceUID: "<study-uid>",
+    SeriesInstanceUID: "<series-uid>",
+    SOPInstanceUID: "<instance-uid>"
+  }
+});
+```
 
 ---
 
@@ -89,7 +170,7 @@ pipeline
     .then(result => {
 
         // Establish the parsed instance
-        if (typeof result === 'array') {
+        if (Array.isArray(result) === true) {
 
         }
         else {
@@ -219,7 +300,14 @@ Use this index to navigate all documentation markdown files in `easi-js/doc`.
 - [JsonDataParser](./parsers/JsonDataParser.md)
 
 ### readers
+- [DimseAssociationReader](./readers/DimseAssociationReader.md)
 - [PartStreamReader](./readers/PartStreamReader.md)
+
+### transports/dimse
+- [DimseTransportContract](./transports/dimse/DimseTransportContract.md)
+- [NodeDimseCStoreScpSourceTransport](./transports/dimse/NodeDimseCStoreScpSourceTransport.md)
+- [NodeDimseCStoreScuTransport](./transports/dimse/NodeDimseCStoreScuTransport.md)
+- [NodeDimseQueryRetrieveSourceTransport](./transports/dimse/NodeDimseQueryRetrieveSourceTransport.md)
 
 ### tools/dicom
 - [Dumper](./tools/dicom/Dumper.md)
@@ -231,5 +319,8 @@ Use this index to navigate all documentation markdown files in `easi-js/doc`.
 - [NumberUtils](./utils/NumberUtils.md)
 - [StringUtils](./utils/StringUtils.md)
 - [SymbolUtils](./utils/SymbolUtils.md)
+
+### writers
+- [DimseAssociationWriter](./writers/DimseAssociationWriter.md)
 
 <!-- MASTER_DOC_INDEX_END -->
