@@ -7,6 +7,8 @@ import DicomToFHIRImagingStudyMapping from "../../handlers/mappings/DicomToFHIRI
 
 import DicomInstanceHandler from "../../handlers/terminals/DicomInstanceHandler.js";
 import DicomEntityHandler from "../../handlers/terminals/DicomEntityHandler.js";
+import DicomDocumentHandler from "../../handlers/terminals/DicomDocumentHandler.js";
+import DicomDocumentWrappingHandler from "../../handlers/terminals/DicomDocumentWrappingHandler.js";
 import DicomMappingHandler from "../../handlers/terminals/DicomMappingHandler.js";
 import DicomSelectingHandler from "../../handlers/terminals/DicomSelectingHandler.js";
 import DicomDataWriterHandler from "../../handlers/terminals/DicomDataWriterHandler.js";
@@ -193,6 +195,22 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
         return this.withHandler(new DicomEntityHandler());
 
+    }
+
+    /**
+     * @param {object | null} options Document unwrap options.
+     * @returns {PipelineOutputStage}
+     */
+    toUnwrappedDocuments(options = null) {
+        return this.withHandler(new DicomDocumentHandler(options));
+    }
+
+    /**
+     * @param {object | null} options Document wrapping options.
+     * @returns {PipelineOutputStage}
+     */
+    toWrappedDocuments(options = null) {
+        return this.withHandler(new DicomDocumentWrappingHandler(options));
     }
 
     /**

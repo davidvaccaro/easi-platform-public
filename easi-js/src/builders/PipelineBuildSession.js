@@ -8,11 +8,14 @@ import PartStreamReader from "../readers/PartStreamReader.js";
 import DimseAssociationReader from "../readers/DimseAssociationReader.js";
 
 import DicomDataParser from "../parsers/DicomDataParser.js";
+import ByteDataParser from "../parsers/ByteDataParser.js";
 import JsonDataParser from "../parsers/JsonDataParser.js";
 import XmlDataParser from "../parsers/XmlDataParser.js";
 
 import DicomInstanceHandler from "../handlers/terminals/DicomInstanceHandler.js";
 import DicomEntityHandler from "../handlers/terminals/DicomEntityHandler.js";
+import DicomDocumentHandler from "../handlers/terminals/DicomDocumentHandler.js";
+import DicomDocumentWrappingHandler from "../handlers/terminals/DicomDocumentWrappingHandler.js";
 import DicomMappingHandler from "../handlers/terminals/DicomMappingHandler.js";
 import DicomSelectingHandler from "../handlers/terminals/DicomSelectingHandler.js";
 import DicomAssetsHandler from "../handlers/terminals/DicomAssetsHandler.js";
@@ -180,6 +183,7 @@ export default class PipelineBuildSession {
 
             if ((handler instanceof DicomInstanceHandler)
                 || (handler instanceof DicomEntityHandler)
+                || (handler instanceof DicomDocumentHandler)
                 || (handler instanceof DicomMappingHandler)
                 || (handler instanceof DicomSelectingHandler)
                 || (handler instanceof DicomAssetsHandler)
@@ -193,6 +197,32 @@ export default class PipelineBuildSession {
                 );
             }
 
+        }
+
+        // Wrapped-document writing is incompatible with native DICOM and XML parser semantics.
+        if ((parser instanceof DicomDataParser)
+            && (handler instanceof DicomDocumentWrappingHandler)) {
+            throw new Exception(
+                `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
+                BuilderErrorCodes.IncompatibleParserAndHandler
+            );
+        }
+
+        if ((parser instanceof XmlDataParser)
+            && (handler instanceof DicomDocumentWrappingHandler)) {
+            throw new Exception(
+                `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
+                BuilderErrorCodes.IncompatibleParserAndHandler
+            );
+        }
+
+        // Byte parser is currently intended for direct wrapped-document writing.
+        if ((parser instanceof ByteDataParser)
+            && (handler instanceof DicomDocumentWrappingHandler == false)) {
+            throw new Exception(
+                `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
+                BuilderErrorCodes.IncompatibleParserAndHandler
+            );
         }
 
         // JSON parser should not be paired with XML terminal syntax handler.
@@ -322,7 +352,7 @@ export default class PipelineBuildSession {
 
     /**
      * Set the current parser.
-     * @param {DicomDataParser | JsonDataParser | XmlDataParser} parser The parser used to parse elements.
+     * @param {DicomDataParser | ByteDataParser | JsonDataParser | XmlDataParser} parser The parser used to parse elements.
      * @returns {PipelineBuildSession} The current session.
      */
     withParser(parser) {
@@ -504,7 +534,7 @@ export default class PipelineBuildSession {
         // Fail if no parser was configured.
         if (this.parser == null) {
             throw new Exception(
-                "PipelineBuilder.build requires a parser. Call ofDicomData(), ofDicomMetadata(), ofDicomXmlMetadata(), or withParser(...).",
+                "PipelineBuilder.build requires a parser. Call ofDicomData(), ofByteData(), ofDicomMetadata(), ofDicomXmlMetadata(), or withParser(...).",
                 BuilderErrorCodes.MissingParser
             );
         }
@@ -512,7 +542,7 @@ export default class PipelineBuildSession {
         // Fail if no handler was configured.
         if (this.handler == null) {
             throw new Exception(
-                "PipelineBuilder.build requires a handler. Call toInstances(), toEntities(), toSelection(...), toMapping(...), toFHIRImagingStudy(), toDicomData(...), toAssets(...), toAssetArchive(...), or withHandler(...).",
+                "PipelineBuilder.build requires a handler. Call toInstances(), toEntities(), toUnwrappedDocuments(...), toWrappedDocuments(...), toSelection(...), toMapping(...), toFHIRImagingStudy(), toDicomData(...), toAssets(...), toAssetArchive(...), or withHandler(...).",
                 BuilderErrorCodes.MissingHandler
             );
         }

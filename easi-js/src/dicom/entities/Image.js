@@ -24,6 +24,7 @@ import ImagePixelModule from '../modules/ImagePixelModule.js';
 import MultiFrameModule from '../modules/MultiFrameModule.js';
 import VisualizationFunctionModule from '../modules/VisualizationFunctionModule.js'
 import ModalityLookUpTableModule from '../modules/ModalityLookUpTableModule.js'
+import ImagePlaneModule from '../modules/ImagePlaneModule.js';
 import PixelData from '../PixelData.js';
 import Tag from '../Tag.js'
 import Entity from './Entity.js';
@@ -41,6 +42,14 @@ export default class Image extends Entity {
 
     get pixels() {
         return this.imagePixelModule;
+    }
+
+    /**
+     * Get the Image Plane Module.
+     * @returns The Image Plane Module.
+     */
+    get imagePlaneModule() {
+        return new ImagePlaneModule(this.attributeSet);
     }
 
     /**

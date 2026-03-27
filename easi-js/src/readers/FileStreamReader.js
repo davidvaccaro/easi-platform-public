@@ -47,6 +47,27 @@ export default class FileStreamReader {
         if (lower.endsWith('.json'))
             return 'application/dicom+json';
 
+        if (lower.endsWith('.pdf'))
+            return 'application/pdf';
+
+        if (lower.endsWith('.htm') || lower.endsWith('.html'))
+            return 'text/html';
+
+        if (lower.endsWith('.doc'))
+            return 'application/msword';
+
+        if (lower.endsWith('.docx'))
+            return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+        if (lower.endsWith('.stl'))
+            return 'model/stl';
+
+        if (lower.endsWith('.obj'))
+            return 'model/obj';
+
+        if (lower.endsWith('.mtl'))
+            return 'model/mtl';
+
         if (lower.endsWith('.xml'))
             return 'application/dicom+xml';
 

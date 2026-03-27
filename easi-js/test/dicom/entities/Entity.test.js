@@ -72,9 +72,30 @@ test("Test: Entity SOP Instance UID", () => {
     expect(entity.sopInstanceUid).toBe(value);
 });
 
+test("Test: Entity SOP Class UID", () => {
+    var attributeSet = new AttributeSet();
+    var value = '1.2.840.10008.5.1.4.1.1.88.59';
+    var data = new TextEncoder().encode(value);
+
+    attributeSet.add(new Attribute(
+        Tag.SOPClassUID,
+        data.length,
+        data,
+        TransferSyntax.NONE
+    ));
+
+    var entity = new Entity(attributeSet);
+    expect(entity.sopClassUid).toBe(value);
+});
+
 test("Test: Entity SOP Instance UID Is Empty When Missing", () => {
     var entity = new Entity(new AttributeSet());
     expect(entity.sopInstanceUid).toBe('');
+});
+
+test("Test: Entity SOP Class UID Is Empty When Missing", () => {
+    var entity = new Entity(new AttributeSet());
+    expect(entity.sopClassUid).toBe('');
 });
 
 test("Test: Entity Patient Alias Returns PatientModule", () => {

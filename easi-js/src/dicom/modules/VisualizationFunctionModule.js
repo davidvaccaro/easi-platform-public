@@ -41,6 +41,14 @@ export default class VisualizationFunctionModule extends Module {
     }
 
     /**
+     * Get the Window Center Width Explanation.
+     * @returns The Window Center Width Explanation value.
+     */
+    get windowCenterWidthExplanation() {
+        return this.attributeSet.value(Tag.WindowCenterWidthExplanation);
+    }
+
+    /**
      * Construct an Pixel Module Accessor instance.
      */
     constructor(attributeSet) {

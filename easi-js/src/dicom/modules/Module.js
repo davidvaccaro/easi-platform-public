@@ -20,6 +20,36 @@
 //
 
 export default class Module {
+
+    /**
+     * Gets all sequence items for the provided sequence tag.
+     * @param {Tag} tag The sequence tag.
+     * @returns {Array<AttributeSet>} The sequence items.
+     */
+    accessSequenceItems(tag) {
+
+        if (this.attributeSet == null)
+            return [];
+
+        var sequence = this.attributeSet.find(tag);
+        if ((sequence == null) || (Array.isArray(sequence.items) == false))
+            return [];
+
+        return sequence.items;
+
+    }
+
+    /**
+     * Gets the first sequence item for the provided sequence tag.
+     * @param {Tag} tag The sequence tag.
+     * @returns {AttributeSet | null} The first sequence item.
+     */
+    accessFirstSequenceItem(tag) {
+
+        var items = this.accessSequenceItems(tag);
+        return (items.length > 0) ? items[0] : null;
+
+    }
     
     /**
      * Parses the value of an integer string value attribute taking into account the value multiplicity.

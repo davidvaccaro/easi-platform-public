@@ -7,6 +7,7 @@ import ImagePixelModule from '../../../src/dicom/modules/ImagePixelModule.js';
 import MultiFrameModule from '../../../src/dicom/modules/MultiFrameModule.js';
 import VisualizationFunctionModule from '../../../src/dicom/modules/VisualizationFunctionModule.js';
 import ModalityLookUpTableModule from '../../../src/dicom/modules/ModalityLookUpTableModule.js';
+import ImagePlaneModule from '../../../src/dicom/modules/ImagePlaneModule.js';
 import Configuration from '../../../src/environment/Configuration.js';
 
 function toUint32LE(value) {
@@ -99,6 +100,15 @@ test("Test: Image MultiFrameModule Getter", () => {
     expect(module.attributeSet).toBe(attributeSet);
 });
 
+test("Test: Image ImagePlaneModule Getter", () => {
+    var attributeSet = createAttributeSet();
+    var image = new Image(attributeSet);
+    var module = image.imagePlaneModule;
+
+    expect(module).toBeInstanceOf(ImagePlaneModule);
+    expect(module.attributeSet).toBe(attributeSet);
+});
+
 test("Test: Image VisualizationFunctionModule Getter", () => {
     var attributeSet = createAttributeSet();
     var image = new Image(attributeSet);
@@ -121,6 +131,7 @@ test("Test: Image Module Getters Are Not Cached", () => {
     var image = new Image(createAttributeSet());
 
     expect(image.imagePixelModule).not.toBe(image.imagePixelModule);
+    expect(image.imagePlaneModule).not.toBe(image.imagePlaneModule);
     expect(image.multiFrameModule).not.toBe(image.multiFrameModule);
     expect(image.visualizationFunctionModule).not.toBe(image.visualizationFunctionModule);
     expect(image.modalityLookUpTableModule).not.toBe(image.modalityLookUpTableModule);

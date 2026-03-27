@@ -51,6 +51,8 @@ Use `fromHttpStream()` for URL/fetch transport and `fromPartStream()` for direct
 | DICOM XML metadata | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toMapping(mapping)` |
 | DICOM XML metadata | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toFHIRImagingStudy()` |
 | Generic JSON text/bytes | JavaScript value/object/array | `EASI.pipelineBuilder().fromPartStream().ofJsonData().toJsonValue()` |
+| Generic JSON text/bytes | Wrapped document DICOM bytes (`Uint8Array` or `Array<Uint8Array>`) | `EASI.pipelineBuilder().fromPartStream().ofJsonData().toWrappedDocuments(options)` |
+| Generic raw bytes (PDF/XML/STL/OBJ/MTL/etc.) | Wrapped document DICOM bytes (`Uint8Array`) | `EASI.pipelineBuilder().fromPartStream().ofByteData().toWrappedDocuments(options)` |
 | Generic XML text/bytes | JavaScript object/array representation | `EASI.pipelineBuilder().fromPartStream().ofXmlData().toJsonValue()` |
 | DIMSE C-FIND (study query) | Study summary FHIR `ImagingStudy[]` | `EASI.pipelineBuilder().fromDimseAssociation(assoc, srcTransport).ofDicomData().toFHIRImagingStudy("study-summary")` |
 | DIMSE C-GET / C-MOVE source | DICOM `Instance` / FHIR mapping / byte stream | `EASI.pipelineBuilder().fromDimseAssociation(assoc, srcTransport).ofDicomData().toInstances()` |
@@ -130,6 +132,47 @@ await pipeline.process({
     SOPInstanceUID: "<instance-uid>"
   }
 });
+```
+
+### JSON document descriptor(s) -> wrapped DICOM bytes
+
+```js
+import EASI from "easi-dicom";
+
+const descriptor = {
+  mimeType: "application/pdf",
+  title: "Sample Report",
+  bytes: new Uint8Array([37, 80, 68, 70])
+};
+
+const wrappedDicomBytes = await EASI
+  .pipelineBuilder()
+  .fromByteStream()
+  .ofJsonData()
+  .toWrappedDocuments()
+  .build()
+  .process(new TextEncoder().encode(JSON.stringify(descriptor)), {
+    contentType: "application/json"
+  });
+```
+
+### Raw document bytes -> wrapped DICOM bytes
+
+```js
+import EASI from "easi-dicom";
+
+const rawPdfBytes = new Uint8Array([/* ... */]);
+
+const wrappedDicomBytes = await EASI
+  .pipelineBuilder()
+  .fromByteStream()
+  .ofByteData()
+  .toWrappedDocuments({
+    mimeType: "application/pdf",
+    title: "Echo Report"
+  })
+  .build()
+  .process(rawPdfBytes, { contentType: "application/pdf" });
 ```
 
 ---
@@ -226,10 +269,8 @@ Use this index to navigate all documentation markdown files in `easi-js/doc`.
 - [ValueRepresentation](./dicom/ValueRepresentation.md)
 
 ### dicom/entities
-- [CT](./dicom/entities/CT.md)
 - [Entity](./dicom/entities/Entity.md)
 - [Image](./dicom/entities/Image.md)
-- [XA](./dicom/entities/XA.md)
 
 ### dicom/modules
 - [GeneralSeriesModule](./dicom/modules/GeneralSeriesModule.md)

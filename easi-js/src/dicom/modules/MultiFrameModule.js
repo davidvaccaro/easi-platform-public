@@ -25,6 +25,14 @@ import Tag from '../Tag.js'
 export default class MultiFrameModule extends Module {
 
     /**
+     * Get the Frame Increment Pointer.
+     * @returns The Frame Increment Pointer value.
+     */
+    get frameIncrementPointer() {
+        return this.attributeSet.value(Tag.FrameIncrementPointer);
+    }
+
+    /**
      * Get the Stereo Pairs Present.
      * @returns The Stereo Pairs Present value.
      */
@@ -38,6 +46,33 @@ export default class MultiFrameModule extends Module {
      */
     get numberOfFrames() {
         return this.accessIntegerString(Tag.NumberOfFrames, Tag.NumberOfFrames.VM);
+    }
+
+    /**
+     * Get the Frame Time.
+     * @returns The Frame Time value.
+     */
+    get frameTime() {
+        return this.accessDecimalString(Tag.FrameTime, Tag.FrameTime.VM);
+    }
+
+    /**
+     * Get the Frame Time Vector.
+     * @returns The Frame Time Vector value.
+     */
+    get frameTimeVector() {
+        return this.accessDecimalString(Tag.FrameTimeVector, Tag.FrameTimeVector.VM);
+    }
+
+    /**
+     * Get the Recommended Display Frame Rate.
+     * @returns The Recommended Display Frame Rate value.
+     */
+    get recommendedDisplayFrameRate() {
+        return this.accessIntegerString(
+            Tag.RecommendedDisplayFrameRate,
+            Tag.RecommendedDisplayFrameRate.VM
+        );
     }
 
     /**

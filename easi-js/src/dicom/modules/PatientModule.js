@@ -53,7 +53,7 @@ export default class PatientModule extends Module {
      * @returns The Patient ID value.
      */
     get id() {
-        return this.patientID;
+        return this.patientId;
     }
 
     /**
@@ -118,6 +118,38 @@ export default class PatientModule extends Module {
      */
     get sex() {
         return this.patientSex;
+    }
+
+    /**
+     * Get the Patient Age.
+     * @returns The Patient Age value.
+     */
+    get patientAge() {
+        return this.attributeSet.value(Tag.PatientAge);
+    }
+
+    /**
+     * Get the Patient Size.
+     * @returns The Patient Size value.
+     */
+    get patientSize() {
+        return this.accessDecimalString(Tag.PatientSize, Tag.PatientSize.VM);
+    }
+
+    /**
+     * Get the Patient Weight.
+     * @returns The Patient Weight value.
+     */
+    get patientWeight() {
+        return this.accessDecimalString(Tag.PatientWeight, Tag.PatientWeight.VM);
+    }
+
+    /**
+     * Indicates whether patient identity was removed.
+     * @returns The Patient Identity Removed flag.
+     */
+    get patientIdentityRemoved() {
+        return this.attributeSet.value(Tag.PatientIdentityRemoved);
     }
 
     /**

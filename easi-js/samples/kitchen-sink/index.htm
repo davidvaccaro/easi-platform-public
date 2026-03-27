@@ -408,6 +408,35 @@
         </div>
 
         <br>
+        <hr>
+        <h4>Encapsulated Document Related Actions</h4>
+        <hr>
+        <br>
+        <div>
+            <input type="file" id="wrappedDocumentSourceFile" name="wrappedDocumentSourceFile" accept=".pdf,application/pdf" />
+        </div>
+        <br>
+        <div>
+            <button id="wrapDocumentToDicom">Wrap PDF to DICOM</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="wrappedDocumentOutput" rows="8" cols="80" placeholder="Wrapped document details..."></textarea>
+        </div>
+        <br>
+        <div>
+            <input type="file" id="dicomUnwrappedDocumentsFile" name="dicomUnwrappedDocumentsFile" />
+        </div>
+        <br>
+        <div>
+            <button id="unwrapDocuments">Unwrap Encapsulated Documents</button>
+        </div>
+        <br>
+        <div>
+            <textarea id="unwrappedDocumentsOutput" rows="10" cols="80" placeholder="Unwrapped document details..."></textarea>
+        </div>
+
+        <br>
         <hr>        
         <h4>FHIR Mapping Related Actions</h4>
         <hr>
@@ -805,6 +834,71 @@
 
             }
 
+            function collectUnwrappedDocuments(result) {
+
+                var documents = [];
+
+                function collect(value) {
+
+                    if (value == null)
+                        return;
+
+                    if (Array.isArray(value) == true) {
+                        for (var i = 0; i < value.length; i++) {
+                            collect(value[i]);
+                        }
+                        return;
+                    }
+
+                    if ((typeof value == 'object') && (value.bytes instanceof Uint8Array)) {
+                        documents.push(value);
+                    }
+
+                }
+
+                collect(result);
+                return documents;
+
+            }
+
+            function buildUnwrappedDocumentsSummary(fileName, documents) {
+
+                var lines = [];
+                lines.push('Unwrapped documents successfully.');
+                lines.push('Source DICOM: ' + String(fileName ?? 'unknown'));
+                lines.push('Document Count: ' + String(documents.length));
+                lines.push('');
+
+                for (var i = 0; i < documents.length; i++) {
+
+                    var document = documents[i] ?? {};
+                    var safeFileName = document.fileName ?? ('document_' + String(i + 1) + '.bin');
+                    var mimeType = document.mimeType ?? 'application/octet-stream';
+                    var byteLength = document.byteLength ?? document.bytes?.length ?? 0;
+                    var title = document.title ?? 'unknown';
+                    var textPreview = null;
+
+                    if ((typeof document.text == 'string') && (document.text.length > 0)) {
+                        textPreview = document.text.replace(/\s+/g, ' ').trim().substring(0, 160);
+                    }
+
+                    lines.push('[' + String(i + 1) + '] ' + safeFileName);
+                    lines.push('    MIME Type: ' + String(mimeType));
+                    lines.push('    Size: ' + String(byteLength) + ' bytes');
+                    lines.push('    Title: ' + String(title));
+
+                    if ((textPreview != null) && (textPreview.length > 0)) {
+                        lines.push('    Text Preview: ' + textPreview + ((document.text.length > 160) ? '...' : ''));
+                    }
+
+                    lines.push('');
+
+                }
+
+                return lines.join('\n');
+
+            }
+
             function formatAssetsSourceDiagnostics(instance) {
 
                 if (instance == null)
@@ -866,6 +960,50 @@
                     : name;
 
                 return baseName + '_burnedin-redacted.dcm';
+
+            }
+
+            function buildWrappedDocumentDicomFileName(fileName) {
+
+                var name = String(fileName ?? 'document').trim();
+                if (name.length == 0)
+                    name = 'document';
+
+                var extensionIndex = name.lastIndexOf('.');
+                var baseName = (extensionIndex > 0)
+                    ? name.substring(0, extensionIndex)
+                    : name;
+
+                return baseName + '_wrapped.dcm';
+
+            }
+
+            function buildWrappedDocumentTitle(fileName) {
+
+                var name = String(fileName ?? 'Document').trim();
+                if (name.length == 0)
+                    name = 'Document';
+
+                var extensionIndex = name.lastIndexOf('.');
+                var baseName = (extensionIndex > 0)
+                    ? name.substring(0, extensionIndex)
+                    : name;
+
+                return baseName;
+
+            }
+
+            function resolveWrappedDocumentMimeType(file) {
+
+                var mimeType = String(file?.type ?? '').trim().toLowerCase();
+                if (mimeType.length > 0)
+                    return mimeType;
+
+                var lowerName = String(file?.name ?? '').toLowerCase();
+                if (lowerName.endsWith('.pdf'))
+                    return 'application/pdf';
+
+                return 'application/octet-stream';
 
             }
 
@@ -2641,6 +2779,207 @@
                     }
 
                     $('#assetArchiveOutput').val(message);
+                    console.log(err);
+
+                }
+                finally {
+                    URL.revokeObjectURL(url);
+                }
+
+            });
+
+            // Handle Encapsulated Document Unwrapping
+            $('#wrapDocumentToDicom').on('click', async function () {
+
+                console.clear();
+                $('#wrappedDocumentOutput').val('');
+
+                var file = $('#wrappedDocumentSourceFile')[0]?.files?.[0];
+                if (file == null) {
+                    alert('Please select a PDF file first.');
+                    return;
+                }
+
+                var sourceMimeType = resolveWrappedDocumentMimeType(file);
+                var lowerName = String(file?.name ?? '').toLowerCase();
+                if ((sourceMimeType != 'application/pdf') && (lowerName.endsWith('.pdf') == false)) {
+                    alert('Please select a PDF file.');
+                    return;
+                }
+
+                var outputFileName = buildWrappedDocumentDicomFileName(file.name);
+                var sourceTitle = buildWrappedDocumentTitle(file.name);
+
+                var fileHandle = null;
+                var chunkCount = 0;
+                var bytesStreamed = 0;
+
+                try {
+
+                    if (typeof window.showSaveFilePicker === 'function') {
+                        fileHandle = await window.showSaveFilePicker({
+                            suggestedName: outputFileName,
+                            types: [{
+                                description: 'DICOM files',
+                                accept: { 'application/dicom': ['.dcm', '.dicom'] }
+                            }]
+                        });
+                    }
+
+                    var pipelineBuilder = EASI.pipelineBuilder()
+                        .fromFileStream()
+                        .ofByteData()
+                        .toWrappedDocuments({
+                            mimeType: sourceMimeType,
+                            title: sourceTitle
+                        });
+
+                    var writerOptions = {
+                        chunkSize: (64 * 1024),
+                        onChunk: function (chunk) {
+
+                            if ((chunk == null) || (chunk.length == 0))
+                                return;
+
+                            bytesStreamed += chunk.length;
+                            chunkCount += 1;
+
+                        }
+                    };
+
+                    var pipeline = null;
+                    if (fileHandle != null) {
+                        pipeline = pipelineBuilder
+                            .intoBrowserFileStream(fileHandle, writerOptions)
+                            .build();
+                    }
+                    else {
+                        pipeline = pipelineBuilder
+                            .intoByteStream(Object.assign({}, writerOptions, {
+                                collectOutput: true
+                            }))
+                            .build();
+                    }
+
+                    var result = await processWithTiming(
+                        pipeline,
+                        file,
+                        { contentType: sourceMimeType },
+                        'Wrap PDF to DICOM'
+                    );
+
+                    var outputSize = Number(result?.bytesWritten ?? bytesStreamed ?? 0);
+                    if (fileHandle == null) {
+                        var outputBytes = result?.body ?? new Uint8Array(0);
+                        if (outputBytes.length == 0) {
+                            throw new Error('No output bytes were produced by the wrapping pipeline.');
+                        }
+                        outputSize = outputBytes.length;
+                        downloadBytesAsFile(outputBytes, outputFileName, 'application/dicom');
+                    }
+
+                    $('#wrappedDocumentOutput').val(
+                        'Source: ' + String(file.name ?? 'unknown') + '\n'
+                        + 'Source MIME Type: ' + String(sourceMimeType) + '\n'
+                        + 'Title: ' + String(sourceTitle) + '\n'
+                        + 'Output: ' + String(outputFileName) + '\n'
+                        + 'Chunks streamed: ' + String(chunkCount) + '\n'
+                        + 'Bytes streamed: ' + String(bytesStreamed) + '\n'
+                        + 'Output size: ' + String(outputSize) + ' bytes'
+                    );
+
+                    console.log({
+                        sourceFile: file.name,
+                        sourceMimeType: sourceMimeType,
+                        sourceTitle: sourceTitle,
+                        outputFile: outputFileName,
+                        chunksStreamed: chunkCount,
+                        bytesStreamed: bytesStreamed,
+                        writerResult: result
+                    });
+
+                }
+                catch (err) {
+
+                    if (err?.name === 'AbortError') {
+                        $('#wrappedDocumentOutput').val('Save cancelled by user.');
+                        return;
+                    }
+
+                    $('#wrappedDocumentOutput').val(
+                        'Document wrapping failed.\n'
+                        + (err?.message ?? String(err))
+                    );
+
+                    console.log(err);
+
+                }
+
+            });
+
+            // Handle Encapsulated Document Unwrapping
+            $('#unwrapDocuments').on('click', async function () {
+
+                console.clear();
+
+                var file = $('#dicomUnwrappedDocumentsFile')[0]?.files?.[0];
+                if (file == null) {
+                    alert('Please select a DICOM file first.');
+                    return;
+                }
+
+                $('#unwrappedDocumentsOutput').val('');
+
+                var url = URL.createObjectURL(file);
+
+                try {
+
+                    const pipeline = applyDicomDataValidation(
+                        EASI.pipelineBuilder()
+                            .fromHttpStream()
+                            .ofDicomData()
+                    ).toUnwrappedDocuments()
+                    .build();
+
+                    var result = await processWithTiming(pipeline, url, null, 'Unwrap Encapsulated Documents');
+                    var documents = collectUnwrappedDocuments(result);
+
+                    if (documents.length == 0) {
+                        $('#unwrappedDocumentsOutput').val(
+                            'No encapsulated documents were found in the selected DICOM file.\n'
+                            + 'Source DICOM: ' + String(file.name ?? 'unknown')
+                        );
+                        return;
+                    }
+
+                    for (var i = 0; i < documents.length; i++) {
+
+                        var document = documents[i] ?? {};
+                        var outputBytes = document.bytes ?? new Uint8Array(0);
+                        var outputFileName = document.fileName ?? ('document_' + String(i + 1) + '.bin');
+                        var outputMimeType = document.mimeType ?? 'application/octet-stream';
+                        downloadBytesAsFile(outputBytes, outputFileName, outputMimeType);
+
+                    }
+
+                    $('#unwrappedDocumentsOutput').val(
+                        buildUnwrappedDocumentsSummary(file.name, documents)
+                    );
+
+                    console.log({
+                        sourceFile: file.name,
+                        unwrappedDocuments: documents
+                    });
+
+                }
+                catch (err) {
+
+                    var message = (
+                        'Encapsulated document unwrapping failed.\n'
+                        + (err?.message ?? String(err))
+                    );
+
+                    $('#unwrappedDocumentsOutput').val(message);
                     console.log(err);
 
                 }

@@ -1,5 +1,6 @@
 import PipelineBuilder from "../../src/builders/PipelineBuilder.js";
 import DicomDataParser from "../../src/parsers/DicomDataParser.js";
+import ByteDataParser from "../../src/parsers/ByteDataParser.js";
 import JsonDataParser from "../../src/parsers/JsonDataParser.js";
 import XmlDataParser from "../../src/parsers/XmlDataParser.js";
 import HttpStreamReader from "../../src/readers/HttpStreamReader.js";
@@ -11,6 +12,8 @@ import DimseAssociationReader from "../../src/readers/DimseAssociationReader.js"
 import Pipeline from "../../src/pipelines/Pipeline.js";
 import DicomInstanceHandler from "../../src/handlers/terminals/DicomInstanceHandler.js";
 import DicomEntityHandler from "../../src/handlers/terminals/DicomEntityHandler.js";
+import DicomDocumentHandler from "../../src/handlers/terminals/DicomDocumentHandler.js";
+import DicomDocumentWrappingHandler from "../../src/handlers/terminals/DicomDocumentWrappingHandler.js";
 import DicomDeIdentificationFilter from "../../src/handlers/filters/DicomDeIdentificationFilter.js";
 import DicomValidationFilter, { ValidationGoals } from "../../src/handlers/filters/DicomValidationFilter.js";
 import DicomTranscodingFilter from "../../src/handlers/filters/DicomTranscodingFilter.js";
@@ -56,6 +59,7 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
 
     const format = source.fromPartStream();
     expect(typeof format.ofDicomData).toBe("function");
+    expect(typeof format.ofByteData).toBe("function");
     expect(typeof format.toInstances).toBe("undefined");
     expect(typeof format.withMask).toBe("undefined");
 
@@ -345,6 +349,72 @@ test("Test: toEntities composes JSON metadata adapter for metadata parser", () =
     expect(pipeline.parser instanceof JsonDataParser).toBe(true);
     expect(pipeline.parser.handler instanceof DicomJsonMetadataAdapter).toBe(true);
     expect(pipeline.parser.handler.nextHandler instanceof DicomEntityHandler).toBe(true);
+});
+
+test("Test: toUnwrappedDocuments builds with DicomDocumentHandler for native DICOM parser", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofDicomData()
+        .toUnwrappedDocuments()
+        .build();
+
+    expect(pipeline.parser instanceof DicomDataParser).toBe(true);
+    expect(pipeline.parser.handler instanceof DicomDocumentHandler).toBe(true);
+});
+
+test("Test: build throws IncompatibleParserAndHandler for toUnwrappedDocuments with metadata parser", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromPartStream()
+            .ofDicomMetadata()
+            .toUnwrappedDocuments()
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
+});
+
+test("Test: toWrappedDocuments builds with DicomDocumentWrappingHandler for JSON parser", () => {
+    const pipeline = new PipelineBuilder()
+        .fromPartStream().ofJsonData()
+        .toWrappedDocuments()
+        .build();
+
+    expect(pipeline.parser instanceof JsonDataParser).toBe(true);
+    expect(pipeline.parser.handler instanceof DicomDocumentWrappingHandler).toBe(true);
+});
+
+test("Test: build throws IncompatibleParserAndHandler for toWrappedDocuments with native DICOM parser", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromPartStream()
+            .ofDicomData()
+            .toWrappedDocuments()
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
+});
+
+test("Test: toWrappedDocuments builds with DicomDocumentWrappingHandler for byte parser", () => {
+    const pipeline = new PipelineBuilder()
+        .fromByteStream().ofByteData()
+        .toWrappedDocuments({ mimeType: "application/pdf" })
+        .build();
+
+    expect(pipeline.parser instanceof ByteDataParser).toBe(true);
+    expect(pipeline.parser.handler instanceof DicomDocumentWrappingHandler).toBe(true);
+});
+
+test("Test: build throws IncompatibleParserAndHandler for byte parser with toInstances", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromByteStream()
+            .ofByteData()
+            .toInstances()
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
 });
 
 test("Test: toMapping builds with DicomMappingHandler", () => {

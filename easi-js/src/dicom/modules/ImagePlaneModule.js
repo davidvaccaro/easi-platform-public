@@ -41,6 +41,14 @@ export default class ImagePlaneModule extends Module {
     }
 
     /**
+     * Get the Image Position (Patient).
+     * @returns The Image Position (Patient) value.
+     */
+    get imagePositionPatient() {
+        return this.accessDecimalString(Tag.ImagePositionPatient, Tag.ImagePositionPatient.VM);
+    }
+
+    /**
      * Get the Image Orientation.
      * @returns The Image Orientation value.
      */
@@ -49,11 +57,27 @@ export default class ImagePlaneModule extends Module {
     }
 
     /**
+     * Get the Image Orientation (Patient).
+     * @returns The Image Orientation (Patient) value.
+     */
+    get imageOrientationPatient() {
+        return this.accessDecimalString(Tag.ImageOrientationPatient, Tag.ImageOrientationPatient.VM);
+    }
+
+    /**
      * Get the Slice Location.
      * @returns The Slice Location value.
      */
     get sliceLocation() {
         return this.accessDecimalString(Tag.SliceLocation, Tag.SliceLocation.VM);
+    }
+
+    /**
+     * Get the Spacing Between Slices.
+     * @returns The Spacing Between Slices value.
+     */
+    get spacingBetweenSlices() {
+        return this.accessDecimalString(Tag.SpacingBetweenSlices, Tag.SpacingBetweenSlices.VM);
     }
 
     /**

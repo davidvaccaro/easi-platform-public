@@ -75,6 +75,23 @@ export default class Entity {
     }
 
     /**
+     * Gets the SOP Class UID value.
+     * @returns {string} The SOP Class UID when available.
+     */
+    get sopClassUid() {
+
+        if (this.attributeSet == null)
+            return '';
+
+        var attribute = this.attributeSet.find(Tag.SOPClassUID);
+        if (attribute == null)
+            return '';
+
+        return attribute.value;
+
+    }
+
+    /**
      * Gets the SOP Instance UID value.
      * @returns {string} The SOP Instance UID when available.
      */
@@ -89,14 +106,6 @@ export default class Entity {
 
         return attribute.value;
 
-    }
-
-    /**
-     * Get the Patient accessor.
-     * @returns {PatientModule} The Patient accessor.
-     */
-    get patient() {
-        return this.patientModule;
     }
 
     /**
