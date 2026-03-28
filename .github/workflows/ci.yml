@@ -1,0 +1,228 @@
+name: EASI JS CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "easi-js/**"
+      - ".github/workflows/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "easi-js/**"
+      - ".github/workflows/**"
+  workflow_dispatch:
+    inputs:
+      run_dimse_sockets:
+        description: "Run DIMSE socket integration tests"
+        required: false
+        default: false
+        type: boolean
+      run_orthanc_interop:
+        description: "Run Orthanc DIMSE interop tests"
+        required: false
+        default: false
+        type: boolean
+      run_benchmarks:
+        description: "Run streaming benchmarks"
+        required: false
+        default: false
+        type: boolean
+  schedule:
+    - cron: "15 5 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: easi-js-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "18.x"
+  WORKDIR: easi-js
+
+jobs:
+  core:
+    name: Core Tests
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKDIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: easi-js/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Core Test Suite
+        run: npm test -- --runInBand
+
+      - name: Upload Coverage Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: easi-js-core-coverage
+          path: easi-js/coverage/lcov-report
+          if-no-files-found: warn
+
+  dimse-sockets:
+    name: DIMSE Socket Tests
+    if: >
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.run_dimse_sockets)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKDIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: easi-js/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run DIMSE Socket Tests
+        run: npm run test:dimse-sockets
+
+  orthanc-interop:
+    name: Orthanc DIMSE Interop Tests
+    if: >
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.run_orthanc_interop)
+    runs-on: ubuntu-latest
+    services:
+      orthanc:
+        image: jodogne/orthanc-plugins:latest
+        ports:
+          - 8042:8042
+          - 4242:4242
+        env:
+          ORTHANC__AUTHENTICATION_ENABLED: "false"
+          ORTHANC__REMOTE_ACCESS_ALLOWED: "true"
+          ORTHANC__DICOM_AET: "ORTHANC"
+          ORTHANC__DICOM_PORT: "4242"
+          ORTHANC__HTTP_PORT: "8042"
+          ORTHANC__DICOM_MODALITIES: '{"EASI_JS":["EASI_JS","127.0.0.1",11112],"EASI_MOVE_DEST":["EASI_MOVE_DEST","127.0.0.1",4104]}'
+        options: >-
+          --health-cmd "curl -fsS http://localhost:8042/system || exit 1"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 40
+    defaults:
+      run:
+        working-directory: ${{ env.WORKDIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: easi-js/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Wait For Orthanc Service
+        run: |
+          for i in {1..60}; do
+            if curl -fsS http://127.0.0.1:8042/system >/dev/null 2>&1; then
+              echo "Orthanc is ready."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Orthanc did not become ready in time."
+          exit 1
+
+      - name: Seed Orthanc With Sample DICOMs
+        run: |
+          count=0
+          while IFS= read -r file; do
+            curl -fsS \
+              -X POST \
+              -H "Content-Type: application/dicom" \
+              --data-binary @"$file" \
+              "http://127.0.0.1:8042/instances" >/dev/null
+            count=$((count + 1))
+            if [ "$count" -ge 5 ]; then
+              break
+            fi
+          done < <(find ../data/dicoms -type f \( -name "*.dcm" -o -name "*.DCM" \) | sort)
+          if [ "$count" -eq 0 ]; then
+            echo "No sample DICOM files were found under data/dicoms."
+            exit 1
+          fi
+          echo "Uploaded $count DICOM file(s) to Orthanc."
+
+      - name: Run Orthanc DIMSE Interop Tests
+        env:
+          RUN_ORTHANC_DIMSE: "true"
+          RUN_ORTHANC_DIMSE_MOVE: "true"
+          ORTHANC_HTTP_URL: "http://127.0.0.1:8042"
+          ORTHANC_DIMSE_HOST: "127.0.0.1"
+          ORTHANC_DIMSE_PORT: "4242"
+          ORTHANC_DIMSE_CALLED_AE: "ORTHANC"
+          ORTHANC_DIMSE_CALLING_AE: "EASI_JS"
+          ORTHANC_MOVE_DEST_AE: "EASI_MOVE_DEST"
+          ORTHANC_MOVE_STORE_HOST: "127.0.0.1"
+          ORTHANC_MOVE_STORE_PORT: "4104"
+          ORTHANC_MOVE_STORE_CALLED_AE: "EASI_MOVE_DEST"
+        run: npm run test:orthanc-dimse-all
+
+  benchmarks:
+    name: Streaming Benchmarks
+    if: >
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.run_benchmarks)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKDIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: easi-js/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Streaming Benchmarks
+        env:
+          BENCH_ITERATIONS: "2"
+        run: npm run bench:streaming
+
+      - name: Upload Benchmark Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: easi-js-benchmarks
+          path: easi-js/test/output/benchmarks
+          if-no-files-found: warn
