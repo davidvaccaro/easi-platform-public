@@ -1,6 +1,6 @@
 {
     "name": "dicom-js",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "type": "module",
     "description": "A Modern Pure-Javascript DICOM implementation.",
     "engines": {
@@ -24,6 +24,7 @@
         "harness:monitor": "node tools/harness/monitorHarnessRun.js",
         "harness:orchestrate": "node tools/harness/orchestrateHarnessRuns.js",
         "harness:merge": "node tools/harness/mergeHarnessRuns.js",
+        "test:dimse-sockets": "RUN_DIMSE_SOCKET_TESTS=true jest --runInBand test/transports/dimse/NodeDimseCStoreScuTransport.test.js test/transports/dimse/NodeDimseCStoreScpSourceTransport.test.js test/transports/dimse/NodeDimseQueryRetrieveSourceTransport.test.js test/integration/KitchenSinkDimseRelayApi.test.js",
         "test:orthanc-dimse": "RUN_ORTHANC_DIMSE=true jest test/integration/OrthancDimseInterop.test.js --runInBand",
         "test:orthanc-dimse-move": "RUN_ORTHANC_DIMSE_MOVE=true jest test/integration/OrthancDimseInterop.test.js --runInBand",
         "test:orthanc-dimse-all": "RUN_ORTHANC_DIMSE=true RUN_ORTHANC_DIMSE_MOVE=true jest test/integration/OrthancDimseInterop.test.js --runInBand"

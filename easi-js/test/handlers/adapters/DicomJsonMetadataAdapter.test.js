@@ -304,3 +304,25 @@ test('Test: Metadata adapter parses realistic metadata subset with nested sequen
     expect(instance.dataSet.find(Tag.PixelData)).toBeDefined();
 
 });
+
+test('Test: Metadata adapter decodes InlineBinary payloads for binary VR attributes', async () => {
+
+    const json = '{"7FE00010":{"vr":"OB","InlineBinary":"AQIDBA=="}}';
+    const bytes = (new TextEncoder()).encode(json);
+
+    const parser = new JsonDataParser();
+    parser.reset();
+    parser.handler = new DicomJsonMetadataAdapter(new DicomInstanceHandler());
+
+    const status = await parser.parse(bytes, true, bytes.length, bytes.length);
+    expect(status).toBe(Status.SUCCESS);
+
+    const instance = parser.result;
+    expect(instance.dataSet).toBeDefined();
+
+    const pixelData = instance.dataSet.find(Tag.PixelData);
+    expect(pixelData).toBeDefined();
+    expect(pixelData.value instanceof Uint8Array).toBe(true);
+    expect(Array.from(pixelData.value)).toEqual([1, 2, 3, 4]);
+
+});

@@ -8,6 +8,7 @@ import DicomInstanceHandler from "../../../src/handlers/terminals/DicomInstanceH
 import NodeDimseCStoreScuTransport from "../../../src/transports/dimse/NodeDimseCStoreScuTransport.js";
 import NodeDimseCStoreScpSourceTransport from "../../../src/transports/dimse/NodeDimseCStoreScpSourceTransport.js";
 import Exception, { GeneralErrorCodes } from "../../../src/environment/Exception.js";
+import { dimseSocketTest } from "./DimseSocketTestGate.js";
 
 const sampleDicomPath = path.resolve(process.cwd(), "../data/dicoms/0002.dcm");
 
@@ -38,7 +39,7 @@ async function parseEnvelopeToInstances(envelope) {
 
 }
 
-test("Test: NodeDimseCStoreScpSourceTransport reads one incoming C-STORE instance batch", async () => {
+dimseSocketTest("Test: NodeDimseCStoreScpSourceTransport reads one incoming C-STORE instance batch", async () => {
 
     var sourceTransport = new NodeDimseCStoreScpSourceTransport();
     var listenerAssociation = {
@@ -113,7 +114,7 @@ test("Test: NodeDimseCStoreScpSourceTransport validates onConcern callback type"
 
 });
 
-test("Test: NodeDimseCStoreScpSourceTransport batches multiple incoming C-STORE instances", async () => {
+dimseSocketTest("Test: NodeDimseCStoreScpSourceTransport batches multiple incoming C-STORE instances", async () => {
 
     var sourceTransport = new NodeDimseCStoreScpSourceTransport();
     var listenerAssociation = {
@@ -167,7 +168,7 @@ test("Test: NodeDimseCStoreScpSourceTransport batches multiple incoming C-STORE 
 
 }, 20000);
 
-test("Test: NodeDimseCStoreScpSourceTransport enforces allowedCallingAeTitles policy", async () => {
+dimseSocketTest("Test: NodeDimseCStoreScpSourceTransport enforces allowedCallingAeTitles policy", async () => {
 
     var sourceTransport = new NodeDimseCStoreScpSourceTransport();
     var listenerAssociation = {
@@ -217,7 +218,7 @@ test("Test: NodeDimseCStoreScpSourceTransport enforces allowedCallingAeTitles po
 
 }, 20000);
 
-test("Test: NodeDimseCStoreScpSourceTransport enforces maxActiveAssociations policy", async () => {
+dimseSocketTest("Test: NodeDimseCStoreScpSourceTransport enforces maxActiveAssociations policy", async () => {
 
     var sourceTransport = new NodeDimseCStoreScpSourceTransport();
     var listenerAssociation = {
@@ -270,7 +271,7 @@ test("Test: NodeDimseCStoreScpSourceTransport enforces maxActiveAssociations pol
 
 }, 20000);
 
-test("Test: NodeDimseCStoreScpSourceTransport enforces deniedRemoteHosts policy", async () => {
+dimseSocketTest("Test: NodeDimseCStoreScpSourceTransport enforces deniedRemoteHosts policy", async () => {
 
     var sourceTransport = new NodeDimseCStoreScpSourceTransport();
     var concerns = [];
@@ -313,7 +314,7 @@ test("Test: NodeDimseCStoreScpSourceTransport enforces deniedRemoteHosts policy"
 
 }, 20000);
 
-test("Test: NodeDimseCStoreScpSourceTransport enforces allowedRemoteHosts policy", async () => {
+dimseSocketTest("Test: NodeDimseCStoreScpSourceTransport enforces allowedRemoteHosts policy", async () => {
 
     var sourceTransport = new NodeDimseCStoreScpSourceTransport();
     var listenerAssociation = {

@@ -1,5 +1,6 @@
 import { createKitchenSinkServer } from "../../samples/kitchen-sink/server.js";
 import Tag from "../../src/dicom/Tag.js";
+import { dimseSocketTest } from "../transports/dimse/DimseSocketTestGate.js";
 
 function createMockEasi(processImplementation, capture) {
 
@@ -111,7 +112,7 @@ function cfindRequestBody(overrides = null) {
 
 }
 
-test("Test: Kitchen sink DIMSE C-MOVE relay API returns success and wires pipeline options", async () => {
+dimseSocketTest("Test: Kitchen sink DIMSE C-MOVE relay API returns success and wires pipeline options", async () => {
 
     var capture = {};
     var sourceTransport = { kind: "mock-source-transport" };
@@ -197,7 +198,7 @@ test("Test: Kitchen sink DIMSE C-MOVE relay API returns success and wires pipeli
 
 }, 20000);
 
-test("Test: Kitchen sink DIMSE C-MOVE relay API surfaces failed part metadata on C-STORE failure", async () => {
+dimseSocketTest("Test: Kitchen sink DIMSE C-MOVE relay API surfaces failed part metadata on C-STORE failure", async () => {
 
     var capture = {};
     var mockEasi = createMockEasi(async () => ({
@@ -260,7 +261,7 @@ test("Test: Kitchen sink DIMSE C-MOVE relay API surfaces failed part metadata on
 
 }, 20000);
 
-test("Test: Kitchen sink DIMSE C-MOVE relay API forwards moveStorePolicy", async () => {
+dimseSocketTest("Test: Kitchen sink DIMSE C-MOVE relay API forwards moveStorePolicy", async () => {
 
     var capture = {};
     var mockEasi = createMockEasi(async () => ({
@@ -334,7 +335,7 @@ test("Test: Kitchen sink DIMSE C-MOVE relay API forwards moveStorePolicy", async
 
 }, 20000);
 
-test("Test: Kitchen sink DIMSE C-FIND studies API returns instance summaries for modality query", async () => {
+dimseSocketTest("Test: Kitchen sink DIMSE C-FIND studies API returns instance summaries for modality query", async () => {
 
     var capture = {};
     var sourceTransport = { kind: "mock-source-transport" };
@@ -405,7 +406,7 @@ test("Test: Kitchen sink DIMSE C-FIND studies API returns instance summaries for
 
 }, 20000);
 
-test("Test: Kitchen sink DIMSE C-FIND studies API returns FHIR ImagingStudy list", async () => {
+dimseSocketTest("Test: Kitchen sink DIMSE C-FIND studies API returns FHIR ImagingStudy list", async () => {
 
     var capture = {};
     var sourceTransport = { kind: "mock-source-transport" };
@@ -481,7 +482,7 @@ test("Test: Kitchen sink DIMSE C-FIND studies API returns FHIR ImagingStudy list
 
 }, 20000);
 
-test("Test: Kitchen sink DIMSE C-FIND studies API collects multipart emissions instead of only final result", async () => {
+dimseSocketTest("Test: Kitchen sink DIMSE C-FIND studies API collects multipart emissions instead of only final result", async () => {
 
     var capture = {};
     var sourceTransport = { kind: "mock-source-transport" };

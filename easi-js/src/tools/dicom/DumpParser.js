@@ -57,6 +57,131 @@ export default class DumpParser {
     }
 
     /**
+     * Parse one numeric literal from dump text.
+     * @param {string} token The numeric token.
+     * @returns {number | null} The parsed value.
+     */
+    parseNumericToken(token) {
+
+        if (token == null)
+            return null;
+
+        var text = String(token).trim();
+        if (text.length == 0)
+            return null;
+
+        if (/^[-+]?0x[0-9a-f]+$/i.test(text) == true)
+            return Number.parseInt(text, 16);
+
+        var value = Number(text);
+        if (Number.isFinite(value) != true)
+            return null;
+
+        return value;
+
+    }
+
+    /**
+     * Extract one dump value literal from a line.
+     * @param {string} line The source line.
+     * @returns {string | null} The extracted literal.
+     */
+    extractValueLiteral(line) {
+
+        var delimiters = [
+            { start: '<', end: '>' },
+            { start: '[', end: ']' },
+            { start: '{', end: '}' }
+        ];
+
+        for (var i = 0; i < delimiters.length; i++) {
+
+            var startToken = delimiters[i].start;
+            var endToken = delimiters[i].end;
+
+            var start = line.lastIndexOf(startToken);
+            if (start < 0)
+                continue;
+
+            var end = line.indexOf(endToken, start + 1);
+            if (end < 0)
+                continue;
+
+            return line.substring(start + 1, end);
+
+        }
+
+        return null;
+
+    }
+
+    /**
+     * Parse one value from a dump line based on VR.
+     * @param {ValueRepresentation} vr The value representation.
+     * @param {string | null} literal The extracted literal text.
+     * @returns {*} The parsed value.
+     */
+    parseValue(vr, literal) {
+
+        if (literal == null)
+            return null;
+
+        var text = String(literal).trim();
+        if (text.length == 0)
+            return null;
+
+        var parts = text.split('\\').map((part) => String(part).trim()).filter((part) => part.length > 0);
+        var values = (parts.length > 0) ? parts : [text];
+
+        if (vr == ValueRepresentations.SQ)
+            return null;
+
+        if ((vr == ValueRepresentations.US) || (vr == ValueRepresentations.SS) || (vr == ValueRepresentations.UL) || (vr == ValueRepresentations.SL) || (vr == ValueRepresentations.IS)) {
+
+            var numericValues = values
+                .map((value) => this.parseNumericToken(value))
+                .filter((value) => value != null)
+                .map((value) => Math.trunc(value));
+
+            if (numericValues.length == 0)
+                return null;
+
+            return (numericValues.length == 1) ? numericValues[0] : numericValues;
+
+        }
+
+        if ((vr == ValueRepresentations.FL) || (vr == ValueRepresentations.FD) || (vr == ValueRepresentations.DS)) {
+
+            var decimalValues = values
+                .map((value) => this.parseNumericToken(value))
+                .filter((value) => value != null);
+
+            if (decimalValues.length == 0)
+                return null;
+
+            return (decimalValues.length == 1) ? decimalValues[0] : decimalValues;
+
+        }
+
+        if (vr == ValueRepresentations.OB) {
+
+            var byteValues = text.split(',')
+                .map((value) => this.parseNumericToken(value))
+                .filter((value) => value != null)
+                .map((value) => (value & 0xFF));
+
+            if (byteValues.length == 0)
+                return null;
+
+            return new Uint8Array(byteValues);
+
+        }
+
+        return (values.length == 1) ? values[0] : values;
+
+    }
+
+    /**
      * Peek the next, transfer-syntax independent, base tag details.
      * @returns The peeked local tag details.
      */
@@ -112,7 +237,9 @@ export default class DumpParser {
             // Parse the length value
             var valueLength = parseInt(line.substring(start + 4, end), 16);
 
-            // TODO - Populate the data
+            // Parse the line value (when available).
+            var literal = this.extractValueLiteral(line);
+            var value = this.parseValue(vr, literal);
 
             // Construct the "sequence control" tag details 
             result = {
@@ -120,7 +247,8 @@ export default class DumpParser {
                 element: element,
                 tag: tag,
                 valueRepresentation: vr,
-                valueLength: valueLength
+                valueLength: valueLength,
+                value: value
             };
 
         }
@@ -304,6 +432,10 @@ export default class DumpParser {
                     // Start the typical attribute
                     if (this.emitter.onStartAttribute != null) {
                         this.emitter.onStartAttribute(this.context, dataElement);
+                    }
+
+                    if (details.value != null) {
+                        dataElement.value = details.value;
                     }
 
                     // Indicate that the data-element is complete

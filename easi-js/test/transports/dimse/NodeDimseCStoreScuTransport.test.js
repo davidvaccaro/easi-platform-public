@@ -3,6 +3,7 @@ import net from "node:net";
 import EASI from "../../../src/EASI.js";
 import Exception, { GeneralErrorCodes } from "../../../src/environment/Exception.js";
 import NodeDimseCStoreScuTransport from "../../../src/transports/dimse/NodeDimseCStoreScuTransport.js";
+import { dimseSocketTest } from "./DimseSocketTestGate.js";
 
 const fs = require("fs");
 const path = require("path");
@@ -518,7 +519,7 @@ function createMockDimseStoreScp() {
 
 }
 
-test("Test: NodeDimseCStoreScuTransport sends C-STORE to mock SCP and receives success response", async () => {
+dimseSocketTest("Test: NodeDimseCStoreScuTransport sends C-STORE to mock SCP and receives success response", async () => {
 
     var mock = createMockDimseStoreScp();
     await new Promise((resolve, reject) => {
@@ -595,7 +596,7 @@ test("Test: NodeDimseCStoreScuTransport validates required association fields", 
     throw new Error("Expected association validation to fail.");
 });
 
-test("Test: NodeDimseCStoreScuTransport prefers data-set SOP Instance UID over mismatched File Meta UID", async () => {
+dimseSocketTest("Test: NodeDimseCStoreScuTransport prefers data-set SOP Instance UID over mismatched File Meta UID", async () => {
 
     var mock = createMockDimseStoreScp();
     await new Promise((resolve, reject) => {

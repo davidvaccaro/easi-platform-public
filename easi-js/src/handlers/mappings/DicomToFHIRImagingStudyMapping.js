@@ -50,6 +50,310 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         return this;
     }
 
+    isNullOrBlankValue(value) {
+
+        if (value == null)
+            return true;
+
+        if (typeof value === 'string')
+            return value.trim().length == 0;
+
+        if (Array.isArray(value))
+            return value.length == 0;
+
+        return false;
+
+    }
+
+    toStableMergeKey(value) {
+
+        if (value == null)
+            return 'null';
+
+        if ((typeof value === 'string') || (typeof value === 'number') || (typeof value === 'boolean') || (typeof value === 'bigint'))
+            return `${typeof value}:${String(value)}`;
+
+        if (value instanceof Date)
+            return `date:${value.toISOString()}`;
+
+        if (Array.isArray(value) == true) {
+            var itemKeys = value.map((item) => this.toStableMergeKey(item));
+            return `array:[${itemKeys.join(',')}]`;
+        }
+
+        if (typeof value === 'object') {
+
+            if ((value.resourceType != null) && (value.id != null))
+                return `resource:${String(value.resourceType)}:${String(value.id)}`;
+
+            if (value.uid != null)
+                return `uid:${String(value.uid)}`;
+
+            if ((value.system != null) && (value.value != null))
+                return `system-value:${String(value.system)}:${String(value.value)}`;
+
+            var keys = Object.keys(value).sort();
+            var fragments = [];
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                fragments.push(`${key}=${this.toStableMergeKey(value[key])}`);
+            }
+            return `object:{${fragments.join(',')}}`;
+
+        }
+
+        return `other:${String(value)}`;
+
+    }
+
+    mergeUniqueValues(existingValue, incomingValue) {
+
+        if (this.isNullOrBlankValue(incomingValue) == true)
+            return existingValue;
+
+        if (this.isNullOrBlankValue(existingValue) == true)
+            return incomingValue;
+
+        var values = [];
+        var seen = new Set();
+
+        function appendUnique(list, value, getKey) {
+            if (value == null)
+                return;
+
+            if (Array.isArray(value) == true) {
+                for (var index = 0; index < value.length; index++) {
+                    appendUnique(list, value[index], getKey);
+                }
+                return;
+            }
+
+            var key = getKey(value);
+            if (seen.has(key) == true)
+                return;
+
+            seen.add(key);
+            list.push(value);
+        }
+
+        appendUnique(values, existingValue, (value) => this.toStableMergeKey(value));
+        appendUnique(values, incomingValue, (value) => this.toStableMergeKey(value));
+
+        if ((Array.isArray(existingValue) == false) && (Array.isArray(incomingValue) == false) && (values.length == 1))
+            return values[0];
+
+        return values;
+
+    }
+
+    mergePreferredScalar(existingValue, incomingValue) {
+
+        if (this.isNullOrBlankValue(existingValue) == true)
+            return incomingValue;
+
+        return existingValue;
+
+    }
+
+    mergeInstance(targetInstance, sourceInstance) {
+
+        if ((targetInstance == null) || (sourceInstance == null))
+            return targetInstance;
+
+        targetInstance.uid = this.mergePreferredScalar(targetInstance.uid, sourceInstance.uid);
+        targetInstance.sopClass = this.mergePreferredScalar(targetInstance.sopClass, sourceInstance.sopClass);
+        targetInstance.number = this.mergePreferredScalar(targetInstance.number, sourceInstance.number);
+        targetInstance.title = this.mergePreferredScalar(targetInstance.title, sourceInstance.title);
+        targetInstance.endpoint = this.mergePreferredScalar(targetInstance.endpoint, sourceInstance.endpoint);
+
+        return targetInstance;
+
+    }
+
+    mergeSeries(targetSeries, sourceSeries) {
+
+        if ((targetSeries == null) || (sourceSeries == null))
+            return targetSeries;
+
+        targetSeries.uid = this.mergePreferredScalar(targetSeries.uid, sourceSeries.uid);
+        targetSeries.number = this.mergePreferredScalar(targetSeries.number, sourceSeries.number);
+        targetSeries.modality = this.mergePreferredScalar(targetSeries.modality, sourceSeries.modality);
+        targetSeries.description = this.mergePreferredScalar(targetSeries.description, sourceSeries.description);
+        targetSeries.endpoint = this.mergePreferredScalar(targetSeries.endpoint, sourceSeries.endpoint);
+        targetSeries.started = this.mergePreferredScalar(targetSeries.started, sourceSeries.started);
+
+        if (Array.isArray(targetSeries.instances) == false)
+            targetSeries.instances = [];
+
+        var sourceInstances = Array.isArray(sourceSeries.instances) ? sourceSeries.instances : [];
+        for (var i = 0; i < sourceInstances.length; i++) {
+            var candidate = sourceInstances[i];
+            if (candidate == null)
+                continue;
+
+            var existing = targetSeries.instances.find((instance) => instance?.uid == candidate?.uid);
+            if (existing == null) {
+                targetSeries.instances.push(candidate);
+                continue;
+            }
+
+            this.mergeInstance(existing, candidate);
+        }
+
+        targetSeries.numberOfInstances = targetSeries.instances.length;
+        return targetSeries;
+
+    }
+
+    mergePatient(targetPatient, sourcePatient) {
+
+        if ((targetPatient == null) || (sourcePatient == null))
+            return targetPatient;
+
+        targetPatient.id = this.mergePreferredScalar(targetPatient.id, sourcePatient.id);
+        targetPatient.identifier = this.mergeUniqueValues(targetPatient.identifier, sourcePatient.identifier);
+        targetPatient.active = this.mergePreferredScalar(targetPatient.active, sourcePatient.active);
+        targetPatient.name = this.mergeUniqueValues(targetPatient.name, sourcePatient.name);
+        targetPatient.telcom = this.mergeUniqueValues(targetPatient.telcom, sourcePatient.telcom);
+        targetPatient.gender = this.mergePreferredScalar(targetPatient.gender, sourcePatient.gender);
+        targetPatient.birthDate = this.mergePreferredScalar(targetPatient.birthDate, sourcePatient.birthDate);
+
+        return targetPatient;
+
+    }
+
+    mergeStudy(targetStudy, sourceStudy) {
+
+        if ((targetStudy == null) || (sourceStudy == null))
+            return targetStudy;
+
+        targetStudy.identifier = this.mergeUniqueValues(targetStudy.identifier, sourceStudy.identifier);
+        targetStudy.status = this.mergePreferredScalar(targetStudy.status, sourceStudy.status);
+        targetStudy.modality = this.mergeUniqueValues(targetStudy.modality, sourceStudy.modality);
+        targetStudy.subject = this.mergePreferredScalar(targetStudy.subject, sourceStudy.subject);
+        targetStudy.endpoint = this.mergePreferredScalar(targetStudy.endpoint, sourceStudy.endpoint);
+        targetStudy.encounter = this.mergePreferredScalar(targetStudy.encounter, sourceStudy.encounter);
+        targetStudy.started = this.mergePreferredScalar(targetStudy.started, sourceStudy.started);
+        targetStudy.description = this.mergePreferredScalar(targetStudy.description, sourceStudy.description);
+
+        if (Array.isArray(targetStudy.contained) == false)
+            targetStudy.contained = [];
+        if (Array.isArray(sourceStudy.contained) == true) {
+            for (var c = 0; c < sourceStudy.contained.length; c++) {
+                var candidateResource = sourceStudy.contained[c];
+                if (candidateResource == null)
+                    continue;
+
+                var existingResource = targetStudy.contained.find((resource) =>
+                    (resource?.resourceType == candidateResource?.resourceType)
+                    && (resource?.id == candidateResource?.id)
+                );
+
+                if (existingResource == null) {
+                    targetStudy.contained.push(candidateResource);
+                    continue;
+                }
+
+                if (candidateResource.resourceType == 'Patient') {
+                    this.mergePatient(existingResource, candidateResource);
+                }
+            }
+        }
+
+        if (Array.isArray(targetStudy.series) == false)
+            targetStudy.series = [];
+
+        var sourceSeries = Array.isArray(sourceStudy.series) ? sourceStudy.series : [];
+        for (var i = 0; i < sourceSeries.length; i++) {
+            var seriesCandidate = sourceSeries[i];
+            if (seriesCandidate == null)
+                continue;
+
+            var existingSeries = targetStudy.series.find((series) => series?.uid == seriesCandidate?.uid);
+            if (existingSeries == null) {
+                targetStudy.series.push(seriesCandidate);
+                continue;
+            }
+
+            this.mergeSeries(existingSeries, seriesCandidate);
+        }
+
+        return targetStudy;
+
+    }
+
+    extractStudyIdentifierValues(study) {
+
+        if (study == null)
+            return [];
+
+        var values = [];
+        var source = study.identifier;
+        var items = Array.isArray(source) ? source : [source];
+
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            if (item == null)
+                continue;
+
+            var rawValue = (typeof item === 'object')
+                ? (item.value ?? item.identifier ?? null)
+                : item;
+
+            var normalized = this.normalizeStudyIdentifierValue(rawValue);
+            if (normalized != null) {
+                values.push(normalized);
+            }
+        }
+
+        return values;
+
+    }
+
+    resolveCurrentStudy(context) {
+
+        var incomingStudy = context.study;
+        if (incomingStudy == null)
+            return null;
+
+        if (context.final == null) {
+            context.final = incomingStudy;
+            return incomingStudy;
+        }
+
+        var studies = Array.isArray(context.final) ? context.final : [context.final];
+        var incomingIdentifiers = this.extractStudyIdentifierValues(incomingStudy);
+
+        var currentStudy = null;
+        for (var i = 0; i < studies.length; i++) {
+
+            var candidateStudy = studies[i];
+            var candidateIdentifiers = this.extractStudyIdentifierValues(candidateStudy);
+            if ((incomingIdentifiers.length == 0) || (candidateIdentifiers.length == 0))
+                continue;
+
+            var hasIntersection = candidateIdentifiers.some((identifier) => incomingIdentifiers.includes(identifier));
+            if (hasIntersection != true)
+                continue;
+
+            currentStudy = candidateStudy;
+            break;
+
+        }
+
+        if (currentStudy == null) {
+            studies.push(incomingStudy);
+            currentStudy = incomingStudy;
+        }
+        else {
+            this.mergeStudy(currentStudy, incomingStudy);
+        }
+
+        context.final = (studies.length == 1) ? studies[0] : studies;
+        return currentStudy;
+
+    }
+
     start(context) {
 
         // Call the super
@@ -72,24 +376,8 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
 
     end(context) {        
 
-        // Establish the current study
-        var study = context.final;
-
-        // Perform merge of prior data - TODO - Beef this up by performing a real "merge" with various conflict resolution strategies
-        if (study == null) {
-
-            // Establish the current study
-            study = context.study;
-            
-            // Set the final study
-            context.final = study;
-
-        }
-        else {
-
-            // TODO - Merge the two studies
-
-        }
+        // Resolve the current study merge target.
+        var study = this.resolveCurrentStudy(context);
 
         if (this.profile === 'study-summary') {
 
@@ -116,6 +404,9 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
 
         }
 
+        if (study == null)
+            return context.final;
+
         // Find the series within the study series
         var series = study.series.find(element => element.uid == context.series.uid);
 
@@ -134,7 +425,7 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         }
         else {
 
-            // TODO - Merge the two series
+            this.mergeSeries(series, context.series);
 
         }
 
@@ -156,7 +447,7 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         }
         else {
 
-            // TODO - Merge the two instances
+            this.mergeInstance(instance, context.instance);
 
         }
 
@@ -486,7 +777,7 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
             }
             else {
 
-                // TODO - Merge the two patients
+                this.mergePatient(patient, context.patient);
 
             }
 

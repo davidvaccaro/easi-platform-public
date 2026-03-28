@@ -90,6 +90,87 @@ export default class DicomJsonMetadataAdapter {
     }
 
     /**
+     * Determine if the current attribute should decode InlineBinary payloads.
+     * @param {object} attributeState The current attribute state.
+     * @returns {boolean} True when the value should be base64-decoded into bytes.
+     */
+    shouldDecodeInlineBinary(attributeState) {
+
+        if (attributeState == null)
+            return false;
+
+        if (attributeState.isBulkDataURI != false)
+            return false;
+
+        var vrId = attributeState?.vr?.ID;
+        if (vrId == null)
+            return false;
+
+        return (
+            (vrId == ValueRepresentation.OB.ID)
+            || (vrId == ValueRepresentation.OW.ID)
+            || (vrId == ValueRepresentation.OF.ID)
+            || (vrId == ValueRepresentation.OD.ID)
+            || (vrId == ValueRepresentation.OL.ID)
+            || (vrId == ValueRepresentation.OV.ID)
+            || (vrId == ValueRepresentation.UN.ID)
+        );
+
+    }
+
+    /**
+     * Decode one base64 text payload into bytes.
+     * @param {string} base64Text The base64 text.
+     * @returns {Uint8Array} The decoded bytes.
+     */
+    decodeInlineBinary(base64Text) {
+
+        var text = String(base64Text ?? "").trim();
+        if (text.length == 0)
+            return new Uint8Array(0);
+
+        var marker = "base64,";
+        var markerIndex = text.toLowerCase().indexOf(marker);
+        if (markerIndex >= 0) {
+            text = text.slice(markerIndex + marker.length);
+        }
+
+        if ((globalThis != null) && (typeof globalThis.atob == "function")) {
+            var decoded = globalThis.atob(text);
+            var bytes = new Uint8Array(decoded.length);
+            for (var i = 0; i < decoded.length; i++) {
+                bytes[i] = decoded.charCodeAt(i) & 0xFF;
+            }
+            return bytes;
+        }
+
+        if ((typeof Buffer != "undefined") && (Buffer != null) && (typeof Buffer.from == "function")) {
+            return new Uint8Array(Buffer.from(text, "base64"));
+        }
+
+        throw new Error("Unable to decode DICOM JSON InlineBinary payload in the current runtime.");
+
+    }
+
+    /**
+     * Decode one DICOM JSON metadata value according to the current attribute details.
+     * @param {object} attributeState The current attribute state.
+     * @param {*} value The parsed value.
+     * @returns {*} The normalized value.
+     */
+    decodeAttributeValue(attributeState, value) {
+
+        if (this.shouldDecodeInlineBinary(attributeState) == false)
+            return value;
+
+        if (typeof value == "string")
+            return this.decodeInlineBinary(value);
+
+        return value;
+
+    }
+
+    /**
      * Emit a canonical DICOM lifecycle event to the downstream handler.
      * @param {object} context The adapter context.
      * @param {string} name The canonical DICOM event name.
@@ -993,14 +1074,12 @@ export default class DicomJsonMetadataAdapter {
                     // Create the value attribute
                     dataElement = new Attribute(current.tag, 0, null, TransferSyntax.NONE);
     
-                    // TODO - decode the value
-    
                     // Normalize DICOMweb metadata single-valued arrays to the native DICOM semantic shape.
                     if ((Array.isArray(current.value) == true) && (current.value.length == 1)) {
-                        dataElement.value = current.value[0];
+                        dataElement.value = this.decodeAttributeValue(current, current.value[0]);
                     }
                     else {
-                        dataElement.value = current.value;
+                        dataElement.value = this.decodeAttributeValue(current, current.value);
                     }
     
                     // Indicate that the data-element is complete

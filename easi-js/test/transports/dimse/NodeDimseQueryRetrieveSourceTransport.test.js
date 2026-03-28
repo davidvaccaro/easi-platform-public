@@ -5,6 +5,7 @@ import Tag from "../../../src/dicom/Tag.js";
 import Exception, { GeneralErrorCodes } from "../../../src/environment/Exception.js";
 import NodeDimseCStoreScuTransport from "../../../src/transports/dimse/NodeDimseCStoreScuTransport.js";
 import NodeDimseQueryRetrieveSourceTransport from "../../../src/transports/dimse/NodeDimseQueryRetrieveSourceTransport.js";
+import { dimseSocketTest } from "./DimseSocketTestGate.js";
 
 const fs = require("fs");
 const path = require("path");
@@ -1110,7 +1111,7 @@ function createMockDimseQueryRetrieveMoveScp(storePayload, moveRoute) {
 
 }
 
-test("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND + C-GET and emits retrieved DICOM instance", async () => {
+dimseSocketTest("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND + C-GET and emits retrieved DICOM instance", async () => {
 
     const sampleBytes = readDicomBytes("0002.DCM");
     const sampleMeta = parsePart10Meta(sampleBytes);
@@ -1168,7 +1169,7 @@ test("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND + C-GET and em
 
 });
 
-test("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND only and emits identifier instances", async () => {
+dimseSocketTest("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND only and emits identifier instances", async () => {
 
     const sampleBytes = readDicomBytes("0002.DCM");
     const sampleMeta = parsePart10Meta(sampleBytes);
@@ -1280,7 +1281,7 @@ test("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND only and emits
 
 });
 
-test("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND + C-MOVE and receives retrieved instance through local store SCP", async () => {
+dimseSocketTest("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND + C-MOVE and receives retrieved instance through local store SCP", async () => {
 
     const sampleBytes = readDicomBytes("0002.DCM");
     const sampleMeta = parsePart10Meta(sampleBytes);

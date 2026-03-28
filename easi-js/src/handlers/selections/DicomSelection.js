@@ -103,7 +103,7 @@ export default class DicomSelection extends Selection {
         // Establish the final set of attributes
         var final = context.final;
 
-        // Perform merge of prior data - TODO - Beef this up by performing a real "merge" with various conflict resolution strategies
+        // Merge the current selection payload into the final output collection.
         if (final == null) {
             
             // Set the final result
@@ -112,10 +112,21 @@ export default class DicomSelection extends Selection {
         }
         else {
 
-            // TODO - Handle merging
+            // Build a stable flattened collection of selection results.
+            var merged = [];
+            var source = Array.isArray(final) ? final : [final];
 
-            // Build the master collection
-            context.final = [...(Array.isArray(final) ? final : [final]), ...[current]];
+            for (var i = 0; i < source.length; i++) {
+                if (source[i] != null) {
+                    merged.push(source[i]);
+                }
+            }
+
+            if (current != null) {
+                merged.push(current);
+            }
+
+            context.final = merged;
 
         }
 

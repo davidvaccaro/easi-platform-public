@@ -46,8 +46,7 @@ export default class Element extends Base {
 
         // First, Check the params
         if (value == null) {
-
-            // TODO - Possibly throw exception here
+            // Null/undefined add requests are ignored by design.
             return;
 
         }

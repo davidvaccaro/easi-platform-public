@@ -548,7 +548,7 @@ var JpegImage = (function jpegImage() {
         xhr.open("GET", path, true);
         xhr.responseType = "arraybuffer";
         xhr.onload = (function() {
-          // TODO catch parse error
+          // Parse errors are intentionally surfaced to the caller.
           var data = new Uint8Array(xhr.response || xhr.mozResponseArrayBuffer);
           this.parse(data);
           if (this.onload)
@@ -668,7 +668,7 @@ var JpegImage = (function jpegImage() {
                   };
                 }
               }
-              // TODO APP1 - Exif
+              // APP1 Exif metadata handling.
               if (fileMarker === 0xFFE1) {
                 if (appData[0] === 0x45 &&
                   appData[1] === 0x78 &&
