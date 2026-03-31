@@ -6,13 +6,13 @@ on:
       - main
     paths:
       - "easi-js/**"
-      - ".github/workflows/perf-smoke.yml"
+      - ".github/workflows/**"
   push:
     branches:
       - main
     paths:
       - "easi-js/**"
-      - ".github/workflows/perf-smoke.yml"
+      - ".github/workflows/**"
   workflow_dispatch:
 
 permissions:
