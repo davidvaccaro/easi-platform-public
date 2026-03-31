@@ -1,0 +1,101 @@
+name: EASI JS Performance Smoke
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "easi-js/**"
+      - ".github/workflows/perf-smoke.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "easi-js/**"
+      - ".github/workflows/perf-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: easi-js-perf-smoke-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  WORKDIR: easi-js
+  NODE_VERSION: "18.x"
+  OUTPUT_JSON: tools/benchmarks/peer/output/perf-smoke.json
+
+jobs:
+  perf-smoke:
+    name: Perf Smoke (EASI JS)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKDIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: easi-js/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Performance Smoke Benchmark
+        run: |
+          npm run bench:peers -- \
+            --include easi-js \
+            --iterations 5 \
+            --warmup 1 \
+            --output "$OUTPUT_JSON"
+
+      - name: Summarize Smoke Benchmark
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const path = process.env.OUTPUT_JSON;
+          const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+          const snapshot = JSON.parse(fs.readFileSync(path, 'utf8'));
+          const rows = snapshot.results.filter((r) => r.status === 'ok');
+          const failed = snapshot.results.filter((r) => r.status !== 'ok');
+
+          let markdown = '';
+          markdown += '## EASI JS Performance Smoke\n\n';
+          markdown += `Workload: \`${snapshot.workload.name}\`  \n`;
+          markdown += `Iterations: ${snapshot.iterations}, Warmup: ${snapshot.warmup}\n\n`;
+          markdown += '| File | Avg ms | P50 ms | P90 ms | Throughput MB/s | Status |\n';
+          markdown += '|---|---:|---:|---:|---:|---|\n';
+
+          for (const row of snapshot.results) {
+            markdown += `| ${row.file.split('/').pop()} | ${row.metrics.avgMs == null ? '-' : row.metrics.avgMs.toFixed(3)} | ${row.metrics.p50Ms == null ? '-' : row.metrics.p50Ms.toFixed(3)} | ${row.metrics.p90Ms == null ? '-' : row.metrics.p90Ms.toFixed(3)} | ${row.metrics.throughputMBps == null ? '-' : row.metrics.throughputMBps.toFixed(3)} | ${row.status} |\n`;
+          }
+
+          if (rows.length > 0) {
+            const totalMs = rows.reduce((sum, row) => sum + row.metrics.avgMs, 0);
+            markdown += `\nAggregate avg parse time across files: **${totalMs.toFixed(3)} ms**\n`;
+          }
+
+          fs.appendFileSync(summaryPath, markdown);
+
+          if (failed.length > 0) {
+            console.error(`Smoke benchmark reported ${failed.length} non-ok row(s).`);
+            process.exit(1);
+          }
+          NODE
+
+      - name: Upload Smoke Benchmark Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: easi-js-perf-smoke
+          path: |
+            easi-js/tools/benchmarks/peer/output/perf-smoke.json
+            easi-js/tools/benchmarks/peer/output/perf-smoke.md
+          if-no-files-found: warn

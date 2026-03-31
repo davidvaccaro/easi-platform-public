@@ -4,4 +4,12 @@ data/test-library/*
 easi-js/test/output/
 **/tempCodeRunnerFile.js
 
+# Peer benchmark local toolchain/runtime artifacts
+easi-js/tools/benchmarks/peer/.venv/
+easi-js/tools/benchmarks/peer/vendors/
+easi-js/tools/benchmarks/peer/output/
+easi-js/tools/benchmarks/peer/runners/dcm4che/target/
+easi-js/tools/benchmarks/peer/runners/fodicom/FoDicomBench/bin/
+easi-js/tools/benchmarks/peer/runners/fodicom/FoDicomBench/obj/
+
 .fake

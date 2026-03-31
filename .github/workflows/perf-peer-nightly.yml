@@ -1,0 +1,169 @@
+name: EASI JS Peer Performance Benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      iterations:
+        description: "Benchmark iterations per file/toolkit"
+        required: false
+        default: "8"
+        type: string
+      warmup:
+        description: "Warmup iterations per file/toolkit"
+        required: false
+        default: "2"
+        type: string
+  schedule:
+    - cron: "30 7 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: easi-js-perf-peer-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  WORKDIR: easi-js
+  NODE_VERSION: "18.x"
+  PYTHON_VERSION: "3.11"
+  DOTNET_VERSION: "8.0.x"
+  JAVA_VERSION: "17"
+  OUTPUT_JSON: tools/benchmarks/peer/output/perf-peer-nightly.json
+
+jobs:
+  perf-peer:
+    name: Perf Peer (Nightly/Manual)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: ${{ env.WORKDIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: easi-js/package-lock.json
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Install System Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential unzip curl
+
+      - name: Install JS Dependencies
+        run: npm ci
+
+      - name: Bootstrap Peer Toolkits
+        run: npm run bench:peers:bootstrap
+
+      - name: Install CMake In Benchmark Venv
+        run: tools/benchmarks/peer/.venv/bin/python3 -m pip install --upgrade cmake
+
+      - name: Build DCMTK dcmdump
+        run: |
+          tools/benchmarks/peer/.venv/bin/cmake \
+            -S tools/benchmarks/peer/vendors/src/dcmtk \
+            -B tools/benchmarks/peer/vendors/build/dcmtk \
+            -DDCMTK_WITH_OPENSSL=OFF \
+            -DDCMTK_WITH_ICU=OFF \
+            -DDCMTK_WITH_SNDFILE=OFF \
+            -DDCMTK_WITH_TIFF=OFF \
+            -DDCMTK_WITH_PNG=OFF \
+            -DDCMTK_WITH_XML=OFF
+          tools/benchmarks/peer/.venv/bin/cmake \
+            --build tools/benchmarks/peer/vendors/build/dcmtk \
+            --target dcmdump \
+            -j"$(nproc)"
+
+      - name: Build GDCM gdcmdump
+        run: |
+          tools/benchmarks/peer/.venv/bin/cmake \
+            -S tools/benchmarks/peer/vendors/src/gdcm \
+            -B tools/benchmarks/peer/vendors/build/gdcm \
+            -DGDCM_BUILD_APPLICATIONS=ON \
+            -DGDCM_BUILD_SHARED_LIBS=OFF
+          tools/benchmarks/peer/.venv/bin/cmake \
+            --build tools/benchmarks/peer/vendors/build/gdcm \
+            --target gdcmdump \
+            -j"$(nproc)"
+
+      - name: Run Full Peer Benchmark
+        run: |
+          ITERATIONS="${{ github.event.inputs.iterations || '8' }}"
+          WARMUP="${{ github.event.inputs.warmup || '2' }}"
+          node tools/benchmarks/peer/runPeerBenchmarks.js \
+            --include easi-js,pydicom,fo-dicom,dcm4che,dcmtk,gdcm \
+            --iterations "$ITERATIONS" \
+            --warmup "$WARMUP" \
+            --output "$OUTPUT_JSON"
+
+      - name: Summarize Peer Benchmark
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const path = process.env.OUTPUT_JSON;
+          const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+          const snapshot = JSON.parse(fs.readFileSync(path, 'utf8'));
+
+          const byToolkit = new Map();
+          for (const row of snapshot.results) {
+            const key = row.toolkit;
+            if (!byToolkit.has(key)) {
+              byToolkit.set(key, { toolkit: key, totalAvgMs: 0, totalThroughput: 0, files: 0, nonOk: 0 });
+            }
+            const agg = byToolkit.get(key);
+            agg.files += 1;
+            if (row.status === 'ok') {
+              agg.totalAvgMs += (row.metrics.avgMs || 0);
+              agg.totalThroughput += (row.metrics.throughputMBps || 0);
+            }
+            else {
+              agg.nonOk += 1;
+            }
+          }
+
+          const rows = [...byToolkit.values()].sort((a, b) => a.totalAvgMs - b.totalAvgMs);
+          let markdown = '';
+          markdown += '## Peer Performance Benchmark\n\n';
+          markdown += `Workload: \`${snapshot.workload.name}\`  \n`;
+          markdown += `Iterations: ${snapshot.iterations}, Warmup: ${snapshot.warmup}\n\n`;
+          markdown += '| Toolkit | Files | Total Avg ms (lower better) | Mean Throughput MB/s (higher better) | Non-OK Rows |\n';
+          markdown += '|---|---:|---:|---:|---:|\n';
+          for (const row of rows) {
+            const meanThroughput = row.files > 0 ? (row.totalThroughput / row.files) : 0;
+            markdown += `| ${row.toolkit} | ${row.files} | ${row.totalAvgMs.toFixed(3)} | ${meanThroughput.toFixed(3)} | ${row.nonOk} |\n`;
+          }
+          fs.appendFileSync(summaryPath, markdown);
+          NODE
+
+      - name: Upload Peer Benchmark Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: easi-js-perf-peer-nightly
+          path: |
+            easi-js/tools/benchmarks/peer/output/perf-peer-nightly.json
+            easi-js/tools/benchmarks/peer/output/perf-peer-nightly.md
+          if-no-files-found: warn

@@ -27,7 +27,9 @@
         "test:dimse-sockets": "RUN_DIMSE_SOCKET_TESTS=true jest --runInBand test/transports/dimse/NodeDimseCStoreScuTransport.test.js test/transports/dimse/NodeDimseCStoreScpSourceTransport.test.js test/transports/dimse/NodeDimseQueryRetrieveSourceTransport.test.js test/integration/KitchenSinkDimseRelayApi.test.js",
         "test:orthanc-dimse": "RUN_ORTHANC_DIMSE=true jest test/integration/OrthancDimseInterop.test.js --runInBand",
         "test:orthanc-dimse-move": "RUN_ORTHANC_DIMSE_MOVE=true jest test/integration/OrthancDimseInterop.test.js --runInBand",
-        "test:orthanc-dimse-all": "RUN_ORTHANC_DIMSE=true RUN_ORTHANC_DIMSE_MOVE=true jest test/integration/OrthancDimseInterop.test.js --runInBand"
+        "test:orthanc-dimse-all": "RUN_ORTHANC_DIMSE=true RUN_ORTHANC_DIMSE_MOVE=true jest test/integration/OrthancDimseInterop.test.js --runInBand",
+        "bench:peers": "node tools/benchmarks/peer/runPeerBenchmarks.js",
+        "bench:peers:bootstrap": "bash tools/benchmarks/peer/bootstrapPeerToolkits.sh"
     },
     "jest": {
         "collectCoverage": true,
