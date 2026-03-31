@@ -66,5 +66,4 @@ test("Test: CodecRegistryBuilder clones base codec registry by default", () => {
 
 test("Test: EASI codec-registry builder entry points are available", () => {
     expect(EASI.codecRegistryBuilder() instanceof CodecRegistryBuilder).toBe(true);
-    expect(EASI.CodecRegistry.builder() instanceof CodecRegistryBuilder).toBe(true);
 });

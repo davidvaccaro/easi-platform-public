@@ -87,7 +87,7 @@ Transform/filter configuration methods (applied before terminal output):
 
 - Use `Configuration.global.codecRegistry` for the shared default registry.
 - Use `Configuration.createDefaultCodecRegistry()` to create an independent default registry.
-- Or build one through `EASI.CodecRegistry.builder().withDefaultCodecs().build()`.
+- Or build one through `EASI.codecRegistryBuilder().withDefaultCodecs().build()`.
 - Build-time validation now checks registry integrity (for example, missing default decoder) and throws `InvalidCodecRegistry` when invalid.
 
 ## Output Stage Methods

@@ -25,19 +25,6 @@ import CodecRegistryBuilder from "./builders/CodecRegistryBuilder.js";
 export default class EASI {
 
     /**
-     * Namespace helper for codec-registry builder access.
-     */
-    static CodecRegistry = class {
-        /**
-         * Create a new instance of the EASI CodecRegistryBuilder class.
-         * @returns {CodecRegistryBuilder} A new codec-registry builder instance.
-         */
-        static builder() {
-            return new CodecRegistryBuilder();
-        }
-    };
-
-    /**
      * Create a new instance of the EASI PipelineBuilder class.
      * @returns A new, initialized PipelineBuilder class instance.
      */

@@ -8,5 +8,4 @@ test('Test: pipelineBuilder', () => {
 
 test('Test: codecRegistryBuilder', () => {
     expect(EASI.codecRegistryBuilder() instanceof CodecRegistryBuilder).toBe(true);
-    expect(EASI.CodecRegistry.builder() instanceof CodecRegistryBuilder).toBe(true);
 });

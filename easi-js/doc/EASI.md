@@ -211,22 +211,6 @@ Creates a new instance of the EASI `CodecRegistryBuilder`.
 
 ---
 
-### `EASI.CodecRegistry.builder()`
-
-Namespace alias for `EASI.codecRegistryBuilder()`.
-
-#### Parameters
-
-*(None.)*
-
-#### Returns
-
-| Type                    | Description                                              |
-|-------------------------|----------------------------------------------------------|
-| `CodecRegistryBuilder`  | A new, initialized codec-registry builder instance.      |
-
----
-
 ## Usage Example
 
 ```js

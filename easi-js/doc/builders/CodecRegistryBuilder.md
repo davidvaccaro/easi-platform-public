@@ -5,7 +5,6 @@
 It is exposed from `EASI`:
 
 - `EASI.codecRegistryBuilder()`
-- `EASI.CodecRegistry.builder()`
 
 ## Core Flow
 
@@ -13,8 +12,7 @@ It is exposed from `EASI`:
 import EASI from "../../src/EASI.js";
 
 const codecRegistry = EASI
-  .CodecRegistry
-  .builder()
+  .codecRegistryBuilder()
   .withDefaultCodecs()
   .withEncoder("custom-format", customEncoder)
   .build(); // internally calls assertValid(...)
