@@ -121,12 +121,12 @@ jobs:
           ORTHANC__DICOM_AET: "ORTHANC"
           ORTHANC__DICOM_PORT: "4242"
           ORTHANC__HTTP_PORT: "8042"
-          ORTHANC__DICOM_MODALITIES: '{"EASI_JS":["EASI_JS","127.0.0.1",11112],"EASI_MOVE_DEST":["EASI_MOVE_DEST","127.0.0.1",4104]}'
+          # Explicit AE registrations used by DIMSE interop tests.
+          # EASI_MOVE_DEST points back to the GitHub runner host, where the local
+          # store SCP listener is created by the test transport.
+          ORTHANC__DICOM_MODALITIES: '{"EASI_JS":["EASI_JS","host.docker.internal",11112],"EASI_MOVE_DEST":["EASI_MOVE_DEST","host.docker.internal",4104]}'
         options: >-
-          --health-cmd "curl -fsS http://localhost:8042/system || exit 1"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 40
+          --add-host=host.docker.internal:host-gateway
     defaults:
       run:
         working-directory: ${{ env.WORKDIR }}
@@ -147,7 +147,7 @@ jobs:
       - name: Wait For Orthanc Service
         run: |
           for i in {1..60}; do
-            if curl -fsS http://127.0.0.1:8042/system >/dev/null 2>&1; then
+            if curl -fsS http://127.0.0.1:8042/system >/dev/null 2>&1 && (echo > /dev/tcp/127.0.0.1/4242) >/dev/null 2>&1; then
               echo "Orthanc is ready."
               exit 0
             fi
@@ -156,15 +156,34 @@ jobs:
           echo "Orthanc did not become ready in time."
           exit 1
 
+      - name: Validate Orthanc Modality Configuration
+        run: |
+          curl -fsS "http://127.0.0.1:8042/system" | tee /tmp/orthanc-system.json >/dev/null
+          curl -fsS "http://127.0.0.1:8042/modalities" | tee /tmp/orthanc-modalities.json >/dev/null
+          if ! grep -q "EASI_MOVE_DEST" /tmp/orthanc-modalities.json; then
+            echo "Orthanc modalities are missing EASI_MOVE_DEST."
+            cat /tmp/orthanc-modalities.json
+            exit 1
+          fi
+          if ! grep -q "EASI_JS" /tmp/orthanc-modalities.json; then
+            echo "Orthanc modalities are missing EASI_JS."
+            cat /tmp/orthanc-modalities.json
+            exit 1
+          fi
+
       - name: Seed Orthanc With Sample DICOMs
         run: |
           count=0
           while IFS= read -r file; do
-            curl -fsS \
+            response="$(curl -fsS \
               -X POST \
               -H "Content-Type: application/dicom" \
               --data-binary @"$file" \
-              "http://127.0.0.1:8042/instances" >/dev/null
+              "http://127.0.0.1:8042/instances")"
+            if [ -z "$response" ]; then
+              echo "Orthanc upload returned empty response for: $file"
+              exit 1
+            fi
             count=$((count + 1))
             if [ "$count" -ge 5 ]; then
               break
@@ -185,8 +204,10 @@ jobs:
           ORTHANC_DIMSE_PORT: "4242"
           ORTHANC_DIMSE_CALLED_AE: "ORTHANC"
           ORTHANC_DIMSE_CALLING_AE: "EASI_JS"
+          ORTHANC_DIMSE_REQUIRE_C_GET: "true"
+          ORTHANC_DIMSE_REQUIRE_C_MOVE: "true"
           ORTHANC_MOVE_DEST_AE: "EASI_MOVE_DEST"
-          ORTHANC_MOVE_STORE_HOST: "127.0.0.1"
+          ORTHANC_MOVE_STORE_HOST: "0.0.0.0"
           ORTHANC_MOVE_STORE_PORT: "4104"
           ORTHANC_MOVE_STORE_CALLED_AE: "EASI_MOVE_DEST"
         run: npm run test:orthanc-dimse-all

@@ -10,7 +10,7 @@ import NodeDimseCStoreScpSourceTransport from "../../../src/transports/dimse/Nod
 import Exception, { GeneralErrorCodes } from "../../../src/environment/Exception.js";
 import { dimseSocketTest } from "./DimseSocketTestGate.js";
 
-const sampleDicomPath = path.resolve(process.cwd(), "../data/dicoms/0002.dcm");
+const sampleDicomPath = path.resolve(process.cwd(), "../data/dicoms/0002.DCM");
 
 async function parseEnvelopeToInstances(envelope) {
 
