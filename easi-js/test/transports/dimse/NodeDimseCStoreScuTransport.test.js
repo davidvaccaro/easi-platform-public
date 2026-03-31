@@ -551,9 +551,11 @@ dimseSocketTest("Test: NodeDimseCStoreScuTransport sends C-STORE to mock SCP and
             .build();
 
         var result = await pipeline.process(sourceBytes);
+        const dataSetOffset = readPart10DataSetOffset(sourceBytes);
+        const expectedBytesWritten = sourceBytes.length - dataSetOffset;
         expect(result.ok).toBe(true);
         expect(result.dimseStatus).toBe(0x0000);
-        expect(result.bytesWritten).toBe(sourceBytes.length);
+        expect(result.bytesWritten).toBe(expectedBytesWritten);
 
         var state = mock.getState();
         expect(state.requestDetails).not.toBeNull();

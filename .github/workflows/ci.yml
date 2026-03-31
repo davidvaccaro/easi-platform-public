@@ -109,6 +109,9 @@ jobs:
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && inputs.run_orthanc_interop)
     runs-on: ubuntu-latest
+    env:
+      ORTHANC_HTTP_USERNAME: "orthanc"
+      ORTHANC_HTTP_PASSWORD: "orthanc"
     services:
       orthanc:
         image: jodogne/orthanc-plugins:latest
@@ -116,11 +119,14 @@ jobs:
           - 8042:8042
           - 4242:4242
         env:
-          ORTHANC__AUTHENTICATION_ENABLED: "false"
+          ORTHANC__AUTHENTICATION_ENABLED: "true"
           ORTHANC__REMOTE_ACCESS_ALLOWED: "true"
           ORTHANC__DICOM_AET: "ORTHANC"
           ORTHANC__DICOM_PORT: "4242"
           ORTHANC__HTTP_PORT: "8042"
+          ORTHANC__REGISTERED_USERS: '{"orthanc":"orthanc"}'
+          ORTHANC__AuthenticationEnabled: "true"
+          ORTHANC__RegisteredUsers: '{"orthanc":"orthanc"}'
           # Explicit AE registrations used by DIMSE interop tests.
           # EASI_MOVE_DEST points back to the GitHub runner host, where the local
           # store SCP listener is created by the test transport.
@@ -146,8 +152,12 @@ jobs:
 
       - name: Wait For Orthanc Service
         run: |
+          auth_args=()
+          if [ -n "${ORTHANC_HTTP_USERNAME:-}" ] && [ -n "${ORTHANC_HTTP_PASSWORD:-}" ]; then
+            auth_args=(-u "${ORTHANC_HTTP_USERNAME}:${ORTHANC_HTTP_PASSWORD}")
+          fi
           for i in {1..60}; do
-            if curl -fsS http://127.0.0.1:8042/system >/dev/null 2>&1 && (echo > /dev/tcp/127.0.0.1/4242) >/dev/null 2>&1; then
+            if curl -fsS "${auth_args[@]}" http://127.0.0.1:8042/system >/dev/null 2>&1 && (echo > /dev/tcp/127.0.0.1/4242) >/dev/null 2>&1; then
               echo "Orthanc is ready."
               exit 0
             fi
@@ -158,8 +168,12 @@ jobs:
 
       - name: Validate Orthanc Modality Configuration
         run: |
-          curl -fsS "http://127.0.0.1:8042/system" | tee /tmp/orthanc-system.json >/dev/null
-          curl -fsS "http://127.0.0.1:8042/modalities" | tee /tmp/orthanc-modalities.json >/dev/null
+          auth_args=()
+          if [ -n "${ORTHANC_HTTP_USERNAME:-}" ] && [ -n "${ORTHANC_HTTP_PASSWORD:-}" ]; then
+            auth_args=(-u "${ORTHANC_HTTP_USERNAME}:${ORTHANC_HTTP_PASSWORD}")
+          fi
+          curl -fsS "${auth_args[@]}" "http://127.0.0.1:8042/system" | tee /tmp/orthanc-system.json >/dev/null
+          curl -fsS "${auth_args[@]}" "http://127.0.0.1:8042/modalities" | tee /tmp/orthanc-modalities.json >/dev/null
           if ! grep -q "EASI_MOVE_DEST" /tmp/orthanc-modalities.json; then
             echo "Orthanc modalities are missing EASI_MOVE_DEST."
             cat /tmp/orthanc-modalities.json
@@ -173,9 +187,14 @@ jobs:
 
       - name: Seed Orthanc With Sample DICOMs
         run: |
+          auth_args=()
+          if [ -n "${ORTHANC_HTTP_USERNAME:-}" ] && [ -n "${ORTHANC_HTTP_PASSWORD:-}" ]; then
+            auth_args=(-u "${ORTHANC_HTTP_USERNAME}:${ORTHANC_HTTP_PASSWORD}")
+          fi
           count=0
           while IFS= read -r file; do
             response="$(curl -fsS \
+              "${auth_args[@]}" \
               -X POST \
               -H "Content-Type: application/dicom" \
               --data-binary @"$file" \
@@ -200,6 +219,8 @@ jobs:
           RUN_ORTHANC_DIMSE: "true"
           RUN_ORTHANC_DIMSE_MOVE: "true"
           ORTHANC_HTTP_URL: "http://127.0.0.1:8042"
+          ORTHANC_HTTP_USERNAME: ${{ env.ORTHANC_HTTP_USERNAME }}
+          ORTHANC_HTTP_PASSWORD: ${{ env.ORTHANC_HTTP_PASSWORD }}
           ORTHANC_DIMSE_HOST: "127.0.0.1"
           ORTHANC_DIMSE_PORT: "4242"
           ORTHANC_DIMSE_CALLED_AE: "ORTHANC"
