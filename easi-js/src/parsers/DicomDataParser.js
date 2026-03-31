@@ -73,6 +73,12 @@ const DicomDataSetSpecification = [
     DicomPartType.DataSet
 ];
 
+// Parse Part-10 file meta for transfer-syntax routing, then jump to dataset.
+const DicomPart10MetaSetSkipSpecification = [
+    DicomPartType.DataSet,
+    DicomPartType.MetaSet
+];
+
 const DicomBulkDataPolicyMode = {
     Materialize: 'materialize',
     Auto: 'auto',
@@ -99,6 +105,20 @@ const DefaultBulkPayloadCandidateTagIDs = new Set([
     '00420011'  // EncapsulatedDocument
 ]);
 
+const ExplicitVRLongLengthIDs = new Set([
+    'OB',
+    'OD',
+    'OF',
+    'OL',
+    'OV',
+    'OW',
+    'SQ',
+    'UC',
+    'UR',
+    'UT',
+    'UN'
+]);
+
 export default class DicomDataParser extends DataParser {
 
     /**
@@ -118,6 +138,7 @@ export default class DicomDataParser extends DataParser {
 
         // The default data-set transfer-syntax
         this.dataSetTransferSyntax = TransferSyntax.NONE;
+        this.endSequenceMarker = Utilities.getEndSequence(true);
 
         // Init the part consumed
         this.totalBytesConsumed = 0;
@@ -133,6 +154,7 @@ export default class DicomDataParser extends DataParser {
 
         // Set the current part
         this.part = null;
+        this.skipPart10MetaSet = false;
 
         // Init the current data-element
         this.dataElement = null;
@@ -183,7 +205,7 @@ export default class DicomDataParser extends DataParser {
      * @returns {number[]} Marker bytes.
      */
     getEndSequenceMarker() {
-        return Utilities.getEndSequence(this.isLittleEndianTransferSyntax);
+        return this.endSequenceMarker;
     }
 
     /**
@@ -619,6 +641,88 @@ export default class DicomDataParser extends DataParser {
     }
 
     /**
+     * Score one explicit-VR transfer-syntax candidate for first data-set element routing.
+     * @param {number} group Candidate tag group.
+     * @param {number} element Candidate tag element.
+     * @param {string} vrID Candidate VR identifier.
+     * @returns {number} Relative confidence score (higher is better).
+     */
+    scoreExplicitTransferSyntaxCandidate(group, element, vrID) {
+
+        var score = 0;
+        var tag = Tag.find(Tag.identifier(group, element));
+        var expectedVRID = tag?.VR?.ID ?? null;
+
+        if ((tag != null) && (tag.Name != 'Unknown Tag')) {
+            score += 1;
+        }
+
+        if ((expectedVRID != null) && (expectedVRID != 'NONE') && (expectedVRID != 'UN')) {
+
+            if (expectedVRID == vrID) {
+                score += 2;
+            }
+            else if (((expectedVRID == 'OB') || (expectedVRID == 'OW')) && ((vrID == 'OB') || (vrID == 'OW'))) {
+                score += 1;
+            }
+            else {
+                score -= 2;
+            }
+
+        }
+
+        return score;
+
+    }
+
+    /**
+     * Detect likely transfer-syntax for raw data-set-only input (no Part-10 file meta).
+     * @returns {TransferSyntax | null} Resolved syntax, or null if additional bytes are required.
+     */
+    detectDataSetTransferSyntax() {
+
+        if (this.data.length() < 8)
+            return null;
+
+        var byte0 = this.data.peekOne(0);
+        var byte1 = this.data.peekOne(1);
+        var byte2 = this.data.peekOne(2);
+        var byte3 = this.data.peekOne(3);
+        var byte4 = this.data.peekOne(4);
+        var byte5 = this.data.peekOne(5);
+        var byte6 = this.data.peekOne(6);
+        var byte7 = this.data.peekOne(7);
+
+        var vrID = String.fromCharCode(byte4, byte5);
+        var valueRepresentation = ValueRepresentation.find(vrID);
+
+        // If bytes 4-5 are not a valid VR token, route to implicit-little-endian.
+        if ((valueRepresentation == null) || (valueRepresentation == ValueRepresentations.NONE))
+            return TransferSyntax.ImplicitVRLittleEndian;
+
+        // Explicit-VR long-header tags must reserve bytes 6-7 as 0x0000.
+        if ((ExplicitVRLongLengthIDs.has(vrID) == true) && ((byte6 != 0x00) || (byte7 != 0x00)))
+            return TransferSyntax.ImplicitVRLittleEndian;
+
+        var groupLittle = (byte0 | (byte1 << 8));
+        var elementLittle = (byte2 | (byte3 << 8));
+        var littleScore = this.scoreExplicitTransferSyntaxCandidate(groupLittle, elementLittle, vrID);
+
+        var groupBig = ((byte0 << 8) | byte1);
+        var elementBig = ((byte2 << 8) | byte3);
+        var bigScore = this.scoreExplicitTransferSyntaxCandidate(groupBig, elementBig, vrID);
+
+        // Require a positive explicit confidence; otherwise prefer implicit-little-endian.
+        if ((littleScore <= 0) && (bigScore <= 0))
+            return TransferSyntax.ImplicitVRLittleEndian;
+
+        return (bigScore > littleScore)
+            ? TransferSyntax.ExplicitVRBigEndian
+            : TransferSyntax.ExplicitVRLittleEndian;
+
+    }
+
+    /**
      * Complete current meta-set parsing and transition to data-set parsing.
      * @param {boolean} emitEndMetaSetEvent TRUE to emit onEndMetaSet.
      * @returns {Promise<void>}
@@ -790,6 +894,13 @@ export default class DicomDataParser extends DataParser {
 
         var shouldMaterializeWhenSkipped = (this.dataElementStreamingDecision?.reason == 'structural');
 
+        // When Part-10 header parsing is disabled, meta-set attributes are parsed in
+        // SKIP mode for throughput, but their values are still needed to resolve
+        // transfer-syntax and robust group-boundary transitions.
+        if ((this.skipPart10MetaSet == true) && (this.partType == DicomPartType.MetaSet)) {
+            shouldMaterializeWhenSkipped = true;
+        }
+
         if ((this.dataElementStatus != Status.SKIP) || (shouldMaterializeWhenSkipped == true)) {
             this.dataElement.append(chunk);
         }
@@ -839,34 +950,68 @@ export default class DicomDataParser extends DataParser {
 
                 // Peek the prefix
                 var prefix = Utilities.bytesToString(this.data.peek(Constants.PreambleLength, Constants.PrefixLength));
+                var detectedPrefix = (prefix == Constants.PrefixValue);
 
-                // If the standard DICOM prefix was detcted
-                this.detectedPrefix = (prefix == Constants.PrefixValue);
+                // Guard against false-positive "DICM" signatures in raw dataset bytes by
+                // verifying that the next group after the prefix begins with 0x0002.
+                if (detectedPrefix == true) {
+                    if (this.data.length() < (Constants.PreambleLength + Constants.PrefixLength + Constants.GroupLength)) {
+                        detectedPrefix = null;
+                    }
+                    else {
+                        var firstGroup = this.data.peek((Constants.PreambleLength + Constants.PrefixLength), Constants.GroupLength);
+                        detectedPrefix = ((firstGroup != null)
+                            && (firstGroup.length == Constants.GroupLength)
+                            && (firstGroup[0] == 0x02)
+                            && (firstGroup[1] == 0x00));
+                    }
+                }
 
-                // Set the flag indicating that the prefix was processed
-                this.processedPrefix = true;
-
-                // If the prefix is NOT detected, assume that the data is JUST a dataset
-                if (this.detectedPrefix == true) {
-
-                    // Set the "Part-10" specification
-                    this.partSpecification = DicomPart10Specification;
-
+                // If prefix validation requires additional bytes, wait for more data.
+                if (detectedPrefix == null) {
+                    // NOOP
                 }
                 else {
 
-                    // Set the "data-set" ONLY specification
-                    this.partSpecification = DicomDataSetSpecification;
+                    // If the standard DICOM prefix was detected and validated
+                    this.detectedPrefix = detectedPrefix;
 
-                    // Data-set only input (no Part-10 prefix/meta-set) defaults to
-                    // Implicit VR Little Endian in practice.
-                    this.dataSetTransferSyntax = TransferSyntax.ImplicitVRLittleEndian;
-                    this.data.convert(this.dataSetTransferSyntax);
+                    // Set the flag indicating that the prefix was processed
+                    this.processedPrefix = true;
+
+                    if (this.detectedPrefix == true) {
+
+                        if (this.includePart10Header == true) {
+
+                            // Parse and emit full Part-10 preamble/prefix/meta-set lifecycle.
+                            this.partSpecification = DicomPart10Specification;
+                            this.skipPart10MetaSet = false;
+
+                        }
+                        else {
+
+                            // Skip preamble/prefix bytes and only parse meta-set in SKIP mode
+                            // to resolve transfer syntax before dataset parsing.
+                            this.data.consume(Constants.PreambleLength + Constants.PrefixLength);
+                            this.totalBytesConsumed += (Constants.PreambleLength + Constants.PrefixLength);
+                            this.partSpecification = DicomPart10MetaSetSkipSpecification;
+                            this.skipPart10MetaSet = true;
+
+                        }
+
+                    }
+                    else {
+
+                        // Set the "data-set" ONLY specification
+                        this.partSpecification = DicomDataSetSpecification;
+                        this.skipPart10MetaSet = false;
+
+                    }
+
+                    // Update the sequence
+                    this.partSequence = Utilities.deepCopyArray(this.partSpecification);
 
                 }
-
-                // Update the sequence
-                this.partSequence = Utilities.deepCopyArray(this.partSpecification);
 
             }
 
@@ -1123,8 +1268,13 @@ export default class DicomDataParser extends DataParser {
             // Set the current Data buffer transfer syntax
             this.data.convert(TransferSyntax.ExplicitVRLittleEndian);
 
-            // Start the meta-set
-            this.status = await this.fireStreamEvent("onStartMetaSet");
+            // Start the meta-set, or force skip when Part-10 header parsing is disabled.
+            if (this.skipPart10MetaSet == true) {
+                this.status = Status.SKIP;
+            }
+            else {
+                this.status = await this.fireStreamEvent("onStartMetaSet");
+            }
 
         }
 
@@ -1296,6 +1446,21 @@ export default class DicomDataParser extends DataParser {
         // If the meta-set has yet to be created, create it
         if (this.partStarted == false) {
 
+            // Resolve active transfer syntax with a defensive fallback.
+            // DataSet-only DICOM may omit File Meta transfer-syntax and requires heuristics.
+            var activeDataSetTransferSyntax = this.dataSetTransferSyntax;
+            if ((activeDataSetTransferSyntax == null) || (activeDataSetTransferSyntax == TransferSyntax.NONE)) {
+
+                activeDataSetTransferSyntax = this.detectDataSetTransferSyntax();
+
+                // Wait for additional bytes to confidently detect explicit-vs-implicit.
+                if (activeDataSetTransferSyntax == null)
+                    return Status.CONTINUE;
+
+                this.dataSetTransferSyntax = activeDataSetTransferSyntax;
+
+            }
+
             // Indicate that the current part is "started"
             this.partStarted = true;
 
@@ -1303,8 +1468,7 @@ export default class DicomDataParser extends DataParser {
             this.partStart = this.totalBytesConsumed;
 
             // Resolve active transfer syntax with a defensive fallback.
-            // DataSet-only DICOM and malformed File Meta may not provide a valid UID.
-            var activeDataSetTransferSyntax = this.dataSetTransferSyntax;
+            // Malformed File Meta may not provide a valid transfer-syntax UID.
             if ((activeDataSetTransferSyntax == null) || (activeDataSetTransferSyntax == TransferSyntax.NONE)) {
                 activeDataSetTransferSyntax = TransferSyntax.ImplicitVRLittleEndian;
                 this.dataSetTransferSyntax = activeDataSetTransferSyntax;
@@ -1319,6 +1483,7 @@ export default class DicomDataParser extends DataParser {
             else {
                 this.data.convert(activeDataSetTransferSyntax);
             }
+            this.endSequenceMarker = Utilities.getEndSequence(this.isLittleEndianTransferSyntax);
 
             // Start the data-set
             this.status = await this.fireStreamEvent("onStartDataSet");
@@ -1849,7 +2014,7 @@ export default class DicomDataParser extends DataParser {
                     if (this.dataElement.valueLength == Constants.UndefinedLength) {
 
                         // Determine if the current buffer contains the end sequence
-                        var endSequenceMarker = this.getEndSequenceMarker();
+                        var endSequenceMarker = this.endSequenceMarker;
                         var index = this.data.indexOf(0, endSequenceMarker);
 
                         if (index == -1) {
@@ -2085,13 +2250,16 @@ export default class DicomDataParser extends DataParser {
     /**
      * Constructos a new DICOM Parser with the associated DICOM Stream Handler.
      */
-    constructor() {
+    constructor(options = null) {
 
         // Call the base constructor
         super();
 
         // Set the default part specification (Part-10)
         this.partSpecification = DicomPart10Specification;
+        this.includePart10Header = false;
+        this.skipPart10MetaSet = false;
+        this.endSequenceMarker = Utilities.getEndSequence(true);
 
         // Configure default bulk-data handling.
         this.bulkDataPolicyMode = DicomBulkDataPolicyMode.Auto;
@@ -2102,6 +2270,10 @@ export default class DicomDataParser extends DataParser {
         this.dataElementBytesConsumed = 0;
         this.dataElementStreamingDecision = null;
         this.dataElementEndAttributeFired = false;
+
+        if ((options != null) && (typeof options == 'object')) {
+            this.includePart10Header = (options.includePart10Header == true);
+        }
 
     }
 

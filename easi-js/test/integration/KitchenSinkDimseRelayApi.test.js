@@ -112,6 +112,22 @@ function cfindRequestBody(overrides = null) {
 
 }
 
+function cgetRequestBody(overrides = null) {
+
+    return Object.assign({
+        queryRetrieveModel: "study-root",
+        outputMode: "instance",
+        orthancHttpUrl: "http://localhost:8042",
+        dimseAssociation: {
+            host: "127.0.0.1",
+            port: 4242,
+            callingAeTitle: "EASI_JS",
+            calledAeTitle: "ORTHANC"
+        }
+    }, overrides || {});
+
+}
+
 dimseSocketTest("Test: Kitchen sink DIMSE C-MOVE relay API returns success and wires pipeline options", async () => {
 
     var capture = {};
@@ -342,15 +358,23 @@ dimseSocketTest("Test: Kitchen sink DIMSE C-FIND studies API returns instance su
 
     var firstStudyUid = "1.2.3.4.5.1";
     var secondStudyUid = "1.2.3.4.5.2";
+    var firstSopInstanceUid = "1.2.3.4.5.1.100";
+    var secondSopInstanceUid = "1.2.3.4.5.2.200";
 
     var mockResult = [
         createMockInstanceSummary({
             [Tag.StudyInstanceUID.ID]: firstStudyUid,
+            [Tag.SeriesInstanceUID.ID]: "1.2.3.4.5.1.1",
+            [Tag.SOPInstanceUID.ID]: firstSopInstanceUid,
+            [Tag.Modality.ID]: "MR",
             [Tag.StudyDate.ID]: "20260101",
             [Tag.ModalitiesInStudy.ID]: "MR"
         }),
         createMockInstanceSummary({
             [Tag.StudyInstanceUID.ID]: secondStudyUid,
+            [Tag.SeriesInstanceUID.ID]: "1.2.3.4.5.2.2",
+            [Tag.SOPInstanceUID.ID]: secondSopInstanceUid,
+            [Tag.Modality.ID]: "MR",
             [Tag.StudyDate.ID]: "20260102",
             [Tag.ModalitiesInStudy.ID]: "MR"
         })
@@ -388,15 +412,108 @@ dimseSocketTest("Test: Kitchen sink DIMSE C-FIND studies API returns instance su
         expect(Array.isArray(payload.instanceSummaries)).toBe(true);
         expect(payload.instanceSummaries[0].studyInstanceUid).toBe(firstStudyUid);
         expect(payload.instanceSummaries[1].studyInstanceUid).toBe(secondStudyUid);
+        expect(payload.instanceSummaries[0].sopInstanceUid).toBe(firstSopInstanceUid);
+        expect(payload.instanceSummaries[1].sopInstanceUid).toBe(secondSopInstanceUid);
 
         expect(capture.ofDicomData).toBe(true);
         expect(capture.buildCalled).toBe(true);
         expect(capture.sourceTransport).toBe(sourceTransport);
         expect(capture.toInstances).toBe(true);
         expect(capture.processOptions.operation).toBe("c-find");
-        expect(capture.processOptions.queryRetrieveLevel).toBe("STUDY");
-        expect(capture.processOptions.keys["00080061"]).toBe("MR");
-        expect(capture.processOptions.keyVrs["00080061"]).toBe("CS");
+        expect(capture.processOptions.queryRetrieveLevel).toBe("IMAGE");
+        expect(capture.processOptions.keys["00080060"]).toBe("MR");
+        expect(capture.processOptions.keyVrs["00080060"]).toBe("CS");
+        expect(typeof capture.processOptions.onConcern).toBe("function");
+
+    }
+    finally {
+        await close(server);
+    }
+
+}, 20000);
+
+dimseSocketTest("Test: Kitchen sink DIMSE C-GET API auto-discovers identifiers and forwards storage contexts", async () => {
+
+    var capture = {};
+    var sourceTransport = { kind: "mock-source-transport" };
+    var discovered = {
+        studyInstanceUid: "1.2.826.0.1.3680043.2.1125.100",
+        seriesInstanceUid: "1.2.826.0.1.3680043.2.1125.100.1",
+        sopInstanceUid: "1.2.826.0.1.3680043.2.1125.100.1.1",
+        sopClassUid: "1.2.840.10008.5.1.4.1.1.2",
+        transferSyntaxUid: "1.2.840.10008.1.2.4.90"
+    };
+
+    var mockResultValues = {
+        [Tag.StudyInstanceUID.ID]: discovered.studyInstanceUid,
+        [Tag.SeriesInstanceUID.ID]: discovered.seriesInstanceUid,
+        [Tag.SOPInstanceUID.ID]: discovered.sopInstanceUid,
+        [Tag.SOPClassUID.ID]: discovered.sopClassUid,
+        [Tag.Modality.ID]: "CT"
+    };
+    var mockResult = {
+        dataSet: {
+            value(tag) {
+                return mockResultValues[tag?.ID] ?? null;
+            },
+            has() {
+                return false;
+            },
+            attributes: []
+        },
+        metaSet: {
+            transferSyntaxUID: { ID: discovered.transferSyntaxUid },
+            attributes: []
+        }
+    };
+
+    var mockEasi = createMockEasi(async () => mockResult, capture);
+
+    var server = createKitchenSinkServer({
+        dependencies: {
+            easi: mockEasi,
+            createSourceTransport: () => sourceTransport,
+            discoverOrthancInstanceIdentifiers: async () => discovered
+        }
+    });
+
+    try {
+
+        await listen(server);
+        var address = server.address();
+        var url = `http://127.0.0.1:${address.port}/easi-js/samples/kitchen-sink/api/dimse/cget-instance`;
+
+        var response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(cgetRequestBody())
+        });
+
+        expect(response.status).toBe(200);
+        var payload = await response.json();
+
+        expect(payload.success).toBe(true);
+        expect(payload.operation).toBe("c-get");
+        expect(payload.outputMode).toBe("instance");
+        expect(payload.usedOrthancDiscovery).toBe(true);
+        expect(payload.request.studyInstanceUid).toBe(discovered.studyInstanceUid);
+        expect(payload.request.seriesInstanceUid).toBe(discovered.seriesInstanceUid);
+        expect(payload.request.sopInstanceUid).toBe(discovered.sopInstanceUid);
+
+        expect(capture.ofDicomData).toBe(true);
+        expect(capture.buildCalled).toBe(true);
+        expect(capture.sourceTransport).toBe(sourceTransport);
+        expect(capture.toInstances).toBe(true);
+        expect(capture.processOptions.operation).toBe("c-get");
+        expect(capture.processOptions.queryRetrieveLevel).toBe("IMAGE");
+        expect(capture.processOptions.studyInstanceUid).toBe(discovered.studyInstanceUid);
+        expect(capture.processOptions.seriesInstanceUid).toBe(discovered.seriesInstanceUid);
+        expect(capture.processOptions.sopInstanceUid).toBe(discovered.sopInstanceUid);
+        expect(Array.isArray(capture.processOptions.storageSopClassUids)).toBe(true);
+        expect(capture.processOptions.storageSopClassUids).toContain(discovered.sopClassUid);
+        expect(Array.isArray(capture.processOptions.storageTransferSyntaxUids)).toBe(true);
+        expect(capture.processOptions.storageTransferSyntaxUids).toContain("1.2.840.10008.1.2.1");
+        expect(capture.processOptions.storageTransferSyntaxUids).toContain(discovered.transferSyntaxUid);
         expect(typeof capture.processOptions.onConcern).toBe("function");
 
     }
@@ -422,7 +539,31 @@ dimseSocketTest("Test: Kitchen sink DIMSE C-FIND studies API returns FHIR Imagin
         numberOfInstances: 228,
         series: []
     };
-    var mockEasi = createMockEasi(async () => [fhirStudy], capture);
+    var nonCtStudy = {
+        resourceType: "ImagingStudy",
+        status: "available",
+        identifier: [{ system: "urn:dicom:uid", value: "urn:oid:9.8.7.6.5.4.3.2.1" }],
+        description: "MR BRAIN",
+        modality: [{ system: "http://dicom.nema.org/resources/ontology/DCM", code: "MR" }],
+        numberOfSeries: 2,
+        numberOfInstances: 56,
+        series: []
+    };
+    var mockEasi = createMockEasi(async (_source, options) => {
+
+        if (options?.queryRetrieveLevel === "IMAGE") {
+            if (options?.keys?.["00080060"] === "CT")
+                return [fhirStudy];
+
+            return [fhirStudy, nonCtStudy];
+        }
+
+        if (options?.queryRetrieveLevel === "STUDY")
+            return [fhirStudy, nonCtStudy];
+
+        return [fhirStudy];
+
+    }, capture);
 
     var server = createKitchenSinkServer({
         dependencies: {
@@ -469,9 +610,9 @@ dimseSocketTest("Test: Kitchen sink DIMSE C-FIND studies API returns FHIR Imagin
         expect(capture.toInstances).not.toBe(true);
         expect(capture.toMapping).toBeUndefined();
         expect(capture.processOptions.operation).toBe("c-find");
-        expect(capture.processOptions.queryRetrieveLevel).toBe("STUDY");
-        expect(capture.processOptions.keys["00080061"]).toBe("CT");
-        expect(capture.processOptions.keyVrs["00080061"]).toBe("CS");
+        expect(capture.processOptions.queryRetrieveLevel).toBe("IMAGE");
+        expect(capture.processOptions.keys["00080060"]).toBe("CT");
+        expect(capture.processOptions.keyVrs["00080060"]).toBe("CS");
         expect(typeof capture.processOptions.onEmit).toBe("function");
         expect(typeof capture.processOptions.onConcern).toBe("function");
 

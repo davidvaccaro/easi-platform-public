@@ -24,11 +24,151 @@ import { GeneralErrorCodes } from '../environment/Exception.js';
 
 export default class Data {
 
+    static searchSequenceCache = new WeakMap();
+
     /**
      * Refreshes the public data view from the current internal range.
      */
     _refreshDataView() {
         this.data = this._buffer.subarray(this._start, this._end);
+        this._nativeDataView = null;
+        this._nativeDataSource = null;
+    }
+
+    /**
+     * Convert one source sequence value to an addressable Uint8Array view.
+     * @param {Uint8Array | ArrayBuffer | Array<number>} sequence The source sequence.
+     * @returns {Uint8Array} The normalized byte view.
+     */
+    static normalizeSequenceBytes(sequence) {
+
+        if (sequence instanceof Uint8Array)
+            return sequence;
+
+        if (sequence instanceof ArrayBuffer)
+            return new Uint8Array(sequence);
+
+        if (ArrayBuffer.isView(sequence))
+            return new Uint8Array(sequence.buffer, sequence.byteOffset, sequence.byteLength);
+
+        return new Uint8Array(sequence);
+
+    }
+
+    /**
+     * Resolve a heuristic byte penalty used to avoid common low-entropy anchors.
+     * @param {number} value The target byte value.
+     * @returns {number} A relative penalty score where lower is better.
+     */
+    static getSearchBytePenalty(value) {
+
+        if (value == 0)
+            return 3;
+
+        if ((value == 10) || (value == 13) || (value == 32) || (value == 45))
+            return 2;
+
+        return 0;
+
+    }
+
+    /**
+     * Compile and cache one sequence search plan.
+     * @param {Uint8Array | ArrayBuffer | Array<number>} sequence The source sequence.
+     * @returns {object | null} The compiled search plan, or null when unavailable.
+     */
+    static compileSearchSequence(sequence) {
+
+        if (sequence == null)
+            return null;
+
+        var cacheable = ((typeof sequence == "object") || (typeof sequence == "function"));
+        if (cacheable == true) {
+            var cached = Data.searchSequenceCache.get(sequence);
+            if (cached != null)
+                return cached;
+        }
+
+        var bytes = null;
+        try {
+            bytes = Data.normalizeSequenceBytes(sequence);
+        }
+        catch {
+            return null;
+        }
+        var target = Uint8Array.from(bytes);
+        var targetLength = target.length;
+
+        var anchorIndex = 0;
+        var firstBytePenalty = 0;
+
+        if (targetLength > 1) {
+
+            var counts = new Uint32Array(256);
+            for (var i = 0; i < targetLength; i++) {
+                counts[target[i]]++;
+            }
+
+            var bestCount = counts[target[0]];
+            var bestPenalty = Data.getSearchBytePenalty(target[0]);
+            firstBytePenalty = bestPenalty;
+
+            for (var i = 1; i < targetLength; i++) {
+
+                var value = target[i];
+                var valueCount = counts[value];
+                var valuePenalty = Data.getSearchBytePenalty(value);
+
+                if ((valueCount < bestCount) || ((valueCount == bestCount) && (valuePenalty < bestPenalty))) {
+                    anchorIndex = i;
+                    bestCount = valueCount;
+                    bestPenalty = valuePenalty;
+                }
+
+            }
+
+        }
+
+        var nativeTarget = null;
+
+        if ((targetLength > 1) && (typeof Buffer != "undefined") && (typeof Buffer.from == "function")) {
+            nativeTarget = Buffer.from(target.buffer, target.byteOffset, target.byteLength);
+        }
+
+        var compiled = {
+            target: target,
+            targetLength: targetLength,
+            anchorIndex: anchorIndex,
+            anchorByte: ((targetLength > 0) ? target[anchorIndex] : -1),
+            nativeTarget: nativeTarget,
+            enableDenseFallback: ((anchorIndex == 0) && (firstBytePenalty > 0) && (nativeTarget != null))
+        };
+
+        if (cacheable == true) {
+            Data.searchSequenceCache.set(sequence, compiled);
+        }
+
+        return compiled;
+
+    }
+
+    /**
+     * Resolve a node-native data view when Buffer support exists.
+     * @returns {Buffer | null} The native data view.
+     */
+    _getNativeDataView() {
+
+        if ((typeof Buffer == "undefined") || (typeof Buffer.from != "function"))
+            return null;
+
+        if ((this._nativeDataView != null) && (this._nativeDataSource === this.data))
+            return this._nativeDataView;
+
+        this._nativeDataView = Buffer.from(this.data.buffer, this.data.byteOffset, this.data.byteLength);
+        this._nativeDataSource = this.data;
+
+        return this._nativeDataView;
+
     }
 
     /**
@@ -223,46 +363,149 @@ export default class Data {
      */
     indexOf(begin, sequence) {
 
-        // Validate inputs
-        if (!sequence || sequence.length === 0) 
+        // Validate source.
+        if (sequence == null)
             return -1;
 
-        if (this.data.length === 0 || begin >= this.data.length) 
+        var source = this.data;
+        var sourceLength = source.length;
+        if (sourceLength === 0)
             return -1;
 
-        // Loop over the buffer bytes
-        while (begin < this.data.length) {
-            
-            // If there are NOT enough remining bytes, the sequence can NOT be found
-            if ((this.data.length - begin) < sequence.length)
-                return -1;
+        var offset = Math.max(0, begin | 0);
+        if (offset >= sourceLength)
+            return -1;
 
-            // If the first sequence byte was found,
-            if (this.data[begin] == sequence[0]) {
+        var search = Data.compileSearchSequence(sequence);
+        if (search == null)
+            return -1;
 
-                // Loop over the remaining sequence bytes
-                for (var i = 1; i < sequence.length; i++) {
+        var target = search.target;
+        var targetLength = search.targetLength;
+        if (targetLength === 0)
+            return -1;
 
-                    // If the sequence is violated, break and continue searching
-                    if (this.data[begin + i] != sequence[i]) {
-                        break;
+        // Fast path for single-byte sequence.
+        if (targetLength === 1)
+            return source.indexOf(target[0], offset);
+
+        // If there are not enough bytes remaining, the sequence cannot be found.
+        var maxStart = (sourceLength - targetLength);
+        if (offset > maxStart)
+            return -1;
+
+        var anchorIndex = search.anchorIndex;
+
+        // Fast path for first-byte anchored sequences. Includes guarded native fallback for dense candidates.
+        if (anchorIndex == 0) {
+
+            var first = target[0];
+            var lastOffset = (targetLength - 1);
+            var last = target[lastOffset];
+            var candidate = source.indexOf(first, offset);
+
+            // Keep DICOM end-sequence-like paths on the tight original loop.
+            if (search.enableDenseFallback != true) {
+
+                while ((candidate != -1) && (candidate <= maxStart)) {
+
+                    // Quickly reject when last byte does not match.
+                    if (source[candidate + lastOffset] == last) {
+
+                        var isMatch = true;
+                        for (var i = 1; i < lastOffset; i++) {
+                            if (source[candidate + i] != target[i]) {
+                                isMatch = false;
+                                break;
+                            }
+                        }
+
+                        if (isMatch == true)
+                            return candidate;
+
                     }
 
-                    // The sequence WAS found, return
-                    if (i == sequence.length - 1) {
-                        return begin;
-                    }
+                    candidate = source.indexOf(first, candidate + 1);
 
                 }
 
+                return -1;
+
             }
 
-            begin++;
+            var attempts = 0;
+
+            while ((candidate != -1) && (candidate <= maxStart)) {
+
+                // If candidate spacing is extremely dense, switch to native memmem-style search when available.
+                if ((attempts == 64) && ((candidate - offset) < 1024)) {
+                    var nativeSource = this._getNativeDataView();
+                    if (nativeSource != null)
+                        return nativeSource.indexOf(search.nativeTarget, offset);
+                }
+
+                // Quickly reject when last byte does not match.
+                if (source[candidate + lastOffset] == last) {
+
+                    var isMatch = true;
+                    for (var i = 1; i < lastOffset; i++) {
+                        if (source[candidate + i] != target[i]) {
+                            isMatch = false;
+                            break;
+                        }
+                    }
+
+                    if (isMatch == true)
+                        return candidate;
+
+                }
+
+                attempts++;
+                candidate = source.indexOf(first, candidate + 1);
+
+            }
+
+            return -1;
 
         }
 
-        // The sequence was NOT found
-        return -1;
+        // Adaptive anchor path: search on a lower-entropy target byte, then verify around that anchor.
+        var anchor = search.anchorByte;
+        var searchStart = (offset + anchorIndex);
+        var maxCandidate = (maxStart + anchorIndex);
+        var candidate = source.indexOf(anchor, searchStart);
+
+        while ((candidate != -1) && (candidate <= maxCandidate)) {
+
+            var start = (candidate - anchorIndex);
+            var isMatch = true;
+
+            for (var i = 0; i < anchorIndex; i++) {
+                if (source[start + i] != target[i]) {
+                    isMatch = false;
+                    break;
+                }
+            }
+
+            if (isMatch == true) {
+
+                for (var i = (anchorIndex + 1); i < targetLength; i++) {
+                    if (source[start + i] != target[i]) {
+                        isMatch = false;
+                        break;
+                    }
+                }
+
+                if (isMatch == true)
+                    return start;
+
+            }
+
+            candidate = source.indexOf(anchor, candidate + 1);
+
+        }
+
+        return -1;        
 
     }
 

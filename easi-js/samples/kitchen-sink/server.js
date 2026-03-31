@@ -47,6 +47,20 @@ const defaultPagePath = '/easi-js/samples/kitchen-sink/index.htm';
 const dimseCFindStudiesApiPath = '/easi-js/samples/kitchen-sink/api/dimse/cfind-studies';
 const dimseCGetApiPath = '/easi-js/samples/kitchen-sink/api/dimse/cget-instance';
 const dimseCMoveRelayApiPath = '/easi-js/samples/kitchen-sink/api/dimse/cmove-deidentify-relay';
+const defaultKitchenSinkStorageTransferSyntaxUids = [
+    '1.2.840.10008.1.2',      // Implicit VR Little Endian
+    '1.2.840.10008.1.2.1',    // Explicit VR Little Endian
+    '1.2.840.10008.1.2.2',    // Explicit VR Big Endian
+    '1.2.840.10008.1.2.1.99', // Deflated Explicit VR Little Endian
+    '1.2.840.10008.1.2.5',    // RLE Lossless
+    '1.2.840.10008.1.2.4.50', // JPEG Baseline
+    '1.2.840.10008.1.2.4.57', // JPEG Lossless
+    '1.2.840.10008.1.2.4.70', // JPEG Lossless SV1
+    '1.2.840.10008.1.2.4.80', // JPEG-LS Lossless
+    '1.2.840.10008.1.2.4.81', // JPEG-LS Near-Lossless
+    '1.2.840.10008.1.2.4.90', // JPEG 2000 Lossless
+    '1.2.840.10008.1.2.4.91'  // JPEG 2000
+];
 
 const mimeTypes = {
     '.htm': 'text/html; charset=utf-8',
@@ -132,6 +146,35 @@ function normalizeStringArray(value) {
     }
 
     return normalized;
+
+}
+
+function normalizeUidArray(value) {
+
+    var normalized = normalizeStringArray(value);
+    var deduped = [];
+    var seen = new Set();
+
+    for (var i = 0; i < normalized.length; i++) {
+        var uid = normalized[i];
+        if (seen.has(uid) == false) {
+            seen.add(uid);
+            deduped.push(uid);
+        }
+    }
+
+    return deduped;
+
+}
+
+function appendUid(target, uid) {
+
+    var value = trimOrNull(uid);
+    if (value == null)
+        return;
+
+    if (target.includes(value) == false)
+        target.push(value);
 
 }
 
@@ -352,18 +395,26 @@ async function discoverOrthancInstanceIdentifiers(orthancHttpUrl, username = nul
             var seriesInstanceUid = trimOrNull(orthancSeries?.MainDicomTags?.SeriesInstanceUID);
             var instanceIds = Array.isArray(orthancSeries?.Instances) ? orthancSeries.Instances : [];
 
-            if (instanceIds.length === 0)
-                continue;
+            for (var instanceIndex = 0; instanceIndex < instanceIds.length; instanceIndex++) {
 
-            var orthancInstance = await orthancGetJson(orthancHttpUrl, `/instances/${instanceIds[0]}`, username, password);
-            var sopInstanceUid = trimOrNull(orthancInstance?.MainDicomTags?.SOPInstanceUID);
+                var orthancInstanceId = instanceIds[instanceIndex];
+                var orthancInstance = await orthancGetJson(orthancHttpUrl, `/instances/${orthancInstanceId}`, username, password);
+                var sopInstanceUid = trimOrNull(orthancInstance?.MainDicomTags?.SOPInstanceUID);
+                var sopClassUid = trimOrNull(orthancInstance?.MainDicomTags?.SOPClassUID)
+                    ?? trimOrNull(orthancInstance?.SOPClassUID);
+                var transferSyntaxUid = trimOrNull(orthancInstance?.TransferSyntax)
+                    ?? trimOrNull(orthancInstance?.transferSyntaxUid);
 
-            if ((studyInstanceUid != null) && (seriesInstanceUid != null) && (sopInstanceUid != null)) {
-                return {
-                    studyInstanceUid,
-                    seriesInstanceUid,
-                    sopInstanceUid
-                };
+                if ((studyInstanceUid != null) && (seriesInstanceUid != null) && (sopInstanceUid != null)) {
+                    return {
+                        studyInstanceUid,
+                        seriesInstanceUid,
+                        sopInstanceUid,
+                        sopClassUid,
+                        transferSyntaxUid
+                    };
+                }
+
             }
 
         }
@@ -425,6 +476,26 @@ function summarizeStudyFindInstance(instance) {
 
 }
 
+function summarizeImageFindInstance(instance) {
+
+    var dataSet = instance?.dataSet ?? null;
+
+    return {
+        studyInstanceUid: dataSet?.value(Tag.StudyInstanceUID) ?? null,
+        seriesInstanceUid: dataSet?.value(Tag.SeriesInstanceUID) ?? null,
+        sopInstanceUid: dataSet?.value(Tag.SOPInstanceUID) ?? null,
+        sopClassUid: dataSet?.value(Tag.SOPClassUID) ?? null,
+        studyDate: dataSet?.value(Tag.StudyDate) ?? null,
+        studyTime: dataSet?.value(Tag.StudyTime) ?? null,
+        studyDescription: dataSet?.value(Tag.StudyDescription) ?? null,
+        accessionNumber: dataSet?.value(Tag.AccessionNumber) ?? null,
+        modality: dataSet?.value(Tag.Modality) ?? null,
+        patientName: dataSet?.value(Tag.PatientName) ?? null,
+        patientId: dataSet?.value(Tag.PatientID) ?? null
+    };
+
+}
+
 function summarizeInstance(instance) {
 
     var dataSet = instance?.dataSet ?? null;
@@ -467,6 +538,146 @@ function summarizeFhirImagingStudy(resource) {
         endpointCount: endpoint.length,
         seriesCount: series.length
     };
+
+}
+
+function extractImagingStudyIdentifier(resource) {
+
+    if (resource == null)
+        return null;
+
+    var identifiers = Array.isArray(resource?.identifier) ? resource.identifier : [resource?.identifier];
+    for (var index = 0; index < identifiers.length; index++) {
+
+        var item = identifiers[index];
+        if (item == null)
+            continue;
+
+        var value = trimOrNull((typeof item === 'object')
+            ? (item.value ?? item.identifier ?? null)
+            : item);
+        if (value == null)
+            continue;
+
+        var lower = value.toLowerCase();
+        if (lower.startsWith('urn:oid:') == true)
+            return value.substring(8);
+
+        return value;
+
+    }
+
+    return null;
+
+}
+
+function dedupeImagingStudies(resources) {
+
+    var list = Array.isArray(resources) ? resources : [];
+    var deduped = [];
+    var seen = new Set();
+
+    for (var index = 0; index < list.length; index++) {
+        var resource = list[index];
+        if (resource == null)
+            continue;
+
+        var key = null;
+        var studyUid = extractImagingStudyIdentifier(resource);
+        if (studyUid != null) {
+            key = `uid:${studyUid}`;
+        }
+        else if (trimOrNull(resource?.id) != null) {
+            key = `id:${resource.id}`;
+        }
+        else {
+            var summary = summarizeFhirImagingStudy(resource);
+            key = `summary:${JSON.stringify(summary)}`;
+        }
+
+        if (seen.has(key) == true)
+            continue;
+
+        seen.add(key);
+        deduped.push(resource);
+    }
+
+    return deduped;
+
+}
+
+function dedupeDicomInstances(instances) {
+
+    var list = Array.isArray(instances) ? instances : [];
+    var deduped = [];
+    var seen = new Set();
+
+    for (var index = 0; index < list.length; index++) {
+        var instance = list[index];
+        if (instance == null)
+            continue;
+
+        var dataSet = instance?.dataSet ?? null;
+        var sopInstanceUid = trimOrNull(dataSet?.value(Tag.SOPInstanceUID));
+        var studyInstanceUid = trimOrNull(dataSet?.value(Tag.StudyInstanceUID));
+        var seriesInstanceUid = trimOrNull(dataSet?.value(Tag.SeriesInstanceUID));
+        var key = (sopInstanceUid != null)
+            ? `sop:${sopInstanceUid}`
+            : `study:${studyInstanceUid ?? ''}|series:${seriesInstanceUid ?? ''}|index:${index}`;
+
+        if (seen.has(key) == true)
+            continue;
+
+        seen.add(key);
+        deduped.push(instance);
+    }
+
+    return deduped;
+
+}
+
+function imagingStudyHasModality(resource, modality) {
+
+    if ((resource == null) || (modality == null))
+        return false;
+
+    var expected = String(modality).trim().toUpperCase();
+    if (expected.length == 0)
+        return false;
+
+    var modalityValues = Array.isArray(resource?.modality) ? resource.modality : [];
+
+    for (var modalityIndex = 0; modalityIndex < modalityValues.length; modalityIndex++) {
+        var current = modalityValues[modalityIndex];
+        if (current == null)
+            continue;
+
+        var candidates = [];
+
+        if (typeof current === 'string') {
+            candidates.push(current);
+        }
+        else if (typeof current === 'object') {
+            if (current.code != null)
+                candidates.push(current.code);
+
+            if (Array.isArray(current.coding) == true) {
+                for (var codingIndex = 0; codingIndex < current.coding.length; codingIndex++) {
+                    var codingCode = current.coding[codingIndex]?.code;
+                    if (codingCode != null)
+                        candidates.push(codingCode);
+                }
+            }
+        }
+
+        for (var candidateIndex = 0; candidateIndex < candidates.length; candidateIndex++) {
+            var code = String(candidates[candidateIndex]).trim().toUpperCase();
+            if (code === expected)
+                return true;
+        }
+    }
+
+    return false;
 
 }
 
@@ -640,35 +851,81 @@ async function handleDimseCFindStudiesApi(request, response, dependencies = null
             throw new Error(`Invalid outputMode '${outputMode}'. Supported values are 'instance' and 'fhir-imaging-study'.`);
         }
 
-        var queryKeys = {
-            '0020000D': '',
-            '00080020': '',
-            '00080030': '',
-            '00081030': '',
-            '00080050': '',
-            '00080061': '',
-            '00100010': '',
-            '00100020': '',
-            '00201206': '',
-            '00201208': ''
-        };
-
-        if (modality != null) {
-            queryKeys['00080061'] = modality;
+        var queryRetrieveLevel = 'IMAGE';
+        if (outputMode === 'fhir-imaging-study') {
+            queryRetrieveLevel = (modality == null) ? 'STUDY' : 'IMAGE';
         }
+        var queryKeys = {};
+        var queryKeyVrs = {};
 
-        var queryKeyVrs = {
-            '0020000D': 'UI',
-            '00080020': 'DA',
-            '00080030': 'TM',
-            '00081030': 'LO',
-            '00080050': 'SH',
-            '00080061': 'CS',
-            '00100010': 'PN',
-            '00100020': 'LO',
-            '00201206': 'IS',
-            '00201208': 'IS'
-        };
+        if (queryRetrieveLevel === 'STUDY') {
+
+            queryKeys = {
+                '0020000D': '',
+                '00080020': '',
+                '00080030': '',
+                '00081030': '',
+                '00080050': '',
+                '00080061': '',
+                '00100010': '',
+                '00100020': '',
+                '00201206': '',
+                '00201208': ''
+            };
+
+            // Do not server-filter ModalitiesInStudy because some SCPs apply
+            // strict multi-value matching and can under-return studies.
+            queryKeys['00080061'] = '';
+
+            queryKeyVrs = {
+                '0020000D': 'UI',
+                '00080020': 'DA',
+                '00080030': 'TM',
+                '00081030': 'LO',
+                '00080050': 'SH',
+                '00080061': 'CS',
+                '00100010': 'PN',
+                '00100020': 'LO',
+                '00201206': 'IS',
+                '00201208': 'IS'
+            };
+
+        }
+        else {
+
+            queryKeys = {
+                '0020000D': '',
+                '0020000E': '',
+                '00080016': '',
+                '00080018': '',
+                '00080060': '',
+                '00080020': '',
+                '00080030': '',
+                '00081030': '',
+                '00080050': '',
+                '00100010': '',
+                '00100020': ''
+            };
+
+            if (modality != null) {
+                queryKeys['00080060'] = modality;
+            }
+
+            queryKeyVrs = {
+                '0020000D': 'UI',
+                '0020000E': 'UI',
+                '00080016': 'UI',
+                '00080018': 'UI',
+                '00080060': 'CS',
+                '00080020': 'DA',
+                '00080030': 'TM',
+                '00081030': 'LO',
+                '00080050': 'SH',
+                '00100010': 'PN',
+                '00100020': 'LO'
+            };
+
+        }
 
         var cfindStart = nowMs();
         var dimseConcerns = [];
@@ -698,7 +955,7 @@ async function handleDimseCFindStudiesApi(request, response, dependencies = null
                 operation: 'c-find',
                 performFind: false,
                 queryRetrieveModel,
-                queryRetrieveLevel: 'STUDY',
+                queryRetrieveLevel,
                 keys: queryKeys,
                 keyVrs: queryKeyVrs,
                 onConcern: (concern) => {
@@ -719,14 +976,25 @@ async function handleDimseCFindStudiesApi(request, response, dependencies = null
 
         var cfindMs = (nowMs() - cfindStart);
 
-        var resultList = (emitted.length > 0)
-            ? emitted
-            : normalizeResultList(result);
+        var normalizedProcessResult = normalizeResultList(result);
+        var normalizedEmittedResult = normalizeResultList(emitted);
 
         if (outputMode === 'fhir-imaging-study') {
 
-            var fhirImagingStudies = resultList
+            var processFhirImagingStudiesRaw = normalizedProcessResult
                 .filter((resource) => (resource?.resourceType === 'ImagingStudy'));
+            var emittedFhirImagingStudiesRaw = normalizedEmittedResult
+                .filter((resource) => (resource?.resourceType === 'ImagingStudy'));
+            var processFhirImagingStudies = dedupeImagingStudies(processFhirImagingStudiesRaw);
+            var emittedFhirImagingStudies = dedupeImagingStudies(emittedFhirImagingStudiesRaw);
+            var useEmittedFhirStudies = (emittedFhirImagingStudies.length > processFhirImagingStudies.length);
+            var fhirImagingStudies = useEmittedFhirStudies
+                ? emittedFhirImagingStudies
+                : processFhirImagingStudies;
+
+            if ((modality != null) && (queryRetrieveLevel === 'STUDY')) {
+                fhirImagingStudies = fhirImagingStudies.filter((resource) => imagingStudyHasModality(resource, modality));
+            }
 
             sendJson(response, 200, {
                 success: true,
@@ -735,7 +1003,7 @@ async function handleDimseCFindStudiesApi(request, response, dependencies = null
                 association: dimseAssociation,
                 request: {
                     queryRetrieveModel,
-                    queryRetrieveLevel: 'STUDY',
+                    queryRetrieveLevel,
                     modality
                 },
                 concernCount: dimseConcerns.length,
@@ -753,9 +1021,20 @@ async function handleDimseCFindStudiesApi(request, response, dependencies = null
 
         }
 
-        var instances = resultList
+        var processInstancesRaw = normalizedProcessResult
             .filter((instance) => (instance?.dataSet != null));
-        var instanceSummaries = instances.map((instance) => summarizeStudyFindInstance(instance));
+        var emittedInstancesRaw = normalizedEmittedResult
+            .filter((instance) => (instance?.dataSet != null));
+        var processInstances = dedupeDicomInstances(processInstancesRaw);
+        var emittedInstances = dedupeDicomInstances(emittedInstancesRaw);
+        var useEmittedInstances = (emittedInstances.length > processInstances.length);
+        var instances = useEmittedInstances ? emittedInstances : processInstances;
+        var instanceSummaries = instances.map((instance) => {
+            if (queryRetrieveLevel === 'IMAGE')
+                return summarizeImageFindInstance(instance);
+
+            return summarizeStudyFindInstance(instance);
+        });
 
         sendJson(response, 200, {
             success: true,
@@ -764,7 +1043,7 @@ async function handleDimseCFindStudiesApi(request, response, dependencies = null
             association: dimseAssociation,
             request: {
                 queryRetrieveModel,
-                queryRetrieveLevel: 'STUDY',
+                queryRetrieveLevel,
                 modality
             },
             concernCount: dimseConcerns.length,
@@ -812,6 +1091,13 @@ async function handleDimseCGetInstanceApi(request, response, dependencies = null
 
         var queryRetrieveModel = trimOrNull(body?.queryRetrieveModel) ?? 'study-root';
         var outputMode = trimOrNull(body?.outputMode) ?? 'instance';
+        var storageSopClassUids = normalizeUidArray(body?.storageSopClassUids);
+        var storageTransferSyntaxUids = defaultKitchenSinkStorageTransferSyntaxUids.slice();
+
+        var requestTransferSyntaxUids = normalizeUidArray(body?.storageTransferSyntaxUids);
+        for (var transferSyntaxIndex = 0; transferSyntaxIndex < requestTransferSyntaxUids.length; transferSyntaxIndex++) {
+            appendUid(storageTransferSyntaxUids, requestTransferSyntaxUids[transferSyntaxIndex]);
+        }
 
         var studyInstanceUid = trimOrNull(body?.studyInstanceUid);
         var seriesInstanceUid = trimOrNull(body?.seriesInstanceUid);
@@ -843,6 +1129,8 @@ async function handleDimseCGetInstanceApi(request, response, dependencies = null
             studyInstanceUid = discovered.studyInstanceUid;
             seriesInstanceUid = discovered.seriesInstanceUid;
             sopInstanceUid = discovered.sopInstanceUid;
+            appendUid(storageSopClassUids, discovered.sopClassUid);
+            appendUid(storageTransferSyntaxUids, discovered.transferSyntaxUid);
 
         }
 
@@ -865,7 +1153,7 @@ async function handleDimseCGetInstanceApi(request, response, dependencies = null
 
         var pipeline = builder.build();
 
-        var result = await pipeline.process(null, {
+        var processOptions = {
             operation: 'c-get',
             performFind: false,
             queryRetrieveModel,
@@ -876,7 +1164,16 @@ async function handleDimseCGetInstanceApi(request, response, dependencies = null
             onConcern: (concern) => {
                 dimseConcerns.push(concern);
             }
-        });
+        };
+
+        if (storageSopClassUids.length > 0) {
+            processOptions.storageSopClassUids = storageSopClassUids.slice();
+        }
+        if (storageTransferSyntaxUids.length > 0) {
+            processOptions.storageTransferSyntaxUids = storageTransferSyntaxUids.slice();
+        }
+
+        var result = await pipeline.process(null, processOptions);
 
         var cgetMs = (nowMs() - cgetStart);
 

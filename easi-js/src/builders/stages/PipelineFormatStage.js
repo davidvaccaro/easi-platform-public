@@ -25,9 +25,13 @@ export default class PipelineFormatStage extends PipelineBuilderStage {
         );
     }
 
-    /** @returns {PipelineTargetStage} */
-    ofDicomData() {
-        return this.withParser(new DicomDataParser());
+    /**
+     * Configure DICOM byte parser.
+     * @param {{includePart10Header?: boolean} | null} options Parser options.
+     * @returns {PipelineTargetStage}
+     */
+    ofDicomData(options = null) {
+        return this.withParser(new DicomDataParser(options));
     }
 
     /** @returns {PipelineTargetStage} */

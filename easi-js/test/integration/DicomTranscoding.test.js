@@ -282,7 +282,7 @@ test("Test: withTranscoding rewrites transfer syntax from explicit-vr-little-end
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.ImplicitVRLittleEndian.ID
         })
@@ -295,14 +295,14 @@ test("Test: withTranscoding rewrites transfer syntax from explicit-vr-little-end
 
     const sourceInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(sourceBytes);
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);
@@ -320,7 +320,7 @@ test("Test: withTranscoding unsupported syntax pair fails when fallback is fail"
 
     const pipeline = EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.ExplicitVRBigEndian.ID,
             fallback: "fail",
@@ -340,14 +340,14 @@ test("Test: withTranscoding unsupported syntax pair can passthrough source trans
     const sourceBytes = readDicomBytes("0002.DCM");
     const sourceInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(sourceBytes);
 
     const passthroughBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.ExplicitVRBigEndian.ID,
             fallback: "passthrough"
@@ -358,7 +358,7 @@ test("Test: withTranscoding unsupported syntax pair can passthrough source trans
 
     const passthroughInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(passthroughBytes);
@@ -374,7 +374,7 @@ test("Test: withTranscoding transcodes explicit-vr-little-endian PixelData to JP
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.JPEG2000.ID,
             onConcern: concern => concerns.push(concern),
@@ -390,7 +390,7 @@ test("Test: withTranscoding transcodes explicit-vr-little-endian PixelData to JP
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);
@@ -413,7 +413,7 @@ test("Test: withTranscoding in streamed mode does not append a duplicate trailin
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withBulkDataPolicy({
             mode: "auto",
             knownLengthThreshold: 0
@@ -451,7 +451,7 @@ test("Test: withTranscoding supports JPEG 2000 round-trip back to explicit-vr-li
     const sourceBytes = buildSyntheticExplicitLittleEndianDicom();
     const stageOneBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.JPEG2000.ID,
             codec: {
@@ -466,7 +466,7 @@ test("Test: withTranscoding supports JPEG 2000 round-trip back to explicit-vr-li
 
     const roundTripBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.ExplicitVRLittleEndian.ID,
             codec: {
@@ -481,7 +481,7 @@ test("Test: withTranscoding supports JPEG 2000 round-trip back to explicit-vr-li
 
     const roundTripInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(roundTripBytes);
@@ -503,7 +503,7 @@ test("Test: withTranscoding transcodes explicit-vr-little-endian PixelData to HT
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.HTJ2K.ID,
             onConcern: concern => concerns.push(concern),
@@ -519,7 +519,7 @@ test("Test: withTranscoding transcodes explicit-vr-little-endian PixelData to HT
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);
@@ -540,7 +540,7 @@ test("Test: withTranscoding supports HTJ2K round-trip back to explicit-vr-little
     const sourceBytes = buildSyntheticExplicitLittleEndianDicom();
     const stageOneBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.HTJ2K.ID,
             codec: {
@@ -555,7 +555,7 @@ test("Test: withTranscoding supports HTJ2K round-trip back to explicit-vr-little
 
     const roundTripBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.ExplicitVRLittleEndian.ID,
             codec: {
@@ -570,7 +570,7 @@ test("Test: withTranscoding supports HTJ2K round-trip back to explicit-vr-little
 
     const roundTripInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(roundTripBytes);
@@ -592,7 +592,7 @@ test("Test: withBurnedInRedaction redacts configured pixel regions while preserv
 
     const redactedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withBurnedInRedaction({
             regions: [{ x: 1, y: 0, width: 1, height: 1 }]
         })
@@ -602,7 +602,7 @@ test("Test: withBurnedInRedaction redacts configured pixel regions while preserv
 
     const redactedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(redactedBytes);
@@ -623,7 +623,7 @@ test("Test: withBurnedInRedaction preserves RLE source transfer syntax when RLE 
 
     const redactedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withBurnedInRedaction({
             regions: [
                 { x: 0, y: 100, width: 382, height: 204 },
@@ -638,7 +638,7 @@ test("Test: withBurnedInRedaction preserves RLE source transfer syntax when RLE 
 
     const redactedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(redactedBytes);
@@ -674,7 +674,7 @@ test("Test: withBurnedInRedaction falls back from RLE preserve target when no RL
 
     const redactedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withCodecRegistry(codecRegistry)
         .withBurnedInRedaction({
             regions: [
@@ -690,7 +690,7 @@ test("Test: withBurnedInRedaction falls back from RLE preserve target when no RL
 
     const redactedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(redactedBytes);
@@ -712,7 +712,7 @@ test("Test: withTranscoding transcodes explicit-vr-little-endian PixelData to JP
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.JPEGBaseline8Bit.ID,
             onConcern: concern => concerns.push(concern),
@@ -728,7 +728,7 @@ test("Test: withTranscoding transcodes explicit-vr-little-endian PixelData to JP
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);
@@ -752,7 +752,7 @@ test("Test: withTranscoding transcodes explicit-vr-little-endian PixelData to RL
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.RLELossless.ID,
             onConcern: concern => concerns.push(concern)
@@ -763,7 +763,7 @@ test("Test: withTranscoding transcodes explicit-vr-little-endian PixelData to RL
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);
@@ -784,7 +784,7 @@ test("Test: withTranscoding supports JPEG Baseline round-trip back to explicit-v
     const sourceBytes = buildSyntheticExplicitLittleEndianDicom();
     const stageOneBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.JPEGBaseline8Bit.ID,
             codec: {
@@ -799,7 +799,7 @@ test("Test: withTranscoding supports JPEG Baseline round-trip back to explicit-v
 
     const roundTripBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.ExplicitVRLittleEndian.ID
         })
@@ -809,7 +809,7 @@ test("Test: withTranscoding supports JPEG Baseline round-trip back to explicit-v
 
     const roundTripInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(roundTripBytes);
@@ -832,7 +832,7 @@ test("Test: withTranscoding on dataset-only input emits synthetic Part-10 meta a
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.JPEG2000Lossless.ID,
             onConcern: concern => concerns.push(concern),
@@ -854,7 +854,7 @@ test("Test: withTranscoding on dataset-only input emits synthetic Part-10 meta a
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);
@@ -877,7 +877,7 @@ test("Test: withTranscoding on MR-MONO2-8-16x-heart emits parseable JPEG 2000 ou
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             sourceTransferSyntax: TransferSyntax.ImplicitVRLittleEndian.ID,
             targetTransferSyntax: TransferSyntax.JPEG2000.ID,
@@ -894,7 +894,7 @@ test("Test: withTranscoding on MR-MONO2-8-16x-heart emits parseable JPEG 2000 ou
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);
@@ -911,7 +911,7 @@ test("Test: withTranscoding on MR-MONO2-8-16x-heart emits parseable JPEG 2000 lo
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             sourceTransferSyntax: TransferSyntax.ImplicitVRLittleEndian.ID,
             targetTransferSyntax: TransferSyntax.JPEG2000Lossless.ID,
@@ -927,7 +927,7 @@ test("Test: withTranscoding on MR-MONO2-8-16x-heart emits parseable JPEG 2000 lo
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);
@@ -945,7 +945,7 @@ test("Test: withTranscoding supports RLE Lossless source to JPEG 2000 lossless t
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.JPEG2000Lossless.ID,
             onConcern: concern => concerns.push(concern),
@@ -961,7 +961,7 @@ test("Test: withTranscoding supports RLE Lossless source to JPEG 2000 lossless t
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);
@@ -978,7 +978,7 @@ test("Test: withTranscoding accepts sourceTransferSyntax override to suppress da
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             sourceTransferSyntax: TransferSyntax.ImplicitVRLittleEndian.ID,
             targetTransferSyntax: TransferSyntax.JPEG2000Lossless.ID,
@@ -1006,7 +1006,7 @@ test("Test: withTranscoding on MR-shoulder normalizes pixel metadata and rescale
 
     const sourceInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(sourceBytes);
@@ -1019,7 +1019,7 @@ test("Test: withTranscoding on MR-shoulder normalizes pixel metadata and rescale
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.JPEG2000.ID,
             onConcern: concern => concerns.push(concern),
@@ -1035,7 +1035,7 @@ test("Test: withTranscoding on MR-shoulder normalizes pixel metadata and rescale
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);
@@ -1077,7 +1077,7 @@ test("Test: withTranscoding preserves monochrome metadata for dataset-only JPEG 
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.JPEG2000Lossless.ID,
             onConcern: concern => concerns.push(concern),
@@ -1093,7 +1093,7 @@ test("Test: withTranscoding preserves monochrome metadata for dataset-only JPEG 
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);
@@ -1118,7 +1118,7 @@ test("Test: withTranscoding preserves 16-bit monochrome metadata for dataset-onl
 
     const transcodedBytes = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .withTranscoding({
             sourceTransferSyntax: TransferSyntax.ImplicitVRLittleEndian.ID,
             targetTransferSyntax: TransferSyntax.JPEG2000.ID,
@@ -1136,7 +1136,7 @@ test("Test: withTranscoding preserves 16-bit monochrome metadata for dataset-onl
 
     const transcodedInstance = await EASI.pipelineBuilder()
         .fromByteStream()
-        .ofDicomData()
+        .ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(transcodedBytes);

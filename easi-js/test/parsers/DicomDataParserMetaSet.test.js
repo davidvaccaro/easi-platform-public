@@ -59,7 +59,7 @@ function withCorruptedFileMetaGroupLength(bytes, malformedValue) {
 async function parseInstance(bytes) {
 
     return await EASI.pipelineBuilder()
-        .fromPartStream().ofDicomData()
+        .fromPartStream().ofDicomData({ includePart10Header: true })
         .toInstances()
         .build()
         .process(bytes);

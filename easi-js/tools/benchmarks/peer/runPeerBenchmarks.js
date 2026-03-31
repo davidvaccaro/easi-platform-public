@@ -232,12 +232,22 @@ function renderMarkdownReport(snapshot) {
     lines.push(`Iterations: ${snapshot.iterations}, Warmup: ${snapshot.warmup}`);
     lines.push('');
 
-    lines.push('| Toolkit | File | Avg ms | P50 ms | P90 ms | Throughput MB/s | Status |');
-    lines.push('|---|---|---:|---:|---:|---:|---|');
+    lines.push('| Toolkit | File | Avg ms | P50 ms | P90 ms | Throughput MB/s | Read Avg | Read P50 | Read P90 | Parse Avg | Parse P50 | Parse P90 | Full Avg | Full P50 | Full P90 | Stage Order | Status |');
+    lines.push('|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|');
 
     for (var i = 0; i < snapshot.results.length; i++) {
         var row = snapshot.results[i];
-        lines.push(`| ${row.toolkit} | ${path.basename(row.file)} | ${row.metrics.avgMs == null ? '-' : round(row.metrics.avgMs, 3)} | ${row.metrics.p50Ms == null ? '-' : round(row.metrics.p50Ms, 3)} | ${row.metrics.p90Ms == null ? '-' : round(row.metrics.p90Ms, 3)} | ${row.metrics.throughputMBps == null ? '-' : round(row.metrics.throughputMBps, 3)} | ${row.status} |`);
+        var readOnlyStageAvgMs = row?.raw?.stage?.readOnly?.avgMs ?? null;
+        var readOnlyStageP50Ms = row?.raw?.stage?.readOnly?.p50Ms ?? null;
+        var readOnlyStageP90Ms = row?.raw?.stage?.readOnly?.p90Ms ?? null;
+        var parseOnlyStageAvgMs = row?.raw?.stage?.parseOnlyNoEmit?.avgMs ?? null;
+        var parseOnlyStageP50Ms = row?.raw?.stage?.parseOnlyNoEmit?.p50Ms ?? null;
+        var parseOnlyStageP90Ms = row?.raw?.stage?.parseOnlyNoEmit?.p90Ms ?? null;
+        var fullStageAvgMs = row?.raw?.stage?.fullParseEmit?.avgMs ?? null;
+        var fullStageP50Ms = row?.raw?.stage?.fullParseEmit?.p50Ms ?? null;
+        var fullStageP90Ms = row?.raw?.stage?.fullParseEmit?.p90Ms ?? null;
+        var stageExecutionOrder = Array.isArray(row?.raw?.stageExecutionOrder) ? row.raw.stageExecutionOrder.join(' > ') : '-';
+        lines.push(`| ${row.toolkit} | ${path.basename(row.file)} | ${row.metrics.avgMs == null ? '-' : round(row.metrics.avgMs, 3)} | ${row.metrics.p50Ms == null ? '-' : round(row.metrics.p50Ms, 3)} | ${row.metrics.p90Ms == null ? '-' : round(row.metrics.p90Ms, 3)} | ${row.metrics.throughputMBps == null ? '-' : round(row.metrics.throughputMBps, 3)} | ${readOnlyStageAvgMs == null ? '-' : round(readOnlyStageAvgMs, 3)} | ${readOnlyStageP50Ms == null ? '-' : round(readOnlyStageP50Ms, 3)} | ${readOnlyStageP90Ms == null ? '-' : round(readOnlyStageP90Ms, 3)} | ${parseOnlyStageAvgMs == null ? '-' : round(parseOnlyStageAvgMs, 3)} | ${parseOnlyStageP50Ms == null ? '-' : round(parseOnlyStageP50Ms, 3)} | ${parseOnlyStageP90Ms == null ? '-' : round(parseOnlyStageP90Ms, 3)} | ${fullStageAvgMs == null ? '-' : round(fullStageAvgMs, 3)} | ${fullStageP50Ms == null ? '-' : round(fullStageP50Ms, 3)} | ${fullStageP90Ms == null ? '-' : round(fullStageP90Ms, 3)} | ${stageExecutionOrder} | ${row.status} |`);
     }
 
     lines.push('');
