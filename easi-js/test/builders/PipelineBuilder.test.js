@@ -28,6 +28,8 @@ import JsonDataHandler from "../../src/handlers/terminals/syntax/JsonDataHandler
 import XmlDataHandler from "../../src/handlers/terminals/syntax/XmlDataHandler.js";
 import Tag from "../../src/dicom/Tag.js";
 import TransferSyntax from "../../src/dicom/TransferSyntax.js";
+import CodecRegistry from "../../src/codecs/CodecRegistry.js";
+import Configuration from "../../src/environment/Configuration.js";
 import Exception from "../../src/environment/Exception.js";
 import { BuilderErrorCodes } from "../../src/environment/Exception.js";
 
@@ -168,6 +170,49 @@ test("Test: build throws InvalidReader", () => {
 
     expect(error instanceof Exception).toBe(true);
     expect(error.code).toBe(BuilderErrorCodes.InvalidReader);
+});
+
+test("Test: build throws InvalidCodecRegistry when withCodecRegistry receives non-CodecRegistry object", () => {
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromPartStream()
+            .ofDicomData()
+            .withCodecRegistry({})
+            .toInstances()
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.InvalidCodecRegistry);
+});
+
+test("Test: build throws InvalidCodecRegistry when codec registry validation fails", () => {
+    const codecRegistry = new CodecRegistry();
+
+    const error = captureBuildError(
+        new PipelineBuilder()
+            .fromPartStream()
+            .ofDicomData()
+            .withCodecRegistry(codecRegistry)
+            .toInstances()
+    );
+
+    expect(error instanceof Exception).toBe(true);
+    expect(error.code).toBe(BuilderErrorCodes.InvalidCodecRegistry);
+});
+
+test("Test: build accepts independent default codec registry from Configuration.createDefaultCodecRegistry", () => {
+    const codecRegistry = Configuration.createDefaultCodecRegistry();
+
+    const pipeline = new PipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .withCodecRegistry(codecRegistry)
+        .toAssetArchive()
+        .build();
+
+    expect(pipeline instanceof Pipeline).toBe(true);
+    expect(pipeline.parser.handler instanceof DicomAssetArchiveHandler).toBe(true);
+    expect(pipeline.parser.handler.codecRegistry).toBe(codecRegistry);
 });
 
 test("Test: build throws InvalidOnEmit", () => {

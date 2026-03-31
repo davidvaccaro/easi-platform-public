@@ -31,7 +31,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
      * Set the codec registry used by codec-dependent handlers.
-     * @param {object} codecRegistry The codec registry.
+     * @param {import("../../codecs/CodecRegistry.js").default} codecRegistry The codec registry.
      * @returns {PipelineTargetStage} A new target stage object.
      */
     withCodecRegistry(codecRegistry) {

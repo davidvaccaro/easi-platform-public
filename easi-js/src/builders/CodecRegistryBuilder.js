@@ -1,0 +1,160 @@
+//
+// CodecRegistryBuilder.js - 1.0.0
+//
+// Codec Registry Builder Class
+//
+
+import CodecRegistry from "../codecs/CodecRegistry.js";
+import Configuration from "../environment/Configuration.js";
+
+export default class CodecRegistryBuilder {
+
+    /**
+     * Create a new codec-registry builder instance.
+     * @returns {CodecRegistryBuilder} A new codec-registry builder instance.
+     */
+    static builder() {
+        return new CodecRegistryBuilder();
+    }
+
+    /**
+     * Configure a base codec registry to build from.
+     * @param {CodecRegistry | null} codecRegistry Base codec registry.
+     * @param {boolean} clone Indicates if base registry should be cloned before modification.
+     * @returns {CodecRegistryBuilder} The current builder.
+     */
+    withBaseCodecRegistry(codecRegistry, clone = true) {
+        this.baseCodecRegistry = codecRegistry;
+        this.cloneBaseCodecRegistry = (clone !== false);
+        return this;
+    }
+
+    /**
+     * Configure whether default codecs are applied during build.
+     * @param {boolean} enabled Indicates if defaults should be applied.
+     * @returns {CodecRegistryBuilder} The current builder.
+     */
+    withDefaultCodecs(enabled = true) {
+        this.includeDefaultCodecs = (enabled == true);
+        return this;
+    }
+
+    /**
+     * Register a transfer-syntax decoder to apply during build.
+     * @param {import("../dicom/TransferSyntax.js").default | string} transferSyntax Transfer syntax.
+     * @param {object | Function} decoderPrototypeOrConstructor Decoder prototype or constructor.
+     * @returns {CodecRegistryBuilder} The current builder.
+     */
+    withDecoderForTransferSyntax(transferSyntax, decoderPrototypeOrConstructor) {
+        this.decoderRegistrations.push({
+            transferSyntax,
+            decoderPrototypeOrConstructor
+        });
+        return this;
+    }
+
+    /**
+     * Register a named encoder to apply during build.
+     * @param {string} format Encoder format identifier.
+     * @param {object} encoder Encoder instance.
+     * @returns {CodecRegistryBuilder} The current builder.
+     */
+    withEncoder(format, encoder) {
+        this.encoderRegistrations.push({
+            format,
+            encoder
+        });
+        return this;
+    }
+
+    /**
+     * Configure codec-registry assert-valid behavior for build.
+     * @param {boolean} enabled Indicates if validation should be enforced.
+     * @returns {CodecRegistryBuilder} The current builder.
+     */
+    withAssertValid(enabled = true) {
+        this.assertOnBuild = (enabled !== false);
+        return this;
+    }
+
+    /**
+     * Configure codec-registry validation options for build.
+     * @param {object | null} validationOptions Codec-registry validation options.
+     * @returns {CodecRegistryBuilder} The current builder.
+     */
+    withValidation(validationOptions = null) {
+        if ((validationOptions == null) || (typeof validationOptions !== "object")) {
+            this.validationOptions = null;
+        }
+        else {
+            this.validationOptions = Object.assign({}, validationOptions);
+        }
+        return this;
+    }
+
+    /**
+     * Build a codec registry from configured builder state.
+     * Automatically performs assert-valid unless disabled.
+     * @returns {CodecRegistry} Built codec registry.
+     */
+    build() {
+
+        var codecRegistry = null;
+
+        if (this.baseCodecRegistry != null) {
+
+            if ((this.baseCodecRegistry instanceof CodecRegistry) == false) {
+                throw new Error("CodecRegistryBuilder.withBaseCodecRegistry(...) requires a CodecRegistry instance.");
+            }
+
+            codecRegistry = (this.cloneBaseCodecRegistry == true)
+                ? this.baseCodecRegistry.clone()
+                : this.baseCodecRegistry;
+
+        }
+        else {
+            codecRegistry = new CodecRegistry();
+        }
+
+        if (this.includeDefaultCodecs == true) {
+            Configuration.applyDefaultCodecs(codecRegistry);
+        }
+
+        for (var i = 0; i < this.decoderRegistrations.length; i++) {
+            var decoderRegistration = this.decoderRegistrations[i];
+            codecRegistry.setDecoderForTransferSyntax(
+                decoderRegistration.transferSyntax,
+                decoderRegistration.decoderPrototypeOrConstructor
+            );
+        }
+
+        for (var j = 0; j < this.encoderRegistrations.length; j++) {
+            var encoderRegistration = this.encoderRegistrations[j];
+            codecRegistry.setEncoder(
+                encoderRegistration.format,
+                encoderRegistration.encoder
+            );
+        }
+
+        if (this.assertOnBuild == true) {
+            codecRegistry.assertValid(this.validationOptions);
+        }
+
+        return codecRegistry;
+
+    }
+
+    /**
+     * Construct a codec-registry builder.
+     */
+    constructor() {
+        this.baseCodecRegistry = null;
+        this.cloneBaseCodecRegistry = true;
+        this.includeDefaultCodecs = false;
+        this.decoderRegistrations = [];
+        this.encoderRegistrations = [];
+        this.assertOnBuild = true;
+        this.validationOptions = null;
+    }
+
+}

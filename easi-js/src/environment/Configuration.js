@@ -41,6 +41,99 @@ export default class Configuration {
     static instance = null;
 
     /**
+     * Get default transfer-syntax decoder registrations.
+     * @returns {Array<{ transferSyntax: TransferSyntax, decoderType: Function }>} Decoder registrations.
+     */
+    static getDefaultDecoderRegistrations() {
+        return [
+            { transferSyntax: TransferSyntax.JPEGBaseline8Bit, decoderType: JpegDecoder },
+            { transferSyntax: TransferSyntax.JPEGLossless, decoderType: JpegLosslessDecoder },
+            { transferSyntax: TransferSyntax.JPEGLosslessSV1, decoderType: JpegLosslessDecoder },
+            { transferSyntax: TransferSyntax.JPEGLSLossless, decoderType: JpegLsDecoder },
+            { transferSyntax: TransferSyntax.JPEGLSNearLossless, decoderType: JpegLsDecoder },
+            { transferSyntax: TransferSyntax.JPEG2000Lossless, decoderType: Jpeg2000Decoder },
+            { transferSyntax: TransferSyntax.JPEG2000, decoderType: Jpeg2000Decoder },
+            { transferSyntax: TransferSyntax.JPEG2000MCLossless, decoderType: Jpeg2000Decoder },
+            { transferSyntax: TransferSyntax.JPEG2000MC, decoderType: Jpeg2000Decoder },
+            { transferSyntax: TransferSyntax.HTJ2KLossless, decoderType: Htj2kDecoder },
+            { transferSyntax: TransferSyntax.HTJ2KLosslessRPCL, decoderType: Htj2kDecoder },
+            { transferSyntax: TransferSyntax.HTJ2K, decoderType: Htj2kDecoder },
+            { transferSyntax: TransferSyntax.RLELossless, decoderType: RleDecoder },
+            { transferSyntax: TransferSyntax.NONE, decoderType: DicomNativePixelDataToRGBADecoder }
+        ];
+    }
+
+    /**
+     * Get default named encoder registrations.
+     * @returns {Array<{ format: string, encoderType: Function }>} Encoder registrations.
+     */
+    static getDefaultEncoderRegistrations() {
+        return [
+            { format: 'jpeg', encoderType: JpegRgbaEncoder },
+            { format: 'jpg', encoderType: JpegRgbaEncoder },
+            { format: 'jpeg2000', encoderType: Jpeg2000RgbaEncoder },
+            { format: 'jpeg-2000', encoderType: Jpeg2000RgbaEncoder },
+            { format: 'jpeg 2000', encoderType: Jpeg2000RgbaEncoder },
+            { format: 'jp2', encoderType: Jpeg2000RgbaEncoder },
+            { format: 'j2k', encoderType: Jpeg2000RgbaEncoder },
+            { format: 'htj2k', encoderType: Htj2kRgbaEncoder },
+            { format: 'ht-j2k', encoderType: Htj2kRgbaEncoder },
+            { format: 'ht jpeg 2000', encoderType: Htj2kRgbaEncoder },
+            { format: 'ht-jpeg-2000', encoderType: Htj2kRgbaEncoder },
+            { format: 'jph', encoderType: Htj2kRgbaEncoder },
+            { format: 'rle', encoderType: RleRgbaEncoder },
+            { format: 'rle-lossless', encoderType: RleRgbaEncoder },
+            { format: 'dicom-rle', encoderType: RleRgbaEncoder },
+            { format: 'png', encoderType: PngRgbaEncoder },
+            { format: 'tiff', encoderType: TiffRgbaEncoder },
+            { format: 'tif', encoderType: TiffRgbaEncoder }
+        ];
+    }
+
+    /**
+     * Apply default decoder and encoder registrations to one codec registry.
+     * @param {CodecRegistry} codecRegistry The target codec registry.
+     * @returns {CodecRegistry} The populated codec registry.
+     */
+    static applyDefaultCodecs(codecRegistry) {
+
+        if ((codecRegistry == null)
+            || (typeof codecRegistry.setDecoderForTransferSyntax !== 'function')
+            || (typeof codecRegistry.setEncoder !== 'function')) {
+            throw new Error("Configuration.applyDefaultCodecs requires a valid CodecRegistry instance.");
+        }
+
+        var decoderRegistrations = Configuration.getDefaultDecoderRegistrations();
+        for (var i = 0; i < decoderRegistrations.length; i++) {
+            var decoderRegistration = decoderRegistrations[i];
+            codecRegistry.setDecoderForTransferSyntax(
+                decoderRegistration.transferSyntax,
+                new decoderRegistration.decoderType()
+            );
+        }
+
+        var encoderRegistrations = Configuration.getDefaultEncoderRegistrations();
+        for (var j = 0; j < encoderRegistrations.length; j++) {
+            var encoderRegistration = encoderRegistrations[j];
+            codecRegistry.setEncoder(
+                encoderRegistration.format,
+                new encoderRegistration.encoderType()
+            );
+        }
+
+        return codecRegistry;
+
+    }
+
+    /**
+     * Create a new, independent codec registry pre-populated with default codecs.
+     * @returns {CodecRegistry} The initialized codec registry.
+     */
+    static createDefaultCodecRegistry() {
+        return Configuration.applyDefaultCodecs(new CodecRegistry());
+    }
+
+    /**
      * Gets the Global Configuration instance.
      * @returns The reference to the Global Configuration instance. 
      */
@@ -111,41 +204,25 @@ export default class Configuration {
         // Initialize the codec registry
         this.codecRegistry = new CodecRegistry();
 
-        // Populate the TransferSyntax-specific decoders
-        this.setDecoderFor(TransferSyntax.JPEGBaseline8Bit, new JpegDecoder());
-        this.setDecoderFor(TransferSyntax.JPEGLossless, new JpegLosslessDecoder());
-        this.setDecoderFor(TransferSyntax.JPEGLosslessSV1, new JpegLosslessDecoder());
-        this.setDecoderFor(TransferSyntax.JPEGLSLossless, new JpegLsDecoder());
-        this.setDecoderFor(TransferSyntax.JPEGLSNearLossless, new JpegLsDecoder());
-        this.setDecoderFor(TransferSyntax.JPEG2000Lossless, new Jpeg2000Decoder());
-        this.setDecoderFor(TransferSyntax.JPEG2000, new Jpeg2000Decoder());
-        this.setDecoderFor(TransferSyntax.JPEG2000MCLossless, new Jpeg2000Decoder());
-        this.setDecoderFor(TransferSyntax.JPEG2000MC, new Jpeg2000Decoder());
-        this.setDecoderFor(TransferSyntax.HTJ2KLossless, new Htj2kDecoder());
-        this.setDecoderFor(TransferSyntax.HTJ2KLosslessRPCL, new Htj2kDecoder());
-        this.setDecoderFor(TransferSyntax.HTJ2K, new Htj2kDecoder());
-        this.setDecoderFor(TransferSyntax.RLELossless, new RleDecoder());
-        this.setDecoderFor(TransferSyntax.NONE, new DicomNativePixelDataToRGBADecoder());
+        // Populate default transfer-syntax decoders.
+        var decoderRegistrations = Configuration.getDefaultDecoderRegistrations();
+        for (var i = 0; i < decoderRegistrations.length; i++) {
+            var decoderRegistration = decoderRegistrations[i];
+            this.setDecoderFor(
+                decoderRegistration.transferSyntax,
+                new decoderRegistration.decoderType()
+            );
+        }
 
-        // Populate the default output encoders
-        this.setEncoderFor('jpeg', new JpegRgbaEncoder());
-        this.setEncoderFor('jpg', new JpegRgbaEncoder());
-        this.setEncoderFor('jpeg2000', new Jpeg2000RgbaEncoder());
-        this.setEncoderFor('jpeg-2000', new Jpeg2000RgbaEncoder());
-        this.setEncoderFor('jpeg 2000', new Jpeg2000RgbaEncoder());
-        this.setEncoderFor('jp2', new Jpeg2000RgbaEncoder());
-        this.setEncoderFor('j2k', new Jpeg2000RgbaEncoder());
-        this.setEncoderFor('htj2k', new Htj2kRgbaEncoder());
-        this.setEncoderFor('ht-j2k', new Htj2kRgbaEncoder());
-        this.setEncoderFor('ht jpeg 2000', new Htj2kRgbaEncoder());
-        this.setEncoderFor('ht-jpeg-2000', new Htj2kRgbaEncoder());
-        this.setEncoderFor('jph', new Htj2kRgbaEncoder());
-        this.setEncoderFor('rle', new RleRgbaEncoder());
-        this.setEncoderFor('rle-lossless', new RleRgbaEncoder());
-        this.setEncoderFor('dicom-rle', new RleRgbaEncoder());
-        this.setEncoderFor('png', new PngRgbaEncoder());
-        this.setEncoderFor('tiff', new TiffRgbaEncoder());
-        this.setEncoderFor('tif', new TiffRgbaEncoder());
+        // Populate default output encoders.
+        var encoderRegistrations = Configuration.getDefaultEncoderRegistrations();
+        for (var j = 0; j < encoderRegistrations.length; j++) {
+            var encoderRegistration = encoderRegistrations[j];
+            this.setEncoderFor(
+                encoderRegistration.format,
+                new encoderRegistration.encoderType()
+            );
+        }
 
     }
 

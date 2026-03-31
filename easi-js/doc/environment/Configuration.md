@@ -23,6 +23,14 @@ Configuration.global
 |---------|------------------------------------------------------|
 | `Configuration`  | Global `Configuration` singleton instance. |
 
+### `Configuration.createDefaultCodecRegistry()`
+
+```js
+Configuration.createDefaultCodecRegistry()
+```
+
+Creates a new independent `CodecRegistry` pre-populated with the same default decoder/encoder registrations as `Configuration.global.codecRegistry`.
+
 ## Properties
 
 | Property            | Type    | Description                                   |

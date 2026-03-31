@@ -13,6 +13,16 @@ class FakeDecoder {
     }
 }
 
+class FakeEncoder {
+    encode() {
+        return {
+            bytes: new Uint8Array(0),
+            mimeType: "application/octet-stream",
+            format: "fake"
+        };
+    }
+}
+
 test('Test: CodecRegistry resolves transfer-syntax decoder and fallback decoder', () => {
 
     var registry = new CodecRegistry();
@@ -108,5 +118,60 @@ test('Test: Configuration seeds RLE encoder aliases', () => {
     expect(configuration.getEncoderFor('rle') instanceof RleRgbaEncoder).toBe(true);
     expect(configuration.getEncoderFor('rle-lossless') instanceof RleRgbaEncoder).toBe(true);
     expect(configuration.getEncoderFor('dicom-rle') instanceof RleRgbaEncoder).toBe(true);
+
+});
+
+test('Test: CodecRegistry validate fails when default decoder is not configured', () => {
+
+    var registry = new CodecRegistry();
+    var report = registry.validate();
+
+    expect(report.ok).toBe(false);
+    expect(report.errors.find((error) => error.code == "MissingDefaultDecoder")).toBeDefined();
+
+});
+
+test('Test: CodecRegistry assertValid throws when an encoder registration is invalid', () => {
+
+    var registry = new CodecRegistry();
+    registry.setDecoderForTransferSyntax(TransferSyntax.NONE, FakeDecoder);
+    registry.setEncoder('png', {});
+
+    expect(() => registry.assertValid()).toThrow("CodecRegistry validation failed");
+
+});
+
+test('Test: CodecRegistry clone creates independent registration maps', () => {
+
+    var registry = new CodecRegistry();
+    registry.setDecoderForTransferSyntax(TransferSyntax.NONE, FakeDecoder);
+    registry.setEncoder('png', new FakeEncoder());
+
+    var clone = registry.clone();
+    clone.setEncoder('jpeg', new FakeEncoder());
+
+    expect(clone.hasEncoder('jpeg')).toBe(true);
+    expect(registry.hasEncoder('jpeg')).toBe(false);
+    expect(clone.hasEncoder('png')).toBe(true);
+    expect(registry.hasEncoder('png')).toBe(true);
+
+});
+
+test('Test: Configuration.createDefaultCodecRegistry returns an independent validated default registry', () => {
+
+    var first = Configuration.createDefaultCodecRegistry();
+    var second = Configuration.createDefaultCodecRegistry();
+
+    expect(first instanceof CodecRegistry).toBe(true);
+    expect(second instanceof CodecRegistry).toBe(true);
+
+    var firstValidation = first.assertValid();
+    var secondValidation = second.assertValid();
+    expect(firstValidation.ok).toBe(true);
+    expect(secondValidation.ok).toBe(true);
+
+    second.setEncoder('custom', new FakeEncoder());
+    expect(first.hasEncoder('custom')).toBe(false);
+    expect(second.hasEncoder('custom')).toBe(true);
 
 });

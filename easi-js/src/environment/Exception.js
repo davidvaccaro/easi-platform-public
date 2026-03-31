@@ -71,6 +71,7 @@ export var BuilderErrorCodes = {
     IncompatibleTranscodingAndParser: 'IncompatibleTranscodingAndParser',
     IncompatibleBurnedInRedactionAndParser: 'IncompatibleBurnedInRedactionAndParser',
     IncompatibleOnEmitAndReader: 'IncompatibleOnEmitAndReader',
+    InvalidCodecRegistry: 'InvalidCodecRegistry',
     InvalidOnEmit: 'InvalidOnEmit',
     InvalidOnPart: 'InvalidOnPart',
     InvalidBuildState: 'InvalidBuildState'

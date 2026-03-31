@@ -36,6 +36,7 @@ import DiagnosticUtils from "../utils/DiagnosticUtils.js";
 import { BuilderErrorCodes } from "../environment/Exception.js";
 import Pipeline from "../pipelines/Pipeline.js";
 import Tag from "../dicom/Tag.js";
+import CodecRegistry from "../codecs/CodecRegistry.js";
 
 export default class PipelineBuildSession {
 
@@ -112,6 +113,46 @@ export default class PipelineBuildSession {
         return ((writer != null)
             && (typeof writer === "object")
             && (typeof writer.write === "function"));
+    }
+
+    /**
+     * Determines if the codec registry appears to implement the EASI codec registry contract.
+     * @param {object | null} codecRegistry The codec registry.
+     * @returns {boolean} True when registry is valid.
+     */
+    isValidCodecRegistry(codecRegistry) {
+        return (codecRegistry instanceof CodecRegistry);
+    }
+
+    /**
+     * Validate the configured codec registry and fail fast on invalid state.
+     * @param {object | null} codecRegistry The codec registry.
+     */
+    validateCodecRegistry(codecRegistry) {
+
+        if (codecRegistry == null)
+            return;
+
+        if (this.isValidCodecRegistry(codecRegistry) == false) {
+            throw new Exception(
+                "PipelineBuilder.build requires withCodecRegistry(...) to receive a CodecRegistry instance.",
+                BuilderErrorCodes.InvalidCodecRegistry
+            );
+        }
+
+        try {
+            codecRegistry.assertValid({
+                requireDefaultDecoder: true
+            });
+        }
+        catch (error) {
+            throw new Exception(
+                "PipelineBuilder.build detected an invalid codec registry state. " + (error?.message ?? ""),
+                BuilderErrorCodes.InvalidCodecRegistry,
+                error
+            );
+        }
+
     }
 
     /**
@@ -372,7 +413,7 @@ export default class PipelineBuildSession {
 
     /**
      * Set the codec registry used by codec-dependent handlers.
-     * @param {object} codecRegistry The codec registry.
+     * @param {CodecRegistry} codecRegistry The codec registry.
      * @returns {PipelineBuildSession} The current session.
      */
     withCodecRegistry(codecRegistry) {
@@ -577,6 +618,9 @@ export default class PipelineBuildSession {
                 BuilderErrorCodes.InvalidBuildState
             );
         }
+
+        // Validate configured codec registry contract/state before composing handlers.
+        this.validateCodecRegistry(this.codecRegistry);
 
         // Validate compatibility of known parser/handler combinations.
         this.validateParserHandlerCompatibility(this.parser, this.handler);

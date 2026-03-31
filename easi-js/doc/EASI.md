@@ -195,6 +195,38 @@ Creates a new instance of the EASI PipelineBuilder.
 
 ---
 
+### `EASI.codecRegistryBuilder()`
+
+Creates a new instance of the EASI `CodecRegistryBuilder`.
+
+#### Parameters
+
+*(None.)*
+
+#### Returns
+
+| Type                    | Description                                              |
+|-------------------------|----------------------------------------------------------|
+| `CodecRegistryBuilder`  | A new, initialized codec-registry builder instance.      |
+
+---
+
+### `EASI.CodecRegistry.builder()`
+
+Namespace alias for `EASI.codecRegistryBuilder()`.
+
+#### Parameters
+
+*(None.)*
+
+#### Returns
+
+| Type                    | Description                                              |
+|-------------------------|----------------------------------------------------------|
+| `CodecRegistryBuilder`  | A new, initialized codec-registry builder instance.      |
+
+---
+
 ## Usage Example
 
 ```js
@@ -233,6 +265,7 @@ Use this index to navigate all documentation markdown files in `easi-js/doc`.
 - [EASI](./EASI.md)
 
 ### builders
+- [CodecRegistryBuilder](./builders/CodecRegistryBuilder.md)
 - [PipelineBuilder](./builders/PipelineBuilder.md)
 
 ### codecs

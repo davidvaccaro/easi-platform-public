@@ -81,6 +81,15 @@ Transform/filter configuration methods (applied before terminal output):
 - `withBurnedInRedaction(redactionConfig?)`
 - `withCodecRegistry(codecRegistry)`
 
+### Codec Registry Setup
+
+`withCodecRegistry(...)` expects a `CodecRegistry` instance.
+
+- Use `Configuration.global.codecRegistry` for the shared default registry.
+- Use `Configuration.createDefaultCodecRegistry()` to create an independent default registry.
+- Or build one through `EASI.CodecRegistry.builder().withDefaultCodecs().build()`.
+- Build-time validation now checks registry integrity (for example, missing default decoder) and throws `InvalidCodecRegistry` when invalid.
+
 ## Output Stage Methods
 
 Outbound restreaming:
