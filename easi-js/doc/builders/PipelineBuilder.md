@@ -118,6 +118,10 @@ Finalize:
 
 Use `NodeDimseQueryRetrieveSourceTransport` for C-FIND/C-GET/C-MOVE source retrieval, or `NodeDimseCStoreScpSourceTransport` for incoming C-STORE SCP ingestion.
 
+To configure TLS and association security options, build association descriptors with:
+
+- `EASI.dimseAssociationBuilder().withBaseAssociation(baseAssociation).build()`
+
 ### DIMSE destination
 
 `intoDimseAssociation(...)` requires a destination transport implementing:

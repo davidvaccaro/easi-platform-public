@@ -21,6 +21,8 @@
 
 import PipelineBuilder from "./builders/PipelineBuilder.js";
 import CodecRegistryBuilder from "./builders/CodecRegistryBuilder.js";
+import DimseAssociationBuilder from "./builders/DimseAssociationBuilder.js";
+import DimseClientBuilder from "./builders/DimseClientBuilder.js";
 
 export default class EASI {
 
@@ -38,5 +40,21 @@ export default class EASI {
      */
     static codecRegistryBuilder() {
         return new CodecRegistryBuilder();
+    }
+
+    /**
+     * Create a new instance of the EASI DIMSE association builder class.
+     * @returns {DimseAssociationBuilder} A new DIMSE association builder instance.
+     */
+    static dimseAssociationBuilder() {
+        return new DimseAssociationBuilder();
+    }
+
+    /**
+     * Create a new instance of the EASI DIMSE client builder class.
+     * @returns {DimseClientBuilder} A new DIMSE client builder instance.
+     */
+    static dimseClientBuilder() {
+        return new DimseClientBuilder();
     }
 };

@@ -1,7 +1,7 @@
 //
 // NodeDimseQueryRetrieveSourceTransport.js - 1.0.0
 //
-// Node DIMSE Query/Retrieve (C-FIND + C-GET) Source Transport Class
+// Node DIMSE Query/Retrieve (C-FIND + C-GET + C-ECHO) Source Transport Class
 //
 
 import net from "node:net";
@@ -22,6 +22,7 @@ const STUDY_ROOT_GET_UID = "1.2.840.10008.5.1.4.1.2.2.3";
 const PATIENT_ROOT_FIND_UID = "1.2.840.10008.5.1.4.1.2.1.1";
 const PATIENT_ROOT_MOVE_UID = "1.2.840.10008.5.1.4.1.2.1.2";
 const PATIENT_ROOT_GET_UID = "1.2.840.10008.5.1.4.1.2.1.3";
+const VERIFICATION_SOP_CLASS_UID = "1.2.840.10008.1.1";
 
 const EXPLICIT_VR_LE = "1.2.840.10008.1.2.1";
 const IMPLICIT_VR_LE = "1.2.840.10008.1.2";
@@ -196,6 +197,22 @@ function encodeRequestCommand(commandField, messageId, sopClassUid, hasDataSet =
         encodeCommandUS(0x0000, 0x0110, messageId),
         encodeCommandUS(0x0000, 0x0700, priority),
         encodeCommandUS(0x0000, 0x0800, (hasDataSet == true) ? 0x0000 : 0x0101)
+    ]);
+
+    return concatBytes([
+        encodeCommandUL(0x0000, 0x0000, body.length),
+        body
+    ]);
+
+}
+
+function encodeEchoRequestCommand(messageId, sopClassUid = VERIFICATION_SOP_CLASS_UID) {
+
+    var body = concatBytes([
+        encodeCommandUI(0x0000, 0x0002, sopClassUid),
+        encodeCommandUS(0x0000, 0x0100, 0x0030), // C-ECHO-RQ
+        encodeCommandUS(0x0000, 0x0110, messageId),
+        encodeCommandUS(0x0000, 0x0800, 0x0101) // no data-set
     ]);
 
     return concatBytes([
@@ -1032,6 +1049,33 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
     }
 
     /**
+     * Resolve DIMSE C-ECHO options.
+     * @param {object | null} association Association input.
+     * @param {object | null} options Echo options.
+     * @returns {object} Normalized echo options.
+     */
+    resolveEchoOptions(association, options = null) {
+
+        var defaults = this.resolveAssociationValue(association, "verification", {}) || {};
+        var echoOptions = Object.assign({}, defaults, options || {});
+
+        if (echoOptions.messageId == null) {
+            echoOptions.messageId = 1;
+        }
+        echoOptions.messageId = Number(echoOptions.messageId);
+        if ((Number.isInteger(echoOptions.messageId) == false) || (echoOptions.messageId <= 0)) {
+            throw new Exception("Invalid DIMSE C-ECHO messageId.", GeneralErrorCodes.InvalidParameter);
+        }
+
+        if (Array.isArray(echoOptions.transferSyntaxUids) == false) {
+            echoOptions.transferSyntaxUids = [IMPLICIT_VR_LE, EXPLICIT_VR_LE];
+        }
+
+        return echoOptions;
+
+    }
+
+    /**
      * Create one socket for the specified association.
      * @param {object | null} association Association options.
      * @returns {Promise<object>} Connected socket.
@@ -1260,6 +1304,78 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
             implementationClassUidItem,
             implementationVersionNameItem,
             concatBytes(roleItems)
+        ]));
+
+        const fixed = concatBytes([
+            toUint16BE(0x0001),
+            new Uint8Array([0x00, 0x00]),
+            toTextBytes(calledAeTitle),
+            toTextBytes(callingAeTitle),
+            new Uint8Array(32)
+        ]);
+
+        return {
+            pdu: makePdu(PDU_TYPES.A_ASSOCIATE_RQ, concatBytes([
+                fixed,
+                applicationContextItem,
+                concatBytes(contextItems),
+                userInformationItem
+            ])),
+            contexts
+        };
+
+    }
+
+    /**
+     * Build C-ECHO association request and echo presentation-context descriptors.
+     * @param {object | null} association Association options.
+     * @param {object} echoOptions C-ECHO options.
+     * @returns {{ pdu: Uint8Array, contexts: Array<object> }} Request PDU and context descriptors.
+     */
+    buildEchoAssociateRq(association, echoOptions) {
+
+        const calledAeTitle = padAeTitle(this.resolveAssociationValue(association, "calledAeTitle"));
+        const callingAeTitle = padAeTitle(this.resolveAssociationValue(association, "callingAeTitle"));
+        const maxPduLength = Number(this.resolveAssociationValue(association, "maxPduLength", 16384));
+        const implementationClassUid = this.resolveAssociationValue(association, "implementationClassUid", DEFAULT_IMPLEMENTATION_CLASS_UID);
+        const implementationVersionName = this.resolveAssociationValue(association, "implementationVersionName", DEFAULT_IMPLEMENTATION_VERSION_NAME);
+
+        var contexts = [{
+            id: 1,
+            kind: "echo",
+            abstractSyntaxUid: VERIFICATION_SOP_CLASS_UID,
+            transferSyntaxUids: echoOptions.transferSyntaxUids.slice()
+        }];
+
+        const applicationContextItem = makeItem(0x10, toTextBytes(APPLICATION_CONTEXT_UID));
+
+        var contextItems = [];
+        for (var index = 0; index < contexts.length; index++) {
+
+            var context = contexts[index];
+            var abstractSyntaxItem = makeItem(0x30, toTextBytes(context.abstractSyntaxUid));
+
+            var transferSyntaxItems = [];
+            for (var tsIndex = 0; tsIndex < context.transferSyntaxUids.length; tsIndex++) {
+                transferSyntaxItems.push(makeItem(0x40, toTextBytes(context.transferSyntaxUids[tsIndex])));
+            }
+
+            contextItems.push(makeItem(0x20, concatBytes([
+                new Uint8Array([context.id & 0xFF, 0x00, 0x00, 0x00]),
+                abstractSyntaxItem,
+                concatBytes(transferSyntaxItems)
+            ])));
+
+        }
+
+        const maximumLengthItem = makeItem(0x51, toUint32BE(maxPduLength));
+        const implementationClassUidItem = makeItem(0x52, toTextBytes(implementationClassUid));
+        const implementationVersionNameItem = makeItem(0x55, toTextBytes(implementationVersionName));
+
+        const userInformationItem = makeItem(0x50, concatBytes([
+            maximumLengthItem,
+            implementationClassUidItem,
+            implementationVersionNameItem
         ]));
 
         const fixed = concatBytes([
@@ -2328,6 +2444,47 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
     }
 
     /**
+     * Receive C-ECHO response and return final status.
+     * @param {object} queue PDU queue.
+     * @param {object} state PDV event state.
+     * @param {number} echoContextId ECHO presentation context ID.
+     * @returns {Promise<object>} C-ECHO response details.
+     */
+    async receiveEchoResponse(queue, state, echoContextId) {
+
+        while (true) {
+
+            var event = await this.nextDimseEvent(queue, state);
+
+            if (event.type == "abort") {
+                throw new Exception("DIMSE association aborted while waiting for C-ECHO response.", GeneralErrorCodes.GeneralError);
+            }
+
+            if ((event.type != "pdv") || (event.isCommand != true) || (event.contextId != echoContextId)) {
+                continue;
+            }
+
+            var elements = parseCommandElements(event.bytes);
+            var commandField = decodeCommandUS(elements, "00000100", 0xFFFF);
+            if (commandField != 0x8030) {
+                continue;
+            }
+
+            var status = decodeCommandUS(elements, "00000900", 0xFFFF);
+            if ((status == 0x0000) || ((status & 0xF000) == 0xB000)) {
+                return {
+                    status,
+                    messageIdBeingRespondedTo: decodeCommandUS(elements, "00000120", 0)
+                };
+            }
+
+            throw new Exception(`C-ECHO failed with status 0x${status.toString(16).toUpperCase()}.`, GeneralErrorCodes.GeneralError);
+
+        }
+
+    }
+
+    /**
      * Send A-RELEASE-RQ and wait for A-RELEASE-RP.
      * @param {object} socket Connected socket.
      * @param {object} queue PDU queue.
@@ -2390,6 +2547,76 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
                 dimse: diagnostics
             }
         };
+
+    }
+
+    /**
+     * Execute DIMSE C-ECHO (Verification SOP Class) against one association.
+     * @param {object | null} association DIMSE association/source options.
+     * @param {object | null} options Optional C-ECHO options.
+     * @returns {Promise<object>} C-ECHO result.
+     */
+    async echo(association, options = null) {
+
+        this.validateAssociation(association);
+
+        var startedAtMs = Date.now();
+        var echoOptions = this.resolveEchoOptions(association, options);
+        var associate = this.buildEchoAssociateRq(association, echoOptions);
+
+        var socket = await this.connectSocket(association);
+        var scope = this.createPduReader(socket);
+
+        try {
+
+            await this.writePdu(socket, associate.pdu);
+
+            var ac = await scope.queue.shift();
+            if (ac.type == PDU_TYPES.A_ASSOCIATE_RJ) {
+                throw new Exception("DIMSE association rejected by peer.", GeneralErrorCodes.GeneralError);
+            }
+            if (ac.type != PDU_TYPES.A_ASSOCIATE_AC) {
+                throw new Exception("Invalid DIMSE association response.", GeneralErrorCodes.GeneralError);
+            }
+
+            var acInfo = this.parseAssociateAc(ac.payload, associate.contexts);
+            var echoContext = this.resolveAcceptedContextByKind(acInfo.contexts, "echo");
+
+            if (echoContext == null) {
+                throw new Exception("DIMSE C-ECHO presentation context was rejected by peer.", GeneralErrorCodes.GeneralError);
+            }
+
+            var state = {
+                fragments: new Map(),
+                events: []
+            };
+
+            var command = encodeEchoRequestCommand(echoOptions.messageId, VERIFICATION_SOP_CLASS_UID);
+            await this.sendDimseRequest(socket, echoContext.context.id, acInfo.maxPduLength, command, null);
+
+            var response = await this.receiveEchoResponse(scope.queue, state, echoContext.context.id);
+            await this.releaseAssociation(socket, scope.queue, state);
+
+            return {
+                ok: true,
+                status: response.status,
+                durationMs: (Date.now() - startedAtMs),
+                association: association || null,
+                dimse: {
+                    operation: "c-echo",
+                    status: response.status,
+                    messageId: echoOptions.messageId,
+                    messageIdBeingRespondedTo: response.messageIdBeingRespondedTo
+                }
+            };
+
+        }
+        finally {
+            scope.cleanup();
+            if ((socket != null) && (typeof socket.destroy == "function")) {
+                socket.destroy();
+            }
+        }
 
     }
 

@@ -25,7 +25,7 @@ The `EASI` class is the root entry point for the EASI DICOM system.
 
 It provides access to the primary constructs and builders of the system.  
 
-Currently, it grants access to the `PipelineBuilder` for creating streaming pipelines.
+It provides static builder entry points for `PipelineBuilder`, `CodecRegistryBuilder`, `DimseAssociationBuilder`, and `DimseClientBuilder`.
 
 ## Parse/Emit Combination Matrix
 
@@ -211,6 +211,38 @@ Creates a new instance of the EASI `CodecRegistryBuilder`.
 
 ---
 
+### `EASI.dimseAssociationBuilder()`
+
+Creates a new instance of the EASI `DimseAssociationBuilder`.
+
+#### Parameters
+
+*(None.)*
+
+#### Returns
+
+| Type                    | Description                                              |
+|-------------------------|----------------------------------------------------------|
+| `DimseAssociationBuilder`  | A new, initialized DIMSE association builder instance.      |
+
+---
+
+### `EASI.dimseClientBuilder()`
+
+Creates a new instance of the EASI `DimseClientBuilder`.
+
+#### Parameters
+
+*(None.)*
+
+#### Returns
+
+| Type                    | Description                                              |
+|-------------------------|----------------------------------------------------------|
+| `DimseClientBuilder`    | A new, initialized DIMSE client builder instance.        |
+
+---
+
 ## Usage Example
 
 ```js
@@ -250,7 +282,12 @@ Use this index to navigate all documentation markdown files in `easi-js/doc`.
 
 ### builders
 - [CodecRegistryBuilder](./builders/CodecRegistryBuilder.md)
+- [DimseAssociationBuilder](./builders/DimseAssociationBuilder.md)
+- [DimseClientBuilder](./builders/DimseClientBuilder.md)
 - [PipelineBuilder](./builders/PipelineBuilder.md)
+
+### clients
+- [DimseClient](./clients/DimseClient.md)
 
 ### codecs
 - [Decoders](./codecs/Decoders.md)
