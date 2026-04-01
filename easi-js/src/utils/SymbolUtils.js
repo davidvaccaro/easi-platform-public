@@ -1,7 +1,5 @@
 //
-// SymbolUtils.js - 1.0.0
-//
-// Symbol Utils Class 
+// SymbolUtils.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

@@ -1,9 +1,6 @@
 
 //
-// NameUse.js - 1.0.0
-//
-// FHIR NameUse Class
-// https://www.hl7.org/fhir/valueset-name-use.html
+// NameUse.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

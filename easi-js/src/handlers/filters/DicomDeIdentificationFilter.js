@@ -1,7 +1,5 @@
 //
-// DicomDeIdentificationFilter.js - 1.0.0
-//
-// Stream DICOM De-identification Filter Class
+// DicomDeIdentificationFilter.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors

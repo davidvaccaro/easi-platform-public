@@ -1,8 +1,5 @@
 //
-// DataElement.js - 1.0.0
-//
-// DICOM Data Element Class
-// DICOM Reference: https://dicom.nema.org/medical/dicom/current/output/html/part05.html#sect_7.1.1
+// DataElement.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

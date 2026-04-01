@@ -1,7 +1,5 @@
 //
-// DicomDataWriterHandler.js - 1.0.0
-//
-// Stream DICOM Data Writer Handler Class
+// DicomDataWriterHandler.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors

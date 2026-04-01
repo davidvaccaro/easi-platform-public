@@ -1,7 +1,5 @@
 //
-// Encounter.js - 1.0.0
-//
-// FHIR Encounter Class 
+// Encounter.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

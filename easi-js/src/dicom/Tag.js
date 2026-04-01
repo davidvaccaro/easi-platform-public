@@ -1,10 +1,6 @@
 //
-// Tag.js - 1.0.0
+// Tag.js
 //
-// DICOM Tag Class 
-//
-// David Vaccaro, Xinonix Interactive Development, Inc / Copyright 2021
-// 
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
 // and protected by applicable U.S. and international patent, copyright, trademark and trade secret laws. Xinonix 

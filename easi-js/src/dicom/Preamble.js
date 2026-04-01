@@ -1,8 +1,5 @@
 //
-// Preamble.js - 1.0.0
-//
-// DICOM Preamble Class
-// https://dicom.nema.org/medical/dicom/current/output/html/part05.html#chapter_7
+// Preamble.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

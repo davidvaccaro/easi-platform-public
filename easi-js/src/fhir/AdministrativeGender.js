@@ -1,8 +1,5 @@
 //
-// AdministrativeGender.js - 1.0.0
-//
-// FHIR AdministrativeGender Class
-// https://www.hl7.org/fhir/valueset-name-use.html
+// AdministrativeGender.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

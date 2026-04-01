@@ -1,7 +1,5 @@
 //
-// EASI.js - 1.0.0
-//
-// EASI Master Factory Class 
+// EASI.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

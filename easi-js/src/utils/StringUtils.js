@@ -1,7 +1,5 @@
 //
-// StringUtils.js - 1.0.0
-//
-// String Utils Class 
+// StringUtils.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

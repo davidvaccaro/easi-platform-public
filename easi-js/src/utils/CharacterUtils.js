@@ -1,7 +1,5 @@
 //
-// CharacterUtils.js - 1.0.0
-//
-// Character Utils Class 
+// CharacterUtils.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

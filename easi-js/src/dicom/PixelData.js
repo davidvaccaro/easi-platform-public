@@ -1,8 +1,5 @@
 //
-// PixelData.js - 1.0.0
-//
-// DICOM Pixel Data Class
-// https://dicom.nema.org/medical/dicom/current/output/html/part05.html#chapter_7
+// PixelData.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

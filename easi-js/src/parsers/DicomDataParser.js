@@ -1,7 +1,5 @@
 //
-// DicomDataParser.js - 1.0.0
-//
-// DICOM Data Parser Class 
+// DicomDataParser.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

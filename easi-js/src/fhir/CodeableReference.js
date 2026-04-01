@@ -1,7 +1,5 @@
 //
-// CodeableReference.js - 1.0.0
-//
-// FHIR CodeableReference Class 
+// CodeableReference.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

@@ -1,8 +1,5 @@
 //
-// Item.js - 1.0.0
-//
-// DICOM Item Class
-// https://dicom.nema.org/medical/dicom/current/output/html/part05.html#chapter_7
+// Item.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

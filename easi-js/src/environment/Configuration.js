@@ -1,7 +1,5 @@
 //
-// Configuration.js - 1.0.0
-//
-// DICOM Configuration Class 
+// Configuration.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

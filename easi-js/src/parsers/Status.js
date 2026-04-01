@@ -1,9 +1,6 @@
 
 //
-// Status.js - 1.0.0
-//
-// Parse Status Class
-// https://dicom.nema.org/medical/dicom/current/output/html/part05.html#chapter_7
+// Status.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

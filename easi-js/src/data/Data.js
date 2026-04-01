@@ -1,7 +1,5 @@
 //
-// Data.js - 1.0.0
-//
-// Data Class 
+// Data.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

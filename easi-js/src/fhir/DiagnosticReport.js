@@ -1,7 +1,5 @@
 //
-// DiagnosticReport.js - 1.0.0
-//
-// FHIR DiagnosticReport Class 
+// DiagnosticReport.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

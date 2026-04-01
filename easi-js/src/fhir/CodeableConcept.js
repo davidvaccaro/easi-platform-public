@@ -1,7 +1,5 @@
 //
-// CodeableConcept.js - 1.0.0
-//
-// FHIR CodeableConcept Class 
+// CodeableConcept.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 

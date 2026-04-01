@@ -1,8 +1,5 @@
 //
-// ValueRepresentation.js - 1.0.0
-//
-// DICOM Value Representation Class
-// https://dicom.nema.org/medical/dicom/current/output/html/part05.html#sect_6.2
+// ValueRepresentation.js
 //
 // Proprietary Notices:
 // The Products, Documentation and Materials are proprietary to Xinonix Interactive Development Inc. and its licensors 
