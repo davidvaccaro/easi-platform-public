@@ -1,4 +1,5 @@
 import Pipeline from '../../src/pipelines/Pipeline.js';
+import Exception from '../../src/environment/Exception.js';
 
 test('Test: Pipeline.process delegates to configured reader', async () => {
 
@@ -124,5 +125,119 @@ test('Test: Pipeline.process queue continues after one call fails', async () => 
         'start:good',
         'end:good'
     ]);
+
+});
+
+test('Test: Pipeline.start rejects non-source-bound readers', () => {
+
+    const reader = {
+        parser: { handler: {} },
+        read: async () => null
+    };
+
+    const pipeline = new Pipeline(reader);
+
+    expect(() => pipeline.start()).toThrow(Exception);
+    expect(() => pipeline.start()).toThrow('source-bound readers');
+
+});
+
+test('Test: Pipeline.start loops source-bound reads until onResult returns false', async () => {
+
+    var readCount = 0;
+    var stopCount = 0;
+
+    const reader = {
+        isSourceBound: true,
+        parser: { handler: {} },
+        read: async () => {
+            readCount += 1;
+            return readCount;
+        },
+        stop: async () => {
+            stopCount += 1;
+        }
+    };
+
+    const pipeline = new Pipeline(reader);
+    const run = pipeline.start(null, {
+        onResult: async (result) => (result < 3)
+    });
+
+    await run.done;
+
+    expect(run.iterations).toBe(3);
+    expect(readCount).toBe(3);
+    expect(stopCount).toBe(1);
+    expect(run.running).toBe(false);
+
+});
+
+test('Test: Pipeline.start continues after read error when onError returns true', async () => {
+
+    var attempts = 0;
+    var errors = 0;
+
+    const reader = {
+        isSourceBound: true,
+        parser: { handler: {} },
+        read: async () => {
+            attempts += 1;
+            if (attempts === 1) {
+                throw new Error('temporary');
+            }
+            return 'ok';
+        },
+        stop: async () => {
+        }
+    };
+
+    const pipeline = new Pipeline(reader);
+    const run = pipeline.start(null, {
+        onError: async () => {
+            errors += 1;
+            return true;
+        },
+        onResult: async () => false
+    });
+
+    await run.done;
+
+    expect(errors).toBe(1);
+    expect(run.iterations).toBe(1);
+    expect(attempts).toBe(2);
+
+});
+
+test('Test: Pipeline.start stop() stops active run and resolves done', async () => {
+
+    var readCount = 0;
+    var stopCount = 0;
+
+    const reader = {
+        isSourceBound: true,
+        parser: { handler: {} },
+        read: async () => {
+            await new Promise((resolve) => setTimeout(resolve, 5));
+            readCount += 1;
+            return readCount;
+        },
+        stop: async () => {
+            stopCount += 1;
+        }
+    };
+
+    const pipeline = new Pipeline(reader);
+    const run = pipeline.start(null, {
+        onResult: async () => true
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    await run.stop();
+    await run.done;
+
+    expect(run.running).toBe(false);
+    expect(readCount).toBeGreaterThan(0);
+    expect(stopCount).toBeGreaterThan(0);
 
 });

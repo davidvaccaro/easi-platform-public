@@ -24,6 +24,14 @@ import PartStreamReader from './PartStreamReader.js';
 export default class DimseAssociationReader {
 
     /**
+     * Indicates this reader is source-bound (association/transport lifecycle managed by reader).
+     * @returns {boolean} TRUE.
+     */
+    get isSourceBound() {
+        return true;
+    }
+
+    /**
      * Resolve the DIMSE source transport for one read call.
      * @param {object | null} options Optional read options.
      * @returns {object} The transport.
@@ -117,6 +125,49 @@ export default class DimseAssociationReader {
         }
 
         return this._partReader.read(normalized.source, normalized.readOptions);
+
+    }
+
+    /**
+     * Start one source-bound DIMSE listener lifecycle when transport supports start().
+     * @param {object | null} source DIMSE association/source options (overrides constructor default when provided).
+     * @param {object | null} options Optional read/start options.
+     * @returns {Promise<object | null>} Optional listener metadata.
+     */
+    async start(source = null, options = null) {
+
+        const transport = this.resolveTransport(options);
+        if ((transport == null) || (typeof transport.read !== "function")) {
+            throw new Exception('Invalid DIMSE source transport.', GeneralErrorCodes.InvalidParameter);
+        }
+
+        if (typeof transport.start !== "function")
+            return null;
+
+        const association = (source != null) ? source : this._association;
+        return await transport.start(association, options);
+
+    }
+
+    /**
+     * Stop one source-bound DIMSE listener lifecycle when transport supports close()/stop().
+     * @param {object | null} source DIMSE association/source options.
+     * @param {object | null} options Optional read/stop options.
+     */
+    async stop(source = null, options = null) {
+
+        const transport = this.resolveTransport(options);
+        if (transport == null)
+            return;
+
+        if (typeof transport.close === "function") {
+            await transport.close();
+            return;
+        }
+
+        if (typeof transport.stop === "function") {
+            await transport.stop(source, options);
+        }
 
     }
 

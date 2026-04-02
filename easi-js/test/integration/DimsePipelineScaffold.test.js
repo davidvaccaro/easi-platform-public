@@ -98,3 +98,41 @@ test("Test: in-memory DIMSE source to DIMSE destination pipeline supports de-ide
     expect(outputSopInstanceUid).toBe(maskedSopInstanceUid);
 
 });
+
+test("Test: source-bound DIMSE pipeline supports start/stop lifecycle", async () => {
+
+    const sourceAssociation = {
+        host: "pacs-source.local",
+        port: 104,
+        callingAeTitle: "EASI_ROUTER",
+        calledAeTitle: "SRC_PACS"
+    };
+
+    const sourceBytes = readDicomBytes("0002.DCM");
+    const sourceTransport = new InMemoryDimseSourceTransport();
+    sourceTransport.enqueueSource(sourceBytes, {
+        contentType: "application/dicom"
+    });
+
+    const pipeline = EASI.pipelineBuilder()
+        .fromDimseAssociation(sourceAssociation, sourceTransport)
+        .ofDicomData()
+        .toInstances()
+        .build();
+
+    var emitted = null;
+    const run = pipeline.start(null, {
+        maxIterations: 1,
+        onResult: async (instance) => {
+            emitted = instance;
+            return false;
+        }
+    });
+
+    await run.done;
+
+    expect(run.iterations).toBe(1);
+    expect(emitted).toBeDefined();
+    expect(emitted?.dataSet?.attributes?.length > 0).toBe(true);
+
+});
