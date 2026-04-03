@@ -57,10 +57,10 @@ test('Test: DicomDeIdentificationFilter tagMask supports function resolvers', as
 
 });
 
-test('Test: DicomDeIdentificationFilter mask alias supports object keys', async () => {
+test('Test: DicomDeIdentificationFilter deIdentificationMask alias supports object keys', async () => {
 
     const handler = new DicomDeIdentificationFilter(new DicomInstanceHandler());
-    handler.mask = {
+    handler.deIdentificationMask = {
         '(0010,0010)': '[HIDDEN]'
     };
 
@@ -73,7 +73,7 @@ test('Test: DicomDeIdentificationFilter mask alias supports object keys', async 
 test('Test: Tag default de-identification mask applies DICOM action-code behavior via handler chain', async () => {
 
     const handler = new DicomDeIdentificationFilter(new DicomInstanceHandler());
-    handler.mask = Tag.DefaultDeIdentificationMask;
+    handler.deIdentificationMask = Tag.DefaultDeIdentificationMask;
 
     const result = await parseInstanceWithHandler(handler, readDicomBytes('0002.DCM'));
 
@@ -91,7 +91,7 @@ test('Test: PipelineBuilder withMask applies de-identification handler chain', a
 
     const pipeline = EASI.pipelineBuilder()
         .fromPartStream().ofDicomData()
-        .withMask(new Map([
+        .withDeIdentification(new Map([
             [Tag.PatientName, '[BUILDER MASK]']
         ]))
         .toInstances()
@@ -106,7 +106,7 @@ test('Test: PipelineBuilder withMask applies de-identification handler chain', a
 test('Test: Action code X removes the masked attribute from the emitted data set', async () => {
 
     const handler = new DicomDeIdentificationFilter(new DicomInstanceHandler());
-    handler.mask = new Map([
+    handler.deIdentificationMask = new Map([
         [Tag.PatientName, { ID: Tag.PatientName.ID, Action: 'X' }]
     ]);
 
@@ -124,7 +124,7 @@ test('Test: Action code U replaces a UID value with a deterministic replacement 
     );
 
     const handler = new DicomDeIdentificationFilter(new DicomInstanceHandler());
-    handler.mask = new Map([
+    handler.deIdentificationMask = new Map([
         [Tag.SOPInstanceUID, { ID: Tag.SOPInstanceUID.ID, Action: 'U' }]
     ]);
 
@@ -141,7 +141,7 @@ test('Test: Action code U replaces a UID value with a deterministic replacement 
 test('Test: Action code U creates stable replacement UID across repeated reads', async () => {
 
     const handler = new DicomDeIdentificationFilter(new DicomInstanceHandler());
-    handler.mask = new Map([
+    handler.deIdentificationMask = new Map([
         [Tag.SOPInstanceUID, { ID: Tag.SOPInstanceUID.ID, Action: 'U' }]
     ]);
 
@@ -159,7 +159,7 @@ test('Test: Action code U creates stable replacement UID across repeated reads',
 test('Test: mask array input applies default [MASKED] action', async () => {
 
     const handler = new DicomDeIdentificationFilter(new DicomInstanceHandler());
-    handler.mask = [
+    handler.deIdentificationMask = [
         Tag.PatientName,
         '(0010,0020)'
     ];
@@ -179,16 +179,24 @@ test('Test: normalizeMaskActionCode handles whitespace and optional star suffix'
 
 });
 
+test('Test: normalizeTagMaskKey preserves template tag identifiers with x wildcards', () => {
+
+    const handler = new DicomDeIdentificationFilter();
+    expect(handler.normalizeTagMaskKey('50xx0005')).toBe('50XX0005');
+    expect(handler.normalizeTagMaskKey('(50xx,0005)')).toBe('50XX0005');
+
+});
+
 test('Test: setTagMask and clearTagMask operate on normalized identifiers', () => {
 
     const handler = new DicomDeIdentificationFilter();
-    handler.mask = null;
+    handler.deIdentificationMask = null;
 
     handler.setTagMask('(0010,0010)', 'X');
-    expect(handler.mask.get('00100010').Action).toBe('X');
+    expect(handler.deIdentificationMask.get('00100010').Action).toBe('X');
 
     handler.clearTagMask(Tag.PatientName);
-    expect(handler.mask.has('00100010')).toBe(false);
+    expect(handler.deIdentificationMask.has('00100010')).toBe(false);
 
 });
 
@@ -196,7 +204,7 @@ test('Test: applyMask defers function action until attribute is complete', async
 
     var resolverCalls = 0;
     const handler = new DicomDeIdentificationFilter();
-    handler.mask = new Map([
+    handler.deIdentificationMask = new Map([
         [Tag.PatientName, () => { resolverCalls++; return '[FUNCTION MASK]'; }]
     ]);
 
@@ -223,7 +231,7 @@ test('Test: applyMask defers function action until attribute is complete', async
 test('Test: action code K keeps the original value', async () => {
 
     const handler = new DicomDeIdentificationFilter();
-    handler.mask = new Map([
+    handler.deIdentificationMask = new Map([
         [Tag.PatientName, { ID: Tag.PatientName.ID, Action: 'K' }]
     ]);
 
@@ -245,7 +253,7 @@ test('Test: action code Z uses zero-length replacement for binary attributes', a
 
     const binaryTag = { ID: 'DEADBEEF', VR: { ID: 'OB' } };
     const handler = new DicomDeIdentificationFilter();
-    handler.mask = new Map([
+    handler.deIdentificationMask = new Map([
         [binaryTag, { ID: binaryTag.ID, Action: 'Z' }]
     ]);
 
@@ -268,7 +276,7 @@ test('Test: action code X causes start-sequence to be skipped', async () => {
 
     const sequenceTag = { ID: 'DEADBE00', VR: { ID: 'SQ' } };
     const handler = new DicomDeIdentificationFilter();
-    handler.mask = new Map([
+    handler.deIdentificationMask = new Map([
         [sequenceTag, { ID: sequenceTag.ID, Action: 'X' }]
     ]);
 

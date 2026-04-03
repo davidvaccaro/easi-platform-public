@@ -82,24 +82,14 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
-     * Sets the de-identification mask map.
-     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null} mask The tag mask map.
-     * @returns {PipelineTargetStage} A new target stage object.
-     */
-    withMask(mask) {
-        return this.cloneCurrentStage(
-            (session) => session.withMask(mask)
-        );
-    }
-
-    /**
      * Enables de-identification using a mask.
-     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null} [mask=Tag.DefaultDeIdentificationMask] The tag mask map.
+     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null}
+     * [deIdentificationMask=Tag.DefaultDeIdentificationMask] The de-identification mask map.
      * @returns {PipelineTargetStage} A new target stage object.
      */
-    withDeIdentification(mask = Tag.DefaultDeIdentificationMask) {
+    withDeIdentification(deIdentificationMask = Tag.DefaultDeIdentificationMask) {
         return this.cloneCurrentStage(
-            (session) => session.withDeIdentification(mask)
+            (session) => session.withDeIdentification(deIdentificationMask)
         );
     }
 

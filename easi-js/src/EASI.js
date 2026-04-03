@@ -21,6 +21,9 @@ import PipelineBuilder from "./builders/PipelineBuilder.js";
 import CodecRegistryBuilder from "./builders/CodecRegistryBuilder.js";
 import DimseAssociationBuilder from "./builders/DimseAssociationBuilder.js";
 import DimseClientBuilder from "./builders/DimseClientBuilder.js";
+import DicomMappingBuilder from "./builders/DicomMappingBuilder.js";
+import DicomSelectionBuilder from "./builders/DicomSelectionBuilder.js";
+import DicomDeIdentificationMaskBuilder from "./builders/DicomDeIdentificationMaskBuilder.js";
 
 export default class EASI {
 
@@ -54,5 +57,29 @@ export default class EASI {
      */
     static dimseClientBuilder() {
         return new DimseClientBuilder();
+    }
+
+    /**
+     * Create a new instance of the EASI DICOM mapping builder class.
+     * @returns {DicomMappingBuilder} A new DICOM mapping builder instance.
+     */
+    static mappingBuilder() {
+        return new DicomMappingBuilder();
+    }
+
+    /**
+     * Create a new instance of the EASI DICOM selection builder class.
+     * @returns {DicomSelectionBuilder} A new DICOM selection builder instance.
+     */
+    static selectionBuilder() {
+        return new DicomSelectionBuilder();
+    }
+
+    /**
+     * Create a new instance of the EASI de-identification mask builder class.
+     * @returns {DicomDeIdentificationMaskBuilder} A new de-identification mask builder instance.
+     */
+    static deIdentificationMaskBuilder() {
+        return new DicomDeIdentificationMaskBuilder();
     }
 };

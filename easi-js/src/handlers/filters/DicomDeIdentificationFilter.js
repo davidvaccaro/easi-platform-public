@@ -81,8 +81,10 @@ export default class DicomDeIdentificationFilter {
             return null;
 
         if (typeof tagOrIdentifier === 'string') {
-            var normalized = tagOrIdentifier.replace(/[^0-9a-fA-F]/g, '').toUpperCase();
+            var normalized = tagOrIdentifier.replace(/[^0-9a-fA-FxX]/g, '').toUpperCase();
             if (normalized.length != 8)
+                return null;
+            if (/^[0-9A-FX]{8}$/.test(normalized) == false)
                 return null;
             return normalized;
         }
@@ -657,17 +659,17 @@ export default class DicomDeIdentificationFilter {
 
     /**
      * Alias for tagMask.
-     * @param {Map<MaskItem> | null} mask The tag mask map.
+     * @param {Map<MaskItem> | null} deIdentificationMask The de-identification mask map.
      */
-    set mask(mask) {
-        this.tagMask = mask;
+    set deIdentificationMask(deIdentificationMask) {
+        this.tagMask = deIdentificationMask;
     }
 
     /**
      * Alias for tagMask.
-     * @returns {Map<MaskItem> | null} The tag mask map.
+     * @returns {Map<MaskItem> | null} The de-identification mask map.
      */
-    get mask() {
+    get deIdentificationMask() {
         return this.tagMask;
     }
 
@@ -712,13 +714,14 @@ export default class DicomDeIdentificationFilter {
     /**
      * Create a new DICOM de-identification handler with an optional "next" handler.
      * @param {object} nextHandler The next handler in the chain.
-     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null} mask The tag mask map.
+     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null} deIdentificationMask
+     * The de-identification mask map.
      */
-    constructor(nextHandler = null, mask = Tag.DefaultDeIdentificationMask) {
+    constructor(nextHandler = null, deIdentificationMask = Tag.DefaultDeIdentificationMask) {
 
         this.nextHandler = nextHandler;
         this._tagMask = new Map();
-        this.mask = mask;
+        this.deIdentificationMask = deIdentificationMask;
 
     }
 

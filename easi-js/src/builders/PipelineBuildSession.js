@@ -465,22 +465,14 @@ export default class PipelineBuildSession {
     }
 
     /**
-     * Sets the de-identification mask map.
-     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null} mask The tag mask map.
-     * @returns {PipelineBuildSession} The current session.
-     */
-    withMask(mask) {
-        this.mask = mask;
-        return this;
-    }
-
-    /**
      * Enables de-identification using a mask.
-     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null} [mask=Tag.DefaultDeIdentificationMask] The tag mask map.
+     * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null}
+     * [deIdentificationMask=Tag.DefaultDeIdentificationMask] The de-identification mask map.
      * @returns {PipelineBuildSession} The current session.
      */
-    withDeIdentification(mask = Tag.DefaultDeIdentificationMask) {
-        return this.withMask(mask);
+    withDeIdentification(deIdentificationMask = Tag.DefaultDeIdentificationMask) {
+        this.deIdentificationMask = deIdentificationMask;
+        return this;
     }
 
     /**
@@ -755,14 +747,14 @@ export default class PipelineBuildSession {
         }
 
         // Compose de-identification in the canonical DICOM semantic handler chain.
-        if (this.mask != null) {
+        if (this.deIdentificationMask != null) {
 
             handler = this.composeDicomSemanticFilter(
                 parser,
                 handler,
-                (nextHandler) => (new DicomDeIdentificationFilter(nextHandler, this.mask)),
-                "withMask(...) or withDeIdentification(...) requires a DICOM semantic handler chain (native DICOM parser or metadata adapter).",
-                BuilderErrorCodes.IncompatibleMaskAndParser
+                (nextHandler) => (new DicomDeIdentificationFilter(nextHandler, this.deIdentificationMask)),
+                "withDeIdentification(...) requires a DICOM semantic handler chain (native DICOM parser or metadata adapter).",
+                BuilderErrorCodes.IncompatibleDeIdentificationAndParser
             );
         }
 
@@ -839,7 +831,7 @@ export default class PipelineBuildSession {
         this.isStrict = false;
         this.parser = null;
         this.handler = null;
-        this.mask = null;
+        this.deIdentificationMask = null;
         this.validation = null;
         this.transcoding = null;
         this.codecRegistry = null;

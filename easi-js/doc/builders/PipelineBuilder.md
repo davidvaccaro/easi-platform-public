@@ -73,8 +73,7 @@ Transform/filter configuration methods (applied before terminal output):
 
 - `withOnEmit(callback)`
 - `withIsStrict(boolean)`
-- `withMask(mask)`
-- `withDeIdentification(mask?)`
+- `withDeIdentification(deIdentificationMask?)`
 - `withBulkDataPolicy(policy)`
 - `withValidation(validationConfig?)`
 - `withTranscoding(transcodingConfig?)`

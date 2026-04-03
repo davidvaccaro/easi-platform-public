@@ -64,7 +64,7 @@ export var BuilderErrorCodes = {
     IncompatibleReaderAndParser: 'IncompatibleReaderAndParser',
     IncompatibleWriterAndHandler: 'IncompatibleWriterAndHandler',
     IncompatibleParserAndHandler: 'IncompatibleParserAndHandler',
-    IncompatibleMaskAndParser: 'IncompatibleMaskAndParser',
+    IncompatibleDeIdentificationAndParser: 'IncompatibleDeIdentificationAndParser',
     IncompatibleValidationAndParser: 'IncompatibleValidationAndParser',
     IncompatibleTranscodingAndParser: 'IncompatibleTranscodingAndParser',
     IncompatibleBurnedInRedactionAndParser: 'IncompatibleBurnedInRedactionAndParser',

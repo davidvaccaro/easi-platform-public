@@ -29,8 +29,8 @@ function createMockEasi(processImplementation, capture) {
                     capture.toMapping = mapping;
                     return builder;
                 },
-                withDeIdentification(mask) {
-                    capture.mask = mask;
+                withDeIdentification(deIdentificationMask) {
+                    capture.deIdentificationMask = deIdentificationMask;
                     return builder;
                 },
                 withHandler(handler) {
@@ -199,8 +199,8 @@ dimseSocketTest("Test: Kitchen sink DIMSE C-MOVE relay API returns success and w
         expect(capture.sourceTransport).toBe(sourceTransport);
         expect(capture.destinationOptions.transport).toBe(destinationTransport);
         expect(capture.handler).toBe(writerHandler);
-        expect(capture.mask instanceof Map).toBe(true);
-        expect(capture.mask.has(Tag.SOPInstanceUID.ID)).toBe(true);
+        expect(capture.deIdentificationMask instanceof Map).toBe(true);
+        expect(capture.deIdentificationMask.has(Tag.SOPInstanceUID.ID)).toBe(true);
         expect(capture.processSource).toBeNull();
         expect(capture.processOptions.operation).toBe("c-move");
         expect(capture.processOptions.queryRetrieveLevel).toBe("IMAGE");

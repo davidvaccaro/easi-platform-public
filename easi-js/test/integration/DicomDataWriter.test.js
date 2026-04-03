@@ -114,14 +114,14 @@ test('Test: toDicomData preserves little-endian dataset ordering for raw dataset
 
 });
 
-test('Test: toDicomData with onChunk streams bytes and can be chained with withMask for anonymized DICOM output', async () => {
+test('Test: toDicomData with onChunk streams bytes and can be chained with withDeIdentification for anonymized DICOM output', async () => {
 
     var chunks = [];
     var sourceBytes = readDicomBytes('0002.DCM');
 
     var reader = EASI.pipelineBuilder()
         .fromPartStream().ofDicomData()
-        .withMask(new Map([
+        .withDeIdentification(new Map([
             [Tag.PatientName, '[MASKED]']
         ]))
         .toDicomData({
@@ -190,7 +190,7 @@ test('Test: toDicomData anonymizes NESTED_SEQUENCE.dcm and writes NESTED_SEQUENC
 
     var emittedBytes = await EASI.pipelineBuilder()
         .fromPartStream().ofDicomData()
-        .withMask(Tag.DefaultDeIdentificationMask)
+        .withDeIdentification(Tag.DefaultDeIdentificationMask)
         .toDicomData()
         .build()
         .process(sourceBytes);

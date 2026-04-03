@@ -54,7 +54,7 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
     expect(typeof source.fromDimseAssociation).toBe("function");
     expect(typeof source.ofDicomData).toBe("undefined");
     expect(typeof source.toInstances).toBe("undefined");
-    expect(typeof source.withMask).toBe("undefined");
+    expect(typeof source.withDeIdentification).toBe("undefined");
     expect(typeof source.build).toBe("undefined");
     expect(source._operations).toBeUndefined();
     expect(Object.isFrozen(source)).toBe(true);
@@ -63,16 +63,16 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
     expect(typeof format.ofDicomData).toBe("function");
     expect(typeof format.ofByteData).toBe("function");
     expect(typeof format.toInstances).toBe("undefined");
-    expect(typeof format.withMask).toBe("undefined");
+    expect(typeof format.withDeIdentification).toBe("undefined");
 
     const target = format.ofDicomData();
     expect(typeof target.toInstances).toBe("function");
-    expect(typeof target.withMask).toBe("function");
+    expect(typeof target.withDeIdentification).toBe("function");
     expect(typeof target.withTranscoding).toBe("function");
     expect(typeof target.withBurnedInRedaction).toBe("function");
 
-    const ready = target.withMask(new Map()).toInstances();
-    expect(typeof ready.withMask).toBe("undefined");
+    const ready = target.withDeIdentification(new Map()).toInstances();
+    expect(typeof ready.withDeIdentification).toBe("undefined");
     expect(typeof ready.intoByteStream).toBe("function");
     expect(typeof ready.intoDimseAssociation).toBe("function");
     expect(typeof ready.intoBrowserFileStream).toBe("function");
@@ -294,17 +294,17 @@ test("Test: build throws IncompatibleParserAndHandler for toAssetArchive with DI
     expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
 });
 
-test("Test: build throws IncompatibleMaskAndParser", () => {
+test("Test: build throws IncompatibleDeIdentificationAndParser", () => {
     const error = captureBuildError(
         new PipelineBuilder()
             .fromPartStream()
             .withParser(new JsonDataParser())
-            .withMask(new Map())
+            .withDeIdentification(new Map())
             .withHandler({})
     );
 
     expect(error instanceof Exception).toBe(true);
-    expect(error.code).toBe(BuilderErrorCodes.IncompatibleMaskAndParser);
+    expect(error.code).toBe(BuilderErrorCodes.IncompatibleDeIdentificationAndParser);
 });
 
 test("Test: build throws IncompatibleValidationAndParser", () => {
@@ -351,7 +351,7 @@ test("Test: build throws IncompatibleBurnedInRedactionAndParser", () => {
 test("Test: repeated build with masking preserves canonical semantic handler chain", () => {
     const ready = new PipelineBuilder()
         .fromPartStream().ofDicomData()
-        .withMask(new Map())
+        .withDeIdentification(new Map())
         .toInstances();
 
     const first = ready.build();
@@ -498,7 +498,7 @@ test("Test: toFHIRImagingStudy supports study-summary profile", () => {
 test("Test: build composes metadata adapter -> deid -> writer when masking JSON metadata", () => {
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomMetadata()
-        .withMask(new Map())
+        .withDeIdentification(new Map())
         .toDicomData()
         .build();
 
@@ -515,9 +515,9 @@ test("Test: withDeIdentification() composes default de-identification filter", (
         .build();
 
     expect(pipeline.parser.handler instanceof DicomDeIdentificationFilter).toBe(true);
-    expect(pipeline.parser.handler.mask instanceof Map).toBe(true);
-    expect(pipeline.parser.handler.mask.size).toBeGreaterThan(0);
-    expect(pipeline.parser.handler.mask.has(Tag.PatientName.ID)).toBe(true);
+    expect(pipeline.parser.handler.deIdentificationMask instanceof Map).toBe(true);
+    expect(pipeline.parser.handler.deIdentificationMask.size).toBeGreaterThan(0);
+    expect(pipeline.parser.handler.deIdentificationMask.has(Tag.PatientName.ID)).toBe(true);
 });
 
 test("Test: withDeIdentification(mask) uses supplied mask", () => {
@@ -532,9 +532,9 @@ test("Test: withDeIdentification(mask) uses supplied mask", () => {
         .build();
 
     expect(pipeline.parser.handler instanceof DicomDeIdentificationFilter).toBe(true);
-    expect(pipeline.parser.handler.mask instanceof Map).toBe(true);
-    expect(pipeline.parser.handler.mask.size).toBe(1);
-    expect(pipeline.parser.handler.mask.has("00100010")).toBe(true);
+    expect(pipeline.parser.handler.deIdentificationMask instanceof Map).toBe(true);
+    expect(pipeline.parser.handler.deIdentificationMask.size).toBe(1);
+    expect(pipeline.parser.handler.deIdentificationMask.has("00100010")).toBe(true);
 });
 
 test("Test: build composes validation filter for native DICOM semantic chain", () => {
@@ -555,7 +555,7 @@ test("Test: build composes metadata adapter -> validation -> deid -> writer when
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomMetadata()
         .withValidation({ goal: "permissive" })
-        .withMask(new Map())
+        .withDeIdentification(new Map())
         .toDicomData()
         .build();
 
@@ -614,7 +614,7 @@ test("Test: build composes validation -> deid -> transcoding -> writer in canoni
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomData()
         .withValidation({ goal: "permissive" })
-        .withMask(new Map())
+        .withDeIdentification(new Map())
         .withTranscoding({
             targetTransferSyntax: TransferSyntax.ImplicitVRLittleEndian.ID
         })
@@ -640,7 +640,7 @@ test("Test: build composes XML metadata adapter with shared handler", () => {
 test("Test: build composes XML metadata adapter -> deid -> writer when masking XML metadata", () => {
     const pipeline = new PipelineBuilder()
         .fromPartStream().ofDicomXmlMetadata()
-        .withMask(new Map())
+        .withDeIdentification(new Map())
         .toDicomData()
         .build();
 
