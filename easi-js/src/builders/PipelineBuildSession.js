@@ -47,6 +47,7 @@ import DimseAssociationWriter from "../writers/DimseAssociationWriter.js";
 import Exception from "../environment/Exception.js";
 import DiagnosticUtils from "../utils/DiagnosticUtils.js";
 import { BuilderErrorCodes } from "../environment/Exception.js";
+import { GeneralErrorCodes } from "../environment/Exception.js";
 import Pipeline from "../pipelines/Pipeline.js";
 import PipelineOperationResult from "../pipelines/PipelineOperationResult.js";
 import Tag from "../dicom/Tag.js";
@@ -209,22 +210,102 @@ export default class PipelineBuildSession {
     }
 
     /**
+     * Determine whether one writer requires an external destination target.
+     * @param {object} writer The writer instance.
+     * @returns {boolean} TRUE when destination target is required.
+     */
+    writerRequiresTarget(writer) {
+
+        var typeName = DiagnosticUtils.getTypeName(writer);
+        return (
+            (typeName == "FileStreamWriter")
+            || (typeName == "BrowserFileStreamWriter")
+            || (typeName == "NodeStreamAdapterWriter")
+            || (typeName == "WritableStreamWriter")
+            || (typeName == "WebSocketStreamWriter")
+            || (typeName == "HttpStreamWriter")
+            || (typeName == "DimseAssociationWriter")
+        );
+
+    }
+
+    /**
+     * Determine whether one writer uses a no-target write signature.
+     * @param {object} writer The writer instance.
+     * @returns {boolean} TRUE when writer should receive source/options only.
+     */
+    writerUsesNoTargetSignature(writer) {
+
+        var typeName = DiagnosticUtils.getTypeName(writer);
+        return (
+            (typeName == "ByteStreamWriter")
+            || (typeName == "PartStreamWriter")
+        );
+
+    }
+
+    /**
+     * Merge default writer options with per-process overrides.
+     * @param {object | null} defaultOptions Build-time writer options.
+     * @param {object | null} processOptions Per-process writer options.
+     * @returns {object | null} Merged writer options.
+     */
+    mergeWriterOptions(defaultOptions = null, processOptions = null) {
+
+        if ((defaultOptions == null) && (processOptions == null))
+            return null;
+
+        return Object.assign({}, defaultOptions || {}, processOptions || {});
+
+    }
+
+    /**
      * Build a result sink callback for writer-enabled pipelines.
      * @param {object} writer The configured writer.
-     * @param {*} target The configured writer target.
-     * @param {object | null} options Writer options.
+     * @param {*} defaultTarget The configured default writer target.
+     * @param {object | null} defaultOptions Default writer options.
+     * @param {boolean} requiresTarget Indicates whether writer requires destination target.
      * @returns {Function} Result sink callback.
      */
-    createWriterResultSink(writer, target, options = null) {
+    createWriterResultSink(writer, defaultTarget, defaultOptions = null, requiresTarget = false) {
 
-        return async (result) => {
+        return async (result, context = null) => {
+
+            var destinationProvided = ((context != null) && (context.destinationProvided === true));
+            var target = destinationProvided
+                ? context.destination
+                : defaultTarget;
+
+            var writerOptions = this.mergeWriterOptions(
+                defaultOptions,
+                ((context != null) ? context.destinationOptions : null)
+            );
 
             var writerResult = null;
-            if (target == null) {
-                writerResult = await writer.write(result, options);
+            if (requiresTarget == true) {
+
+                if (target == null) {
+                    throw new Exception(
+                        "Pipeline.process requires a destination when using the configured writer.",
+                        GeneralErrorCodes.InvalidParameter
+                    );
+                }
+
+                writerResult = await writer.write(target, result, writerOptions);
+
             }
             else {
-                writerResult = await writer.write(target, result, options);
+
+                if (this.writerUsesNoTargetSignature(writer) == true) {
+                    writerResult = await writer.write(result, writerOptions);
+                }
+                else if ((target != null) || (destinationProvided === true)) {
+                    writerResult = await writer.write(target, result, writerOptions);
+                }
+                else {
+                    writerResult = await writer.write(result, writerOptions);
+                }
+
             }
 
             if (this.isBuiltInWriter(writer) == true) {
@@ -253,6 +334,7 @@ export default class PipelineBuildSession {
             || (typeName == "FileStreamWriter")
             || (typeName == "BrowserFileStreamWriter")
             || (typeName == "NodeStreamAdapterWriter")
+            || (typeName == "WritableStreamWriter")
             || (typeName == "WebSocketStreamWriter")
             || (typeName == "HttpStreamWriter")
             || (typeName == "DimseAssociationWriter")
@@ -451,10 +533,26 @@ export default class PipelineBuildSession {
     /**
      * Set the current reader.
      * @param {object} reader The reader used to process source input.
+     * @param {*} source Optional default source value bound at build-time.
+     * @param {object | null} options Optional default source options bound at build-time.
      * @returns {PipelineBuildSession} The current session.
      */
-    withReader(reader) {
+    withReader(reader, source = null, options = null) {
         this.reader = reader;
+        this.source = source;
+        this.sourceOptions = options;
+        return this;
+    }
+
+    /**
+     * Set/replace the default source and source options.
+     * @param {*} source Optional default source value.
+     * @param {object | null} options Optional default source options.
+     * @returns {PipelineBuildSession} The current session.
+     */
+    withSource(source = null, options = null) {
+        this.source = source;
+        this.sourceOptions = options;
         return this;
     }
 
@@ -680,12 +778,12 @@ export default class PipelineBuildSession {
             );
         }
 
-        // DIMSE source transport must be explicitly configured.
+        // Validate configured DIMSE source transport when explicitly provided.
         if (reader instanceof DimseAssociationReader) {
-            const sourceTransport = reader.resolveTransport(null);
-            if (this.isValidDimseSourceTransport(sourceTransport) == false) {
+            const sourceTransport = reader.resolveTransport(this.sourceOptions);
+            if ((sourceTransport != null) && (this.isValidDimseSourceTransport(sourceTransport) == false)) {
                 throw new Exception(
-                    "PipelineBuilder.build requires a DIMSE source transport when using fromDimseAssociation(...).",
+                    "Invalid DIMSE source transport. Expected transport implementing read(...).",
                     BuilderErrorCodes.InvalidBuildState
                 );
             }
@@ -826,13 +924,14 @@ export default class PipelineBuildSession {
 
             const terminalHandler = this.resolveTerminalHandler(handler);
             this.validateWriterTerminalCompatibility(this.writer, terminalHandler);
+            const writerRequiresTarget = this.writerRequiresTarget(this.writer);
 
-            // DIMSE destination transport must be explicitly configured.
+            // Validate configured DIMSE destination transport when explicitly provided.
             if (this.writer instanceof DimseAssociationWriter) {
                 const destinationTransport = this.writer.resolveTransport(this.writerOptions);
-                if (this.isValidDimseDestinationTransport(destinationTransport) == false) {
+                if ((destinationTransport != null) && (this.isValidDimseDestinationTransport(destinationTransport) == false)) {
                     throw new Exception(
-                        "PipelineBuilder.build requires a DIMSE destination transport when using intoDimseAssociation(...).",
+                        "Invalid DIMSE destination transport. Expected transport implementing write(...).",
                         BuilderErrorCodes.InvalidBuildState
                     );
                 }
@@ -848,12 +947,24 @@ export default class PipelineBuildSession {
             }
 
             if (shouldApplyWriterSink == true) {
-                onResult = this.createWriterResultSink(this.writer, this.writerTarget, this.writerOptions);
+                onResult = this.createWriterResultSink(
+                    this.writer,
+                    this.writerTarget,
+                    this.writerOptions,
+                    writerRequiresTarget
+                );
             }
 
         }
 
-        return new Pipeline(reader, onResult);
+        return new Pipeline(reader, onResult, {
+            source: this.source,
+            sourceOptions: this.sourceOptions,
+            destination: this.writerTarget,
+            destinationOptions: this.writerOptions,
+            hasWriter: (this.writer != null),
+            writerRequiresDestination: ((this.writer != null) && (this.writerRequiresTarget(this.writer) == true))
+        });
 
     }
 
@@ -862,6 +973,8 @@ export default class PipelineBuildSession {
      */
     constructor() {
         this.reader = null;
+        this.source = null;
+        this.sourceOptions = null;
         this.isStrict = false;
         this.parser = null;
         this.handler = null;

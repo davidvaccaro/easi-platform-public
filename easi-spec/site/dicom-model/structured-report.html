@@ -175,7 +175,7 @@
   .toEntities()
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 result := resultCollection.first()
 
 # Type usage
@@ -183,7 +183,7 @@ structuredReport := result</code></pre>
                     
                     <br />
                     <p>Real-world usage: project instance content into higher-level entity semantics.</p>
-                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process({ source: source })
 ingestResult := ingestResultCollection.first()
 structuredReport := ingestResult
 contentItemCount := structuredReport.structuredReportModule.contentItemCount</code></pre>
@@ -197,7 +197,7 @@ contentItemCount := structuredReport.structuredReportModule.contentItemCount</co
   .toEntities()
   .build();
 
-const resultCollection = await pipeline.process(source);
+const resultCollection = await pipeline.process({ source: source });
 const result = resultCollection.first();
 
 // Type usage
@@ -205,7 +205,7 @@ const structuredReport = result;</code></pre>
                     
                     <br />
                     <p>Real-world usage: project instance content into higher-level entity semantics.</p>
-                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process({ source: source });
 const ingestResult = ingestResultCollection.first();
 const structuredReport = ingestResult;
 const contentItemCount = structuredReport.structuredReportModule.contentItemCount;</code></pre>
@@ -219,7 +219,7 @@ const contentItemCount = structuredReport.structuredReportModule.contentItemCoun
     .ToEntities()
     .Build();
 
-var resultCollection = await pipeline.Process(source);
+var resultCollection = await pipeline.Process(new { source = source });
 var result = resultCollection.First();
 
 // Type usage
@@ -227,7 +227,7 @@ var structuredReport = result;</code></pre>
                     
                     <br />
                     <p>Real-world usage: project instance content into higher-level entity semantics.</p>
-                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(new { source = source });
 var ingestResult = ingestResultCollection.First();
 var structuredReport = ingestResult;
 var contentItemCount = structuredReport.structuredReportModule.contentItemCount;</code></pre>
@@ -241,7 +241,7 @@ var contentItemCount = structuredReport.structuredReportModule.contentItemCount;
     .toEntities()
     .build();
 
-var resultCollection = pipeline.process(source);
+var resultCollection = pipeline.process(Map.of(&quot;source&quot;, source));
 var result = resultCollection.first();
 
 // Type usage
@@ -249,7 +249,7 @@ var structuredReport = result;</code></pre>
                     
                     <br />
                     <p>Real-world usage: project instance content into higher-level entity semantics.</p>
-                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(Map.of(&quot;source&quot;, source));
 var ingestResult = ingestResultCollection.first();
 var structuredReport = ingestResult;
 var contentItemCount = structuredReport.structuredReportModule.contentItemCount;</code></pre>
@@ -265,7 +265,7 @@ var contentItemCount = structuredReport.structuredReportModule.contentItemCount;
     .build()
 )
 
-result_collection = pipeline.process(source)
+result_collection = pipeline.process({&quot;source&quot;: source})
 result = result_collection.first()
 
 # Type usage
@@ -273,7 +273,7 @@ structured_report = result</code></pre>
                     
                     <br />
                     <p>Real-world usage: project instance content into higher-level entity semantics.</p>
-                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process({&quot;source&quot;: source})
 ingest_result = ingest_result_collection.first()
 structured_report = ingest_result
 content_item_count = structured_report.structuredReportModule.contentItemCount</code></pre>

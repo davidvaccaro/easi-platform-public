@@ -145,7 +145,7 @@
                         <tr>
                             <td><code>into...</code></td>
                             <td>Apply output packaging/writer transport.</td>
-                            <td><code>intoByteStream</code>, <code>intoDimseAssociation</code></td>
+                            <td><code>intoByteBuffer</code>, <code>intoDimseAssociation</code></td>
                         </tr>
                         <tr>
                             <td><code>build()</code></td>
@@ -189,7 +189,7 @@ readerPipeline := EASI.pipelineBuilder()
   .toInstances()
   .build()
 
-instanceCollection := readerPipeline.process(sourceUrl)
+instanceCollection := readerPipeline.process({ source: sourceUrl })
 instance := instanceCollection.first()
 studyUid := instance.dataSet.value(Tag.StudyInstanceUID)</code></pre>
 
@@ -206,7 +206,7 @@ deIdPipeline := EASI.pipelineBuilder()
   .intoFileStream("out/deidentified.dcm")
   .build()
 
-deIdResults := deIdPipeline.process(sourcePath)
+deIdResults := deIdPipeline.process({ source: sourcePath })
 deIdWrite := deIdResults.first()
 if (deIdWrite == null) OR (deIdWrite.bytesWritten <= 0):
   fail("De-identification pipeline did not produce output bytes")</code></pre>
@@ -231,7 +231,7 @@ usRedactionPipeline := EASI.pipelineBuilder()
   .intoFileStream("out/us-redacted.dcm")
   .build()
 
-usRedactionResults := usRedactionPipeline.process(usSourcePath)
+usRedactionResults := usRedactionPipeline.process({ source: usSourcePath })
 usRedactionWrite := usRedactionResults.first()
 if (usRedactionWrite == null) OR (usRedactionWrite.bytesWritten <= 0):
   fail("US redaction pipeline did not produce output bytes")</code></pre>
@@ -249,7 +249,7 @@ transcodePipeline := EASI.pipelineBuilder()
   .intoFileStream("out/transcoded-explicit-le.dcm")
   .build()
 
-transcodeResults := transcodePipeline.process(sourceUrl)
+transcodeResults := transcodePipeline.process({ source: sourceUrl })
 transcodeWrite := transcodeResults.first()
 if (transcodeWrite == null) OR (transcodeWrite.bytesWritten <= 0):
   fail("Transcode pipeline did not produce output bytes")</code></pre>
@@ -274,7 +274,7 @@ assetPipeline := EASI.pipelineBuilder()
   })
   .build()
 
-assetsCollection := assetPipeline.process(sourcePath)
+assetsCollection := assetPipeline.process({ source: sourcePath })
 if assetsCollection.isEmpty:
   fail("Asset extraction emitted no results")
 assets := assetsCollection.first()
@@ -296,7 +296,7 @@ const readerPipeline = EASI.pipelineBuilder()
   .toInstances()
   .build();
 
-const instanceCollection = await readerPipeline.process(sourceUrl);
+const instanceCollection = await readerPipeline.process({ source: sourceUrl });
 const instance = instanceCollection.first();
 const studyUid = instance.dataSet.value(Tag.StudyInstanceUID);</code></pre>
 
@@ -313,7 +313,7 @@ const deIdPipeline = EASI.pipelineBuilder()
   .intoFileStream("out/deidentified.dcm")
   .build();
 
-const deIdResults = await deIdPipeline.process(sourcePath);
+const deIdResults = await deIdPipeline.process({ source: sourcePath });
 const deIdWrite = deIdResults.first();
 if ((deIdWrite?.bytesWritten ?? 0) <= 0) {
   throw new Error("De-identification pipeline did not produce output bytes.");
@@ -339,7 +339,7 @@ const usRedactionPipeline = EASI.pipelineBuilder()
   .intoFileStream("out/us-redacted.dcm")
   .build();
 
-const usRedactionResults = await usRedactionPipeline.process(usSourcePath);
+const usRedactionResults = await usRedactionPipeline.process({ source: usSourcePath });
 const usRedactionWrite = usRedactionResults.first();
 if ((usRedactionWrite?.bytesWritten ?? 0) <= 0) {
   throw new Error("US redaction pipeline did not produce output bytes.");
@@ -358,7 +358,7 @@ const transcodePipeline = EASI.pipelineBuilder()
   .intoFileStream("out/transcoded-explicit-le.dcm")
   .build();
 
-const transcodeResults = await transcodePipeline.process(sourceUrl);
+const transcodeResults = await transcodePipeline.process({ source: sourceUrl });
 const transcodeWrite = transcodeResults.first();
 if ((transcodeWrite?.bytesWritten ?? 0) <= 0) {
   throw new Error("Transcode pipeline did not produce output bytes.");
@@ -384,7 +384,7 @@ const assetPipeline = EASI.pipelineBuilder()
   })
   .build();
 
-const assetsCollection = await assetPipeline.process(sourcePath);
+const assetsCollection = await assetPipeline.process({ source: sourcePath });
 if (assetsCollection.isEmpty) {
   throw new Error("Asset extraction emitted no results.");
 }
@@ -520,7 +520,7 @@ var readerPipeline = EASI.pipelineBuilder()
     .toInstances()
     .build();
 
-var instanceCollection = readerPipeline.process(sourceUrl);
+var instanceCollection = readerPipeline.process({ source: sourceUrl });
 var instance = instanceCollection.first();
 var studyUid = instance.dataSet.value(Tag.StudyInstanceUID);</code></pre>
 
@@ -537,7 +537,7 @@ var deIdPipeline = EASI.pipelineBuilder()
     .intoFileStream("out/deidentified.dcm")
     .build();
 
-var deIdResults = deIdPipeline.process(sourcePath);
+var deIdResults = deIdPipeline.process({ source: sourcePath });
 var deIdWrite = deIdResults.first();
 if (((Number)deIdWrite.bytesWritten).longValue() <= 0L) {
     throw new RuntimeException("De-identification pipeline did not produce output bytes.");
@@ -563,7 +563,7 @@ var usRedactionPipeline = EASI.pipelineBuilder()
     .intoFileStream("out/us-redacted.dcm")
     .build();
 
-var usRedactionResults = usRedactionPipeline.process(usSourcePath);
+var usRedactionResults = usRedactionPipeline.process({ source: usSourcePath });
 var usRedactionWrite = usRedactionResults.first();
 if (((Number)usRedactionWrite.bytesWritten).longValue() <= 0L) {
     throw new RuntimeException("US redaction pipeline did not produce output bytes.");
@@ -582,7 +582,7 @@ var transcodePipeline = EASI.pipelineBuilder()
     .intoFileStream("out/transcoded-explicit-le.dcm")
     .build();
 
-var transcodeResults = transcodePipeline.process(sourceUrl);
+var transcodeResults = transcodePipeline.process({ source: sourceUrl });
 var transcodeWrite = transcodeResults.first();
 if (((Number)transcodeWrite.bytesWritten).longValue() <= 0L) {
     throw new RuntimeException("Transcode pipeline did not produce output bytes.");
@@ -608,7 +608,7 @@ var assetPipeline = EASI.pipelineBuilder()
     ))
     .build();
 
-var assetsCollection = assetPipeline.process(sourcePath);
+var assetsCollection = assetPipeline.process({ source: sourcePath });
 if (assetsCollection.isEmpty()) {
     throw new RuntimeException("Asset extraction emitted no results.");
 }
@@ -634,7 +634,7 @@ reader_pipeline = (
     .build()
 )
 
-instance_collection = reader_pipeline.process(source_url)
+instance_collection = reader_pipeline.process({ source: source_url })
 instance = instance_collection.first()
 study_uid = instance.data_set.value(Tag.study_instance_uid)</code></pre>
 
@@ -653,7 +653,7 @@ de_id_pipeline = (
     .build()
 )
 
-de_id_results = de_id_pipeline.process(source_path)
+de_id_results = de_id_pipeline.process({ source: source_path })
 de_id_write = de_id_results.first()
 if (de_id_write is None) or (int(getattr(de_id_write, "bytesWritten", 0)) <= 0):
     raise RuntimeError("De-identification pipeline did not produce output bytes.")</code></pre>
@@ -680,7 +680,7 @@ us_redaction_pipeline = (
     .build()
 )
 
-us_redaction_results = us_redaction_pipeline.process(us_source_path)
+us_redaction_results = us_redaction_pipeline.process({ source: us_source_path })
 us_redaction_write = us_redaction_results.first()
 if (us_redaction_write is None) or (int(getattr(us_redaction_write, "bytesWritten", 0)) <= 0):
     raise RuntimeError("US redaction pipeline did not produce output bytes.")</code></pre>
@@ -700,7 +700,7 @@ transcode_pipeline = (
     .build()
 )
 
-transcode_results = transcode_pipeline.process(source_url)
+transcode_results = transcode_pipeline.process({ source: source_url })
 transcode_write = transcode_results.first()
 if (transcode_write is None) or (int(getattr(transcode_write, "bytesWritten", 0)) <= 0):
     raise RuntimeError("Transcode pipeline did not produce output bytes.")</code></pre>
@@ -727,7 +727,7 @@ asset_pipeline = (
     .build()
 )
 
-assets_collection = asset_pipeline.process(source_path)
+assets_collection = asset_pipeline.process({ source: source_path })
 if assets_collection.is_empty:
     raise RuntimeError("Asset extraction emitted no results.")
 assets = assets_collection.first()

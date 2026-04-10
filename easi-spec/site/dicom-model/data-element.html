@@ -203,7 +203,7 @@
   .toInstances()
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 result := resultCollection.first()
 
 # Type usage
@@ -211,7 +211,7 @@ dataElement := DataElement(result.dataSet.find(Tag.PatientName).access(), result
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process({ source: source })
 ingestResult := ingestResultCollection.first()
 dataElement := DataElement(ingestResult.dataSet.find(Tag.PatientName).access(), ingestResult.metaSet.transferSyntax, 0)
 bytesRemaining := dataElement.bytesRemaining
@@ -226,7 +226,7 @@ isComplete := dataElement.isComplete</code></pre>
   .toInstances()
   .build();
 
-const resultCollection = await pipeline.process(source);
+const resultCollection = await pipeline.process({ source: source });
 const result = resultCollection.first();
 
 // Type usage
@@ -234,7 +234,7 @@ const dataElement = new DataElement(result.dataSet.find(Tag.PatientName).access(
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process({ source: source });
 const ingestResult = ingestResultCollection.first();
 const dataElement = new DataElement(ingestResult.dataSet.find(Tag.PatientName).access(), ingestResult.metaSet.transferSyntax, 0);
 const bytesRemaining = dataElement.bytesRemaining;
@@ -249,7 +249,7 @@ const isComplete = dataElement.isComplete;</code></pre>
     .ToInstances()
     .Build();
 
-var resultCollection = await pipeline.Process(source);
+var resultCollection = await pipeline.Process(new { source = source });
 var result = resultCollection.First();
 
 // Type usage
@@ -257,7 +257,7 @@ var dataElement = new DataElement(result.dataSet.find(Tag.PatientName).access(),
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(new { source = source });
 var ingestResult = ingestResultCollection.First();
 var dataElement = new DataElement(ingestResult.dataSet.find(Tag.PatientName).access(), ingestResult.metaSet.transferSyntax, 0);
 var bytesRemaining = dataElement.bytesRemaining;
@@ -272,7 +272,7 @@ var isComplete = dataElement.isComplete;</code></pre>
     .toInstances()
     .build();
 
-var resultCollection = pipeline.process(source);
+var resultCollection = pipeline.process(Map.of(&quot;source&quot;, source));
 var result = resultCollection.first();
 
 // Type usage
@@ -280,7 +280,7 @@ var dataElement = new DataElement(result.dataSet.find(Tag.PatientName).access(),
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(Map.of(&quot;source&quot;, source));
 var ingestResult = ingestResultCollection.first();
 var dataElement = new DataElement(ingestResult.dataSet.find(Tag.PatientName).access(), ingestResult.metaSet.transferSyntax, 0);
 var bytesRemaining = dataElement.bytesRemaining;
@@ -297,7 +297,7 @@ var isComplete = dataElement.isComplete;</code></pre>
     .build()
 )
 
-result_collection = pipeline.process(source)
+result_collection = pipeline.process({&quot;source&quot;: source})
 result = result_collection.first()
 
 # Type usage
@@ -305,7 +305,7 @@ data_element = DataElement(result.data_set.find(Tag.patient_name).access(), resu
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process({&quot;source&quot;: source})
 ingest_result = ingest_result_collection.first()
 data_element = DataElement(ingest_result.data_set.find(Tag.patient_name).access(), ingest_result.meta_set.transferSyntax, 0)
 bytes_remaining = data_element.bytesRemaining

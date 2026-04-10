@@ -74,12 +74,12 @@
                             <tr>
                                 <td>C-FIND</td>
                                 <td>DIMSE source -><br />DICOM&reg; parser -><br />instance terminal.</td>
-                                <td><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.toInstances()<br />.build()<br />.process(request)</code></td>
+                                <td><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.toInstances()<br />.build()<br />.process({ source: request })</code></td>
                             </tr>
                             <tr>
                                 <td>C-GET / C-MOVE Source</td>
                                 <td>DIMSE source -><br />parser -><br />filter(s) -><br />terminal (optionally re-write to DIMSE).</td>
-                                <td><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.withDeIdentification(...)<br />.intoDimseAssociation(...)<br />.build()<br />.process(request)</code></td>
+                                <td><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.withDeIdentification(...)<br />.intoDimseAssociation(...)<br />.build()<br />.process({ source: request })</code></td>
                             </tr>
                             <tr>
                                 <td>C-STORE SCP Listener</td>
@@ -97,7 +97,7 @@
                     <article class="card">
                         <h4>Transactional</h4>
                         <p>Caller supplies one request payload and expects one result collection.</p>
-                        <p><code>resultCollection = pipeline.process(request)</code></p>
+                        <p><code>resultCollection = pipeline.process({ source: request })</code></p>
                     </article>
                     <article class="card">
                         <h4>Source-Bound Listener</h4>
@@ -168,7 +168,7 @@ findRequest := {
   keys: { Modality: "CT" }
 }
 
-instanceCollection := findPipeline.process(findRequest)
+instanceCollection := findPipeline.process({ source: findRequest })
 instances := instanceCollection.toArray()</code></pre>
 
                         <br />
@@ -457,9 +457,11 @@ var findPipeline = EASI.pipelineBuilder()
     .build();
 
 var instanceCollection = findPipeline.process(Map.of(
-    "operation", "cfind",
-    "level", "STUDY",
-    "keys", Map.of("Modality", "CT")
+    "sourceOptions", Map.of(
+        "operation", "cfind",
+        "level", "STUDY",
+        "keys", Map.of("Modality", "CT")
+    )
 ));
 
 var instances = instanceCollection.toArray();</code></pre>
@@ -492,10 +494,12 @@ var relayPipeline = EASI.pipelineBuilder()
     .build();
 
 relayPipeline.process(Map.of(
-    "operation", "cmove",
-    "level", "IMAGE",
-    "destinationAeTitle", "EASI_MOVE_DEST",
-    "keys", Map.of("StudyInstanceUID", "{studyUID}")
+    "sourceOptions", Map.of(
+        "operation", "cmove",
+        "level", "IMAGE",
+        "destinationAeTitle", "EASI_MOVE_DEST",
+        "keys", Map.of("StudyInstanceUID", "{studyUID}")
+    )
 ));</code></pre>
 
                         <br />

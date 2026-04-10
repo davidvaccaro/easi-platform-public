@@ -273,7 +273,7 @@
   .toInstances()
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 result := resultCollection.first()
 
 # Type usage
@@ -281,7 +281,7 @@ scheduledProcedureStepModule := ScheduledProcedureStepModule(result.dataSet)</co
                     
                     <br />
                     <p>Real-world usage: access module-level metadata for routing and transformation.</p>
-                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process({ source: source })
 ingestResult := ingestResultCollection.first()
 scheduledProcedureStepModule := ScheduledProcedureStepModule(ingestResult.dataSet)
 scheduledAETitle := scheduledProcedureStepModule.scheduledStationAETitle
@@ -296,7 +296,7 @@ scheduledStepId := scheduledProcedureStepModule.scheduledProcedureStepId</code><
   .toInstances()
   .build();
 
-const resultCollection = await pipeline.process(source);
+const resultCollection = await pipeline.process({ source: source });
 const result = resultCollection.first();
 
 // Type usage
@@ -304,7 +304,7 @@ const scheduledProcedureStepModule = new ScheduledProcedureStepModule(result.dat
                     
                     <br />
                     <p>Real-world usage: access module-level metadata for routing and transformation.</p>
-                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process({ source: source });
 const ingestResult = ingestResultCollection.first();
 const scheduledProcedureStepModule = new ScheduledProcedureStepModule(ingestResult.dataSet);
 const scheduledAETitle = scheduledProcedureStepModule.scheduledStationAETitle;
@@ -319,7 +319,7 @@ const scheduledStepId = scheduledProcedureStepModule.scheduledProcedureStepId;</
     .ToInstances()
     .Build();
 
-var resultCollection = await pipeline.Process(source);
+var resultCollection = await pipeline.Process(new { source = source });
 var result = resultCollection.First();
 
 // Type usage
@@ -327,7 +327,7 @@ var scheduledProcedureStepModule = new ScheduledProcedureStepModule(result.dataS
                     
                     <br />
                     <p>Real-world usage: access module-level metadata for routing and transformation.</p>
-                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(new { source = source });
 var ingestResult = ingestResultCollection.First();
 var scheduledProcedureStepModule = new ScheduledProcedureStepModule(ingestResult.dataSet);
 var scheduledAETitle = scheduledProcedureStepModule.scheduledStationAETitle;
@@ -342,7 +342,7 @@ var scheduledStepId = scheduledProcedureStepModule.scheduledProcedureStepId;</co
     .toInstances()
     .build();
 
-var resultCollection = pipeline.process(source);
+var resultCollection = pipeline.process(Map.of(&quot;source&quot;, source));
 var result = resultCollection.first();
 
 // Type usage
@@ -350,7 +350,7 @@ var scheduledProcedureStepModule = new ScheduledProcedureStepModule(result.dataS
                     
                     <br />
                     <p>Real-world usage: access module-level metadata for routing and transformation.</p>
-                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(Map.of(&quot;source&quot;, source));
 var ingestResult = ingestResultCollection.first();
 var scheduledProcedureStepModule = new ScheduledProcedureStepModule(ingestResult.dataSet);
 var scheduledAETitle = scheduledProcedureStepModule.scheduledStationAETitle;
@@ -367,7 +367,7 @@ var scheduledStepId = scheduledProcedureStepModule.scheduledProcedureStepId;</co
     .build()
 )
 
-result_collection = pipeline.process(source)
+result_collection = pipeline.process({&quot;source&quot;: source})
 result = result_collection.first()
 
 # Type usage
@@ -375,7 +375,7 @@ scheduled_procedure_step_module = ScheduledProcedureStepModule(result.data_set)<
                     
                     <br />
                     <p>Real-world usage: access module-level metadata for routing and transformation.</p>
-                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process({&quot;source&quot;: source})
 ingest_result = ingest_result_collection.first()
 scheduled_procedure_step_module = ScheduledProcedureStepModule(ingest_result.data_set)
 scheduled_ae_title = scheduled_procedure_step_module.scheduledStationAETitle

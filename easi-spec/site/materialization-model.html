@@ -289,7 +289,7 @@
   .toDicomData() // collectOutput defaults to true
   .build();
 
-const resultCollection = await pipeline.process("/var/easi/inbox/ct/CT-001.dcm");
+const resultCollection = await pipeline.process({ source: "/var/easi/inbox/ct/CT-001.dcm" });
 if (resultCollection.isEmpty) {
   return;
 }
@@ -317,7 +317,7 @@ const pipeline = EASI.pipelineBuilder()
   })
   .build();
 
-const resultCollection = await pipeline.process("/var/easi/inbox/ct/CT-001.dcm");
+const resultCollection = await pipeline.process({ source: "/var/easi/inbox/ct/CT-001.dcm" });
 const writeResult = resultCollection.first(); // PipelineOperationResult
 const bytesWritten = writeResult.bytesWritten;
 await uploadStream.close();</code></pre>
@@ -349,7 +349,7 @@ await uploadStream.close();</code></pre>
     collectOutput: false
   })
   .build()
-  .process("/var/easi/inbox/ct/CT-001.dcm");
+  .process({ source: "/var/easi/inbox/ct/CT-001.dcm" });
 
 const writeResult = resultCollection.first();
 const bytesWritten = writeResult.bytesWritten;</code></pre>
@@ -387,7 +387,7 @@ const bytesWritten = writeResult.bytesWritten;</code></pre>
   })
   .build();
 
-const resultCollection = await pipeline.process("/var/easi/inbox/us/US-001.dcm");
+const resultCollection = await pipeline.process({ source: "/var/easi/inbox/us/US-001.dcm" });
 const result = resultCollection.first(); // { instanceUID, metadata } when metadata.collect !== false and payload.collect === false</code></pre>
             </section>
 

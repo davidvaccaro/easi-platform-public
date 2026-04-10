@@ -675,7 +675,15 @@
             function processWithTiming(pipeline, source, requestOptions = null, label = "Execution") {
 
                 var start = new Date().getTime();
-                var promise = pipeline.process(source, requestOptions);
+                var invocation = {
+                    source: source
+                };
+
+                if (requestOptions != null) {
+                    invocation.sourceOptions = requestOptions;
+                }
+
+                var promise = pipeline.process(invocation);
 
                 return promise.then(function (result) {
                     console.log(label + ' time: ' + (new Date().getTime() - start) + ' ms');
@@ -1510,7 +1518,7 @@
                     .toInstances()
                     .build();
 
-                var instanceResult = await probePipeline.process(bytes);
+                var instanceResult = await probePipeline.process({ source: bytes });
                 var instance = unwrapPipelineResult(instanceResult);
                 if (Array.isArray(instance) == true)
                     instance = instance[0] || null;
@@ -2051,7 +2059,7 @@
                     }
                     else {
                         pipeline = pipelineBuilder
-                            .intoByteStream(Object.assign({}, writerOptions, {
+                            .intoByteBuffer(Object.assign({}, writerOptions, {
                                 collectOutput: true
                             }))
                             .build();
@@ -2182,7 +2190,7 @@
                     }
                     else {
                         pipeline = pipelineBuilder
-                            .intoByteStream(Object.assign({}, writerOptions, {
+                            .intoByteBuffer(Object.assign({}, writerOptions, {
                                 collectOutput: true
                             }))
                             .build();
@@ -2340,7 +2348,7 @@
                     .toDicomData();
                     var stageOneResult = await processWithTiming(
                         stageOneBuilder
-                            .intoByteStream({
+                            .intoByteBuffer({
                                 chunkSize: (64 * 1024),
                                 collectOutput: true
                             })
@@ -2391,7 +2399,7 @@
 
                         finalResult = await processWithTiming(
                             stageTwoBuilder
-                                .intoByteStream({
+                                .intoByteBuffer({
                                     chunkSize: (64 * 1024),
                                     collectOutput: true
                                 })
@@ -2884,7 +2892,7 @@
                     }
                     else {
                         pipeline = pipelineBuilder
-                            .intoByteStream(Object.assign({}, writerOptions, {
+                            .intoByteBuffer(Object.assign({}, writerOptions, {
                                 collectOutput: true
                             }))
                             .build();

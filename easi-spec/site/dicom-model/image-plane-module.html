@@ -211,7 +211,7 @@
   .toInstances()
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 result := resultCollection.first()
 
 # Type usage
@@ -219,7 +219,7 @@ imagePlaneModule := ImagePlaneModule(result.dataSet)</code></pre>
                     
                     <br />
                     <p>Real-world usage: access module-level metadata for routing and transformation.</p>
-                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process({ source: source })
 ingestResult := ingestResultCollection.first()
 imagePlaneModule := ImagePlaneModule(ingestResult.dataSet)
 imagePositionPatient := imagePlaneModule.imagePositionPatient
@@ -234,7 +234,7 @@ pixelSpacing := imagePlaneModule.pixelSpacing</code></pre>
   .toInstances()
   .build();
 
-const resultCollection = await pipeline.process(source);
+const resultCollection = await pipeline.process({ source: source });
 const result = resultCollection.first();
 
 // Type usage
@@ -242,7 +242,7 @@ const imagePlaneModule = new ImagePlaneModule(result.dataSet);</code></pre>
                     
                     <br />
                     <p>Real-world usage: access module-level metadata for routing and transformation.</p>
-                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process({ source: source });
 const ingestResult = ingestResultCollection.first();
 const imagePlaneModule = new ImagePlaneModule(ingestResult.dataSet);
 const imagePositionPatient = imagePlaneModule.imagePositionPatient;
@@ -257,7 +257,7 @@ const pixelSpacing = imagePlaneModule.pixelSpacing;</code></pre>
     .ToInstances()
     .Build();
 
-var resultCollection = await pipeline.Process(source);
+var resultCollection = await pipeline.Process(new { source = source });
 var result = resultCollection.First();
 
 // Type usage
@@ -265,7 +265,7 @@ var imagePlaneModule = new ImagePlaneModule(result.dataSet);</code></pre>
                     
                     <br />
                     <p>Real-world usage: access module-level metadata for routing and transformation.</p>
-                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(new { source = source });
 var ingestResult = ingestResultCollection.First();
 var imagePlaneModule = new ImagePlaneModule(ingestResult.dataSet);
 var imagePositionPatient = imagePlaneModule.imagePositionPatient;
@@ -280,7 +280,7 @@ var pixelSpacing = imagePlaneModule.pixelSpacing;</code></pre>
     .toInstances()
     .build();
 
-var resultCollection = pipeline.process(source);
+var resultCollection = pipeline.process(Map.of(&quot;source&quot;, source));
 var result = resultCollection.first();
 
 // Type usage
@@ -288,7 +288,7 @@ var imagePlaneModule = new ImagePlaneModule(result.dataSet);</code></pre>
                     
                     <br />
                     <p>Real-world usage: access module-level metadata for routing and transformation.</p>
-                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(Map.of(&quot;source&quot;, source));
 var ingestResult = ingestResultCollection.first();
 var imagePlaneModule = new ImagePlaneModule(ingestResult.dataSet);
 var imagePositionPatient = imagePlaneModule.imagePositionPatient;
@@ -305,7 +305,7 @@ var pixelSpacing = imagePlaneModule.pixelSpacing;</code></pre>
     .build()
 )
 
-result_collection = pipeline.process(source)
+result_collection = pipeline.process({&quot;source&quot;: source})
 result = result_collection.first()
 
 # Type usage
@@ -313,7 +313,7 @@ image_plane_module = ImagePlaneModule(result.data_set)</code></pre>
                     
                     <br />
                     <p>Real-world usage: access module-level metadata for routing and transformation.</p>
-                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process({&quot;source&quot;: source})
 ingest_result = ingest_result_collection.first()
 image_plane_module = ImagePlaneModule(ingest_result.data_set)
 image_position_patient = image_plane_module.imagePositionPatient

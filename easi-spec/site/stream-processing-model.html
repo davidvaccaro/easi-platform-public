@@ -131,7 +131,7 @@
                     <article class="card">
                         <h4>Transactional</h4>
                         <p>One request/source input, one streaming transaction, one result collection.</p>
-                        <pre><code>resultCollection := pipeline.process(source)</code></pre>
+                        <pre><code>resultCollection := pipeline.process({ source: source })</code></pre>
                     </article>
                     <article class="card">
                         <h4>Listener</h4>

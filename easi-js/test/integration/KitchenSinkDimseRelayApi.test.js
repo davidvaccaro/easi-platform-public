@@ -13,8 +13,8 @@ function createMockEasi(processImplementation, capture) {
                     capture.sourceTransport = transport;
                     return builder;
                 },
-                ofDicomData() {
-                    capture.ofDicomData = true;
+                ofDicomData(options = null) {
+                    capture.ofDicomData = (options == null) ? true : options;
                     return builder;
                 },
                 toInstances() {
@@ -45,10 +45,39 @@ function createMockEasi(processImplementation, capture) {
                 build() {
                     capture.buildCalled = true;
                     return {
-                        process: async (source, options) => {
-                            capture.processSource = source;
-                            capture.processOptions = options;
-                            return await processImplementation(source, options);
+                        process: async (...args) => {
+
+                            var invocation = {};
+
+                            if ((args.length === 1)
+                                && (args[0] != null)
+                                && (typeof args[0] === "object")
+                                && (Array.isArray(args[0]) == false)
+                                && (
+                                    (Object.prototype.hasOwnProperty.call(args[0], "source") == true)
+                                    || (Object.prototype.hasOwnProperty.call(args[0], "destination") == true)
+                                    || (Object.prototype.hasOwnProperty.call(args[0], "sourceOptions") == true)
+                                    || (Object.prototype.hasOwnProperty.call(args[0], "destinationOptions") == true)
+                                    || (Object.prototype.hasOwnProperty.call(args[0], "options") == true)
+                                )) {
+                                invocation = Object.assign({}, args[0]);
+                            }
+                            else {
+                                invocation.source = args[0] ?? null;
+                                invocation.sourceOptions = args[1] ?? null;
+                            }
+
+                            capture.processInvocation = invocation;
+                            capture.processSource = invocation.source ?? null;
+                            capture.processOptions = invocation.sourceOptions ?? null;
+                            capture.processDestination = invocation.destination ?? null;
+                            capture.processDestinationOptions = invocation.destinationOptions ?? null;
+
+                            return await processImplementation(
+                                capture.processSource,
+                                capture.processOptions,
+                                invocation
+                            );
                         }
                     };
                 }
@@ -194,7 +223,7 @@ dimseSocketTest("Test: Kitchen sink DIMSE C-MOVE relay API returns success and w
         expect(Array.isArray(payload.concerns)).toBe(true);
         expect(payload.concerns[0].code).toBe("UnitTestConcern");
 
-        expect(capture.ofDicomData).toBe(true);
+        expect(capture.ofDicomData).toEqual({ includePart10Header: true });
         expect(capture.buildCalled).toBe(true);
         expect(capture.sourceTransport).toBe(sourceTransport);
         expect(capture.destinationOptions.transport).toBe(destinationTransport);
@@ -202,6 +231,7 @@ dimseSocketTest("Test: Kitchen sink DIMSE C-MOVE relay API returns success and w
         expect(capture.deIdentificationMask instanceof Map).toBe(true);
         expect(capture.deIdentificationMask.has(Tag.SOPInstanceUID.ID)).toBe(true);
         expect(capture.processSource).toBeNull();
+        expect(Object.prototype.hasOwnProperty.call(capture.processInvocation, "destination")).toBe(false);
         expect(capture.processOptions.operation).toBe("c-move");
         expect(capture.processOptions.queryRetrieveLevel).toBe("IMAGE");
         expect(capture.processOptions.sopInstanceUid).toBe(relayRequestBody().sopInstanceUid);
@@ -419,6 +449,7 @@ dimseSocketTest("Test: Kitchen sink DIMSE C-FIND studies API returns instance su
         expect(capture.buildCalled).toBe(true);
         expect(capture.sourceTransport).toBe(sourceTransport);
         expect(capture.toInstances).toBe(true);
+        expect(Object.prototype.hasOwnProperty.call(capture.processInvocation, "destination")).toBe(false);
         expect(capture.processOptions.operation).toBe("c-find");
         expect(capture.processOptions.queryRetrieveLevel).toBe("IMAGE");
         expect(capture.processOptions.keys["00080060"]).toBe("MR");
@@ -504,6 +535,7 @@ dimseSocketTest("Test: Kitchen sink DIMSE C-GET API auto-discovers identifiers a
         expect(capture.buildCalled).toBe(true);
         expect(capture.sourceTransport).toBe(sourceTransport);
         expect(capture.toInstances).toBe(true);
+        expect(Object.prototype.hasOwnProperty.call(capture.processInvocation, "destination")).toBe(false);
         expect(capture.processOptions.operation).toBe("c-get");
         expect(capture.processOptions.queryRetrieveLevel).toBe("IMAGE");
         expect(capture.processOptions.studyInstanceUid).toBe(discovered.studyInstanceUid);

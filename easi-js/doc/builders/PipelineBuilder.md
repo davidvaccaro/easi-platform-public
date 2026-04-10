@@ -93,8 +93,8 @@ Transform/filter configuration methods (applied before terminal output):
 
 Outbound restreaming:
 
-- `intoByteStream(options?)`
-- `intoPartStream(options?)`
+- `intoByteBuffer(options?)`
+- `intoPartBuffer(options?)`
 - `intoFileStream(filePath, options?)`
 - `intoBrowserFileStream(target, options?)`
 - `intoNodeStreamAdapter(writable, options?)`

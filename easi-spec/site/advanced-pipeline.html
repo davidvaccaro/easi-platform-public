@@ -228,7 +228,7 @@ for each match in matches:
   .build()
 
 for each sourceUrl in manifest.urls:
-  migrationPipeline.process(sourceUrl, { continueOnError: true })</code></pre>
+  migrationPipeline.process(sourceUrl, null, { options: { continueOnError: true } })</code></pre>
 
                         <br />
 
@@ -253,7 +253,7 @@ customUploadPipeline := EASI.pipelineBuilder()
   })
   .build()
 
-customUploadCollection := customUploadPipeline.process(sourcePath)
+customUploadCollection := customUploadPipeline.process({ source: sourcePath })
 customUploadResult := customUploadCollection.first()
 customStatus := customUploadResult.status</code></pre>
 
@@ -278,7 +278,7 @@ stowPipeline := EASI.pipelineBuilder()
   })
   .build()
 
-stowCollection := stowPipeline.process(sourceUrl)
+stowCollection := stowPipeline.process({ source: sourceUrl })
 stowResult := stowCollection.first()
 stowStatus := stowResult.status</code></pre>
                     </div>
@@ -369,7 +369,7 @@ for (const match of matches) {
   .build();
 
 for (const sourceUrl of manifest.urls) {
-  await migrationPipeline.process(sourceUrl, { continueOnError: true });
+  await migrationPipeline.process(sourceUrl, null, { options: { continueOnError: true } });
 }</code></pre>
 
                         <br />
@@ -396,7 +396,7 @@ const customUploadPipeline = EASI.pipelineBuilder()
   )
   .build();
 
-const customUploadCollection = await customUploadPipeline.process(sourcePath);
+const customUploadCollection = await customUploadPipeline.process({ source: sourcePath });
 const customUploadResult = customUploadCollection.first();
 const customStatus = customUploadResult.status;</code></pre>
 
@@ -422,7 +422,7 @@ const stowPipeline = EASI.pipelineBuilder()
   )
   .build();
 
-const stowCollection = await stowPipeline.process(sourceUrl);
+const stowCollection = await stowPipeline.process({ source: sourceUrl });
 const stowResult = stowCollection.first();
 const stowStatus = stowResult.status;</code></pre>
                     </div>
@@ -628,17 +628,21 @@ var relayPipeline = EASI.pipelineBuilder()
     .build();
 
 var matches = queryPipeline.process(Map.of(
-    "operation", "cfind",
-    "level", "IMAGE",
-    "keys", Map.of("Modality", "CT")
+    "sourceOptions", Map.of(
+        "operation", "cfind",
+        "level", "IMAGE",
+        "keys", Map.of("Modality", "CT")
+    )
 ));
 
 for (var match : matches) {
     relayPipeline.process(Map.of(
-        "operation", "cmove",
-        "level", "IMAGE",
-        "destinationAeTitle", destinationAssociation.get("calledAeTitle"),
-        "keys", Map.of("SOPInstanceUID", match.dataSet.value(Tag.SOPInstanceUID))
+        "sourceOptions", Map.of(
+            "operation", "cmove",
+            "level", "IMAGE",
+            "destinationAeTitle", destinationAssociation.get("calledAeTitle"),
+            "keys", Map.of("SOPInstanceUID", match.dataSet.value(Tag.SOPInstanceUID))
+        )
     ));
 }</code></pre>
 
@@ -655,7 +659,9 @@ for (var match : matches) {
     .build();
 
 for (var sourceUrl : manifest.urls) {
-    migrationPipeline.process(sourceUrl, Map.of("continueOnError", true));
+    migrationPipeline.process(sourceUrl, null, Map.of(
+        "options", Map.of("continueOnError", true)
+    ));
 }</code></pre>
 
                         <br />
@@ -681,7 +687,7 @@ var customUploadPipeline = EASI.pipelineBuilder()
     ))
     .build();
 
-var customUploadCollection = customUploadPipeline.process(sourcePath);
+var customUploadCollection = customUploadPipeline.process({ source: sourcePath });
 var customUploadResult = customUploadCollection.first();
 var customStatus = customUploadResult.status;</code></pre>
 
@@ -706,7 +712,7 @@ var stowPipeline = EASI.pipelineBuilder()
     ))
     .build();
 
-var stowCollection = stowPipeline.process(sourceUrl);
+var stowCollection = stowPipeline.process({ source: sourceUrl });
 var stowResult = stowCollection.first();
 var stowStatus = stowResult.status;</code></pre>
                     </div>
@@ -799,7 +805,7 @@ for match in matches:
 )
 
 for source_url in manifest.urls:
-    migration_pipeline.process(source_url, {"continueOnError": True})</code></pre>
+    migration_pipeline.process(source_url, null, {"options": {"continueOnError": True}})</code></pre>
 
                         <br />
 
@@ -826,7 +832,7 @@ custom_upload_pipeline = (
     .build()
 )
 
-custom_upload_collection = custom_upload_pipeline.process(source_path)
+custom_upload_collection = custom_upload_pipeline.process({ source: source_path })
 custom_upload_result = custom_upload_collection.first()
 custom_status = custom_upload_result.status</code></pre>
 
@@ -853,7 +859,7 @@ stow_pipeline = (
     .build()
 )
 
-stow_collection = stow_pipeline.process(source_url)
+stow_collection = stow_pipeline.process({ source: source_url })
 stow_result = stow_collection.first()
 stow_status = stow_result.status</code></pre>
                     </div>

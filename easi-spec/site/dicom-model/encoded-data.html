@@ -253,7 +253,7 @@
   .toInstances()
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 result := resultCollection.first()
 
 # Type usage
@@ -261,7 +261,7 @@ encodedData := EncodedData(result.dataSet.find(Tag.PixelData).access(), result.m
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process({ source: source })
 ingestResult := ingestResultCollection.first()
 encodedData := EncodedData(ingestResult.dataSet.find(Tag.PixelData).access(), ingestResult.metaSet.transferSyntax)
 encodedData.convert(TransferSyntax.ExplicitVRLittleEndian)
@@ -276,7 +276,7 @@ encodedLength := encodedData.length()</code></pre>
   .toInstances()
   .build();
 
-const resultCollection = await pipeline.process(source);
+const resultCollection = await pipeline.process({ source: source });
 const result = resultCollection.first();
 
 // Type usage
@@ -284,7 +284,7 @@ const encodedData = new EncodedData(result.dataSet.find(Tag.PixelData).access(),
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process({ source: source });
 const ingestResult = ingestResultCollection.first();
 const encodedData = new EncodedData(ingestResult.dataSet.find(Tag.PixelData).access(), ingestResult.metaSet.transferSyntax);
 encodedData.convert(TransferSyntax.ExplicitVRLittleEndian);
@@ -299,7 +299,7 @@ const encodedLength = encodedData.length();</code></pre>
     .ToInstances()
     .Build();
 
-var resultCollection = await pipeline.Process(source);
+var resultCollection = await pipeline.Process(new { source = source });
 var result = resultCollection.First();
 
 // Type usage
@@ -307,7 +307,7 @@ var encodedData = new EncodedData(result.dataSet.find(Tag.PixelData).access(), r
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(new { source = source });
 var ingestResult = ingestResultCollection.First();
 var encodedData = new EncodedData(ingestResult.dataSet.find(Tag.PixelData).access(), ingestResult.metaSet.transferSyntax);
 encodedData.convert(TransferSyntax.ExplicitVRLittleEndian);
@@ -322,7 +322,7 @@ var encodedLength = encodedData.length();</code></pre>
     .toInstances()
     .build();
 
-var resultCollection = pipeline.process(source);
+var resultCollection = pipeline.process(Map.of(&quot;source&quot;, source));
 var result = resultCollection.first();
 
 // Type usage
@@ -330,7 +330,7 @@ var encodedData = new EncodedData(result.dataSet.find(Tag.PixelData).access(), r
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(Map.of(&quot;source&quot;, source));
 var ingestResult = ingestResultCollection.first();
 var encodedData = new EncodedData(ingestResult.dataSet.find(Tag.PixelData).access(), ingestResult.metaSet.transferSyntax);
 encodedData.convert(TransferSyntax.ExplicitVRLittleEndian);
@@ -347,7 +347,7 @@ var encodedLength = encodedData.length();</code></pre>
     .build()
 )
 
-result_collection = pipeline.process(source)
+result_collection = pipeline.process({&quot;source&quot;: source})
 result = result_collection.first()
 
 # Type usage
@@ -355,7 +355,7 @@ encoded_data = EncodedData(result.data_set.find(Tag.pixel_data).access(), result
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process({&quot;source&quot;: source})
 ingest_result = ingest_result_collection.first()
 encoded_data = EncodedData(ingest_result.data_set.find(Tag.pixel_data).access(), ingest_result.meta_set.transferSyntax)
 encoded_data.convert(TransferSyntax.ExplicitVRLittleEndian)

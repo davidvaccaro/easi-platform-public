@@ -207,7 +207,7 @@
                     <article class="card">
                         <h4>Transactional Mode</h4>
                         <p>Use <code>process(source)</code> when you provide one explicit source or request and want one result collection.</p>
-                        <pre><code>resultCollection := pipeline.process(source)</code></pre>
+                        <pre><code>resultCollection := pipeline.process({ source: source })</code></pre>
                     </article>
                     <article class="card">
                         <h4>Listener Mode</h4>
@@ -236,7 +236,7 @@ run.stop()</code></pre>
   .into&lt;OptionalWriter&gt;(...)
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 if resultCollection.isEmpty():
   return noResult
 

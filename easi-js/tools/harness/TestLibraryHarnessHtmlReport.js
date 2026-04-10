@@ -1408,7 +1408,7 @@ function renderRedactionToolPage(options = {}) {
                 })
                 .build();
 
-            await assetsPipeline.process(sourceValue);
+            await assetsPipeline.process({ source: sourceValue });
             return previewFrameCount;
         }
 
@@ -1736,7 +1736,7 @@ function renderRedactionToolPage(options = {}) {
                                 }
                             })
                             .build()
-                            .process(inputSource.value);
+                            .process({ source: inputSource.value });
 
                         await outputWritable.close();
 
@@ -1759,7 +1759,7 @@ function renderRedactionToolPage(options = {}) {
                         .withBurnedInRedaction(redactionOptions)
                         .toDicomData()
                         .build()
-                        .process(inputSource.value);
+                        .process({ source: inputSource.value });
                 }
 
                 const elapsedMs = Math.max(0, (performance.now() - startedAt));

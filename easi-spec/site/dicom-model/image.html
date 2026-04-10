@@ -264,7 +264,7 @@
   .toEntities()
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 result := resultCollection.first()
 
 # Type usage
@@ -272,7 +272,7 @@ image := result</code></pre>
                     
                     <br />
                     <p>Real-world usage: pull frame geometry for rendering/decode planning.</p>
-                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process({ source: source })
 ingestResult := ingestResultCollection.first()
 image := ingestResult
 rows := image.imagePixelModule.rows
@@ -287,7 +287,7 @@ columns := image.imagePixelModule.columns</code></pre>
   .toEntities()
   .build();
 
-const resultCollection = await pipeline.process(source);
+const resultCollection = await pipeline.process({ source: source });
 const result = resultCollection.first();
 
 // Type usage
@@ -295,7 +295,7 @@ const image = result;</code></pre>
                     
                     <br />
                     <p>Real-world usage: pull frame geometry for rendering/decode planning.</p>
-                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process({ source: source });
 const ingestResult = ingestResultCollection.first();
 const image = ingestResult;
 const rows = image.imagePixelModule.rows;
@@ -310,7 +310,7 @@ const columns = image.imagePixelModule.columns;</code></pre>
     .ToEntities()
     .Build();
 
-var resultCollection = await pipeline.Process(source);
+var resultCollection = await pipeline.Process(new { source = source });
 var result = resultCollection.First();
 
 // Type usage
@@ -318,7 +318,7 @@ var image = result;</code></pre>
                     
                     <br />
                     <p>Real-world usage: pull frame geometry for rendering/decode planning.</p>
-                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(new { source = source });
 var ingestResult = ingestResultCollection.First();
 var image = ingestResult;
 var rows = image.imagePixelModule.rows;
@@ -333,7 +333,7 @@ var columns = image.imagePixelModule.columns;</code></pre>
     .toEntities()
     .build();
 
-var resultCollection = pipeline.process(source);
+var resultCollection = pipeline.process(Map.of(&quot;source&quot;, source));
 var result = resultCollection.first();
 
 // Type usage
@@ -341,7 +341,7 @@ var image = result;</code></pre>
                     
                     <br />
                     <p>Real-world usage: pull frame geometry for rendering/decode planning.</p>
-                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(Map.of(&quot;source&quot;, source));
 var ingestResult = ingestResultCollection.first();
 var image = ingestResult;
 var rows = image.imagePixelModule.rows;
@@ -358,7 +358,7 @@ var columns = image.imagePixelModule.columns;</code></pre>
     .build()
 )
 
-result_collection = pipeline.process(source)
+result_collection = pipeline.process({&quot;source&quot;: source})
 result = result_collection.first()
 
 # Type usage
@@ -366,7 +366,7 @@ image = result</code></pre>
                     
                     <br />
                     <p>Real-world usage: pull frame geometry for rendering/decode planning.</p>
-                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process({&quot;source&quot;: source})
 ingest_result = ingest_result_collection.first()
 image = ingest_result
 rows = image.imagePixelModule.rows

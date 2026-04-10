@@ -223,7 +223,7 @@
   .toEntities()
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 result := resultCollection.first()
 
 # Type usage
@@ -231,7 +231,7 @@ entity := result</code></pre>
                     
                     <br />
                     <p>Real-world usage: project instance content into higher-level entity semantics.</p>
-                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process({ source: source })
 ingestResult := ingestResultCollection.first()
 entity := ingestResult
 sopClassUid := entity.sopClassUid
@@ -246,7 +246,7 @@ seriesUid := entity.generalSeriesModule.seriesInstanceUid</code></pre>
   .toEntities()
   .build();
 
-const resultCollection = await pipeline.process(source);
+const resultCollection = await pipeline.process({ source: source });
 const result = resultCollection.first();
 
 // Type usage
@@ -254,7 +254,7 @@ const entity = result;</code></pre>
                     
                     <br />
                     <p>Real-world usage: project instance content into higher-level entity semantics.</p>
-                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process({ source: source });
 const ingestResult = ingestResultCollection.first();
 const entity = ingestResult;
 const sopClassUid = entity.sopClassUid;
@@ -269,7 +269,7 @@ const seriesUid = entity.generalSeriesModule.seriesInstanceUid;</code></pre>
     .ToEntities()
     .Build();
 
-var resultCollection = await pipeline.Process(source);
+var resultCollection = await pipeline.Process(new { source = source });
 var result = resultCollection.First();
 
 // Type usage
@@ -277,7 +277,7 @@ var entity = result;</code></pre>
                     
                     <br />
                     <p>Real-world usage: project instance content into higher-level entity semantics.</p>
-                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(new { source = source });
 var ingestResult = ingestResultCollection.First();
 var entity = ingestResult;
 var sopClassUid = entity.sopClassUid;
@@ -292,7 +292,7 @@ var seriesUid = entity.generalSeriesModule.seriesInstanceUid;</code></pre>
     .toEntities()
     .build();
 
-var resultCollection = pipeline.process(source);
+var resultCollection = pipeline.process(Map.of(&quot;source&quot;, source));
 var result = resultCollection.first();
 
 // Type usage
@@ -300,7 +300,7 @@ var entity = result;</code></pre>
                     
                     <br />
                     <p>Real-world usage: project instance content into higher-level entity semantics.</p>
-                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(Map.of(&quot;source&quot;, source));
 var ingestResult = ingestResultCollection.first();
 var entity = ingestResult;
 var sopClassUid = entity.sopClassUid;
@@ -317,7 +317,7 @@ var seriesUid = entity.generalSeriesModule.seriesInstanceUid;</code></pre>
     .build()
 )
 
-result_collection = pipeline.process(source)
+result_collection = pipeline.process({&quot;source&quot;: source})
 result = result_collection.first()
 
 # Type usage
@@ -325,7 +325,7 @@ entity = result</code></pre>
                     
                     <br />
                     <p>Real-world usage: project instance content into higher-level entity semantics.</p>
-                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process({&quot;source&quot;: source})
 ingest_result = ingest_result_collection.first()
 entity = ingest_result
 sop_class_uid = entity.sopClassUid

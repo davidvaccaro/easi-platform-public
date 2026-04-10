@@ -221,16 +221,18 @@ const pipeline = EASI.pipelineBuilder()
   .toInstances()
   .build();
 
-const instance = await pipeline.process(null, {
-  operation: 'c-move',
-  queryRetrieveModel: 'study-root',
-  queryRetrieveLevel: 'IMAGE',
-  studyInstanceUid: '<study-uid>',
-  seriesInstanceUid: '<series-uid>',
-  sopInstanceUid: '<instance-uid>',
-  moveDestinationAeTitle: 'EASI_MOVE_DEST',
-  moveStoreHost: '127.0.0.1',
-  moveStorePort: 4104
+const instance = await pipeline.process(null, null, {
+  sourceOptions: {
+    operation: 'c-move',
+    queryRetrieveModel: 'study-root',
+    queryRetrieveLevel: 'IMAGE',
+    studyInstanceUid: '<study-uid>',
+    seriesInstanceUid: '<series-uid>',
+    sopInstanceUid: '<instance-uid>',
+    moveDestinationAeTitle: 'EASI_MOVE_DEST',
+    moveStoreHost: '127.0.0.1',
+    moveStorePort: 4104
+  }
 });
 ```
 

@@ -616,7 +616,7 @@
   .toInstances()
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 result := resultCollection.first()
 
 # Type usage
@@ -637,7 +637,7 @@ isLittleEndian := transferSyntax.IsLittleEndian</code></pre>
   .toInstances()
   .build();
 
-const resultCollection = await pipeline.process(source);
+const resultCollection = await pipeline.process({ source: source });
 const result = resultCollection.first();
 
 // Type usage
@@ -658,7 +658,7 @@ const isLittleEndian = transferSyntax.IsLittleEndian;</code></pre>
     .ToInstances()
     .Build();
 
-var resultCollection = await pipeline.Process(source);
+var resultCollection = await pipeline.Process(new { source = source });
 var result = resultCollection.First();
 
 // Type usage
@@ -679,7 +679,7 @@ var isLittleEndian = transferSyntax.IsLittleEndian;</code></pre>
     .toInstances()
     .build();
 
-var resultCollection = pipeline.process(source);
+var resultCollection = pipeline.process(Map.of(&quot;source&quot;, source));
 var result = resultCollection.first();
 
 // Type usage
@@ -702,7 +702,7 @@ var isLittleEndian = transferSyntax.IsLittleEndian;</code></pre>
     .build()
 )
 
-result_collection = pipeline.process(source)
+result_collection = pipeline.process({&quot;source&quot;: source})
 result = result_collection.first()
 
 # Type usage

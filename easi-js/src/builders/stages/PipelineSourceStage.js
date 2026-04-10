@@ -39,43 +39,45 @@ export default class PipelineSourceStage extends PipelineBuilderStage {
     /**
      * Set the current reader.
      * @param {object} reader The reader used to process source input.
+     * @param {*} source Optional default source bound at build-time.
+     * @param {object | null} options Optional default source options bound at build-time.
      * @returns {PipelineFormatStage} A format stage reference.
      */
-    withReader(reader) {
+    withReader(reader, source = null, options = null) {
         return this.nextStage(
-            (session) => session.withReader(reader),
+            (session) => session.withReader(reader, source, options),
             PipelineFormatStage
         );
     }
 
     /** @returns {PipelineFormatStage} */
-    fromPartStream() {
-        return this.withReader(new PartStreamReader());
+    fromPartStream(source = null, options = null) {
+        return this.withReader(new PartStreamReader(), source, options);
     }
 
     /** @returns {PipelineFormatStage} */
-    fromHttpStream() {
-        return this.withReader(new HttpStreamReader(new PartStreamReader()));
+    fromHttpStream(source = null, options = null) {
+        return this.withReader(new HttpStreamReader(new PartStreamReader()), source, options);
     }
 
     /** @returns {PipelineFormatStage} */
-    fromByteStream() {
-        return this.withReader(new ByteStreamReader(new PartStreamReader()));
+    fromByteStream(source = null, options = null) {
+        return this.withReader(new ByteStreamReader(new PartStreamReader()), source, options);
     }
 
     /** @returns {PipelineFormatStage} */
-    fromFileStream() {
-        return this.withReader(new FileStreamReader(new PartStreamReader()));
+    fromFileStream(source = null, options = null) {
+        return this.withReader(new FileStreamReader(new PartStreamReader()), source, options);
     }
 
     /** @returns {PipelineFormatStage} */
-    fromWebSocketStream() {
-        return this.withReader(new WebSocketStreamReader(new PartStreamReader()));
+    fromWebSocketStream(source = null, options = null) {
+        return this.withReader(new WebSocketStreamReader(new PartStreamReader()), source, options);
     }
 
     /** @returns {PipelineFormatStage} */
-    fromNodeStreamAdapter() {
-        return this.withReader(new NodeStreamAdapterReader(new PartStreamReader()));
+    fromNodeStreamAdapter(source = null, options = null) {
+        return this.withReader(new NodeStreamAdapterReader(new PartStreamReader()), source, options);
     }
 
     /**
@@ -85,7 +87,7 @@ export default class PipelineSourceStage extends PipelineBuilderStage {
      * @returns {PipelineFormatStage}
      */
     fromDimseAssociation(association = null, transport = null) {
-        return this.withReader(new DimseAssociationReader(association, transport, new PartStreamReader()));
+        return this.withReader(new DimseAssociationReader(association, transport, new PartStreamReader()), association, null);
     }
 
 }

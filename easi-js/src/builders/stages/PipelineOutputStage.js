@@ -24,6 +24,7 @@ import PartStreamWriter from "../../writers/PartStreamWriter.js";
 import FileStreamWriter from "../../writers/FileStreamWriter.js";
 import BrowserFileStreamWriter from "../../writers/BrowserFileStreamWriter.js";
 import NodeStreamAdapterWriter from "../../writers/NodeStreamAdapterWriter.js";
+import WritableStreamWriter from "../../writers/WritableStreamWriter.js";
 import WebSocketStreamWriter from "../../writers/WebSocketStreamWriter.js";
 import HttpStreamWriter from "../../writers/HttpStreamWriter.js";
 import DimseAssociationWriter from "../../writers/DimseAssociationWriter.js";
@@ -53,7 +54,7 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
      * @param {object | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
-    intoByteStream(options = null) {
+    intoByteBuffer(options = null) {
         return this.withWriter(new ByteStreamWriter(), null, options);
     }
 
@@ -62,57 +63,117 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
      * @param {object | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
-    intoPartStream(options = null) {
+    intoPartBuffer(options = null) {
         return this.withWriter(new PartStreamWriter(), null, options);
     }
 
     /**
      * Route terminal output to a file writer sink.
-     * @param {string} filePath The target file path.
+     * @param {string | object | null} filePathOrOptions The target file path or write options when late-binding destination.
      * @param {object | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
-    intoFileStream(filePath, options = null) {
+    intoFileStream(filePathOrOptions = null, options = null) {
+        var filePath = filePathOrOptions;
+        if ((filePathOrOptions != null)
+            && (typeof filePathOrOptions === "object")
+            && (Array.isArray(filePathOrOptions) == false)) {
+            filePath = null;
+            options = filePathOrOptions;
+        }
         return this.withWriter(new FileStreamWriter(), filePath, options);
     }
 
     /**
      * Route terminal output to a browser file writable stream sink.
-     * @param {object} target The FileSystemWritableFileStream or FileSystemFileHandle target.
+     * @param {object | null} targetOrOptions The FileSystemWritableFileStream or FileSystemFileHandle target or write options when late-binding destination.
      * @param {object | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
-    intoBrowserFileStream(target, options = null) {
+    intoBrowserFileStream(targetOrOptions = null, options = null) {
+        var target = targetOrOptions;
+        if ((targetOrOptions != null)
+            && (typeof targetOrOptions === "object")
+            && (Array.isArray(targetOrOptions) == false)
+            && ((typeof targetOrOptions.write === "function")
+                || (typeof targetOrOptions.createWritable === "function")) == false) {
+            target = null;
+            options = targetOrOptions;
+        }
         return this.withWriter(new BrowserFileStreamWriter(), target, options);
     }
 
     /**
      * Route terminal output to a Node writable stream sink.
-     * @param {object} writable The Node writable stream.
+     * @param {object | null} writableOrOptions The Node writable stream or write options when late-binding destination.
      * @param {object | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
-    intoNodeStreamAdapter(writable, options = null) {
+    intoNodeStreamAdapter(writableOrOptions = null, options = null) {
+        var writable = writableOrOptions;
+        if ((writableOrOptions != null)
+            && (typeof writableOrOptions === "object")
+            && (Array.isArray(writableOrOptions) == false)
+            && (typeof writableOrOptions.write !== "function")) {
+            writable = null;
+            options = writableOrOptions;
+        }
         return this.withWriter(new NodeStreamAdapterWriter(), writable, options);
     }
 
     /**
-     * Route terminal output to a WebSocket sink.
-     * @param {object} socket The target socket.
+     * Route terminal output to a generic writable stream/sink.
+     * @param {object | null} writableOrOptions WritableStream/sink target or write options when late-binding destination.
      * @param {object | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
-    intoWebSocketStream(socket, options = null) {
+    intoWritableStream(writableOrOptions = null, options = null) {
+        var writable = writableOrOptions;
+        if ((writableOrOptions != null)
+            && (typeof writableOrOptions === "object")
+            && (Array.isArray(writableOrOptions) == false)
+            && ((typeof writableOrOptions.write === "function")
+                || (typeof writableOrOptions.getWriter === "function")) == false) {
+            writable = null;
+            options = writableOrOptions;
+        }
+        return this.withWriter(new WritableStreamWriter(), writable, options);
+    }
+
+    /**
+     * Route terminal output to a WebSocket sink.
+     * @param {object | null} socketOrOptions The target socket or write options when late-binding destination.
+     * @param {object | null} options Optional writer options.
+     * @returns {PipelineOutputStage} A new output stage object.
+     */
+    intoWebSocketStream(socketOrOptions = null, options = null) {
+        var socket = socketOrOptions;
+        if ((socketOrOptions != null)
+            && (typeof socketOrOptions === "object")
+            && (Array.isArray(socketOrOptions) == false)
+            && (typeof socketOrOptions.send !== "function")) {
+            socket = null;
+            options = socketOrOptions;
+        }
         return this.withWriter(new WebSocketStreamWriter(), socket, options);
     }
 
     /**
      * Route terminal output to an HTTP request sink.
-     * @param {string | object} request The request URL or request descriptor.
+     * @param {string | object | null} requestOrOptions The request URL/descriptor or write options when late-binding destination.
      * @param {object | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
-    intoHttpStream(request, options = null) {
+    intoHttpStream(requestOrOptions = null, options = null) {
+        var request = requestOrOptions;
+        if ((requestOrOptions != null)
+            && (typeof requestOrOptions === "object")
+            && (Array.isArray(requestOrOptions) == false)
+            && ((Object.prototype.hasOwnProperty.call(requestOrOptions, "url") == false)
+                && (Object.prototype.hasOwnProperty.call(requestOrOptions, "href") == false))) {
+            request = null;
+            options = requestOrOptions;
+        }
         return this.withWriter(new HttpStreamWriter(), request, options);
     }
 

@@ -58,7 +58,7 @@ Use `fromHttpStream()` for URL/fetch transport and `fromPartStream()` for direct
 | DIMSE C-GET / C-MOVE source | DICOM&reg; `Instance` / FHIR&reg; mapping / byte stream | `EASI.pipelineBuilder().fromDimseAssociation(assoc, srcTransport).ofDicomData().toInstances()` |
 | DICOM&reg; bytes or DIMSE source | DIMSE C-STORE destination | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toDicomData().intoDimseAssociation(destAssoc, { transport: destTransport })` |
 
-> Pipeline-based scenarios are finalized with `.build().process(source)`.
+> Pipeline-based scenarios are finalized with `.build().process({ source: source })`.
 
 ## DIMSE Recipes
 
@@ -151,8 +151,10 @@ const wrappedDicomBytes = await EASI
   .ofJsonData()
   .toWrappedDocuments()
   .build()
-  .process(new TextEncoder().encode(JSON.stringify(descriptor)), {
-    contentType: "application/json"
+  .process(new TextEncoder().encode(JSON.stringify(descriptor)), null, {
+    sourceOptions: {
+      contentType: "application/json"
+    }
   });
 ```
 
@@ -172,7 +174,11 @@ const wrappedDicomBytes = await EASI
     title: "Echo Report"
   })
   .build()
-  .process(rawPdfBytes, { contentType: "application/pdf" });
+  .process(rawPdfBytes, null, {
+    sourceOptions: {
+      contentType: "application/pdf"
+    }
+  });
 ```
 
 ---
@@ -257,7 +263,7 @@ const pipeline = EASI.pipelineBuilder()
 
 // Read and parse a DICOM&reg; file from a URL
 pipeline
-    .process(url)
+    .process({ source: url })
     .then(result => {
 
         // Establish the parsed instance

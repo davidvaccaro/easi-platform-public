@@ -362,7 +362,7 @@
                                 </thead>
                                 <tbody>
                             <tr>
-                                <td><code>Object</code></td>
+                                <td><code>import(&quot;../utilities/UnwrappedDocument.js&quot;).default</code></td>
                                 <td>The unwrapped output payload.</td>
                             </tr>
                             <tr>
@@ -406,7 +406,7 @@
                                 </thead>
                                 <tbody>
                             <tr>
-                                <td><code>Object</code></td>
+                                <td><code>import(&quot;../utilities/UnwrappedDocument.js&quot;).default</code></td>
                                 <td>The unwrapped payload.</td>
                             </tr>
                             <tr>
@@ -452,7 +452,7 @@
   .toEntities()
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 result := resultCollection.first()
 
 # Type usage
@@ -480,7 +480,7 @@ documentLength := unwrappedViaStatic.byteLength</code></pre>
   .toEntities()
   .build();
 
-const resultCollection = await pipeline.process(source);
+const resultCollection = await pipeline.process({ source: source });
 const result = resultCollection.first();
 
 // Type usage
@@ -508,7 +508,7 @@ const documentLength = unwrappedViaStatic.byteLength;</code></pre>
     .ToEntities()
     .Build();
 
-var resultCollection = await pipeline.Process(source);
+var resultCollection = await pipeline.Process(new { source = source });
 var result = resultCollection.First();
 
 // Type usage
@@ -536,7 +536,7 @@ var documentLength = unwrappedViaStatic.byteLength;</code></pre>
     .toEntities()
     .build();
 
-var resultCollection = pipeline.process(source);
+var resultCollection = pipeline.process(Map.of(&quot;source&quot;, source));
 var result = resultCollection.first();
 
 // Type usage
@@ -566,7 +566,7 @@ var documentLength = unwrappedViaStatic.byteLength;</code></pre>
     .build()
 )
 
-result_collection = pipeline.process(source)
+result_collection = pipeline.process({&quot;source&quot;: source})
 result = result_collection.first()
 
 # Type usage

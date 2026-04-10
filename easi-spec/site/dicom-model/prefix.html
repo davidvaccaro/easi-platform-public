@@ -171,7 +171,7 @@
   .toInstances()
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 result := resultCollection.first()
 
 # Type usage
@@ -179,7 +179,7 @@ prefix := result.prefix</code></pre>
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process({ source: source })
 ingestResult := ingestResultCollection.first()
 prefix := ingestResult.prefix
 byteLength := prefix.length()</code></pre>
@@ -193,7 +193,7 @@ byteLength := prefix.length()</code></pre>
   .toInstances()
   .build();
 
-const resultCollection = await pipeline.process(source);
+const resultCollection = await pipeline.process({ source: source });
 const result = resultCollection.first();
 
 // Type usage
@@ -201,7 +201,7 @@ const prefix = result.prefix;</code></pre>
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process({ source: source });
 const ingestResult = ingestResultCollection.first();
 const prefix = ingestResult.prefix;
 const byteLength = prefix.length();</code></pre>
@@ -215,7 +215,7 @@ const byteLength = prefix.length();</code></pre>
     .ToInstances()
     .Build();
 
-var resultCollection = await pipeline.Process(source);
+var resultCollection = await pipeline.Process(new { source = source });
 var result = resultCollection.First();
 
 // Type usage
@@ -223,7 +223,7 @@ var prefix = result.prefix;</code></pre>
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(new { source = source });
 var ingestResult = ingestResultCollection.First();
 var prefix = ingestResult.prefix;
 var byteLength = prefix.length();</code></pre>
@@ -237,7 +237,7 @@ var byteLength = prefix.length();</code></pre>
     .toInstances()
     .build();
 
-var resultCollection = pipeline.process(source);
+var resultCollection = pipeline.process(Map.of(&quot;source&quot;, source));
 var result = resultCollection.first();
 
 // Type usage
@@ -245,7 +245,7 @@ var prefix = result.prefix;</code></pre>
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(Map.of(&quot;source&quot;, source));
 var ingestResult = ingestResultCollection.first();
 var prefix = ingestResult.prefix;
 var byteLength = prefix.length();</code></pre>
@@ -261,7 +261,7 @@ var byteLength = prefix.length();</code></pre>
     .build()
 )
 
-result_collection = pipeline.process(source)
+result_collection = pipeline.process({&quot;source&quot;: source})
 result = result_collection.first()
 
 # Type usage
@@ -269,7 +269,7 @@ prefix = result.prefix</code></pre>
                     
                     <br />
                     <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
-                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process({&quot;source&quot;: source})
 ingest_result = ingest_result_collection.first()
 prefix = ingest_result.prefix
 byte_length = prefix.length()</code></pre>

@@ -7,229 +7,229 @@ const fs = require('fs');
 
 function readDicomBytes(name = '0002.DCM') {
 
-    // Establish the root path to BrightDicom.
-    var brightDicomRoot = process.cwd().split('easi-js')[0];
+  // Establish the root path to BrightDicom.
+  var brightDicomRoot = process.cwd().split('easi-js')[0];
 
-    // Read the requested DICOM file.
-    return fs.readFileSync(path.join(brightDicomRoot, '/data/dicoms/' + name));
+  // Read the requested DICOM file.
+  return fs.readFileSync(path.join(brightDicomRoot, '/data/dicoms/' + name));
 
 }
 
 function writeTestOutputBytes(name, bytes) {
 
-    var outputDirectory = path.join(process.cwd(), 'test/output');
-    fs.mkdirSync(outputDirectory, { recursive: true });
+  var outputDirectory = path.join(process.cwd(), 'test/output');
+  fs.mkdirSync(outputDirectory, { recursive: true });
 
-    var outputPath = path.join(outputDirectory, name);
-    fs.writeFileSync(outputPath, Buffer.from(bytes));
+  var outputPath = path.join(outputDirectory, name);
+  fs.writeFileSync(outputPath, Buffer.from(bytes));
 
-    return outputPath;
+  return outputPath;
 
 }
 
 function combineChunks(chunks) {
 
-    var totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
-    var result = new Uint8Array(totalLength);
-    var offset = 0;
+  var totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+  var result = new Uint8Array(totalLength);
+  var offset = 0;
 
-    for (var i = 0; i < chunks.length; i++) {
-        result.set(chunks[i], offset);
-        offset += chunks[i].length;
-    }
+  for (var i = 0; i < chunks.length; i++) {
+    result.set(chunks[i], offset);
+    offset += chunks[i].length;
+  }
 
-    return result;
+  return result;
 
 }
 
 test('Test: PipelineBuilder toDicomData emits native DICOM bytes that round-trip parse', async () => {
 
-    var sourceBytes = readDicomBytes('0002.DCM');
+  var sourceBytes = readDicomBytes('0002.DCM');
 
-    var writerReader = EASI.pipelineBuilder()
-        .fromPartStream()
-        .ofDicomData()
-        .toDicomData()
-        .build();
+  var writerReader = EASI.pipelineBuilder().
+  fromPartStream().
+  ofDicomData().
+  toDicomData().
+  build();
 
-    var emittedBytes = await writerReader.process(sourceBytes);
-    expect(emittedBytes instanceof Uint8Array).toBe(true);
-    expect(emittedBytes.length).toBeGreaterThan(0);
+  var emittedBytes = await writerReader.process({ source: sourceBytes });
+  expect(emittedBytes instanceof Uint8Array).toBe(true);
+  expect(emittedBytes.length).toBeGreaterThan(0);
 
-    var sourceInstance = await EASI.pipelineBuilder()
-        .fromPartStream()
-        .ofDicomData()
-        .toInstances()
-        .build()
-        .process(sourceBytes);
+  var sourceInstance = await EASI.pipelineBuilder().
+  fromPartStream().
+  ofDicomData().
+  toInstances().
+  build().
+  process({ source: sourceBytes });
 
-    var emittedInstance = await EASI.pipelineBuilder()
-        .fromPartStream()
-        .ofDicomData()
-        .toInstances()
-        .build()
-        .process(emittedBytes);
+  var emittedInstance = await EASI.pipelineBuilder().
+  fromPartStream().
+  ofDicomData().
+  toInstances().
+  build().
+  process({ source: emittedBytes });
 
-    expect(emittedInstance.dataSet.find(Tag.PatientName).value)
-        .toBe(sourceInstance.dataSet.find(Tag.PatientName).value);
+  expect(emittedInstance.dataSet.find(Tag.PatientName).value).
+  toBe(sourceInstance.dataSet.find(Tag.PatientName).value);
 
-    expect(emittedInstance.dataSet.find(Tag.PatientID).value)
-        .toBe(sourceInstance.dataSet.find(Tag.PatientID).value);
+  expect(emittedInstance.dataSet.find(Tag.PatientID).value).
+  toBe(sourceInstance.dataSet.find(Tag.PatientID).value);
 
-    expect(emittedInstance.dataSet.find(Tag.Modality).value)
-        .toBe(sourceInstance.dataSet.find(Tag.Modality).value);
+  expect(emittedInstance.dataSet.find(Tag.Modality).value).
+  toBe(sourceInstance.dataSet.find(Tag.Modality).value);
 
 });
 
 test('Test: toDicomData preserves little-endian dataset ordering for raw dataset-only DICOM input', async () => {
 
-    var sourceBytes = readDicomBytes('CR-MONO1-10-chest.dcm');
+  var sourceBytes = readDicomBytes('CR-MONO1-10-chest.dcm');
 
-    var emittedBytes = await EASI.pipelineBuilder()
-        .fromPartStream()
-        .ofDicomData()
-        .toDicomData()
-        .build()
-        .process(sourceBytes);
+  var emittedBytes = await EASI.pipelineBuilder().
+  fromPartStream().
+  ofDicomData().
+  toDicomData().
+  build().
+  process({ source: sourceBytes });
 
-    expect(emittedBytes instanceof Uint8Array).toBe(true);
-    expect(emittedBytes.length).toBeGreaterThan(0);
+  expect(emittedBytes instanceof Uint8Array).toBe(true);
+  expect(emittedBytes.length).toBeGreaterThan(0);
 
-    // First attribute tag should remain little-endian encoded (0008,0000) -> 08 00 00 00
-    expect(emittedBytes[0]).toBe(0x08);
-    expect(emittedBytes[1]).toBe(0x00);
-    expect(emittedBytes[2]).toBe(0x00);
-    expect(emittedBytes[3]).toBe(0x00);
+  // First attribute tag should remain little-endian encoded (0008,0000) -> 08 00 00 00
+  expect(emittedBytes[0]).toBe(0x08);
+  expect(emittedBytes[1]).toBe(0x00);
+  expect(emittedBytes[2]).toBe(0x00);
+  expect(emittedBytes[3]).toBe(0x00);
 
-    var emittedInstance = await EASI.pipelineBuilder()
-        .fromPartStream()
-        .ofDicomData()
-        .toInstances()
-        .build()
-        .process(emittedBytes);
+  var emittedInstance = await EASI.pipelineBuilder().
+  fromPartStream().
+  ofDicomData().
+  toInstances().
+  build().
+  process({ source: emittedBytes });
 
-    expect(emittedInstance.metaSet == null).toBe(true);
-    expect(emittedInstance.dataSet.find(Tag.Rows).value).toBe(440);
-    expect(emittedInstance.dataSet.find(Tag.Columns).value).toBe(440);
+  expect(emittedInstance.metaSet == null).toBe(true);
+  expect(emittedInstance.dataSet.find(Tag.Rows).value).toBe(440);
+  expect(emittedInstance.dataSet.find(Tag.Columns).value).toBe(440);
 
 });
 
 test('Test: toDicomData with onChunk streams bytes and can be chained with withDeIdentification for anonymized DICOM output', async () => {
 
-    var chunks = [];
-    var sourceBytes = readDicomBytes('0002.DCM');
+  var chunks = [];
+  var sourceBytes = readDicomBytes('0002.DCM');
 
-    var reader = EASI.pipelineBuilder()
-        .fromPartStream().ofDicomData()
-        .withDeIdentification(new Map([
-            [Tag.PatientName, '[MASKED]']
-        ]))
-        .toDicomData({
-            onChunk: (chunk) => chunks.push(chunk)
-        })
-        .build();
+  var reader = EASI.pipelineBuilder().
+  fromPartStream().ofDicomData().
+  withDeIdentification(new Map([
+  [Tag.PatientName, '[MASKED]']])).
 
-    var result = await reader.process(sourceBytes);
-    expect(result.count).toBe(1);
-    expect(result.first().resultType).toBe('PipelineOperationResult');
-    expect(result.first().operation).toBe('toDicomData');
-    expect(result.first().materialized).toBe(false);
-    expect(result.first().bytesWritten).toBeGreaterThan(0);
-    expect(chunks.length).toBeGreaterThan(1);
+  toDicomData({
+    onChunk: (chunk) => chunks.push(chunk)
+  }).
+  build();
 
-    var emittedBytes = combineChunks(chunks);
-    var emittedInstance = await EASI.pipelineBuilder()
-        .fromPartStream().ofDicomData()
-        .toInstances()
-        .build()
-        .process(emittedBytes);
+  var result = await reader.process({ source: sourceBytes });
+  expect(result.count).toBe(1);
+  expect(result.first().resultType).toBe('PipelineOperationResult');
+  expect(result.first().operation).toBe('toDicomData');
+  expect(result.first().materialized).toBe(false);
+  expect(result.first().bytesWritten).toBeGreaterThan(0);
+  expect(chunks.length).toBeGreaterThan(1);
 
-    expect(emittedInstance.dataSet.find(Tag.PatientName).value).toBe('[MASKED]');
-    expect(emittedInstance.dataSet.find(Tag.PatientID).value).not.toBe('[MASKED]');
+  var emittedBytes = combineChunks(chunks);
+  var emittedInstance = await EASI.pipelineBuilder().
+  fromPartStream().ofDicomData().
+  toInstances().
+  build().
+  process({ source: emittedBytes });
+
+  expect(emittedInstance.dataSet.find(Tag.PatientName).value).toBe('[MASKED]');
+  expect(emittedInstance.dataSet.find(Tag.PatientID).value).not.toBe('[MASKED]');
 
 });
 
 test('Test: toDicomData returns byte output', async () => {
 
-    var sourceBytes = readDicomBytes('0002.DCM');
-    var reader = EASI.pipelineBuilder()
-        .fromPartStream().ofDicomData()
-        .toDicomData()
-        .build();
+  var sourceBytes = readDicomBytes('0002.DCM');
+  var reader = EASI.pipelineBuilder().
+  fromPartStream().ofDicomData().
+  toDicomData().
+  build();
 
-    var emittedBytes = await reader.process(sourceBytes);
-    expect(emittedBytes instanceof Uint8Array).toBe(true);
-    expect(emittedBytes.length).toBeGreaterThan(0);
+  var emittedBytes = await reader.process({ source: sourceBytes });
+  expect(emittedBytes instanceof Uint8Array).toBe(true);
+  expect(emittedBytes.length).toBeGreaterThan(0);
 
-    expect(reader.parser.handler instanceof DicomDataWriterHandler).toBe(true);
+  expect(reader.parser.handler instanceof DicomDataWriterHandler).toBe(true);
 
 });
 
 test('Test: toDicomData round-trips a nested-sequence instance and retains top-level PixelData', async () => {
 
-    var sourceBytes = readDicomBytes('NESTED_SEQUENCE.dcm');
+  var sourceBytes = readDicomBytes('NESTED_SEQUENCE.dcm');
 
-    var emittedBytes = await EASI.pipelineBuilder()
-        .fromPartStream().ofDicomData()
-        .toDicomData()
-        .build()
-        .process(sourceBytes);
+  var emittedBytes = await EASI.pipelineBuilder().
+  fromPartStream().ofDicomData().
+  toDicomData().
+  build().
+  process({ source: sourceBytes });
 
-    var emittedInstance = await EASI.pipelineBuilder()
-        .fromPartStream().ofDicomData()
-        .toInstances()
-        .build()
-        .process(emittedBytes);
+  var emittedInstance = await EASI.pipelineBuilder().
+  fromPartStream().ofDicomData().
+  toInstances().
+  build().
+  process({ source: emittedBytes });
 
-    expect(emittedInstance.dataSet.find(Tag.PixelData)).not.toBe(undefined);
-    expect(emittedInstance.dataSet.find(Tag.StudyInstanceUID)).not.toBe(undefined);
-    expect(emittedInstance.dataSet.find(Tag.SeriesInstanceUID)).not.toBe(undefined);
+  expect(emittedInstance.dataSet.find(Tag.PixelData)).not.toBe(undefined);
+  expect(emittedInstance.dataSet.find(Tag.StudyInstanceUID)).not.toBe(undefined);
+  expect(emittedInstance.dataSet.find(Tag.SeriesInstanceUID)).not.toBe(undefined);
 
 });
 
 test('Test: toDicomData anonymizes NESTED_SEQUENCE.dcm and writes NESTED_SEQUENCE_ANON.dcm', async () => {
 
-    var sourceBytes = readDicomBytes('NESTED_SEQUENCE.dcm');
+  var sourceBytes = readDicomBytes('NESTED_SEQUENCE.dcm');
 
-    var emittedBytes = await EASI.pipelineBuilder()
-        .fromPartStream().ofDicomData()
-        .withDeIdentification(Tag.DefaultDeIdentificationMask)
-        .toDicomData()
-        .build()
-        .process(sourceBytes);
+  var emittedBytes = await EASI.pipelineBuilder().
+  fromPartStream().ofDicomData().
+  withDeIdentification(Tag.DefaultDeIdentificationMask).
+  toDicomData().
+  build().
+  process({ source: sourceBytes });
 
-    expect(emittedBytes instanceof Uint8Array).toBe(true);
-    expect(emittedBytes.length).toBeGreaterThan(0);
+  expect(emittedBytes instanceof Uint8Array).toBe(true);
+  expect(emittedBytes.length).toBeGreaterThan(0);
 
-    var outputPath = writeTestOutputBytes('NESTED_SEQUENCE_ANON.dcm', emittedBytes);
-    expect(fs.existsSync(outputPath)).toBe(true);
+  var outputPath = writeTestOutputBytes('NESTED_SEQUENCE_ANON.dcm', emittedBytes);
+  expect(fs.existsSync(outputPath)).toBe(true);
 
-    var writtenBytes = new Uint8Array(fs.readFileSync(outputPath));
-    expect(writtenBytes.length).toBe(emittedBytes.length);
+  var writtenBytes = new Uint8Array(fs.readFileSync(outputPath));
+  expect(writtenBytes.length).toBe(emittedBytes.length);
 
-    var sourceInstance = await EASI.pipelineBuilder()
-        .fromPartStream().ofDicomData()
-        .toInstances()
-        .build()
-        .process(sourceBytes);
+  var sourceInstance = await EASI.pipelineBuilder().
+  fromPartStream().ofDicomData().
+  toInstances().
+  build().
+  process({ source: sourceBytes });
 
-    var anonymizedInstance = await EASI.pipelineBuilder()
-        .fromPartStream().ofDicomData()
-        .toInstances()
-        .build()
-        .process(writtenBytes);
+  var anonymizedInstance = await EASI.pipelineBuilder().
+  fromPartStream().ofDicomData().
+  toInstances().
+  build().
+  process({ source: writtenBytes });
 
-    // Preserve the nested-sequence parser fix behavior after anonymization+rewrite.
-    expect(anonymizedInstance.dataSet.find(Tag.PixelData)).not.toBe(undefined);
+  // Preserve the nested-sequence parser fix behavior after anonymization+rewrite.
+  expect(anonymizedInstance.dataSet.find(Tag.PixelData)).not.toBe(undefined);
 
-    var sourceStudyInstanceUID = sourceInstance.dataSet.find(Tag.StudyInstanceUID).value;
-    var sourceSeriesInstanceUID = sourceInstance.dataSet.find(Tag.SeriesInstanceUID).value;
-    var anonymizedStudyInstanceUID = anonymizedInstance.dataSet.find(Tag.StudyInstanceUID).value;
-    var anonymizedSeriesInstanceUID = anonymizedInstance.dataSet.find(Tag.SeriesInstanceUID).value;
+  var sourceStudyInstanceUID = sourceInstance.dataSet.find(Tag.StudyInstanceUID).value;
+  var sourceSeriesInstanceUID = sourceInstance.dataSet.find(Tag.SeriesInstanceUID).value;
+  var anonymizedStudyInstanceUID = anonymizedInstance.dataSet.find(Tag.StudyInstanceUID).value;
+  var anonymizedSeriesInstanceUID = anonymizedInstance.dataSet.find(Tag.SeriesInstanceUID).value;
 
-    expect(anonymizedStudyInstanceUID).toBeDefined();
-    expect(anonymizedSeriesInstanceUID).toBeDefined();
-    expect(anonymizedStudyInstanceUID).not.toBe(sourceStudyInstanceUID);
-    expect(anonymizedSeriesInstanceUID).not.toBe(sourceSeriesInstanceUID);
+  expect(anonymizedStudyInstanceUID).toBeDefined();
+  expect(anonymizedSeriesInstanceUID).toBeDefined();
+  expect(anonymizedStudyInstanceUID).not.toBe(sourceStudyInstanceUID);
+  expect(anonymizedSeriesInstanceUID).not.toBe(sourceSeriesInstanceUID);
 
 });

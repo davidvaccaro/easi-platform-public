@@ -206,7 +206,7 @@
   .toInstances()
   .build()
 
-resultCollection := pipeline.process(source)
+resultCollection := pipeline.process({ source: source })
 result := resultCollection.first()
 
 # Type usage
@@ -214,7 +214,7 @@ pixelData := PixelData(result.dataSet.find(Tag.PixelData))</code></pre>
                     
                     <br />
                     <p>Real-world usage: determine frame boundaries before decode.</p>
-                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process({ source: source })
 ingestResult := ingestResultCollection.first()
 pixelData := PixelData(ingestResult.dataSet.find(Tag.PixelData))
 frameCount := pixelData.offsets.length</code></pre>
@@ -228,7 +228,7 @@ frameCount := pixelData.offsets.length</code></pre>
   .toInstances()
   .build();
 
-const resultCollection = await pipeline.process(source);
+const resultCollection = await pipeline.process({ source: source });
 const result = resultCollection.first();
 
 // Type usage
@@ -236,7 +236,7 @@ const pixelData = new PixelData(result.dataSet.find(Tag.PixelData));</code></pre
                     
                     <br />
                     <p>Real-world usage: determine frame boundaries before decode.</p>
-                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process({ source: source });
 const ingestResult = ingestResultCollection.first();
 const pixelData = new PixelData(ingestResult.dataSet.find(Tag.PixelData));
 const frameCount = pixelData.offsets.length;</code></pre>
@@ -250,7 +250,7 @@ const frameCount = pixelData.offsets.length;</code></pre>
     .ToInstances()
     .Build();
 
-var resultCollection = await pipeline.Process(source);
+var resultCollection = await pipeline.Process(new { source = source });
 var result = resultCollection.First();
 
 // Type usage
@@ -258,7 +258,7 @@ var pixelData = new PixelData(result.dataSet.find(Tag.PixelData));</code></pre>
                     
                     <br />
                     <p>Real-world usage: determine frame boundaries before decode.</p>
-                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(new { source = source });
 var ingestResult = ingestResultCollection.First();
 var pixelData = new PixelData(ingestResult.dataSet.find(Tag.PixelData));
 var frameCount = pixelData.offsets.length;</code></pre>
@@ -272,7 +272,7 @@ var frameCount = pixelData.offsets.length;</code></pre>
     .toInstances()
     .build();
 
-var resultCollection = pipeline.process(source);
+var resultCollection = pipeline.process(Map.of(&quot;source&quot;, source));
 var result = resultCollection.first();
 
 // Type usage
@@ -280,7 +280,7 @@ var pixelData = new PixelData(result.dataSet.find(Tag.PixelData));</code></pre>
                     
                     <br />
                     <p>Real-world usage: determine frame boundaries before decode.</p>
-                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(Map.of(&quot;source&quot;, source));
 var ingestResult = ingestResultCollection.first();
 var pixelData = new PixelData(ingestResult.dataSet.find(Tag.PixelData));
 var frameCount = pixelData.offsets.length;</code></pre>
@@ -296,7 +296,7 @@ var frameCount = pixelData.offsets.length;</code></pre>
     .build()
 )
 
-result_collection = pipeline.process(source)
+result_collection = pipeline.process({&quot;source&quot;: source})
 result = result_collection.first()
 
 # Type usage
@@ -304,7 +304,7 @@ pixel_data = PixelData(result.data_set.find(Tag.pixel_data))</code></pre>
                     
                     <br />
                     <p>Real-world usage: determine frame boundaries before decode.</p>
-                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process({&quot;source&quot;: source})
 ingest_result = ingest_result_collection.first()
 pixel_data = PixelData(ingest_result.data_set.find(Tag.pixel_data))
 frame_count = pixel_data.offsets.length</code></pre>

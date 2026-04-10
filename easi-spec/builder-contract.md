@@ -64,7 +64,7 @@ Normative intent:
 
 Examples:
 
-- `intoPartStream(...)`
+- `intoPartBuffer(...)`
 - `intoHttpStream(...)`
 - `intoDimseAssociation(...)`
 

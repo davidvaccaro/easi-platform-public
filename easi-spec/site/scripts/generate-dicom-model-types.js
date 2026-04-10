@@ -966,7 +966,7 @@ function defaultPipelineCode(language, terminalMode = 'instances') {
       `  ${terminalMethod}`,
       '  .build()',
       '',
-      `${resultCollectionVar} := pipeline.process(source)`,
+      `${resultCollectionVar} := pipeline.process({ source: source })`,
       `${resultVar} := ${firstResultExpr}`
     ].join('\n');
   }
@@ -979,7 +979,7 @@ function defaultPipelineCode(language, terminalMode = 'instances') {
       `  ${terminalMethod}`,
       '  .build();',
       '',
-      `const ${resultCollectionVar} = await pipeline.process(source);`,
+      `const ${resultCollectionVar} = await pipeline.process({ source: source });`,
       `const ${resultVar} = ${firstResultExpr};`
     ].join('\n');
   }
@@ -992,7 +992,7 @@ function defaultPipelineCode(language, terminalMode = 'instances') {
       `    ${terminalMethod}`,
       '    .Build();',
       '',
-      `var ${resultCollectionVar} = await pipeline.Process(source);`,
+      `var ${resultCollectionVar} = await pipeline.Process(new { source = source });`,
       `var ${resultVar} = ${firstResultExpr};`
     ].join('\n');
   }
@@ -1005,7 +1005,7 @@ function defaultPipelineCode(language, terminalMode = 'instances') {
       `    ${terminalMethod}`,
       '    .build();',
       '',
-      `var ${resultCollectionVar} = pipeline.process(source);`,
+      `var ${resultCollectionVar} = pipeline.process(Map.of("source", source));`,
       `var ${resultVar} = ${firstResultExpr};`
     ].join('\n');
   }
@@ -1019,7 +1019,7 @@ function defaultPipelineCode(language, terminalMode = 'instances') {
     '    .build()',
     ')',
     '',
-    `${resultCollectionVar} = pipeline.process(source)`,
+    `${resultCollectionVar} = pipeline.process({"source": source})`,
     `${resultVar} = ${firstResultExpr}`
   ].join('\n');
 }
@@ -1507,26 +1507,26 @@ function buildRealWorldExample(typeInfo, language, usageCode, terminalMode = 'in
 
   const ingestLines = (language === 'neutral')
     ? [
-      `${ingestCollectionVar} := ingestPipeline.process(source)`,
+      `${ingestCollectionVar} := ingestPipeline.process({ source: source })`,
       `${ingestVar} := ${firstIngestExpr}`
     ]
     : (language === 'python')
       ? [
-        `${ingestCollectionVar} = ingest_pipeline.process(source)`,
+        `${ingestCollectionVar} = ingest_pipeline.process({"source": source})`,
         `${ingestVar} = ${firstIngestExpr}`
       ]
       : (language === 'javascript')
         ? [
-          `const ${ingestCollectionVar} = await ingestPipeline.process(source);`,
+          `const ${ingestCollectionVar} = await ingestPipeline.process({ source: source });`,
           `const ${ingestVar} = ${firstIngestExpr};`
         ]
         : (language === 'csharp')
           ? [
-            `var ${ingestCollectionVar} = await ingestPipeline.Process(source);`,
+            `var ${ingestCollectionVar} = await ingestPipeline.Process(new { source = source });`,
             `var ${ingestVar} = ${firstIngestExpr};`
           ]
           : [
-            `var ${ingestCollectionVar} = ingestPipeline.process(source);`,
+            `var ${ingestCollectionVar} = ingestPipeline.process(Map.of("source", source));`,
             `var ${ingestVar} = ${firstIngestExpr};`
           ];
 

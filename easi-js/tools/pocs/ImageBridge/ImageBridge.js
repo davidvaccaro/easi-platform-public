@@ -912,7 +912,8 @@ export class ImageBridgeService {
 
         // Source-bound lifecycle mode:
         // start the pipeline once and keep processing incoming DIMSE batches until stop().
-        this.pipelineRun = this.pipeline.start(null, Object.assign({}, this.readOptions, {
+        this.pipelineRun = this.pipeline.start({
+            sourceOptions: this.readOptions,
             continueOnError: true,
             onResult: async (result) => {
 
@@ -944,7 +945,7 @@ export class ImageBridgeService {
                 return true;
 
             }
-        }));
+        });
 
         await this.pipelineRun.done;
         this.pipelineRun = null;

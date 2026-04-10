@@ -8,24 +8,24 @@ const fs = require('fs');
 
 test("Test: Nested sequence parsing keeps PixelData at dataset level", async () => {
 
-    // Establish the root path to BrightDicom
-    var brightDicomRoot = process.cwd().split('easi-js')[0];
+  // Establish the root path to BrightDicom
+  var brightDicomRoot = process.cwd().split('easi-js')[0];
 
-    // Build the full DICOM path
-    const dicomFullPath = path.join(brightDicomRoot, '/data/dicoms/NESTED_SEQUENCE.dcm');
+  // Build the full DICOM path
+  const dicomFullPath = path.join(brightDicomRoot, '/data/dicoms/NESTED_SEQUENCE.dcm');
 
-    // Build the DICOM streaming reader
-    const pipeline = EASI.pipelineBuilder()
-        .fromPartStream()
-        .withParser(new DicomDataParser())
-        .withHandler(new DicomInstanceHandler())
-        .build();
+  // Build the DICOM streaming reader
+  const pipeline = EASI.pipelineBuilder().
+  fromPartStream().
+  withParser(new DicomDataParser()).
+  withHandler(new DicomInstanceHandler()).
+  build();
 
-    // Parse the DICOM instance
-    const instance = await pipeline.process(fs.readFileSync(dicomFullPath));
+  // Parse the DICOM instance
+  const instance = await pipeline.process({ source: fs.readFileSync(dicomFullPath) });
 
-    // Validate that PixelData remains in the top-level dataset
-    expect(instance.dataSet.has(Tag.PixelData)).toBe(true);
-    expect(instance.dataSet.find(Tag.PixelData)).toBeDefined();
+  // Validate that PixelData remains in the top-level dataset
+  expect(instance.dataSet.has(Tag.PixelData)).toBe(true);
+  expect(instance.dataSet.find(Tag.PixelData)).toBeDefined();
 
 });
