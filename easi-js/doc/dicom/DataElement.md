@@ -1,6 +1,6 @@
 # `DataElement` Class
 
-The `DataElement` class represents an individual DICOM data element.  
+The `DataElement` class represents an individual DICOM&reg; data element.  
 
 It extends the `EncodedData` class and adds data-element specific properties such as value length and completion state.
 

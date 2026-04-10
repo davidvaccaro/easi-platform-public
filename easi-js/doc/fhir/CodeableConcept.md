@@ -1,6 +1,6 @@
 # `CodeableConcept` Class
 
-The `CodeableConcept` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+The `CodeableConcept` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
 
 ---
 

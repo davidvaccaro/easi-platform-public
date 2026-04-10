@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI DICOM&reg; full type model diagram in SVG.">
+    <title>EASI | DICOM&reg; Type Diagram</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="../core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="../stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="../lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="../dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>DICOM&reg; Full Type Diagram</h2>
+                <p>
+                    Complete high-level model view across core, entity, and module type domains,
+                    rendered as SVG for scalable, printable reference.
+                </p>
+                <p class="page-meta">
+                    Types: 43 &nbsp;|&nbsp; Basic relationships: 72
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Diagram</h3>
+                <p>Node links navigate directly to each type definition page.</p>
+                <div class="model-diagram">
+
+            <svg class="model-svg" viewBox="0 0 1040 1134" role="img" aria-label="Full DICOM model type relationship diagram">
+                <defs>
+                    <marker id="model-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                    </marker>
+                    <marker id="model-triangle" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto">
+                        <path d="M 0 0 L 12 6 L 0 12 z"></path>
+                    </marker>
+                    <marker id="model-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                        <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                    </marker>
+                    <marker id="model-open-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                        <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                    </marker>
+                </defs>
+                <g class="model-domains">
+                <rect class="model-domain-bg" x="28" y="20" width="264" height="1094" rx="12" ry="12"></rect>
+                <text class="model-domain-label" x="160" y="48" text-anchor="middle">Core</text>
+                <rect class="model-domain-bg" x="388" y="20" width="264" height="1094" rx="12" ry="12"></rect>
+                <text class="model-domain-label" x="520" y="48" text-anchor="middle">Entities</text>
+                <rect class="model-domain-bg" x="748" y="20" width="264" height="1094" rx="12" ry="12"></rect>
+                <text class="model-domain-label" x="880" y="48" text-anchor="middle">Modules</text>
+                </g>
+                <g class="model-edges">
+                <path class="model-edge inheritance" d="M 280 121 C 388 121, -68 289, 40 289" marker-end="url(#model-triangle)">
+                    <title>Attribute --|&gt; DataElement</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 121 C 1108 121, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>CurrentRequestedProcedureEvidenceModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 121 C 544 121, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>CurrentRequestedProcedureEvidenceModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 280 289 C 388 289, -68 401, 40 401" marker-end="url(#model-triangle)">
+                    <title>DataElement --|&gt; EncodedData</title>
+                </path>
+                <path class="model-edge inheritance" d="M 280 345 C 388 345, -68 233, 40 233" marker-end="url(#model-triangle)">
+                    <title>DataSet --|&gt; AttributeSet</title>
+                </path>
+                <path class="model-edge uses" d="M 640 121 C 694 121, 706 177, 760 177" marker-end="url(#model-arrow)">
+                    <title>EncapsulatedDocument ..&gt; EncapsulatedDocumentModule</title>
+                </path>
+                <path class="model-edge inheritance" d="M 640 121 C 748 121, 292 177, 400 177" marker-end="url(#model-triangle)">
+                    <title>EncapsulatedDocument --|&gt; Entity</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 177 C 1108 177, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>EncapsulatedDocumentModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 177 C 544 177, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>EncapsulatedDocumentModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge uses" d="M 280 401 C 388 401, -68 1017, 40 1017" marker-end="url(#model-arrow)">
+                    <title>EncodedData ..&gt; TransferSyntax</title>
+                </path>
+                <path class="model-edge uses" d="M 640 177 C 694 177, 706 233, 760 233" marker-end="url(#model-arrow)">
+                    <title>Entity ..&gt; GeneralSeriesModule</title>
+                </path>
+                <path class="model-edge uses" d="M 640 177 C 694 177, 706 289, 760 289" marker-end="url(#model-arrow)">
+                    <title>Entity ..&gt; ImagePixelModule</title>
+                </path>
+                <path class="model-edge uses" d="M 640 177 C 694 177, 706 569, 760 569" marker-end="url(#model-arrow)">
+                    <title>Entity ..&gt; PatientModule</title>
+                </path>
+                <path class="model-edge uses" d="M 400 177 C 346 177, 334 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>Entity ..&gt; Tag</title>
+                </path>
+                <path class="model-edge uses" d="M 760 233 C 544 233, 496 625, 280 625" marker-end="url(#model-arrow)">
+                    <title>GeneralSeriesModule ..&gt; Modality</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 233 C 1108 233, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>GeneralSeriesModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 233 C 544 233, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>GeneralSeriesModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 640 233 C 748 233, 292 177, 400 177" marker-end="url(#model-triangle)">
+                    <title>Image --|&gt; Entity</title>
+                </path>
+                <path class="model-edge uses" d="M 640 233 C 694 233, 706 289, 760 289" marker-end="url(#model-arrow)">
+                    <title>Image ..&gt; ImagePixelModule</title>
+                </path>
+                <path class="model-edge uses" d="M 640 233 C 694 233, 706 345, 760 345" marker-end="url(#model-arrow)">
+                    <title>Image ..&gt; ImagePlaneModule</title>
+                </path>
+                <path class="model-edge uses" d="M 640 233 C 694 233, 706 401, 760 401" marker-end="url(#model-arrow)">
+                    <title>Image ..&gt; ModalityLookUpTableModule</title>
+                </path>
+                <path class="model-edge uses" d="M 640 233 C 694 233, 706 513, 760 513" marker-end="url(#model-arrow)">
+                    <title>Image ..&gt; MultiFrameModule</title>
+                </path>
+                <path class="model-edge uses" d="M 400 233 C 346 233, 334 681, 280 681" marker-end="url(#model-arrow)">
+                    <title>Image ..&gt; PixelData</title>
+                </path>
+                <path class="model-edge uses" d="M 400 233 C 346 233, 334 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>Image ..&gt; Tag</title>
+                </path>
+                <path class="model-edge uses" d="M 640 233 C 694 233, 706 905, 760 905" marker-end="url(#model-arrow)">
+                    <title>Image ..&gt; VisualizationFunctionModule</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 289 C 1108 289, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>ImagePixelModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 289 C 544 289, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>ImagePixelModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 345 C 1108 345, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>ImagePlaneModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 345 C 544 345, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>ImagePlaneModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 280 513 C 388 513, -68 233, 40 233" marker-end="url(#model-triangle)">
+                    <title>Item --|&gt; AttributeSet</title>
+                </path>
+                <path class="model-edge uses" d="M 640 289 C 694 289, 706 121, 760 121" marker-end="url(#model-arrow)">
+                    <title>KeyObjectSelection ..&gt; CurrentRequestedProcedureEvidenceModule</title>
+                </path>
+                <path class="model-edge inheritance" d="M 640 289 C 748 289, 292 177, 400 177" marker-end="url(#model-triangle)">
+                    <title>KeyObjectSelection --|&gt; Entity</title>
+                </path>
+                <path class="model-edge inheritance" d="M 280 569 C 388 569, -68 233, 40 233" marker-end="url(#model-triangle)">
+                    <title>MetaSet --|&gt; AttributeSet</title>
+                </path>
+                <path class="model-edge uses" d="M 280 569 C 388 569, -68 849, 40 849" marker-end="url(#model-arrow)">
+                    <title>MetaSet ..&gt; SOPClass</title>
+                </path>
+                <path class="model-edge uses" d="M 280 569 C 388 569, -68 905, 40 905" marker-end="url(#model-arrow)">
+                    <title>MetaSet ..&gt; Tag</title>
+                </path>
+                <path class="model-edge uses" d="M 280 569 C 388 569, -68 1017, 40 1017" marker-end="url(#model-arrow)">
+                    <title>MetaSet ..&gt; TransferSyntax</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 401 C 1108 401, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>ModalityLookUpTableModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 401 C 544 401, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>ModalityLookUpTableModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 513 C 1108 513, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>MultiFrameModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 513 C 544 513, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>MultiFrameModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 569 C 1108 569, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>PatientModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 569 C 544 569, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>PatientModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 280 737 C 388 737, -68 289, 40 289" marker-end="url(#model-triangle)">
+                    <title>Preamble --|&gt; DataElement</title>
+                </path>
+                <path class="model-edge uses" d="M 280 737 C 388 737, -68 1017, 40 1017" marker-end="url(#model-arrow)">
+                    <title>Preamble ..&gt; TransferSyntax</title>
+                </path>
+                <path class="model-edge inheritance" d="M 280 793 C 388 793, -68 289, 40 289" marker-end="url(#model-triangle)">
+                    <title>Prefix --|&gt; DataElement</title>
+                </path>
+                <path class="model-edge uses" d="M 280 793 C 388 793, -68 1017, 40 1017" marker-end="url(#model-arrow)">
+                    <title>Prefix ..&gt; TransferSyntax</title>
+                </path>
+                <path class="model-edge inheritance" d="M 640 345 C 748 345, 292 177, 400 177" marker-end="url(#model-triangle)">
+                    <title>PresentationState --|&gt; Entity</title>
+                </path>
+                <path class="model-edge uses" d="M 640 345 C 694 345, 706 625, 760 625" marker-end="url(#model-arrow)">
+                    <title>PresentationState ..&gt; PresentationStateModule</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 625 C 1108 625, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>PresentationStateModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 625 C 544 625, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>PresentationStateModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 681 C 1108 681, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>RequestedProcedureModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 681 C 544 681, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>RequestedProcedureModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 737 C 1108 737, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>ScheduledProcedureStepModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 737 C 544 737, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>ScheduledProcedureStepModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 640 401 C 748 401, 292 233, 400 233" marker-end="url(#model-triangle)">
+                    <title>Segmentation --|&gt; Image</title>
+                </path>
+                <path class="model-edge uses" d="M 640 401 C 694 401, 706 793, 760 793" marker-end="url(#model-arrow)">
+                    <title>Segmentation ..&gt; SegmentationModule</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 793 C 1108 793, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>SegmentationModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 793 C 544 793, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>SegmentationModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 640 457 C 748 457, 292 177, 400 177" marker-end="url(#model-triangle)">
+                    <title>StructuredReport --|&gt; Entity</title>
+                </path>
+                <path class="model-edge uses" d="M 640 457 C 694 457, 706 849, 760 849" marker-end="url(#model-arrow)">
+                    <title>StructuredReport ..&gt; StructuredReportModule</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 849 C 1108 849, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>StructuredReportModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 849 C 544 849, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>StructuredReportModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge uses" d="M 280 905 C 388 905, -68 1073, 40 1073" marker-end="url(#model-arrow)">
+                    <title>Tag ..&gt; ValueRepresentation</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 905 C 1108 905, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>VisualizationFunctionModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 905 C 544 905, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>VisualizationFunctionModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 640 513 C 748 513, 292 177, 400 177" marker-end="url(#model-triangle)">
+                    <title>Waveform --|&gt; Entity</title>
+                </path>
+                <path class="model-edge uses" d="M 640 513 C 694 513, 706 961, 760 961" marker-end="url(#model-arrow)">
+                    <title>Waveform ..&gt; WaveformModule</title>
+                </path>
+                <path class="model-edge inheritance" d="M 1000 961 C 1108 961, 652 457, 760 457" marker-end="url(#model-triangle)">
+                    <title>WaveformModule --|&gt; Module</title>
+                </path>
+                <path class="model-edge uses" d="M 760 961 C 544 961, 496 905, 280 905" marker-end="url(#model-arrow)">
+                    <title>WaveformModule ..&gt; Tag</title>
+                </path>
+                <path class="model-edge inheritance" d="M 640 569 C 748 569, 292 177, 400 177" marker-end="url(#model-triangle)">
+                    <title>WorklistItem --|&gt; Entity</title>
+                </path>
+                <path class="model-edge uses" d="M 640 569 C 694 569, 706 681, 760 681" marker-end="url(#model-arrow)">
+                    <title>WorklistItem ..&gt; RequestedProcedureModule</title>
+                </path>
+                <path class="model-edge uses" d="M 640 569 C 694 569, 706 737, 760 737" marker-end="url(#model-arrow)">
+                    <title>WorklistItem ..&gt; ScheduledProcedureStepModule</title>
+                </path>
+                </g>
+                <g class="model-nodes">
+                <a class="model-node-link" href="attribute.html">
+                    <g class="model-node">
+                    <title>Attribute</title>
+                    <rect x="40" y="100" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="121" text-anchor="middle" dominant-baseline="middle">Attribute</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="attribute-sequence.html">
+                    <g class="model-node">
+                    <title>AttributeSequence</title>
+                    <rect x="40" y="156" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="177" text-anchor="middle" dominant-baseline="middle">AttributeSequence</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="attribute-set.html">
+                    <g class="model-node">
+                    <title>AttributeSet</title>
+                    <rect x="40" y="212" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="233" text-anchor="middle" dominant-baseline="middle">AttributeSet</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="data-element.html">
+                    <g class="model-node">
+                    <title>DataElement</title>
+                    <rect x="40" y="268" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="289" text-anchor="middle" dominant-baseline="middle">DataElement</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="data-set.html">
+                    <g class="model-node">
+                    <title>DataSet</title>
+                    <rect x="40" y="324" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="345" text-anchor="middle" dominant-baseline="middle">DataSet</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="encoded-data.html">
+                    <g class="model-node">
+                    <title>EncodedData</title>
+                    <rect x="40" y="380" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="401" text-anchor="middle" dominant-baseline="middle">EncodedData</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="instance.html">
+                    <g class="model-node">
+                    <title>Instance</title>
+                    <rect x="40" y="436" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="457" text-anchor="middle" dominant-baseline="middle">Instance</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="item.html">
+                    <g class="model-node">
+                    <title>Item</title>
+                    <rect x="40" y="492" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="513" text-anchor="middle" dominant-baseline="middle">Item</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="meta-set.html">
+                    <g class="model-node">
+                    <title>MetaSet</title>
+                    <rect x="40" y="548" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="569" text-anchor="middle" dominant-baseline="middle">MetaSet</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="modality.html">
+                    <g class="model-node">
+                    <title>Modality</title>
+                    <rect x="40" y="604" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="625" text-anchor="middle" dominant-baseline="middle">Modality</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="pixel-data.html">
+                    <g class="model-node">
+                    <title>PixelData</title>
+                    <rect x="40" y="660" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="681" text-anchor="middle" dominant-baseline="middle">PixelData</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="preamble.html">
+                    <g class="model-node">
+                    <title>Preamble</title>
+                    <rect x="40" y="716" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="737" text-anchor="middle" dominant-baseline="middle">Preamble</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="prefix.html">
+                    <g class="model-node">
+                    <title>Prefix</title>
+                    <rect x="40" y="772" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="793" text-anchor="middle" dominant-baseline="middle">Prefix</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="sop-class.html">
+                    <g class="model-node">
+                    <title>SOPClass</title>
+                    <rect x="40" y="828" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="849" text-anchor="middle" dominant-baseline="middle">SOPClass</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="tag.html">
+                    <g class="model-node">
+                    <title>Tag</title>
+                    <rect x="40" y="884" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="905" text-anchor="middle" dominant-baseline="middle">Tag</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="tag-set.html">
+                    <g class="model-node">
+                    <title>TagSet</title>
+                    <rect x="40" y="940" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="961" text-anchor="middle" dominant-baseline="middle">TagSet</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="transfer-syntax.html">
+                    <g class="model-node">
+                    <title>TransferSyntax</title>
+                    <rect x="40" y="996" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="1017" text-anchor="middle" dominant-baseline="middle">TransferSyntax</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="value-representation.html">
+                    <g class="model-node">
+                    <title>ValueRepresentation</title>
+                    <rect x="40" y="1052" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="160" y="1073" text-anchor="middle" dominant-baseline="middle">ValueRepresentation</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="encapsulated-document.html">
+                    <g class="model-node">
+                    <title>EncapsulatedDocument</title>
+                    <rect x="400" y="100" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="520" y="121" text-anchor="middle" dominant-baseline="middle">EncapsulatedDocument</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="entity.html">
+                    <g class="model-node">
+                    <title>Entity</title>
+                    <rect x="400" y="156" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="520" y="177" text-anchor="middle" dominant-baseline="middle">Entity</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="image.html">
+                    <g class="model-node">
+                    <title>Image</title>
+                    <rect x="400" y="212" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="520" y="233" text-anchor="middle" dominant-baseline="middle">Image</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="key-object-selection.html">
+                    <g class="model-node">
+                    <title>KeyObjectSelection</title>
+                    <rect x="400" y="268" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="520" y="289" text-anchor="middle" dominant-baseline="middle">KeyObjectSelection</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="presentation-state.html">
+                    <g class="model-node">
+                    <title>PresentationState</title>
+                    <rect x="400" y="324" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="520" y="345" text-anchor="middle" dominant-baseline="middle">PresentationState</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="segmentation.html">
+                    <g class="model-node">
+                    <title>Segmentation</title>
+                    <rect x="400" y="380" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="520" y="401" text-anchor="middle" dominant-baseline="middle">Segmentation</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="structured-report.html">
+                    <g class="model-node">
+                    <title>StructuredReport</title>
+                    <rect x="400" y="436" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="520" y="457" text-anchor="middle" dominant-baseline="middle">StructuredReport</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="waveform.html">
+                    <g class="model-node">
+                    <title>Waveform</title>
+                    <rect x="400" y="492" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="520" y="513" text-anchor="middle" dominant-baseline="middle">Waveform</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="worklist-item.html">
+                    <g class="model-node">
+                    <title>WorklistItem</title>
+                    <rect x="400" y="548" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="520" y="569" text-anchor="middle" dominant-baseline="middle">WorklistItem</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="current-requested-procedure-evidence-module.html">
+                    <g class="model-node">
+                    <title>CurrentRequestedProcedureEvidenceModule</title>
+                    <rect x="760" y="100" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="121" text-anchor="middle" dominant-baseline="middle">CurrentRequestedProcedureEvid...</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="encapsulated-document-module.html">
+                    <g class="model-node">
+                    <title>EncapsulatedDocumentModule</title>
+                    <rect x="760" y="156" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="177" text-anchor="middle" dominant-baseline="middle">EncapsulatedDocumentModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="general-series-module.html">
+                    <g class="model-node">
+                    <title>GeneralSeriesModule</title>
+                    <rect x="760" y="212" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="233" text-anchor="middle" dominant-baseline="middle">GeneralSeriesModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="image-pixel-module.html">
+                    <g class="model-node">
+                    <title>ImagePixelModule</title>
+                    <rect x="760" y="268" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="289" text-anchor="middle" dominant-baseline="middle">ImagePixelModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="image-plane-module.html">
+                    <g class="model-node">
+                    <title>ImagePlaneModule</title>
+                    <rect x="760" y="324" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="345" text-anchor="middle" dominant-baseline="middle">ImagePlaneModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="modality-look-up-table-module.html">
+                    <g class="model-node">
+                    <title>ModalityLookUpTableModule</title>
+                    <rect x="760" y="380" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="401" text-anchor="middle" dominant-baseline="middle">ModalityLookUpTableModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="module.html">
+                    <g class="model-node">
+                    <title>Module</title>
+                    <rect x="760" y="436" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="457" text-anchor="middle" dominant-baseline="middle">Module</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="multi-frame-module.html">
+                    <g class="model-node">
+                    <title>MultiFrameModule</title>
+                    <rect x="760" y="492" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="513" text-anchor="middle" dominant-baseline="middle">MultiFrameModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="patient-module.html">
+                    <g class="model-node">
+                    <title>PatientModule</title>
+                    <rect x="760" y="548" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="569" text-anchor="middle" dominant-baseline="middle">PatientModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="presentation-state-module.html">
+                    <g class="model-node">
+                    <title>PresentationStateModule</title>
+                    <rect x="760" y="604" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="625" text-anchor="middle" dominant-baseline="middle">PresentationStateModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="requested-procedure-module.html">
+                    <g class="model-node">
+                    <title>RequestedProcedureModule</title>
+                    <rect x="760" y="660" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="681" text-anchor="middle" dominant-baseline="middle">RequestedProcedureModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="scheduled-procedure-step-module.html">
+                    <g class="model-node">
+                    <title>ScheduledProcedureStepModule</title>
+                    <rect x="760" y="716" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="737" text-anchor="middle" dominant-baseline="middle">ScheduledProcedureStepModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="segmentation-module.html">
+                    <g class="model-node">
+                    <title>SegmentationModule</title>
+                    <rect x="760" y="772" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="793" text-anchor="middle" dominant-baseline="middle">SegmentationModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="structured-report-module.html">
+                    <g class="model-node">
+                    <title>StructuredReportModule</title>
+                    <rect x="760" y="828" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="849" text-anchor="middle" dominant-baseline="middle">StructuredReportModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="visualization-function-module.html">
+                    <g class="model-node">
+                    <title>VisualizationFunctionModule</title>
+                    <rect x="760" y="884" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="905" text-anchor="middle" dominant-baseline="middle">VisualizationFunctionModule</text>
+                    </g>
+                </a>
+                <a class="model-node-link" href="waveform-module.html">
+                    <g class="model-node">
+                    <title>WaveformModule</title>
+                    <rect x="760" y="940" width="240" height="42" rx="8" ry="8"></rect>
+                    <text x="880" y="961" text-anchor="middle" dominant-baseline="middle">WaveformModule</text>
+                    </g>
+                </a>
+                </g>
+            </svg>
+                </div>
+                <div class="callout informative">
+                    <h4>Relationship Legend</h4>
+                    <p><code>--|&gt;</code> inheritance, <code>..&gt;</code> usage/dependency, <code>*--</code> composition, <code>o--</code> aggregation.</p>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                <a href="index.html">Back to DICOM&reg; Type Index</a>
+            </p>
+        </main>
+    </div>
+</body>
+</html>

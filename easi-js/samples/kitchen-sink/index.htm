@@ -679,11 +679,35 @@
 
                 return promise.then(function (result) {
                     console.log(label + ' time: ' + (new Date().getTime() - start) + ' ms');
-                    return result;
+                    return unwrapPipelineResult(result);
                 }).catch(function (err) {
                     console.log(label + ' time: ' + (new Date().getTime() - start) + ' ms');
                     throw err;
                 });
+
+            }
+
+            function isPipelineResultCollection(result) {
+                return (result != null)
+                    && (typeof result === 'object')
+                    && (typeof result.first === 'function')
+                    && (typeof result.toArray === 'function')
+                    && (Number.isFinite(Number(result.count)));
+            }
+
+            function unwrapPipelineResult(result) {
+
+                if (isPipelineResultCollection(result) == false)
+                    return result;
+
+                var count = Number(result.count);
+                if (count <= 0)
+                    return null;
+
+                if (count == 1)
+                    return result.first();
+
+                return result.toArray();
 
             }
 
@@ -1487,7 +1511,9 @@
                     .build();
 
                 var instanceResult = await probePipeline.process(bytes);
-                var instance = Array.isArray(instanceResult) ? instanceResult[0] : instanceResult;
+                var instance = unwrapPipelineResult(instanceResult);
+                if (Array.isArray(instance) == true)
+                    instance = instance[0] || null;
                 return instance?.metaSet?.transferSyntaxUID?.ID ?? null;
 
             }
@@ -3292,7 +3318,7 @@
                 const reader = EASI.pipelineBuilder()
                     .fromHttpStream()
                     .ofJsonData()
-                    .toJsonValue()
+                    .toStructuredValue()
                     .build();
 
                 // Read and parse the DICOM file
@@ -3317,7 +3343,7 @@
                 const reader = EASI.pipelineBuilder()
                     .fromHttpStream()
                     .ofJsonData()
-                    .toJsonValue()
+                    .toStructuredValue()
                     .build();
 
                 // Read and parse the DICOM file
@@ -3360,7 +3386,7 @@
                 const reader = EASI.pipelineBuilder()
                     .fromHttpStream()
                     .ofJsonData()
-                    .toJsonValue()
+                    .toStructuredValue()
                     .build();
 
                 // Read and parse the DICOM file
@@ -3394,7 +3420,7 @@
                         return Status.CONTINUE;
 
                     })
-                    .toJsonValue()
+                    .toStructuredValue()
                     .build();
 
                 // Read and parse the DICOM file

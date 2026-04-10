@@ -1,6 +1,6 @@
 # `CodingSystems` Class
 
-The `CodingSystems` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+The `CodingSystems` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
 
 ---
 
@@ -14,7 +14,7 @@ CodingSystems → (none)
 
 | Property | Type    | Description |
 |----------|---------|-------------|
-| `DICOM` | `*` | Accessor property. |
+| `DICOM&reg;` | `*` | Accessor property. |
 | `URI` | `*` | Accessor property. |
 
 ---

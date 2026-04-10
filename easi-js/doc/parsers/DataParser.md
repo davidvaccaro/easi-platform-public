@@ -1,6 +1,6 @@
 # DataParser Class
 
-The `DataParser` class is responsible for parsing streamed binary data in a DICOM-compatible or similarly structured format. It provides event-driven parsing logic with support for asynchronous event handlers and customizable parsing strictness.
+The `DataParser` class is responsible for parsing streamed binary data in a DICOM&reg;-compatible or similarly structured format. It provides event-driven parsing logic with support for asynchronous event handlers and customizable parsing strictness.
 
 ---
 

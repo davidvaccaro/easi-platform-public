@@ -1,4 +1,4 @@
-# EASI-JS DICOM Capability Statement
+# EASI-JS DICOM&reg; Capability Statement
 
 **Document type:** Implementation capability statement (library profile)  
 **Implementation:** `easi-js` (JavaScript reference implementation in this repository)  
@@ -9,20 +9,20 @@
 
 ## 1. Purpose And Scope
 
-This document describes the **current DICOM capabilities** of `easi-js`.
+This document describes the **current DICOM&reg; capabilities** of `easi-js`.
 
-It is intended to function as a practical, implementation-level capability statement for developers integrating EASI pipelines into imaging workflows (PACS/VNA/DICOMweb/service processing).
+It is intended to function as a practical, implementation-level capability statement for developers integrating EASI pipelines into imaging workflows (PACS/VNA/DICOMweb&trade;/service processing).
 
 This is **not** a full replacement for a device/vendor PS3.2 IOD-by-IOD conformance statement.  
 `easi-js` is a toolkit library, not a single fixed AE appliance.
 
 ---
 
-## 2. Supported DICOM Input And Parsing
+## 2. Supported DICOM&reg; Input And Parsing
 
-### 2.1 Native DICOM Data
+### 2.1 Native DICOM&reg; Data
 
-`easi-js` supports parsing native DICOM data sets from single-part and multipart streams.
+`easi-js` supports parsing native DICOM&reg; data sets from single-part and multipart streams.
 
 Implemented reader/parser path:
 
@@ -33,14 +33,14 @@ Implemented reader/parser path:
 - `fromNodeStreamAdapter().ofDicomData()`
 - `fromWebSocketStream().ofDicomData()`
 
-### 2.2 DICOMweb Metadata
+### 2.2 DICOMweb&trade; Metadata
 
 Implemented metadata parsing paths:
 
-- DICOM JSON metadata: `ofDicomMetadata()`
-- DICOM XML metadata: `ofDicomXmlMetadata()`
+- DICOM&reg; JSON metadata: `ofDicomMetadata()`
+- DICOM&reg; XML metadata: `ofDicomXmlMetadata()`
 
-Adapters normalize metadata syntax events into the canonical DICOM semantic handler chain.
+Adapters normalize metadata syntax events into the canonical DICOM&reg; semantic handler chain.
 
 ### 2.3 Strict/Permissive Parse Behavior
 
@@ -98,19 +98,19 @@ DIMSE concern/diagnostic events are supported and can be surfaced through pipeli
 
 Implemented terminal outputs include:
 
-- DICOM `Instance` model (`toInstances()`)
-- DICOM `Entity` model (`toEntities()`)
-- DICOM selection output (`toSelection(...)`)
-- DICOM mapping output (`toMapping(...)`)
-- FHIR ImagingStudy output (`toFHIRImagingStudy(...)`)
-- DICOM byte re-emission (`toDicomData(...)`)
+- DICOM&reg; `Instance` model (`toInstances()`)
+- DICOM&reg; `Entity` model (`toEntities()`)
+- DICOM&reg; selection output (`toSelection(...)`)
+- DICOM&reg; mapping output (`toMapping(...)`)
+- FHIR&reg; ImagingStudy output (`toFHIRImagingStudy(...)`)
+- DICOM&reg; byte re-emission (`toDicomData(...)`)
 - Asset extraction (`toAssets(...)`)
 - Asset archive package (`toAssetArchive(...)`)
-- JSON/XML value materialization (`toJsonValue()`)
+- JSON/XML value materialization (`toStructuredValue()`)
 
 ---
 
-## 5. DICOM De-Identification Capability
+## 5. DICOM&reg; De-Identification Capability
 
 ### 5.1 Attribute-Level De-Identification
 
@@ -182,7 +182,7 @@ Implemented uncompressed output pathways:
 
 ---
 
-## 8. FHIR Mapping Capability
+## 8. FHIR&reg; Mapping Capability
 
 Implemented built-in mapping:
 
@@ -238,11 +238,11 @@ Both single-part and multipart content framing are supported by the part stream 
 
 Current implementation is designed and tested for real-world workflows such as:
 
-- DICOMweb or DIMSE ingest -> parse -> model/materialize
-- DICOM ingest -> de-identify -> DICOM re-emit
-- DICOM ingest -> transcode -> DICOM re-emit
+- DICOMweb&trade; or DIMSE ingest -> parse -> model/materialize
+- DICOM&reg; ingest -> de-identify -> DICOM&reg; re-emit
+- DICOM&reg; ingest -> transcode -> DICOM&reg; re-emit
 - DIMSE source -> in-flight processing -> DIMSE C-STORE destination relay
-- DICOM/DICOMweb ingest -> FHIR ImagingStudy mapping
+- DICOM&reg;/DICOMweb&trade; ingest -> FHIR&reg; ImagingStudy mapping
 
 ---
 

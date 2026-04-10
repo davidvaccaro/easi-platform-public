@@ -5,9 +5,9 @@ These rules apply to all automated code changes.
 ---
 
 ## 1. Project Overview
-BrightDicom provides a pure JavaScript implementation of EASI, the "Efficient API for Streaming in Healthcare Imaging", for efficient reading and writing of DICOM medical images.
+BrightDicom provides a pure JavaScript implementation of EASI, the "Expressive API Standard for Imaging", for fluent composition and efficient reading and writing of DICOM&reg; medical images.
 
-- DICOM studies contain many large instances and require streaming-friendly processing.
+- DICOM&reg; studies contain many large instances and require streaming-friendly processing.
 - EASI is designed around stream parsing and stream handling (similar in spirit to SAX-style processing).
 - The main engineering focus is `easi-js`.
 
@@ -21,8 +21,8 @@ Subsystems in this repository:
 Top-level:
 - `/easi-js` Primary runtime/library code.
 - `/easi-cs` Reserved placeholder for the future C# EASI implementation.
-- `/data` Sample DICOM files and dictionary source files used by tooling/tests.
-- `/ext/tools` External DICOM tooling binaries/scripts.
+- `/data` Sample DICOM&reg; files and dictionary source files used by tooling/tests.
+- `/ext/tools` External DICOM&reg; tooling binaries/scripts.
 
 `easi-js` structure:
 - `/src/EASI.js` Factory entry point (`EASI.pipelineBuilder()`).
@@ -35,8 +35,8 @@ Top-level:
   - `DicomSelectingHandler` -> partial attribute extraction via selection classes.
 - `/src/handlers/mappings` Mapping abstractions (`Mapping`, `DicomMapping`, `DicomToFHIRImagingStudyMapping`).
 - `/src/handlers/selections` Selection abstractions (`Selection`, `DicomSelection`).
-- `/src/dicom` Core DICOM model/types (`Tag`, `Attribute`, `TransferSyntax`, `Instance`, etc.).
-- `/src/fhir` FHIR model classes used by DICOM-to-FHIR mapping.
+- `/src/dicom` Core DICOM&reg; model/types (`Tag`, `Attribute`, `TransferSyntax`, `Instance`, etc.).
+- `/src/fhir` FHIR&reg; model classes used by DICOM&reg;-to-FHIR&reg; mapping.
 - `/src/codecs` Pixel data decoding utilities.
 - `/test` Jest unit and integration tests (mirrors `src` structure).
 - `/doc` Markdown API and class docs.
@@ -52,8 +52,8 @@ Use this execution model when implementing features:
 1. Build a reader using `EASI -> PipelineBuilder`.
 2. Choose source and parser (`fromPartStream().ofDicomData()`, `fromPartStream().ofDicomMetadata()`, `fromPartStream().ofDicomXmlMetadata()`, or `withParser(...)`).
 3. Choose output strategy:
-   - `toInstances()` for DICOM object model output.
-   - `toMapping(mapping)` for mapped output (typically FHIR/custom object).
+   - `toInstances()` for DICOM&reg; object model output.
+   - `toMapping(mapping)` for mapped output (typically FHIR&reg;/custom object).
    - `toSelection(selection)` for targeted attribute extraction.
 4. Builder wires `reader.parser = parser` and `parser.handler = handler`.
 5. `PartStreamReader` reads HTTP response stream and dispatches parsed events.
@@ -135,7 +135,7 @@ All code changes must:
 
 When adding/changing:
 - Parser logic: add tests under `easi-js/test/parsers` (or related integration tests) focused on parser status/edge cases.
-- DICOM model types: add/update class unit tests in `easi-js/test/dicom`.
+- DICOM&reg; model types: add/update class unit tests in `easi-js/test/dicom`.
 - Mapping/selection behavior: add targeted tests covering tag presence/absence and completion conditions.
 
 ---
@@ -159,7 +159,7 @@ Agents MUST:
 - Never commit secrets.
 - Never modify environment files (`.env*`).
 - Avoid changing authentication/authorization or permission logic unless requested.
-- Treat all DICOM sample files as sensitive-style test assets; do not move or publish them outside repo context.
+- Treat all DICOM&reg; sample files as sensitive-style test assets; do not move or publish them outside repo context.
 
 ---
 
@@ -175,9 +175,9 @@ When preparing PRs:
 ---
 
 ## 11. Domain Knowledge
-- DICOM: Digital Imaging and Communications in Medicine standard for medical imaging data.
-- FHIR: Fast Healthcare Interoperability Resources standard for interoperable healthcare data.
-- EASI: streaming-first API design in this project for efficient parse, transform, and selective extraction of DICOM data.
+- DICOM&reg;: Digital Imaging and Communications in Medicine standard for medical imaging data.
+- FHIR&reg;: Fast Healthcare Interoperability Resources standard for interoperable healthcare data.
+- EASI: streaming-first API design in this project for efficient parse, transform, and selective extraction of DICOM&reg; data.
 
 ---
 

@@ -1,6 +1,6 @@
 # `DicomNativePixelDataToRGBADecoder` Class
 
-The `DicomNativePixelDataToRGBADecoder` class provides pixel decoding functionality for DICOM image data processing.
+The `DicomNativePixelDataToRGBADecoder` class provides pixel decoding functionality for DICOM&reg; image data processing.
 
 ---
 
@@ -51,13 +51,13 @@ Generate a mask suitable for masking out unsued bits.
 
 ### `decode8BitDICOMMonochromeToRGB(source, sourceStart, sourceStop, destination, destinationStart, bitsPerPixel, windowCenter, windowWidth)`
 
-Decode the specified source 8-bit DICOM MONOCHROME pixel-data into the destination buffer as standard RGBA pixel-data.
+Decode the specified source 8-bit DICOM&reg; MONOCHROME pixel-data into the destination buffer as standard RGBA pixel-data.
 
 #### Parameters
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `source` | `Uint8Array` | The source DICOM MONOCHROME pixel-data. |
+| `source` | `Uint8Array` | The source DICOM&reg; MONOCHROME pixel-data. |
 | `sourceStart` | `number` | The index into the source pixel-data buffer to START processing. |
 | `sourceStop` | `number` | The index into the source pixel-data buffer to STOP processin. |
 | `destination` | `Uint8Array` | The destination buffer to store the decoded RGBA pixel-data. |
@@ -73,13 +73,13 @@ Decode the specified source 8-bit DICOM MONOCHROME pixel-data into the destinati
 
 ### `decode16BitDICOMMonochromeToRGB(source, sourceStart, sourceStop, destination, destinationStart, bitsPerPixel, windowCenter, windowWidth)`
 
-Decode the specified source 8-bit DICOM MONOCHROME pixel-data into the destination buffer as standard RGBA pixel-data.
+Decode the specified source 8-bit DICOM&reg; MONOCHROME pixel-data into the destination buffer as standard RGBA pixel-data.
 
 #### Parameters
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `source` | `Uint8Array` | The source DICOM MONOCHROME pixel-data. |
+| `source` | `Uint8Array` | The source DICOM&reg; MONOCHROME pixel-data. |
 | `sourceStart` | `number` | The index into the source pixel-data buffer to START processing. |
 | `sourceStop` | `number` | The index into the source pixel-data buffer to STOP processin. |
 | `destination` | `Uint8Array` | The destination buffer to store the decoded RGBA pixel-data. |

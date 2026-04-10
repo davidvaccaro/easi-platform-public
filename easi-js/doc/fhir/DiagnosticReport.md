@@ -1,6 +1,6 @@
 # `DiagnosticReport` Class
 
-The `DiagnosticReport` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+The `DiagnosticReport` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
 
 ---
 

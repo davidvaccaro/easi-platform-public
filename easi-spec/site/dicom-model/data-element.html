@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI DICOM&reg; type reference for DataElement.">
+    <title>EASI | DICOM&reg; Type | DataElement</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="../core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="../stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="../lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="../dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>DataElement</h2>
+                <p>Represents one encoded data element with value-length and completion state.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Snapshot</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Type</td>
+                            <td><code>DataElement</code></td>
+                        </tr>
+                        <tr>
+                            <td>Domain</td>
+                            <td>Core</td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td>Encoding</td>
+                        </tr>
+                        <tr>
+                            <td>Kind</td>
+                            <td>Instance Type</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Canonical Role</h3>
+                <p>Base encoded element abstraction extended by specific model elements.</p>
+                <div class="callout normative">
+                    <h4>Pipeline Exposure</h4>
+                    <p>Materialized or traversed as part of streaming parse outputs and terminal products.</p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Definition</h3>
+                <p>
+                    Structure is presented first, followed by language-neutral and language-specific examples,
+                    and an explicit UML relationship view.
+                </p>
+
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Type definition tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="structure">Structure</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="uml">UML</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="structure">
+                        <h4>Type Structure</h4>
+                        <p>Directly available members for <code>DataElement</code>, separated by accessors/properties, methods, and constructors.</p>
+                        <h5>Accessors and Properties</h5>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Member</th>
+                                        <th>Signature</th>
+                                        <th>Kind</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        <tr>
+                            <td><code>isComplete</code></td>
+                            <td><code>get isComplete()</code></td>
+                            <td>Accessor</td>
+                            <td>Determine if the current data element has ALL data present.</td>
+                        </tr>
+                        <tr>
+                            <td><code>isComplete</code></td>
+                            <td><code>set isComplete(complete)</code></td>
+                            <td>Mutator</td>
+                            <td>Sets the complete state and thereby overrides the default length comparison approach.</td>
+                        </tr>
+                        <tr>
+                            <td><code>bytesRemaining</code></td>
+                            <td><code>get bytesRemaining()</code></td>
+                            <td>Accessor</td>
+                            <td>Determine the bytes remaining to complete this data element.</td>
+                        </tr>
+                        <tr>
+                            <td><code>valueLength</code></td>
+                            <td><code>valueLength</code></td>
+                            <td>Property</td>
+                            <td>Represents value length.</td>
+                        </tr>
+                        <tr>
+                            <td><code>complete</code></td>
+                            <td><code>complete</code></td>
+                            <td>Property</td>
+                            <td>Represents complete.</td>
+                        </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h5>Methods</h5>
+
+                    <p>No methods declared for this type.</p>
+                        <h5>Constructors</h5>
+
+                    <article class="member-doc">
+                        <h6><code>constructor(data, transferSyntax, valueLength)</code></h6>
+                        <p>Construct a new DICOM data-element instance from a tag, tag details and data.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>data</code></td>
+                                <td><code>Any</code></td>
+                                <td>Parameter used by this member.</td>
+                            </tr>
+                            <tr>
+                                <td><code>transferSyntax</code></td>
+                                <td><a href="transfer-syntax.html"><code>TransferSyntax</code></a></td>
+                                <td>Parameter used by this member.</td>
+                            </tr>
+                            <tr>
+                                <td><code>valueLength</code></td>
+                                <td><code>Any</code></td>
+                                <td>Parameter used by this member.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    </div>
+                <div class="doc-tab-panel" data-tab-panel="neutral">
+                    <h4>Language-Neutral Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-text">pipeline := EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toInstances()
+  .build()
+
+resultCollection := pipeline.process(source)
+result := resultCollection.first()
+
+# Type usage
+dataElement := DataElement(result.dataSet.find(Tag.PatientName).access(), result.metaSet.transferSyntax, 0)</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+ingestResult := ingestResultCollection.first()
+dataElement := DataElement(ingestResult.dataSet.find(Tag.PatientName).access(), ingestResult.metaSet.transferSyntax, 0)
+bytesRemaining := dataElement.bytesRemaining
+isComplete := dataElement.isComplete</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="javascript">
+                    <h4>JavaScript Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-javascript">const pipeline = EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toInstances()
+  .build();
+
+const resultCollection = await pipeline.process(source);
+const result = resultCollection.first();
+
+// Type usage
+const dataElement = new DataElement(result.dataSet.find(Tag.PatientName).access(), result.metaSet.transferSyntax, 0);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+const ingestResult = ingestResultCollection.first();
+const dataElement = new DataElement(ingestResult.dataSet.find(Tag.PatientName).access(), ingestResult.metaSet.transferSyntax, 0);
+const bytesRemaining = dataElement.bytesRemaining;
+const isComplete = dataElement.isComplete;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="csharp">
+                    <h4>C# Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-csharp">var pipeline = EASI.PipelineBuilder()
+    .FromPartStream()
+    .OfDicomData()
+    .ToInstances()
+    .Build();
+
+var resultCollection = await pipeline.Process(source);
+var result = resultCollection.First();
+
+// Type usage
+var dataElement = new DataElement(result.dataSet.find(Tag.PatientName).access(), result.metaSet.transferSyntax, 0);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+var ingestResult = ingestResultCollection.First();
+var dataElement = new DataElement(ingestResult.dataSet.find(Tag.PatientName).access(), ingestResult.metaSet.transferSyntax, 0);
+var bytesRemaining = dataElement.bytesRemaining;
+var isComplete = dataElement.isComplete;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="java">
+                    <h4>Java Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-java">var pipeline = EASI.pipelineBuilder()
+    .fromPartStream()
+    .ofDicomData()
+    .toInstances()
+    .build();
+
+var resultCollection = pipeline.process(source);
+var result = resultCollection.first();
+
+// Type usage
+var dataElement = new DataElement(result.dataSet.find(Tag.PatientName).access(), result.metaSet.transferSyntax, 0);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+var ingestResult = ingestResultCollection.first();
+var dataElement = new DataElement(ingestResult.dataSet.find(Tag.PatientName).access(), ingestResult.metaSet.transferSyntax, 0);
+var bytesRemaining = dataElement.bytesRemaining;
+var isComplete = dataElement.isComplete;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="python">
+                    <h4>Python Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-python">pipeline = (
+    EASI.pipeline_builder()
+    .from_part_stream()
+    .of_dicom_data()
+    .to_instances()
+    .build()
+)
+
+result_collection = pipeline.process(source)
+result = result_collection.first()
+
+# Type usage
+data_element = DataElement(result.data_set.find(Tag.patient_name).access(), result.meta_set.transferSyntax, 0)</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: extract operational metadata for downstream workflow decisions.</p>
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+ingest_result = ingest_result_collection.first()
+data_element = DataElement(ingest_result.data_set.find(Tag.patient_name).access(), ingest_result.meta_set.transferSyntax, 0)
+bytes_remaining = data_element.bytesRemaining
+is_complete = data_element.isComplete</code></pre>
+                </div>
+
+                <div class="doc-tab-panel" data-tab-panel="uml">
+                    <h4>UML Class Diagram</h4>
+                    <p>Direct type relationships rendered as an inline UML SVG diagram.</p>
+
+                    <div class="uml-diagram">
+                        <svg class="uml-svg" viewBox="0 0 738 364" role="img" aria-label="DataElement UML diagram">
+                            <defs>
+                                <marker id="uml-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                                </marker>
+                                <marker id="uml-triangle" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto">
+                                    <path d="M 0 0 L 12 6 L 0 12 z"></path>
+                                </marker>
+                                <marker id="uml-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                                <marker id="uml-open-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                            </defs>
+        <path class="uml-edge" d="M 278 182 C 368 182, 340 56, 430 56"></path>
+        <path class="uml-edge" d="M 278 182 C 368 182, 340 140, 430 140" marker-end="url(#uml-triangle)"></path>
+        <path class="uml-edge" d="M 278 182 C 368 182, 340 224, 430 224"></path>
+        <path class="uml-edge" d="M 278 182 C 368 182, 340 308, 430 308"></path>
+        <g class="uml-node primary">
+            <title>DataElement</title>
+            <rect x="28" y="150" width="250" height="64" rx="8" ry="8"></rect>
+            <text x="153" y="182" text-anchor="middle" dominant-baseline="middle">DataElement</text>
+        </g>
+        <g class="uml-node">
+            <title>Attribute</title>
+            <rect x="430" y="28" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="56" text-anchor="middle" dominant-baseline="middle">Attribute</text>
+        </g>
+        <g class="uml-node">
+            <title>EncodedData</title>
+            <rect x="430" y="112" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="140" text-anchor="middle" dominant-baseline="middle">EncodedData</text>
+        </g>
+        <g class="uml-node">
+            <title>Preamble</title>
+            <rect x="430" y="196" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="224" text-anchor="middle" dominant-baseline="middle">Preamble</text>
+        </g>
+        <g class="uml-node">
+            <title>Prefix</title>
+            <rect x="430" y="280" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="308" text-anchor="middle" dominant-baseline="middle">Prefix</text>
+        </g>
+        <text class="uml-edge-label" x="354" y="111" text-anchor="middle">-- associated with</text>
+        <text class="uml-edge-label" x="354" y="153" text-anchor="middle">--|&gt; inherits</text>
+        <text class="uml-edge-label" x="354" y="195" text-anchor="middle">-- associated with</text>
+        <text class="uml-edge-label" x="354" y="237" text-anchor="middle">-- associated with</text>
+                            
+                        </svg>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Relationship</th>
+                                    <th>Target</th>
+                                    <th>Intent</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <tr>
+                            <td><code>DataElement</code></td>
+                            <td><code>--</code></td>
+                            <td><code>Attribute</code></td>
+                            <td>associated with</td>
+                        </tr>
+                        <tr>
+                            <td><code>DataElement</code></td>
+                            <td><code>--|&gt;</code></td>
+                            <td><code>EncodedData</code></td>
+                            <td>inherits</td>
+                        </tr>
+                        <tr>
+                            <td><code>DataElement</code></td>
+                            <td><code>--</code></td>
+                            <td><code>Preamble</code></td>
+                            <td>associated with</td>
+                        </tr>
+                        <tr>
+                            <td><code>DataElement</code></td>
+                            <td><code>--</code></td>
+                            <td><code>Prefix</code></td>
+                            <td>associated with</td>
+                        </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Common Relationships</h3>
+                <p><a href="attribute.html"><code>Attribute</code></a>, <a href="encoded-data.html"><code>EncodedData</code></a>, <a href="preamble.html"><code>Preamble</code></a>, <a href="prefix.html"><code>Prefix</code></a></p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Typical Output Context</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pipeline Surface</th>
+                            <th>How DataElement Commonly Appears</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>toInstances()</code></td>
+                            <td>Directly emitted, nested, or referenced as part of instance materialization output.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toSelection(...)</code></td>
+                            <td>Referenced for targeted extraction and structural traversal.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toMapping(...)</code></td>
+                            <td>Used as source semantics for projection into derived target models.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout warning">
+                    <h4>Specification Boundary</h4>
+                    <p>
+                        This reference describes interoperable semantics and usage intent.
+                        Language-specific implementation internals remain outside normative standard requirements.
+                    </p>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                <a href="index.html">Back to DICOM&reg; Type Index</a>
+            </p>
+        </main>
+    </div>
+</body>
+</html>

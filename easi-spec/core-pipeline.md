@@ -51,14 +51,14 @@ Responsibilities:
 
 Non-responsibilities:
 
-- DICOM element parsing details
+- DICOM&reg; element parsing details
 - Output materialization semantics (except orchestration)
 
 ### Parser
 
 Responsibilities:
 
-- Decodes source format incrementally (for example native DICOM bytes, DICOM JSON)
+- Decodes source format incrementally (for example native DICOM&reg; bytes, DICOM&reg; JSON)
 - Maintains parse state and partial element state
 - Emits well-defined lifecycle events to the handler
 - Honors handler-returned status flow control (`CONTINUE`, `STOP`, etc.)
@@ -74,7 +74,7 @@ Responsibilities:
 
 - Receives parser lifecycle events
 - Handler stages may transform, filter, annotate, or forward parsed content
-- Terminal handlers materialize output or emit stream bytes incrementally (for example native DICOM write handler)
+- Terminal handlers materialize output or emit stream bytes incrementally (for example native DICOM&reg; write handler)
 - Returns status values to influence parser control flow
 
 Non-responsibilities:
@@ -96,7 +96,7 @@ Responsibilities:
 Non-responsibilities:
 
 - Source format parsing
-- DICOM semantic transformation (unless explicitly implemented as a handler instead)
+- DICOM&reg; semantic transformation (unless explicitly implemented as a handler instead)
 
 ## Builder Wiring Contract (Summary)
 

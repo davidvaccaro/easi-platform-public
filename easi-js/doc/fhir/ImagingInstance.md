@@ -1,6 +1,6 @@
 # `ImagingInstance` Class
 
-The `ImagingInstance` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+The `ImagingInstance` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
 
 ---
 

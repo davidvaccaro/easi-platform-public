@@ -21,6 +21,7 @@ import DicomAssetsHandler from './DicomAssetsHandler.js';
 import ZipArchiveWriter from '../../writers/ZipArchiveWriter.js';
 import DicomToFHIRImagingStudyMapping from '../mappings/DicomToFHIRImagingStudyMapping.js';
 import Tag from '../../dicom/Tag.js';
+import PipelineOperationResult from '../../pipelines/PipelineOperationResult.js';
 
 export default class DicomAssetArchiveHandler {
 
@@ -369,8 +370,17 @@ export default class DicomAssetArchiveHandler {
         await this.assetsHandler.onEndInstance(context);
 
         var state = this.currentArchiveState;
-        if (state == null)
-            return this.collectOutput ? new Uint8Array(0) : 0;
+        if (state == null) {
+            if (this.collectOutput == true)
+                return new Uint8Array(0);
+
+            return PipelineOperationResult.fromTerminal(
+                'toAssetArchive',
+                0,
+                null,
+                null
+            );
+        }
 
         if (this.includeMetadata == true) {
 
@@ -411,7 +421,15 @@ export default class DicomAssetArchiveHandler {
 
         this.currentArchiveState = null;
 
-        return archiveResult;
+        if (this.collectOutput == true)
+            return archiveResult;
+
+        return PipelineOperationResult.fromTerminal(
+            'toAssetArchive',
+            Number(archiveResult || 0),
+            null,
+            null
+        );
 
     }
 

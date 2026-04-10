@@ -1,6 +1,6 @@
 # `DicomMapping` Class
 
-The `DicomMapping` class defines DICOM-to-target mapping behavior used by streaming mapping handlers.
+The `DicomMapping` class defines DICOM&reg;-to-target mapping behavior used by streaming mapping handlers.
 
 ---
 
@@ -20,13 +20,13 @@ new DicomMapping()
 
 ### `addTag(tag, property)`
 
-Add a mapping for the specified DICOM Tag.
+Add a mapping for the specified DICOM&reg; Tag.
 
 #### Parameters
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `tag` | `Tag` | The specified DICOM Tag. |
+| `tag` | `Tag` | The specified DICOM&reg; Tag. |
 | `property` | `string` | The property The property name or path to a property within an object hierarchy. |
 
 #### Returns
@@ -37,19 +37,19 @@ Add a mapping for the specified DICOM Tag.
 
 ### `hasTag(tag)`
 
-Determine if the mapping has the current DICOM Tag.
+Determine if the mapping has the current DICOM&reg; Tag.
 
 #### Parameters
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `tag` | `Tag` | The specified DICOM Tag. |
+| `tag` | `Tag` | The specified DICOM&reg; Tag. |
 
 #### Returns
 
 | Type | Description |
 |------|-------------|
-| `*` | TRUE if the mapping maps the DICOM Tag, FALSE otherwise. |
+| `*` | TRUE if the mapping maps the DICOM&reg; Tag, FALSE otherwise. |
 
 ---
 

@@ -1,14 +1,14 @@
 # `Preamble` Class
 
-The `Preamble` class represents the DICOM Part-10 File Meta Information "Preamble" field.  
+The `Preamble` class represents the DICOM&reg; Part-10 File Meta Information "Preamble" field.  
 
-It extends the `DataElement` class and is used to parse and encapsulate the Preamble from a DICOM file header.
+It extends the `DataElement` class and is used to parse and encapsulate the Preamble from a DICOM&reg; file header.
 
 ## Notes
 
 - The Preamble field is a **fixed-length field** — length = `Constants.PreambleLength` (128 bytes).
-- The Preamble precedes the Prefix (`'DICM'`) in a Part-10 compliant DICOM file.
-- Used when reading and writing DICOM Part-10 file headers.
+- The Preamble precedes the Prefix (`'DICM'`) in a Part-10 compliant DICOM&reg; file.
+- Used when reading and writing DICOM&reg; Part-10 file headers.
 - Inherits all methods and properties from `DataElement`, `EncodedData`, and `Data`.
 
 ---

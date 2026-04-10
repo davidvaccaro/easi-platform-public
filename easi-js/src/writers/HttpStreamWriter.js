@@ -24,6 +24,197 @@ import PartStreamWriter from './PartStreamWriter.js';
 export default class HttpStreamWriter {
 
     /**
+     * Normalize STOW-RS options.
+     * @param {object | null} options Optional write options.
+     * @returns {object | null} Normalized STOW-RS options or null when disabled.
+     */
+    normalizeStowOptions(options = null) {
+
+        var stowOptions = options?.stow;
+        if ((stowOptions == null) || (stowOptions === false))
+            return null;
+
+        if (stowOptions === true) {
+            stowOptions = {};
+        }
+        else if (typeof stowOptions !== 'object') {
+            throw new Exception(
+                'Invalid STOW options. Expected true, false, null, or object.',
+                GeneralErrorCodes.InvalidParameter
+            );
+        }
+
+        var normalized = Object.assign({
+            strict: true,
+            requirePostMethod: true,
+            enforceMultipart: true,
+            requestType: 'application/dicom',
+            partContentType: 'application/dicom',
+            accept: 'application/dicom+json, application/json',
+            enforceSuccessfulStatus: true,
+            allowedStatuses: [200, 202]
+        }, stowOptions || {});
+
+        if (Array.isArray(normalized.allowedStatuses) == false) {
+            throw new Exception(
+                'Invalid STOW options.allowedStatuses. Expected array of HTTP status codes.',
+                GeneralErrorCodes.InvalidParameter
+            );
+        }
+
+        normalized.allowedStatuses = normalized.allowedStatuses
+            .map((value) => Number(value))
+            .filter((value) => Number.isInteger(value));
+
+        if (normalized.allowedStatuses.length == 0) {
+            throw new Exception(
+                'Invalid STOW options.allowedStatuses. Expected at least one HTTP status code.',
+                GeneralErrorCodes.InvalidParameter
+            );
+        }
+
+        return normalized;
+
+    }
+
+    /**
+     * Get one header value by case-insensitive name.
+     * @param {object} headers The header map.
+     * @param {string} name Header name.
+     * @returns {string | null} Header value or null.
+     */
+    getHeaderValue(headers, name) {
+
+        var lowerName = String(name).toLowerCase();
+        var match = Object.keys(headers).find((key) => String(key).toLowerCase() == lowerName);
+        if (match == null)
+            return null;
+
+        return String(headers[match]);
+
+    }
+
+    /**
+     * Validate one explicit STOW-RS request content-type header in strict mode.
+     * @param {string} contentType Header value.
+     * @param {object} stowOptions STOW options.
+     */
+    validateExplicitStowContentType(contentType, stowOptions) {
+
+        if (stowOptions?.strict !== true)
+            return;
+
+        var normalized = String(contentType || '').toLowerCase();
+        var expectsType = String(stowOptions.requestType || 'application/dicom').toLowerCase();
+
+        if (normalized.indexOf('multipart/related') != 0) {
+            throw new Exception(
+                'Invalid STOW request content-type. Expected multipart/related.',
+                GeneralErrorCodes.InvalidParameter
+            );
+        }
+
+        if (normalized.indexOf('type="' + expectsType + '"') < 0
+            && normalized.indexOf('type=' + expectsType) < 0) {
+            throw new Exception(
+                `Invalid STOW request content-type. Expected type=${expectsType}.`,
+                GeneralErrorCodes.InvalidParameter
+            );
+        }
+
+    }
+
+    /**
+     * Apply STOW-safe defaults and validation to request and writer options.
+     * @param {object} requestOptions Request options.
+     * @param {object} requestHeaders Request headers.
+     * @param {object} writerOptions Writer options.
+     * @param {object | null} stowOptions STOW options.
+     */
+    applyStowOptions(requestOptions, requestHeaders, writerOptions, stowOptions = null) {
+
+        if (stowOptions == null)
+            return;
+
+        if (stowOptions.enforceMultipart === true) {
+            writerOptions.isMultiPart = true;
+            if (writerOptions.type == null) {
+                writerOptions.type = stowOptions.requestType;
+            }
+            if (writerOptions.partContentType == null) {
+                writerOptions.partContentType = stowOptions.partContentType;
+            }
+        }
+
+        if (stowOptions.requirePostMethod === true) {
+
+            var explicitMethod = (requestOptions.method != null)
+                ? String(requestOptions.method).toUpperCase()
+                : null;
+
+            if ((stowOptions.strict === true) && (explicitMethod != null) && (explicitMethod != 'POST')) {
+                throw new Exception(
+                    'Invalid STOW request method. Expected POST.',
+                    GeneralErrorCodes.InvalidParameter
+                );
+            }
+
+            requestOptions.method = 'POST';
+
+        }
+
+        if ((stowOptions.accept != null) && (this.hasHeader(requestHeaders, 'Accept') == false)) {
+            requestHeaders.Accept = String(stowOptions.accept);
+        }
+
+        var explicitContentType = this.getHeaderValue(requestHeaders, 'Content-Type');
+        if (explicitContentType != null) {
+            this.validateExplicitStowContentType(explicitContentType, stowOptions);
+        }
+
+    }
+
+    /**
+     * Normalize source payload shape for multipart requests.
+     * @param {Uint8Array | Array<unknown> | object} source The source payload.
+     * @param {object} writerOptions Writer options.
+     * @returns {Uint8Array | Array<unknown> | object} Normalized source.
+     */
+    normalizeSource(source, writerOptions = {}) {
+
+        if ((writerOptions?.isMultiPart === true) && (Array.isArray(source) == false)) {
+            return [source];
+        }
+
+        return source;
+
+    }
+
+    /**
+     * Validate STOW response status in strict mode.
+     * @param {object | null} response Fetch response.
+     * @param {object | null} stowOptions STOW options.
+     */
+    validateStowResponse(response, stowOptions = null) {
+
+        if (stowOptions == null)
+            return;
+
+        if (stowOptions.enforceSuccessfulStatus !== true)
+            return;
+
+        var status = Number(response?.status);
+        if (stowOptions.allowedStatuses.includes(status) == true)
+            return;
+
+        throw new Exception(
+            `STOW request failed with HTTP status ${status}.`,
+            GeneralErrorCodes.GeneralError
+        );
+
+    }
+
+    /**
      * Normalize request input.
      * @param {string | object} request The request URL or request descriptor.
      * @returns {{ url: string, options: object }} Normalized request info.
@@ -226,7 +417,7 @@ export default class HttpStreamWriter {
      * @param {string | null} inferredContentType Inferred content-type.
      * @returns {Promise<object>} The write result.
      */
-    async writeStreaming(url, requestOptions, requestHeaders, source, writerOptions, inferredContentType = null) {
+    async writeStreaming(url, requestOptions, requestHeaders, source, writerOptions, inferredContentType = null, stowOptions = null) {
 
         var existingOnChunk = writerOptions.onChunk ?? null;
         var streaming = this.createStreamingBody(source, writerOptions, existingOnChunk);
@@ -245,6 +436,7 @@ export default class HttpStreamWriter {
         }
 
         var response = await fetch(url, fetchOptions);
+        this.validateStowResponse(response, stowOptions);
         var writeResult = await streaming.writePromise;
 
         return {
@@ -268,7 +460,7 @@ export default class HttpStreamWriter {
      * @param {object} writerOptions Writer options.
      * @returns {Promise<object>} The write result.
      */
-    async writeBuffered(url, requestOptions, requestHeaders, source, writerOptions) {
+    async writeBuffered(url, requestOptions, requestHeaders, source, writerOptions, stowOptions = null) {
 
         var writeResult = await this._partWriter.write(source, Object.assign({}, writerOptions, {
             collectOutput: true
@@ -287,6 +479,7 @@ export default class HttpStreamWriter {
         }, requestOptions, {
             headers: requestHeaders
         }));
+        this.validateStowResponse(response, stowOptions);
 
         return {
             request: url,
@@ -304,17 +497,37 @@ export default class HttpStreamWriter {
      * Write one payload to an HTTP endpoint.
      * @param {string | object} request The request URL or request descriptor.
      * @param {Uint8Array | Array<unknown> | object} source The source payload.
-     * @param {{ stream?: boolean } | object | null} options Optional write options.
+     * @param {{ stream?: boolean, stow?: boolean | object } | object | null} options Optional write options.
      * @returns {Promise<object>} The write result.
      */
     async write(request, source, options = null) {
 
         var normalized = this.normalizeRequest(request);
-        var requestOptions = normalized.options;
+        var requestOptions = Object.assign({}, normalized.options || {});
         var requestHeaders = this.normalizeHeaders(requestOptions.headers || null);
         var prepared = this.prepareWriterOptions(source, options);
         var writerOptions = prepared.writerOptions;
         var inferredContentType = prepared.inferredContentType;
+        var stowOptions = this.normalizeStowOptions(options);
+
+        this.applyStowOptions(requestOptions, requestHeaders, writerOptions, stowOptions);
+        var normalizedSource = this.normalizeSource(source, writerOptions);
+
+        if (this.isMultiPartSource(normalizedSource, writerOptions) == true) {
+            if (writerOptions.boundary == null) {
+                writerOptions.boundary = this._partWriter.createBoundary();
+            }
+
+            inferredContentType = this._partWriter.buildMultiPartContentType(
+                writerOptions.boundary,
+                writerOptions
+            );
+        }
+        else {
+            inferredContentType = (writerOptions.contentType != null)
+                ? String(writerOptions.contentType)
+                : 'application/dicom';
+        }
 
         if ((inferredContentType != null) && (this.hasHeader(requestHeaders, 'Content-Type') == false)) {
             requestHeaders['Content-Type'] = inferredContentType;
@@ -326,9 +539,10 @@ export default class HttpStreamWriter {
                 normalized.url,
                 requestOptions,
                 requestHeaders,
-                source,
+                normalizedSource,
                 writerOptions,
-                inferredContentType
+                inferredContentType,
+                stowOptions
             );
         }
 
@@ -336,8 +550,9 @@ export default class HttpStreamWriter {
             normalized.url,
             requestOptions,
             requestHeaders,
-            source,
-            writerOptions
+            normalizedSource,
+            writerOptions,
+            stowOptions
         );
 
     }

@@ -1,6 +1,6 @@
 # `DocumentReference` Class
 
-The `DocumentReference` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+The `DocumentReference` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
 
 ---
 

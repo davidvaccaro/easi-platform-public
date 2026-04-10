@@ -1,11 +1,11 @@
-# DICOM Stream Handler Interface
-This document describes the DICOM event-based Stream Handler Interface designed for SAX-style parsing of DICOM data. The purpose of this interface is to allow users to implement custom logic to handle and process DICOM data as it is being parsed, without the need to store the entire DICOM dataset in memory.
+# DICOM&reg; Stream Handler Interface
+This document describes the DICOM&reg; event-based Stream Handler Interface designed for SAX-style parsing of DICOM&reg; data. The purpose of this interface is to allow users to implement custom logic to handle and process DICOM&reg; data as it is being parsed, without the need to store the entire DICOM&reg; dataset in memory.
 
 ## Overview
-The DICOM Stream Handler Interface consists of a set of event methods that are called by the parser during the parsing process. Users implementing the custom logic should provide their own implementation for each of these event methods, which will be called by the parser as it encounters various elements of the DICOM data structure.
+The DICOM&reg; Stream Handler Interface consists of a set of event methods that are called by the parser during the parsing process. Users implementing the custom logic should provide their own implementation for each of these event methods, which will be called by the parser as it encounters various elements of the DICOM&reg; data structure.
 
 ## Event Methods
-The following event methods are part of the DICOM Stream Handler Interface:
+The following event methods are part of the DICOM&reg; Stream Handler Interface:
 
 ### onReset()
 Called when the parser is reset.
@@ -32,12 +32,12 @@ The 'Progress' object hosts the following properties:
 #### Returns: 
 The implementor can optionally return any of the following:
 - null or Status.CONTINUE: Indicates that the parser should simply continue parsing.
-- Status.SKIP: Indicates that the parser should STOP parsing the current DICOM data and skip to the next.
+- Status.SKIP: Indicates that the parser should STOP parsing the current DICOM&reg; data and skip to the next.
 - Status.STOP: Indicates that the parser should STOP parsing entierly and relinquish control back to the caller.
 - Status.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
 
 ### onStartInstance()
-Called at the beginning of a new DICOM instance.
+Called at the beginning of a new DICOM&reg; instance.
 
 #### Parameters: None
 
@@ -45,7 +45,7 @@ Called at the beginning of a new DICOM instance.
 - context (object): An custom implementor-specific context object containing any context data that the implementor needs in order to properly process a streaming instance session.
 
 ### onEndInstance(context)
-Called at the end of a DICOM instance.
+Called at the end of a DICOM&reg; instance.
 
 #### Parameters:
 - context (object): The same context object that was returned by the implementor from the onStartInstance event method.
@@ -126,7 +126,7 @@ Called when the parser encounters a new sequence.
 
 #### Parameters:
 - context (object): The same context object that was returned by the implementor from the onStartInstance event method.
-- sequence (object): A sequence attribute object, derived from the attribute, representing a DICOM sequence.
+- sequence (object): A sequence attribute object, derived from the attribute, representing a DICOM&reg; sequence.
 
 #### Returns: 
 The implementor can optionally return any of the following:
@@ -162,7 +162,7 @@ Called when the parser finishes processing an item within a sequence.
 - context (object): The same context object that was returned by the implementor from the onStartInstance event method.
 
 ### onStartMetaSet(context)
-Called at the beginning of the DICOM Meta Information Set.
+Called at the beginning of the DICOM&reg; Meta Information Set.
 
 #### Parameters:
 - context (object): The same context object that was returned by the implementor from the onStartInstance event method.
@@ -175,13 +175,13 @@ The implementor can optionally return any of the following:
 - Status.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
 
 ### onEndMetaSet(context)
-Called at the end of the DICOM Meta Information Set.
+Called at the end of the DICOM&reg; Meta Information Set.
 
 #### Parameters:
 - context (object): The same context object that was returned by the implementor from the onStartInstance event method.
 
 ### onStartDataSet(context)
-Called at the beginning of the DICOM Data Set.
+Called at the beginning of the DICOM&reg; Data Set.
 
 #### Parameters:
 - context (object): The same context object that was returned by the implementor from the onStartInstance event method.
@@ -194,7 +194,7 @@ The implementor can optionally return any of the following:
 - Status.FAIL: Indicates that the parser should STOP parsing entierly and return an error back to the caller.
 
 ### onEndDataSet(context)
-Called at the end of the DICOM Data Set.
+Called at the end of the DICOM&reg; Data Set.
 
 #### Parameters:
 - context (object): The same context object that was returned by the implementor from the onStartInstance event method.

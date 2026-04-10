@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Normative EASI conformance model, levels, and implementation claim requirements.">
+    <title>EASI | Conformance</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Conformance</h2>
+                <p>
+                    This page defines what it means for an implementation to conform to EASI.
+                    Conformance is capability-based and level-scoped so implementations can claim support progressively.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Conformance Model</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dimension</th>
+                            <th>Focus</th>
+                            <th>Requirement Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Pipeline Conformance</td>
+                            <td>Reader/Parser/Adapter/Filter/Terminal/Writer semantics</td>
+                            <td>Normative</td>
+                        </tr>
+                        <tr>
+                            <td>Lifecycle/Status Conformance</td>
+                            <td>Event ordering and status behavior (<code>CONTINUE</code>, <code>SUCCESS</code>, <code>STOP</code>, <code>JUMP</code>, <code>FAIL</code>)</td>
+                            <td>Normative</td>
+                        </tr>
+                        <tr>
+                            <td>Builder Contract Conformance</td>
+                            <td><code>from...</code>, <code>of...</code>, <code>with...</code>, <code>to...</code>, <code>into...</code>, <code>build()</code> intent</td>
+                            <td>Normative</td>
+                        </tr>
+                        <tr>
+                            <td>Scenario Conformance</td>
+                            <td>Specific source/terminal/writer scenario support</td>
+                            <td>Normative when claimed</td>
+                        </tr>
+                        <tr>
+                            <td>Streaming Behavior Conformance</td>
+                            <td>Incremental processing and bounded buffering behavior</td>
+                            <td>Normative when claimed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Conformance Levels</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Label</th>
+                            <th>Minimum Required Capability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>L1</td>
+                            <td>Core API Conformance</td>
+                            <td>Pipeline model, lifecycle/status semantics, builder core, fail-fast <code>build()</code> validation.</td>
+                        </tr>
+                        <tr>
+                            <td>L2</td>
+                            <td>DICOM&reg; Core Scenario Conformance</td>
+                            <td>Native DICOM&reg; bytes to instance output, selection output, and mapping output.</td>
+                        </tr>
+                        <tr>
+                            <td>L3</td>
+                            <td>Extended Scenario Conformance</td>
+                            <td>Additional standardized scenarios such as DICOMweb&trade; metadata, de-identification, validation, re-emission, and extension transports.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="callout normative">
+                    <h4>Conformance Claim Rule</h4>
+                    <p>
+                        An implementation MUST NOT claim a level unless all mandatory requirements for that level are satisfied.
+                        Optional features MAY be claimed separately as extension profiles.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Mandatory Assertion Families</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Assertion Family</th>
+                            <th>Examples</th>
+                            <th>Expected Verification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ordering</td>
+                            <td>Lifecycle events occur in valid order; nesting closes in LIFO order.</td>
+                            <td>Deterministic event-trace fixtures.</td>
+                        </tr>
+                        <tr>
+                            <td>Status Semantics</td>
+                            <td><code>STOP</code> halts parse; <code>JUMP</code> skips target subtree; <code>FAIL</code> aborts with structured error.</td>
+                            <td>Status-focused edge-case fixtures.</td>
+                        </tr>
+                        <tr>
+                            <td>Composition</td>
+                            <td>Invalid parser/terminal/writer compositions fail during <code>build()</code>.</td>
+                            <td>Negative build-composition tests.</td>
+                        </tr>
+                        <tr>
+                            <td>Semantic Integrity</td>
+                            <td>Nested sequence behavior does not corrupt top-level attribute scope.</td>
+                            <td>Nested sequence regression fixtures.</td>
+                        </tr>
+                        <tr>
+                            <td>Scenario Outcomes</td>
+                            <td>Claimed scenarios produce declared output type and structural validity.</td>
+                            <td>Scenario matrix test coverage.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Fixture Classes</h3>
+                <div class="grid two">
+                    <article class="card">
+                        <h4>Core Fixtures</h4>
+                        <p>Valid Part-10 instances, nested sequence edge cases, malformed/truncated inputs for strict and permissive behavior.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Metadata Fixtures</h4>
+                        <p>DICOM&reg; JSON and XML metadata fixtures that normalize into canonical semantic events.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Scenario Fixtures</h4>
+                        <p>Source-to-output combinations aligned to the published scenario matrix and claimed capability profile.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Transport Fixtures</h4>
+                        <p>When extension profiles are claimed (for example DIMSE), include protocol/timeout/compatibility fixtures.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Language-Specific Allowances</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Allowed To Vary</th>
+                            <th>Must Not Vary</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Method casing and naming idioms.</td>
+                            <td>Pipeline semantics and stage responsibilities.</td>
+                        </tr>
+                        <tr>
+                            <td>Async primitives and runtime scheduling model.</td>
+                            <td>Observable lifecycle ordering and status outcomes.</td>
+                        </tr>
+                        <tr>
+                            <td>Byte container and stream abstraction types.</td>
+                            <td>Compatibility/error behavior guarantees.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Implementation Claim Template (Illustrative)</h3>
+                <pre><code>{
+  "implementation": "example-easi-runtime",
+  "easiVersion": "1.0.0-draft",
+  "conformance": {
+    "level": "L2",
+    "extensions": ["dimse-source"],
+    "scenarios": [
+      "native-dicom-to-instances",
+      "native-dicom-to-selection",
+      "native-dicom-to-mapping"
+    ]
+  }
+}</code></pre>
+            </section>
+
+            <p class="footer-note">
+                Normative page: conformance requirements and claim boundaries.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

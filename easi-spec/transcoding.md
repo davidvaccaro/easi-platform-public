@@ -8,11 +8,11 @@ This document is not part of the minimum EASI Core v0.1 set, but defines the exp
 
 ## Purpose
 
-Define a standard pipeline option for native DICOM byte transcoding:
+Define a standard pipeline option for native DICOM&reg; byte transcoding:
 
-- source: native DICOM
+- source: native DICOM&reg;
 - transform: transfer-syntax transcoding (and related pixel conversion decisions)
-- output: native DICOM
+- output: native DICOM&reg;
 
 This contract focuses on predictable behavior, streaming compatibility, and diagnostics.
 
@@ -32,7 +32,7 @@ Supported call forms:
 
 | Property | Type | Required | Description |
 |---|---|---|---|
-| `targetTransferSyntax` | `string` | Yes | Target DICOM transfer syntax UID. |
+| `targetTransferSyntax` | `string` | Yes | Target DICOM&reg; transfer syntax UID. |
 | `goal` | `'compatibility' \| 'size' \| 'speed' \| 'fidelity'` | No | Optimization intent used to choose codecs/strategy. Default: implementation-defined. |
 | `streaming` | `'auto' \| 'required' \| 'allow-buffer'` | No | Streaming requirement for payload processing. Default: `'auto'`. |
 | `frames` | `'all' \| 'first' \| number[] \| { start:number, end:number, step?:number }` | No | Frame subset to transcode for multi-frame payloads. Default: `'all'`. |
@@ -115,8 +115,8 @@ Implementations SHOULD fail-fast at `build()` when `withTranscoding(...)` is con
 
 Minimum compatibility expectations:
 
-- parser MUST provide canonical DICOM semantic events required for pixel payload handling
-- terminal/output MUST support native DICOM emission for round-trip transcoding claims
+- parser MUST provide canonical DICOM&reg; semantic events required for pixel payload handling
+- terminal/output MUST support native DICOM&reg; emission for round-trip transcoding claims
 - missing required transcoding components (decoder/encoder/registry) MUST produce explicit errors
 
 ## Streaming Expectations

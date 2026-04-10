@@ -5,7 +5,7 @@ AI assistant guidance for the BrightDicom repository.
 
 ## Project Overview
 
-BrightDicom is a pure JavaScript implementation of **EASI** (Efficient API for Streaming in Healthcare Imaging) for streaming-oriented reading of DICOM medical images. The architecture is explicitly SAX-style: data flows through a `PartStreamReader → Parser → Handler` pipeline with status-based flow control at each stage.
+BrightDicom is a pure JavaScript implementation of **EASI** (Expressive API Standard for Imaging) for fluent composition and efficient, streaming-oriented processing of DICOM&reg; medical images. The architecture is explicitly SAX-style: data flows through a `PartStreamReader → Parser → Handler` pipeline with status-based flow control at each stage.
 
 **Primary target for all work:** `easi-js/`
 
@@ -27,15 +27,15 @@ easi-js/src/
     selections/             # Selection, DicomSelection
   dicom/                    # Core model: Tag, Attribute, AttributeSequence, DataSet,
                             #   Instance, MetaSet, TransferSyntax, ValueRepresentation, etc.
-  fhir/                     # FHIR model classes used by DICOM-to-FHIR mapping
+  fhir/                     # FHIR&reg; model classes used by DICOM&reg;-to-FHIR&reg; mapping
   codecs/                   # Pixel data decoding utilities
 
 easi-js/test/             # Jest tests (mirrors src/ tree)
-  dicom/                    # Unit tests for DICOM model classes
+  dicom/                    # Unit tests for DICOM&reg; model classes
     entities/               # Entity-level integration tests (CT, XA, Image, Entity)
     parsers/                # Parser integration tests
 easi-js/backlog/          # Deferred work notes (read before touching parsers)
-data/                       # Sample DICOM files and dictionary source files
+data/                       # Sample DICOM&reg; files and dictionary source files
 ```
 
 ---
@@ -127,7 +127,7 @@ Read `easi-js/backlog/parsers/DicomDataParser.md` before modifying the parser. I
 2. Undefined-length empty/odd sequences can leak control tags as normal attributes (lines ~1348 / ~1352 / ~1264).
 3. Strict fixed-length VR validation is over-strict for valid VM > 1 values (lines ~344–345).
 
-The parser deliberately tolerates real-world malformed DICOM; do not tighten permissive paths without explicit request and corresponding diagnostic output.
+The parser deliberately tolerates real-world malformed DICOM&reg;; do not tighten permissive paths without explicit request and corresponding diagnostic output.
 
 ---
 
@@ -153,11 +153,11 @@ The parser deliberately tolerates real-world malformed DICOM; do not tighten per
 
 | Term | Meaning |
 |---|---|
-| DICOM | Digital Imaging and Communications in Medicine — the medical imaging standard |
-| EASI | Efficient API for Streaming in Healthcare Imaging — the streaming abstraction in this project |
-| FHIR | Fast Healthcare Interoperability Resources — the interoperability standard used for output mapping |
-| Part-10 | DICOM file format (preamble + prefix + meta-set + data-set) |
-| Part-5 | Raw DICOM data-set without preamble/prefix |
-| VR | Value Representation — describes the data type of a DICOM attribute |
-| SOP Class | Service-Object Pair class — identifies the type of DICOM object |
-| WADO-RS | Web Access to DICOM Objects via RESTful Services — DICOMweb retrieval protocol |
+| DICOM&reg; | Digital Imaging and Communications in Medicine — the medical imaging standard |
+| EASI | Expressive API Standard for Imaging — a fluent and efficient streaming abstraction in this project |
+| FHIR&reg; | Fast Healthcare Interoperability Resources — the interoperability standard used for output mapping |
+| Part-10 | DICOM&reg; file format (preamble + prefix + meta-set + data-set) |
+| Part-5 | Raw DICOM&reg; data-set without preamble/prefix |
+| VR | Value Representation — describes the data type of a DICOM&reg; attribute |
+| SOP Class | Service-Object Pair class — identifies the type of DICOM&reg; object |
+| WADO-RS | Web Access to DICOM&reg; Objects via RESTful Services — DICOMweb&trade; retrieval protocol |

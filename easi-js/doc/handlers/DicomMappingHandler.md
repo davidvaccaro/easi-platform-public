@@ -364,6 +364,6 @@ import DicomToFHIRImagingStudyMapping from '../../src/handlers/mappings/DicomToF
 const mapping = new DicomToFHIRImagingStudyMapping();
 const handler = new DicomMappingHandler(mapping);
 
-// Use this handler with a DICOM parser to produce mapped output.
+// Use this handler with a DICOM&reg; parser to produce mapped output.
 ```
 ---

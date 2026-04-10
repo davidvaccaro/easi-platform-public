@@ -263,7 +263,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /** @returns {PipelineOutputStage} */
-    toJsonValue() {
+    toStructuredValue() {
 
         if (this.isParserType(XmlDataParser) === true) {
             return this.withHandler(new XmlDataHandler());

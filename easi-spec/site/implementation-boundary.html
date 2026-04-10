@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI standard boundary: what is normative language-neutral contract versus implementation detail.">
+    <title>EASI | Standard Boundary</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Standard Boundary</h2>
+                <p>
+                    This page defines the line between language-neutral EASI standard semantics and implementation-specific details.
+                    The goal is interoperability without constraining runtime internals.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Boundary Rule</h3>
+                <div class="callout normative">
+                    <h4>Normative Inclusion Test</h4>
+                    <p>
+                        A behavior belongs in the standard when independent implementations must do the same thing to remain interoperable.
+                        Internal data structures, helper classes, and runtime ergonomics remain implementation documentation.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>What Is Normative vs Implementation Detail</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Belongs In EASI Standard</th>
+                            <th>Belongs In Implementation Docs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Pipeline stage semantics and ordering.</td>
+                            <td>Class/file names (<code>Runtime</code>, <code>PartStreamReader</code>, etc.).</td>
+                        </tr>
+                        <tr>
+                            <td>Lifecycle events and status semantics.</td>
+                            <td>Internal callback dispatch mechanisms.</td>
+                        </tr>
+                        <tr>
+                            <td>Builder intent contract (<code>from/of/with/to/into/build</code>).</td>
+                            <td>Exact method casing and overload style per language.</td>
+                        </tr>
+                        <tr>
+                            <td>Compatibility expectations and fail-fast composition behavior.</td>
+                            <td>Exception class hierarchies and stack trace formats.</td>
+                        </tr>
+                        <tr>
+                            <td>Conformance claims and scenario definitions.</td>
+                            <td>Default logging adapters and telemetry frameworks.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Decision Framework</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>If Yes</th>
+                            <th>If No</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Would divergence break cross-language behavior compatibility?</td>
+                            <td>Standardize as normative semantics.</td>
+                            <td>Keep as implementation detail.</td>
+                        </tr>
+                        <tr>
+                            <td>Is this required for a conformance test to pass/fail reliably?</td>
+                            <td>Standardize assertion and expected outcome.</td>
+                            <td>Document as local implementation guidance.</td>
+                        </tr>
+                        <tr>
+                            <td>Is this primarily naming/style ergonomics?</td>
+                            <td>Document only intent, not syntax.</td>
+                            <td>Allow language/runtime-specific expression.</td>
+                        </tr>
+                        <tr>
+                            <td>Is this transport/runtime-specific infrastructure?</td>
+                            <td>Define extension profile contracts only.</td>
+                            <td>Keep internal implementation optional.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Examples</h3>
+                <div class="grid two">
+                    <article class="card">
+                        <h4>Normative Example</h4>
+                        <p><code>FAIL</code> must terminate parse and expose structured failure diagnostics across implementations.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Implementation Example</h4>
+                        <p>Whether concerns are represented by class instances, plain objects, or records is implementation-specific.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Normative Extension Example</h4>
+                        <p>DIMSE extension profile may define source/destination compatibility and concern categories.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Implementation Extension Example</h4>
+                        <p>Socket pooling strategy, TLS engine selection, and retry backoff policy are runtime concerns.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Change Control Guidance</h3>
+                <p>
+                    Standard updates should prioritize semantic stability. Breaking semantic changes must increment major version and
+                    include migration guidance for conformance claims.
+                </p>
+                <p>
+                    Implementation docs can evolve more rapidly as long as normative behavior and published conformance claims remain accurate.
+                </p>
+            </section>
+
+            <p class="footer-note">
+                Normative page: governance boundary between interoperable semantics and implementation internals.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

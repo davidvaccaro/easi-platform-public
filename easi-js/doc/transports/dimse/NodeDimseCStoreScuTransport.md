@@ -25,7 +25,7 @@ const pipeline = EASI
 
 ## Input Expectations
 
-The payload should be DICOM byte content produced by `toDicomData(...)`, optionally after filters such as:
+The payload should be DICOM&reg; byte content produced by `toDicomData(...)`, optionally after filters such as:
 
 - `withDeIdentification(...)`
 - `withValidation(...)`

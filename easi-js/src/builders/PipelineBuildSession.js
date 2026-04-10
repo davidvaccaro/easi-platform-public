@@ -48,6 +48,7 @@ import Exception from "../environment/Exception.js";
 import DiagnosticUtils from "../utils/DiagnosticUtils.js";
 import { BuilderErrorCodes } from "../environment/Exception.js";
 import Pipeline from "../pipelines/Pipeline.js";
+import PipelineOperationResult from "../pipelines/PipelineOperationResult.js";
 import Tag from "../dicom/Tag.js";
 import CodecRegistry from "../codecs/CodecRegistry.js";
 
@@ -217,12 +218,45 @@ export default class PipelineBuildSession {
     createWriterResultSink(writer, target, options = null) {
 
         return async (result) => {
+
+            var writerResult = null;
             if (target == null) {
-                return writer.write(result, options);
+                writerResult = await writer.write(result, options);
+            }
+            else {
+                writerResult = await writer.write(target, result, options);
             }
 
-            return writer.write(target, result, options);
+            if (this.isBuiltInWriter(writer) == true) {
+                return PipelineOperationResult.fromWriter(
+                    DiagnosticUtils.getTypeName(writer),
+                    writerResult
+                );
+            }
+
+            return writerResult;
         };
+
+    }
+
+    /**
+     * Determine whether one writer is a built-in EASI writer.
+     * @param {object} writer The writer instance.
+     * @returns {boolean} TRUE when writer is built-in.
+     */
+    isBuiltInWriter(writer) {
+
+        var typeName = DiagnosticUtils.getTypeName(writer);
+        return (
+            (typeName == "ByteStreamWriter")
+            || (typeName == "PartStreamWriter")
+            || (typeName == "FileStreamWriter")
+            || (typeName == "BrowserFileStreamWriter")
+            || (typeName == "NodeStreamAdapterWriter")
+            || (typeName == "WebSocketStreamWriter")
+            || (typeName == "HttpStreamWriter")
+            || (typeName == "DimseAssociationWriter")
+        );
 
     }
 
@@ -588,7 +622,7 @@ export default class PipelineBuildSession {
         // Fail if no handler was configured.
         if (this.handler == null) {
             throw new Exception(
-                "PipelineBuilder.build requires a handler. Call toInstances(), toEntities(), toUnwrappedDocuments(...), toWrappedDocuments(...), toSelection(...), toMapping(...), toFHIRImagingStudy(), toDicomData(...), toAssets(...), toAssetArchive(...), or withHandler(...).",
+                "PipelineBuilder.build requires a handler. Call toInstances(), toEntities(), toUnwrappedDocuments(...), toWrappedDocuments(...), toSelection(...), toMapping(...), toFHIRImagingStudy(), toDicomData(...), toStructuredValue(), toAssets(...), toAssetArchive(...), or withHandler(...).",
                 BuilderErrorCodes.MissingHandler
             );
         }

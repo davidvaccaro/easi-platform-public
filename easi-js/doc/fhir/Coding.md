@@ -1,6 +1,6 @@
 # `Coding` Class
 
-The `Coding` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+The `Coding` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
 
 ---
 

@@ -1,6 +1,6 @@
 # `Entity` Class
 
-Provides an accessor interface for high-level DICOM modules from a given attribute set. This class acts as a wrapper to expose module-specific functionality for structured DICOM data access.
+Provides an accessor interface for high-level DICOM&reg; modules from a given attribute set. This class acts as a wrapper to expose module-specific functionality for structured DICOM&reg; data access.
 
 ---
 
@@ -14,7 +14,7 @@ Creates a new instance of the `Entity` class.
 
 | Name           | Type           | Description                                  |
 |----------------|----------------|----------------------------------------------|
-| `attributeSet` | `AttributeSet` | The attribute set representing a DICOM object.|
+| `attributeSet` | `AttributeSet` | The attribute set representing a DICOM&reg; object.|
 
 ---
 

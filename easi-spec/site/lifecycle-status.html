@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Normative EASI stream lifecycle event and status flow-control semantics.">
+    <title>EASI | Stream Lifecycle</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Stream Lifecycle</h2>
+                <p>
+                    This page is the detailed callback and status reference for the EASI stream protocol.
+                    Use <a href="stream-processing-model.html">Stream Processing Model</a> for the conceptual overview;
+                    use this page for exact lifecycle vocabulary, event ordering constraints, and status behavior.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Reference Scope</h3>
+                <div class="callout informative">
+                    <h4>Page Boundary</h4>
+                    <p>
+                        Stream Processing Model explains <em>why</em> streaming is fundamental and how parser and handler stages cooperate.
+                        Stream Lifecycle defines <em>what</em> callback names, ordering, and status semantics must be preserved for conformance.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Canonical Event Vocabulary</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Representative Events</th>
+                            <th>Normative Expectation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Instance Start</td>
+                            <td><code>onStartInstance</code></td>
+                            <td>Must initialize parse scope/context for one instance payload.</td>
+                        </tr>
+                        <tr>
+                            <td>Container Start</td>
+                            <td><code>onStartMetaSet</code>, <code>onStartDataSet</code>, <code>onStartSequence</code>, <code>onStartItem</code></td>
+                            <td>Must preserve nesting semantics and stack safety.</td>
+                        </tr>
+                        <tr>
+                            <td>Element Start/Append/End</td>
+                            <td><code>onStartAttribute</code>, <code>onAppendAttribute</code>, <code>onEndAttribute</code></td>
+                            <td>Must respect incremental element completeness and deterministic ordering.</td>
+                        </tr>
+                        <tr>
+                            <td>Container End</td>
+                            <td><code>onEndItem</code>, <code>onEndSequence</code>, <code>onEndDataSet</code></td>
+                            <td>Must close nesting scopes in strict LIFO order.</td>
+                        </tr>
+                        <tr>
+                            <td>Instance End</td>
+                            <td><code>onEndInstance</code></td>
+                            <td>Must finalize one output contract and release scoped state.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Status Contract</h3>
+                <p>Canonical parser status vocabulary:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Meaning</th>
+                            <th>Typical Parser Behavior</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>CONTINUE</code></td>
+                            <td>Keep normal parse progression.</td>
+                            <td>Continue reading bytes/events in current context.</td>
+                        </tr>
+                        <tr>
+                            <td><code>SUCCESS</code></td>
+                            <td>Current operation completed successfully.</td>
+                            <td>Commit result and continue outer progression.</td>
+                        </tr>
+                        <tr>
+                            <td><code>STOP</code></td>
+                            <td>Terminate parse intentionally.</td>
+                            <td>Stop processing and return current final state.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JUMP</code></td>
+                            <td>Skip current subtree/segment.</td>
+                            <td>Fast-forward to matching structural boundary.</td>
+                        </tr>
+                        <tr>
+                            <td><code>FAIL</code></td>
+                            <td>Fatal parse/contract failure.</td>
+                            <td>Abort parse, surface structured error condition.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Lifecycle Ordering and Determinism</h3>
+                <div class="callout normative">
+                    <h4>Required Invariants</h4>
+                    <p>
+                        1. Event order for a given input MUST be deterministic.<br>
+                        2. Status handling MUST be deterministic and side-effect safe.<br>
+                        3. <code>JUMP</code> semantics MUST skip exactly the targeted subtree scope.<br>
+                        4. End events MUST NOT be emitted before matching start events.
+                    </p>
+                </div>
+
+                <div class="callout warning">
+                    <h4>Implementation Guidance</h4>
+                    <p>
+                        Async scheduling MAY differ by language runtime, but externally observable event sequence and status outcomes
+                        should remain stable under equivalent inputs.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Conformance Checklist</h3>
+                <div class="callout normative">
+                    <h4>What Must Stay Stable</h4>
+                    <p>
+                        1. Start/end callbacks must remain structurally paired under nested sequence/item depth.<br>
+                        2. Status return values must be interpreted consistently regardless of language runtime.<br>
+                        3. <code>JUMP</code> and <code>SKIP</code> behavior must only affect the intended subtree scope.<br>
+                        4. Result finalization should occur only after a valid <code>onEndInstance</code> boundary.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Next: Materialization Model</h3>
+                <p>
+                    Once lifecycle semantics are clear, continue to
+                    <a href="materialization-model.html">Materialization Model</a> to choose how each pipeline
+                    should balance full result realization versus non-materialized streaming.
+                </p>
+            </section>
+
+            <p class="footer-note">
+                Normative page: detailed stream lifecycle callback and status semantics.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

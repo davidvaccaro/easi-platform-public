@@ -1,13 +1,13 @@
 # `ValueRepresentation` Class
 
-A DICOM Value Representation (VR) defines the data type and format of the value(s) contained in a DICOM data element, ensuring consistent interpretation across systems.
+A DICOM&reg; Value Representation (VR) defines the data type and format of the value(s) contained in a DICOM&reg; data element, ensuring consistent interpretation across systems.
 
-The EASI DICOM `ValueRepresentation` class is a static accessor class that defines all known DICOM Value Representations. 
+The EASI DICOM&reg; `ValueRepresentation` class is a static accessor class that defines all known DICOM&reg; Value Representations. 
 
 It represents the full set of Value Representations values as a static map of `ValueRepresentation` instances and provides static access via well-known Names through dynamic lookup as well as exposing a full complement of static Value Representation accessor properties.
 
-For further details on Value Representations in the DICOM Standard, see:  
-[Official DICOM Standard - Value Representation (VR)](https://dicom.nema.org/medical/dicom/current/output/html/part05.html#sect_6.2)
+For further details on Value Representations in the DICOM&reg; Standard, see:  
+[Official DICOM&reg; Standard - Value Representation (VR)](https://dicom.nema.org/medical/dicom/current/output/html/part05.html#sect_6.2)
 
 ---
 

@@ -1,6 +1,6 @@
 # `Resource` Class
 
-The `Resource` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+The `Resource` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
 
 ---
 

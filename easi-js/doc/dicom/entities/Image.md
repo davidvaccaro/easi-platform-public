@@ -1,6 +1,6 @@
 # `Image` Class
 
-The `Image` class extends the `Entity` class and provides high-level accessors and functionality specific to DICOM image objects, including multi-frame support, windowing parameters, and pixel data decoding.
+The `Image` class extends the `Entity` class and provides high-level accessors and functionality specific to DICOM&reg; image objects, including multi-frame support, windowing parameters, and pixel data decoding.
 
 ---
 
@@ -14,13 +14,13 @@ Image → Entity
 
 ### `new Image(attributeSet)`
 
-Constructs a new DICOM `Image` instance.
+Constructs a new DICOM&reg; `Image` instance.
 
 #### Parameters
 
 | Name           | Type           | Description                                  |
 |----------------|----------------|----------------------------------------------|
-| `attributeSet` | `AttributeSet` | The DICOM attribute set used by this image.  |
+| `attributeSet` | `AttributeSet` | The DICOM&reg; attribute set used by this image.  |
 
 ---
 
@@ -60,7 +60,7 @@ Returns an instance of the **Modality Look-Up Table Module**.
 
 ### `isMultiFrame`
 
-Indicates whether the image is a **multi-frame** DICOM object.
+Indicates whether the image is a **multi-frame** DICOM&reg; object.
 
 **Type:** `boolean`
 

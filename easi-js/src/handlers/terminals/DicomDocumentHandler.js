@@ -20,7 +20,7 @@
 import DicomInstanceHandler from "./DicomInstanceHandler.js";
 import DicomEntityHandler from "./DicomEntityHandler.js";
 import EncapsulatedDocument from "../../dicom/entities/EncapsulatedDocument.js";
-import DocumentUnwrapper from "../../dicom/documents/DocumentUnwrapper.js";
+import DocumentUnwrapper from "../../dicom/utilities/DocumentUnwrapper.js";
 
 export default class DicomDocumentHandler extends DicomEntityHandler {
 
@@ -43,7 +43,7 @@ export default class DicomDocumentHandler extends DicomEntityHandler {
     /**
      * Convert one entity to one unwrapped document output.
      * @param {object | null} entity The source entity.
-     * @returns {object | null} The unwrapped document payload.
+     * @returns {import("../../dicom/utilities/UnwrappedDocument.js").default | null} The unwrapped document payload.
      */
     unwrapEntity(entity) {
 
@@ -68,7 +68,7 @@ export default class DicomDocumentHandler extends DicomEntityHandler {
 
     /**
      * Returns the current unwrapped document output for this parse session.
-     * @returns {object | Array<object> | null} The unwrapped document payload.
+     * @returns {import("../../dicom/utilities/UnwrappedDocument.js").default | Array<import("../../dicom/utilities/UnwrappedDocument.js").default> | null} The unwrapped document payload.
      */
     onEndInstance(context) {
 

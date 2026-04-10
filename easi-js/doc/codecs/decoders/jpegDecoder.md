@@ -1,6 +1,6 @@
 # `JpegDecoder` Class
 
-The `JpegDecoder` class provides pixel decoding functionality for DICOM image data processing.
+The `JpegDecoder` class provides pixel decoding functionality for DICOM&reg; image data processing.
 
 ---
 

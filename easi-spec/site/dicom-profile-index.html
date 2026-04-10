@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI DICOM&reg; profile index: entities, modules, and high-value element references for common workflows.">
+    <title>EASI | DICOM&reg; Profile Index</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Profile Index</h2>
+                <p>
+                    This page provides an EASI-oriented index of DICOM&reg; entities, modules, and high-value element references
+                    used by common read, selection, mapping, and transfer workflows.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout warning">
+                    <h4>Scope Note</h4>
+                    <p>
+                        This is not a restatement of the full DICOM&reg; standard. It is a focused interoperability index used to anchor
+                        EASI scenario and mapping behavior against commonly required attributes.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>DICOM&reg; Data Model Type Catalog</h3>
+                <p>
+                    For resource-style type references, use the dedicated data model index and per-type pages.
+                    This catalog covers core model classes plus document utilities, entity accessors, and module accessors
+                    commonly emitted or traversed during pipeline processing.
+                </p>
+                <div class="grid two">
+                    <article class="card">
+                        <h4><a href="dicom-model/index.html">DICOM&reg; Model Type Index</a></h4>
+                        <p>
+                            Includes dedicated references for <code>Instance</code>, <code>DataSet</code>, <code>Attribute</code>,
+                            <code>Tag</code>, <code>TransferSyntax</code>, and other root model classes.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h4>Reference Style</h4>
+                        <p>
+                            Each class page includes snapshot metadata, canonical role, common relationships,
+                            and typical output contexts across pipeline terminals, with language-neutral and language-specific tabs.
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Core DICOM&reg; Entity Hierarchy</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>Primary Identifier</th>
+                            <th>Common EASI Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Patient</td>
+                            <td>(0010,0020) Patient ID</td>
+                            <td>Selection, de-identification, subject linkage in downstream mappings.</td>
+                        </tr>
+                        <tr>
+                            <td>Study</td>
+                            <td>(0020,000D) Study Instance UID</td>
+                            <td>Grouping, FHIR&reg; ImagingStudy identity, query/retrieve correlation.</td>
+                        </tr>
+                        <tr>
+                            <td>Series</td>
+                            <td>(0020,000E) Series Instance UID</td>
+                            <td>Series-level filtering, streaming segmentation, key frame grouping.</td>
+                        </tr>
+                        <tr>
+                            <td>Instance</td>
+                            <td>(0008,0018) SOP Instance UID</td>
+                            <td>Per-object emission and transfer workflows (for example C-STORE payload handling).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Query/Retrieve Reference Index</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Levels</th>
+                            <th>Typical Selection Keys</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Study Root</td>
+                            <td>STUDY, SERIES, IMAGE</td>
+                            <td>Study UID, Series UID, SOP UID, Modality, Study Date.</td>
+                        </tr>
+                        <tr>
+                            <td>Patient Root</td>
+                            <td>PATIENT, STUDY, SERIES, IMAGE</td>
+                            <td>Patient ID plus study/series/image constraints.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Module Coverage Snapshot</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Module</th>
+                            <th>Representative Attributes</th>
+                            <th>Pipeline Relevance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Patient Module</td>
+                            <td>Patient ID, Patient Name, Birth Date, Sex</td>
+                            <td>Identity linkage and de-identification scope.</td>
+                        </tr>
+                        <tr>
+                            <td>General Study Module</td>
+                            <td>Study UID, Study Date, Study Time, Accession Number</td>
+                            <td>Study-level grouping and retrieval.</td>
+                        </tr>
+                        <tr>
+                            <td>General Series Module</td>
+                            <td>Series UID, Modality, Series Number</td>
+                            <td>Series partitioning and filter criteria.</td>
+                        </tr>
+                        <tr>
+                            <td>SOP Common Module</td>
+                            <td>SOP Class UID, SOP Instance UID</td>
+                            <td>Object identity and downstream compatibility checks.</td>
+                        </tr>
+                        <tr>
+                            <td>Image Pixel Module</td>
+                            <td>Rows, Columns, Bits Allocated, Photometric Interpretation</td>
+                            <td>Codec/transcoding eligibility and image extraction behavior.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>High-Value Attribute Index</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tag</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Common Usage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>(0010,0020)</td>
+                            <td>Patient ID</td>
+                            <td>LO</td>
+                            <td>Patient correlation across studies and systems.</td>
+                        </tr>
+                        <tr>
+                            <td>(0020,000D)</td>
+                            <td>Study Instance UID</td>
+                            <td>UI</td>
+                            <td>Primary study key and ImagingStudy identity anchor.</td>
+                        </tr>
+                        <tr>
+                            <td>(0020,000E)</td>
+                            <td>Series Instance UID</td>
+                            <td>UI</td>
+                            <td>Series partitioning and sequence grouping.</td>
+                        </tr>
+                        <tr>
+                            <td>(0008,0018)</td>
+                            <td>SOP Instance UID</td>
+                            <td>UI</td>
+                            <td>Instance-level deduplication and transfer operations.</td>
+                        </tr>
+                        <tr>
+                            <td>(0008,0060)</td>
+                            <td>Modality</td>
+                            <td>CS</td>
+                            <td>Filtering for CT/MR/US workflows and routing.</td>
+                        </tr>
+                        <tr>
+                            <td>(7FE0,0010)</td>
+                            <td>Pixel Data</td>
+                            <td>OB/OW</td>
+                            <td>Frame extraction, transcoding, and non-DICOM&reg; asset generation.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>EASI Mapping Notes</h3>
+                <div class="grid two">
+                    <article class="card">
+                        <h4>ImagingStudy Mapping</h4>
+                        <p>Study/series/instance UIDs are the minimum stable identity set for reducing duplicate projections.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Selection Profiles</h4>
+                        <p>Selection-first workflows should prioritize UID attributes and safety-critical demographics before optional descriptors.</p>
+                    </article>
+                    <article class="card">
+                        <h4>De-Identification</h4>
+                        <p>Attribute profile scope should be explicit and versioned, with predictable replacement behavior across runtimes.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Transcoding</h4>
+                        <p>Transfer syntax and pixel module attributes determine codec feasibility and error handling paths.</p>
+                    </article>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                Mixed page: normative index anchors plus informative DICOM&reg; reference cues.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

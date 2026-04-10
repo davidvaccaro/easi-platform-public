@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Normative EASI materialization model for memory-aware stream processing workflows.">
+    <title>EASI | Materialization Model</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Materialization Model</h2>
+                <p>
+                    EASI stream processing can run in fully materializing, non-materializing, or hybrid modes.
+                    Choosing the right mode is a first-order design decision because it directly affects memory footprint,
+                    latency, and downstream workflow design.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout normative">
+                    <h4>Normative Intent</h4>
+                    <p>
+                        Conforming implementations must preserve the same functional semantics in both materializing and
+                        non-materializing paths. The difference is output realization strategy, not clinical/data meaning.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Definitions</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mode</th>
+                            <th>Behavior</th>
+                            <th>Typical Outcome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Materializing</td>
+                            <td>Pipeline accumulates output payloads in memory before returning.</td>
+                            <td>Convenient random access to full result objects/bytes.</td>
+                        </tr>
+                        <tr>
+                            <td>Non-Materializing</td>
+                            <td>Pipeline emits chunks/events as data flows and avoids full payload accumulation.</td>
+                            <td>Lower peak memory and better steady-state streaming throughput.</td>
+                        </tr>
+                        <tr>
+                            <td>Hybrid</td>
+                            <td>Small metadata may be materialized while large payloads remain streamed.</td>
+                            <td>Balanced observability and operational efficiency.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Control Points</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Layer</th>
+                            <th>API Control</th>
+                            <th>Practical Effect</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Terminal DICOM&reg; bytes</td>
+                            <td><code>toDicomData({ collectOutput, onChunk })</code></td>
+                            <td>Switch between full byte-array accumulation and chunk-native emission.</td>
+                        </tr>
+                        <tr>
+                            <td>Asset payload extraction</td>
+                            <td><code>toAssets({ payload: { mode, onFrameChunk, onContentChunk, collect } })</code></td>
+                            <td>Control frame/content payload materialization versus chunk streaming.</td>
+                        </tr>
+                        <tr>
+                            <td>Parser bulk payload policy</td>
+                            <td><code>withBulkDataPolicy({ mode, knownLengthThreshold, hardSafetyCap })</code></td>
+                            <td>Guide parser behavior for large value fields during stream parse.</td>
+                        </tr>
+                        <tr>
+                            <td>Per-part emission</td>
+                            <td><code>withOnEmit(callback)</code> or read options <code>onEmit</code></td>
+                            <td>Process multipart results incrementally rather than aggregating externally.</td>
+                        </tr>
+                        <tr>
+                            <td>Outbound destination streaming</td>
+                            <td><code>intoFileStream(...)</code>, <code>intoNodeStreamAdapter(...)</code>, <code>intoHttpStream(...)</code></td>
+                            <td>Stream terminal output to external sinks; useful for transport egress even when terminal output is materialized.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>process() Output Matrix</h3>
+                <div class="callout informative">
+                    <h4>Stable Contract</h4>
+                    <p>
+                        <code>process(...)</code> always returns a <code>PipelineResultCollection</code>. The tables below
+                        describe what <code>resultCollection.first()</code> contains for each terminal shape.
+                    </p>
+                </div>
+
+                <h4>Always Materialized Terminals</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Terminal</th>
+                            <th>Materialization</th>
+                            <th><code>resultCollection.first()</code></th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>toInstances()</code></td>
+                            <td>Must materialize</td>
+                            <td><code>Instance</code></td>
+                            <td>Multiple instances become multiple collection items.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toEntities()</code></td>
+                            <td>Must materialize</td>
+                            <td>Entity (for example <code>Image</code>, <code>StructuredReport</code>, <code>EncapsulatedDocument</code>)</td>
+                            <td>Entity type is SOP Class / modality dependent.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toUnwrappedDocuments(...)</code></td>
+                            <td>Must materialize</td>
+                            <td><code>UnwrappedDocument</code></td>
+                            <td>Typed unwrapped payload with fields such as <code>mimeType</code>, <code>fileName</code>, <code>bytes</code>, and <code>text</code>. When no encapsulated document is present, collection is empty.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toWrappedDocuments(...)</code></td>
+                            <td>Must materialize</td>
+                            <td><code>ByteArray</code></td>
+                            <td>Returns wrapped native DICOM&reg; bytes.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toMapping(mapping)</code></td>
+                            <td>Must materialize</td>
+                            <td>Mapping-defined output</td>
+                            <td>Shape is determined by <code>mapping.end(context)</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toSelection(selection)</code></td>
+                            <td>Must materialize</td>
+                            <td>Selection-defined output (commonly <code>AttributeSet</code>)</td>
+                            <td>Shape is determined by <code>selection.end(context)</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toFHIRImagingStudy(...)</code></td>
+                            <td>Must materialize</td>
+                            <td><code>ImagingStudy</code></td>
+                            <td>May emit multiple studies across collection items when applicable.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toStructuredValue()</code></td>
+                            <td>Must materialize</td>
+                            <td>Structured syntax value (JSON object/array/scalar, or XML document-node object)</td>
+                            <td>Used with JSON/XML parsers, not native <code>ofDicomData()</code> parser flow.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Configurable / Hybrid Terminals</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Terminal</th>
+                            <th>Mode Controls</th>
+                            <th><code>resultCollection.first()</code></th>
+                            <th>Chunk Callback Path</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>toDicomData(...)</code></td>
+                            <td><code>collectOutput</code>, <code>onChunk</code></td>
+                            <td>
+                                Materialized: <code>ByteArray</code><br>
+                                Non-materialized: <code>PipelineOperationResult</code> (<code>bytesWritten</code>, <code>payload=null</code>)
+                            </td>
+                            <td><code>onChunk(chunk)</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>toAssets(...)</code></td>
+                            <td><code>metadata.collect</code>, <code>payload.mode</code>, <code>payload.collect</code></td>
+                            <td>
+                                Default: <code>{ instanceUID }</code><br>
+                                + <code>metadata</code> when <code>metadata.collect !== false</code><br>
+                                + <code>frames</code> / <code>content</code> when <code>payload.collect === true</code>
+                            </td>
+                            <td><code>onFrameChunk(...)</code>, <code>onContentChunk(...)</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>toAssetArchive(...)</code></td>
+                            <td><code>collectOutput</code>, <code>onChunk</code></td>
+                            <td>
+                                Materialized: ZIP <code>ByteArray</code><br>
+                                Non-materialized: <code>PipelineOperationResult</code> (<code>bytesWritten</code>, <code>payload=null</code>)
+                            </td>
+                            <td><code>onChunk(chunk)</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>When <code>into*</code> Is Used</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th><code>resultCollection.first()</code></th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Writer sink applied (for example <code>intoFileStream</code>, <code>intoHttpStream</code>)</td>
+                            <td><code>PipelineOperationResult</code> (writer category)</td>
+                            <td>Includes stable fields (<code>resultType</code>, <code>writer</code>, <code>bytesWritten</code>, <code>payload</code>) plus writer-specific output fields.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toDicomData({ collectOutput:false, onChunk })</code> with <code>into*</code></td>
+                            <td><code>PipelineOperationResult</code></td>
+                            <td>Pipeline keeps terminal chunk path; writer sink is intentionally not layered over it (<code>operation="toDicomData"</code>, <code>category="terminal"</code>).</td>
+                        </tr>
+                        <tr>
+                            <td>Custom writer sink (non-built-in <code>into*</code> implementation)</td>
+                            <td>Writer-defined output</td>
+                            <td>Only built-in writers are normalized to <code>PipelineOperationResult</code>; custom writers return their native output contract.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Materializing Example</h3>
+                <p>
+                    Materialize one full DICOM&reg; byte output in-memory, then consume it as a contiguous payload.
+                </p>
+                <pre><code class="language-javascript">const pipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .toDicomData() // collectOutput defaults to true
+  .build();
+
+const resultCollection = await pipeline.process("/var/easi/inbox/ct/CT-001.dcm");
+if (resultCollection.isEmpty) {
+  return;
+}
+
+const dicomBytes = resultCollection.first(); // Uint8Array
+await archiveClient.put("study/CT-001.dcm", dicomBytes);</code></pre>
+            </section>
+
+            <section class="section reveal">
+                <h3>Non-Materializing Example (Terminal Chunk Stream)</h3>
+                <p>
+                    Emit DICOM&reg; output bytes chunk-by-chunk and avoid full in-memory payload aggregation.
+                </p>
+                <pre><code class="language-javascript">let totalBytes = 0;
+
+const pipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .toDicomData({
+    collectOutput: false,
+    onChunk: async (chunk) => {
+      totalBytes += chunk.length;
+      await uploadStream.write(chunk);
+    }
+  })
+  .build();
+
+const resultCollection = await pipeline.process("/var/easi/inbox/ct/CT-001.dcm");
+const writeResult = resultCollection.first(); // PipelineOperationResult
+const bytesWritten = writeResult.bytesWritten;
+await uploadStream.close();</code></pre>
+                <p class="page-meta">
+                    In this mode, <code>toDicomData</code> returns a standardized <code>PipelineOperationResult</code>
+                    with <code>materialized=false</code> and <code>bytesWritten</code>.
+                </p>
+                <div class="callout warning">
+                    <h4>Important</h4>
+                    <p>
+                        When using <code>collectOutput: false</code>, provide a chunk sink (<code>onChunk</code>) or another
+                        explicit downstream handling strategy so payload bytes are not silently discarded.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Destination Stream Example (Writer Sink)</h3>
+                <p>
+                    Route terminal output into a destination writer. This streams bytes to the sink, but terminal output
+                    may still be materialized first unless terminal chunk mode is used.
+                </p>
+                <pre><code class="language-javascript">const resultCollection = await EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .toDicomData() // materialized terminal payload
+  .intoFileStream("/var/easi/outbox/CT-001.dcm", {
+    chunkSize: 16384,
+    collectOutput: false
+  })
+  .build()
+  .process("/var/easi/inbox/ct/CT-001.dcm");
+
+const writeResult = resultCollection.first();
+const bytesWritten = writeResult.bytesWritten;</code></pre>
+                <div class="callout informative">
+                    <h4>Design Note</h4>
+                    <p>
+                        <code>into*</code> controls outbound sink behavior. For true parser-to-terminal non-materialization,
+                        use terminal chunk mode (<code>toDicomData({ collectOutput: false, onChunk })</code>).
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Hybrid Example</h3>
+                <p>
+                    Keep metadata structured while streaming heavy frame payloads.
+                </p>
+                <pre><code class="language-javascript">const pipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .withBulkDataPolicy({ mode: "stream", knownLengthThreshold: 512 * 1024 })
+  .toAssets({
+    metadata: {
+      mapping: metadataMapping,
+      collect: true
+    },
+    payload: {
+      mode: "stream",
+      frame: { frames: "all", decode: "native", encode: "none" },
+      onFrameChunk: async ({ index, bytes, isFinalChunk }) => {
+        await frameChunkSink.write(index, bytes, isFinalChunk);
+      },
+      collect: false
+    }
+  })
+  .build();
+
+const resultCollection = await pipeline.process("/var/easi/inbox/us/US-001.dcm");
+const result = resultCollection.first(); // { instanceUID, metadata } when metadata.collect !== false and payload.collect === false</code></pre>
+            </section>
+
+            <section class="section reveal">
+                <h3>Selection Guidance</h3>
+                <div class="grid three">
+                    <article class="card">
+                        <h4>Prefer Materializing</h4>
+                        <p>When payloads are moderate and downstream logic needs random access to complete results.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Prefer Non-Materializing</h4>
+                        <p>When handling large studies, long-running listeners, or continuous ingest with strict memory targets.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Prefer Hybrid</h4>
+                        <p>When metadata is needed synchronously but payload bytes should be streamed to external sinks.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Next: Conformance</h3>
+                <p>
+                    After selecting your materialization strategy, use <a href="conformance.html">Conformance</a>
+                    to verify lifecycle determinism and behavior parity across implementation profiles.
+                </p>
+            </section>
+
+            <p class="footer-note">
+                Normative page: materialization strategy semantics for memory-aware stream pipeline composition.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # `DicomSelection` Class
 
-The `DicomSelection` class defines DICOM tag selection behavior for selective stream extraction workflows.
+The `DicomSelection` class defines DICOM&reg; tag selection behavior for selective stream extraction workflows.
 
 ---
 
@@ -27,13 +27,13 @@ new DicomSelection()
 
 ### `addTag(tag)`
 
-Add a selection item for the specified DICOM Tag.
+Add a selection item for the specified DICOM&reg; Tag.
 
 #### Parameters
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `tag` | `Tag` | The specified DICOM Tag. |
+| `tag` | `Tag` | The specified DICOM&reg; Tag. |
 
 #### Returns
 
@@ -43,19 +43,19 @@ Add a selection item for the specified DICOM Tag.
 
 ### `hasTag(tag)`
 
-Determine if the selection item has the current DICOM Tag.
+Determine if the selection item has the current DICOM&reg; Tag.
 
 #### Parameters
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `tag` | `Tag` | The specified DICOM Tag. |
+| `tag` | `Tag` | The specified DICOM&reg; Tag. |
 
 #### Returns
 
 | Type | Description |
 |------|-------------|
-| `*` | TRUE if the selection item contains the DICOM Tag, FALSE otherwise. |
+| `*` | TRUE if the selection item contains the DICOM&reg; Tag, FALSE otherwise. |
 
 ---
 

@@ -1,6 +1,6 @@
 # `ImagingStudy` Class
 
-The `ImagingStudy` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+The `ImagingStudy` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
 
 ---
 

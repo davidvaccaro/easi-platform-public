@@ -1,6 +1,6 @@
 # `Dumper` Class
 
-The `Dumper` class provides tooling support for parsing or generating diagnostic DICOM dumps.
+The `Dumper` class provides tooling support for parsing or generating diagnostic DICOM&reg; dumps.
 
 ---
 
@@ -20,7 +20,7 @@ new Dumper(parser)
 
 | Parameter | Type    | Default | Description |
 |-----------|---------|---------|-------------|
-| `parser` | `DumpParser` | `—` | The parser used to parse dumped DICOM data. |
+| `parser` | `DumpParser` | `—` | The parser used to parse dumped DICOM&reg; data. |
 
 ## Properties
 
@@ -32,19 +32,19 @@ new Dumper(parser)
 
 ### `dump(dicomPath)`
 
-Dump a specified DICOM file.
+Dump a specified DICOM&reg; file.
 
 #### Parameters
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `dicomPath` | `string` | The file name OR full path to a specified DICOM file. |
+| `dicomPath` | `string` | The file name OR full path to a specified DICOM&reg; file. |
 
 #### Returns
 
 | Type | Description |
 |------|-------------|
-| `*` | The dump of the DICOM file. |
+| `*` | The dump of the DICOM&reg; file. |
 
 ## Usage Example
 

@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI DICOM&reg; type reference for EncapsulatedDocument.">
+    <title>EASI | DICOM&reg; Type | EncapsulatedDocument</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="../core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="../stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="../lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="../dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>EncapsulatedDocument</h2>
+                <p>Entity accessor for encapsulated document objects and payload metadata.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Snapshot</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Type</td>
+                            <td><code>EncapsulatedDocument</code></td>
+                        </tr>
+                        <tr>
+                            <td>Domain</td>
+                            <td>Entities</td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td>Entity Accessor</td>
+                        </tr>
+                        <tr>
+                            <td>Kind</td>
+                            <td>Entity Accessor Type</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Canonical Role</h3>
+                <p>Provides document-oriented semantics over encapsulated DICOM&reg; instances.</p>
+                <div class="callout normative">
+                    <h4>Pipeline Exposure</h4>
+                    <p>Materialized by entity-oriented outputs and traversed during higher-level semantic access.</p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Definition</h3>
+                <p>
+                    Structure is presented first, followed by language-neutral and language-specific examples,
+                    and an explicit UML relationship view.
+                </p>
+
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Type definition tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="structure">Structure</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="uml">UML</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="structure">
+                        <h4>Type Structure</h4>
+                        <p>Directly available members for <code>EncapsulatedDocument</code>, separated by accessors/properties, methods, and constructors.</p>
+                        <h5>Accessors and Properties</h5>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Member</th>
+                                        <th>Signature</th>
+                                        <th>Kind</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        <tr>
+                            <td><code>encapsulatedDocumentModule</code></td>
+                            <td><code>get encapsulatedDocumentModule()</code></td>
+                            <td>Accessor</td>
+                            <td>Get the Encapsulated Document Module.</td>
+                        </tr>
+                        <tr>
+                            <td><code>documentModule</code></td>
+                            <td><code>get documentModule()</code></td>
+                            <td>Accessor</td>
+                            <td>Get the Encapsulated Document accessor.</td>
+                        </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h5>Methods</h5>
+
+                    <article class="member-doc">
+                        <h6><code>static resolveWrapper(options = null)</code></h6>
+                        <p>Resolve one effective document wrapper implementation.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>options</code></td>
+                                <td><code>Object | Null</code></td>
+                                <td>(Optional) The wrap options.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="member-doc-label">Possible Return Types</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>DocumentWrapper</code></td>
+                                <td>The resolved wrapper.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Object</code></td>
+                                <td>The resolved wrapper.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    <article class="member-doc">
+                        <h6><code>static resolveUnwrapper(options = null)</code></h6>
+                        <p>Resolve one effective document unwrapper implementation.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>options</code></td>
+                                <td><code>Object | Null</code></td>
+                                <td>(Optional) The unwrap options.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="member-doc-label">Possible Return Types</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>DocumentUnwrapper</code></td>
+                                <td>The resolved unwrapper.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Object</code></td>
+                                <td>The resolved unwrapper.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    <article class="member-doc">
+                        <h6><code>static toEntity(value)</code></h6>
+                        <p>Normalize one source value to EncapsulatedDocument.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>value</code></td>
+                                <td><a href="attribute.html"><code>Attribute</code></a></td>
+                                <td>The source entity/instance/attribute set.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="member-doc-label">Possible Return Types</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><a href="encapsulated-document.html"><code>EncapsulatedDocument</code></a></td>
+                                <td>The normalized entity.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Null</code></td>
+                                <td>The normalized entity.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    <article class="member-doc">
+                        <h6><code>static wrap(input, options = null)</code></h6>
+                        <p>Wrap descriptor payload(s) to EncapsulatedDocument entity output.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>input</code></td>
+                                <td><code>Any</code></td>
+                                <td>The wrapped-document descriptor payload.</td>
+                            </tr>
+                            <tr>
+                                <td><code>options</code></td>
+                                <td><code>Object | Null</code></td>
+                                <td>(Optional) The wrapper options.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="member-doc-label">Possible Return Types</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><a href="encapsulated-document.html"><code>EncapsulatedDocument</code></a></td>
+                                <td>Wrapped entity output.</td>
+                            </tr>
+                            <tr>
+                                <td><code>List&lt;EncapsulatedDocument&gt;</code></td>
+                                <td>Wrapped entity output.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Null</code></td>
+                                <td>Wrapped entity output.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    <article class="member-doc">
+                        <h6><code>static unwrap(entity, options = null)</code></h6>
+                        <p>Unwrap one encapsulated document entity/instance to document payload.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>entity</code></td>
+                                <td><a href="attribute.html"><code>Attribute</code></a></td>
+                                <td>The source entity/instance/attribute set.</td>
+                            </tr>
+                            <tr>
+                                <td><code>options</code></td>
+                                <td><code>Object | Null</code></td>
+                                <td>(Optional) The unwrap options.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="member-doc-label">Possible Return Types</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>Object</code></td>
+                                <td>The unwrapped output payload.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Null</code></td>
+                                <td>The unwrapped output payload.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    <article class="member-doc">
+                        <h6><code>unwrap(options = null)</code></h6>
+                        <p>Unwrap this encapsulated document entity to one normalized payload.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>options</code></td>
+                                <td><code>Object | Null</code></td>
+                                <td>(Optional) The unwrap options.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="member-doc-label">Possible Return Types</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>Object</code></td>
+                                <td>The unwrapped payload.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Null</code></td>
+                                <td>The unwrapped payload.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                        <h5>Constructors</h5>
+
+                    <article class="member-doc">
+                        <h6><code>constructor(instance)</code></h6>
+                        <p>Construct a DICOM Encapsulated Document entity.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>instance</code></td>
+                                <td><code>Instance | AttributeSet</code></td>
+                                <td>The source instance or attribute set.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    </div>
+                <div class="doc-tab-panel" data-tab-panel="neutral">
+                    <h4>Language-Neutral Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-text">pipeline := EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toEntities()
+  .build()
+
+resultCollection := pipeline.process(source)
+result := resultCollection.first()
+
+# Type usage
+wrappedEntity := EncapsulatedDocument.wrap({ mimeType: &quot;application/pdf&quot;, bytes: payloadBytes })
+wrappedEntity.unwrap()
+EncapsulatedDocument.unwrap(wrappedEntity)</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: project instance content into higher-level entity semantics.</p>
+                    <pre><code class="language-text">wrappedEntity := EncapsulatedDocument.wrap({ mimeType: &quot;application/pdf&quot;, bytes: payloadBytes })
+wrappedEntity.unwrap()
+EncapsulatedDocument.unwrap(wrappedEntity)
+unwrappedViaInstance := wrappedEntity.unwrap()
+unwrappedViaStatic := EncapsulatedDocument.unwrap(wrappedEntity)
+wrappedFromDescriptor := EncapsulatedDocument.wrap({ mimeType: &quot;application/pdf&quot;, bytes: payloadBytes })
+mimeType := unwrappedViaStatic.mimeType
+documentLength := unwrappedViaStatic.byteLength</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="javascript">
+                    <h4>JavaScript Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-javascript">const pipeline = EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toEntities()
+  .build();
+
+const resultCollection = await pipeline.process(source);
+const result = resultCollection.first();
+
+// Type usage
+const wrappedEntity = EncapsulatedDocument.wrap({ mimeType: &quot;application/pdf&quot;, bytes: payloadBytes });
+wrappedEntity.unwrap();
+EncapsulatedDocument.unwrap(wrappedEntity);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: project instance content into higher-level entity semantics.</p>
+                    <pre><code class="language-javascript">const wrappedEntity = EncapsulatedDocument.wrap({ mimeType: &quot;application/pdf&quot;, bytes: payloadBytes });
+wrappedEntity.unwrap();
+EncapsulatedDocument.unwrap(wrappedEntity);
+const unwrappedViaInstance = wrappedEntity.unwrap();
+const unwrappedViaStatic = EncapsulatedDocument.unwrap(wrappedEntity);
+const wrappedFromDescriptor = EncapsulatedDocument.wrap({ mimeType: &quot;application/pdf&quot;, bytes: payloadBytes });
+const mimeType = unwrappedViaStatic.mimeType;
+const documentLength = unwrappedViaStatic.byteLength;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="csharp">
+                    <h4>C# Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-csharp">var pipeline = EASI.PipelineBuilder()
+    .FromPartStream()
+    .OfDicomData()
+    .ToEntities()
+    .Build();
+
+var resultCollection = await pipeline.Process(source);
+var result = resultCollection.First();
+
+// Type usage
+var wrappedEntity = EncapsulatedDocument.wrap(new { mimeType = &quot;application/pdf&quot;, bytes = payloadBytes });
+wrappedEntity.unwrap();
+EncapsulatedDocument.unwrap(wrappedEntity);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: project instance content into higher-level entity semantics.</p>
+                    <pre><code class="language-csharp">var wrappedEntity = EncapsulatedDocument.wrap(new { mimeType = &quot;application/pdf&quot;, bytes = payloadBytes });
+wrappedEntity.unwrap();
+EncapsulatedDocument.unwrap(wrappedEntity);
+var unwrappedViaInstance = wrappedEntity.unwrap();
+var unwrappedViaStatic = EncapsulatedDocument.unwrap(wrappedEntity);
+var wrappedFromDescriptor = EncapsulatedDocument.wrap(new { mimeType = &quot;application/pdf&quot;, bytes = payloadBytes });
+var mimeType = unwrappedViaStatic.mimeType;
+var documentLength = unwrappedViaStatic.byteLength;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="java">
+                    <h4>Java Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-java">var pipeline = EASI.pipelineBuilder()
+    .fromPartStream()
+    .ofDicomData()
+    .toEntities()
+    .build();
+
+var resultCollection = pipeline.process(source);
+var result = resultCollection.first();
+
+// Type usage
+var wrappedEntity = EncapsulatedDocument.wrap(Map.of(&quot;mimeType&quot;, &quot;application/pdf&quot;, &quot;bytes&quot;, payloadBytes));
+wrappedEntity.unwrap();
+EncapsulatedDocument.unwrap(wrappedEntity);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: project instance content into higher-level entity semantics.</p>
+                    <pre><code class="language-java">var wrappedEntity = EncapsulatedDocument.wrap(Map.of(&quot;mimeType&quot;, &quot;application/pdf&quot;, &quot;bytes&quot;, payloadBytes));
+wrappedEntity.unwrap();
+EncapsulatedDocument.unwrap(wrappedEntity);
+var unwrappedViaInstance = wrappedEntity.unwrap();
+var unwrappedViaStatic = EncapsulatedDocument.unwrap(wrappedEntity);
+var wrappedFromDescriptor = EncapsulatedDocument.wrap(Map.of(&quot;mimeType&quot;, &quot;application/pdf&quot;, &quot;bytes&quot;, payloadBytes));
+var mimeType = unwrappedViaStatic.mimeType;
+var documentLength = unwrappedViaStatic.byteLength;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="python">
+                    <h4>Python Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-python">pipeline = (
+    EASI.pipeline_builder()
+    .from_part_stream()
+    .of_dicom_data()
+    .to_entities()
+    .build()
+)
+
+result_collection = pipeline.process(source)
+result = result_collection.first()
+
+# Type usage
+wrapped_entity = EncapsulatedDocument.wrap({&quot;mimeType&quot;: &quot;application/pdf&quot;, &quot;bytes&quot;: payload_bytes})
+wrapped_entity.unwrap()
+EncapsulatedDocument.unwrap(wrapped_entity)</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: project instance content into higher-level entity semantics.</p>
+                    <pre><code class="language-python">wrapped_entity = EncapsulatedDocument.wrap({&quot;mimeType&quot;: &quot;application/pdf&quot;, &quot;bytes&quot;: payload_bytes})
+wrapped_entity.unwrap()
+EncapsulatedDocument.unwrap(wrapped_entity)
+unwrapped_via_instance = wrapped_entity.unwrap()
+unwrapped_via_static = EncapsulatedDocument.unwrap(wrapped_entity)
+wrapped_from_descriptor = EncapsulatedDocument.wrap({&quot;mimeType&quot;: &quot;application/pdf&quot;, &quot;bytes&quot;: payload_bytes})
+mime_type = unwrapped_via_static.mimeType
+document_length = unwrapped_via_static.byteLength</code></pre>
+                </div>
+
+                <div class="doc-tab-panel" data-tab-panel="uml">
+                    <h4>UML Class Diagram</h4>
+                    <p>Direct type relationships rendered as an inline UML SVG diagram.</p>
+
+                    <div class="uml-diagram">
+                        <svg class="uml-svg" viewBox="0 0 738 220" role="img" aria-label="EncapsulatedDocument UML diagram">
+                            <defs>
+                                <marker id="uml-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                                </marker>
+                                <marker id="uml-triangle" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto">
+                                    <path d="M 0 0 L 12 6 L 0 12 z"></path>
+                                </marker>
+                                <marker id="uml-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                                <marker id="uml-open-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                            </defs>
+        <path class="uml-edge dashed" d="M 278 110 C 368 110, 340 68, 430 68" marker-end="url(#uml-arrow)"></path>
+        <path class="uml-edge" d="M 278 110 C 368 110, 340 152, 430 152" marker-end="url(#uml-triangle)"></path>
+        <g class="uml-node primary">
+            <title>EncapsulatedDocument</title>
+            <rect x="28" y="78" width="250" height="64" rx="8" ry="8"></rect>
+            <text x="153" y="110" text-anchor="middle" dominant-baseline="middle">EncapsulatedDocument</text>
+        </g>
+        <g class="uml-node">
+            <title>EncapsulatedDocumentModule</title>
+            <rect x="430" y="40" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="68" text-anchor="middle" dominant-baseline="middle">EncapsulatedDocumentModule</text>
+        </g>
+        <g class="uml-node">
+            <title>Entity</title>
+            <rect x="430" y="124" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="152" text-anchor="middle" dominant-baseline="middle">Entity</text>
+        </g>
+        <text class="uml-edge-label" x="354" y="81" text-anchor="middle">..&gt; uses</text>
+        <text class="uml-edge-label" x="354" y="123" text-anchor="middle">--|&gt; inherits</text>
+                            
+                        </svg>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Relationship</th>
+                                    <th>Target</th>
+                                    <th>Intent</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <tr>
+                            <td><code>EncapsulatedDocument</code></td>
+                            <td><code>..&gt;</code></td>
+                            <td><code>EncapsulatedDocumentModule</code></td>
+                            <td>uses</td>
+                        </tr>
+                        <tr>
+                            <td><code>EncapsulatedDocument</code></td>
+                            <td><code>--|&gt;</code></td>
+                            <td><code>Entity</code></td>
+                            <td>inherits</td>
+                        </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Common Relationships</h3>
+                <p><a href="encapsulated-document-module.html"><code>EncapsulatedDocumentModule</code></a>, <a href="entity.html"><code>Entity</code></a></p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Typical Output Context</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pipeline Surface</th>
+                            <th>How EncapsulatedDocument Commonly Appears</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>toEntities()</code></td>
+                            <td>Directly emitted, nested, or referenced as part of entity terminal output.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toSelection(...)</code></td>
+                            <td>Referenced for targeted extraction and structural traversal.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toMapping(...)</code></td>
+                            <td>Used as source semantics for projection into derived target models.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout warning">
+                    <h4>Specification Boundary</h4>
+                    <p>
+                        This reference describes interoperable semantics and usage intent.
+                        Language-specific implementation internals remain outside normative standard requirements.
+                    </p>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                <a href="index.html">Back to DICOM&reg; Type Index</a>
+            </p>
+        </main>
+    </div>
+</body>
+</html>

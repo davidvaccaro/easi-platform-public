@@ -17,9 +17,6 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import net from "node:net";
-import tls from "node:tls";
-
 import Exception from "../../environment/Exception.js";
 import { GeneralErrorCodes } from "../../environment/Exception.js";
 import DimseSourceTransport from "./DimseSourceTransport.js";
@@ -81,6 +78,10 @@ const PDU_TYPES = {
     A_RELEASE_RP: 0x06,
     A_ABORT: 0x07
 };
+
+var CachedNetModule = null;
+var CachedTlsModule = null;
+var PendingSocketModuleLoad = null;
 
 function padAeTitle(value) {
 
@@ -898,6 +899,45 @@ function createPromiseQueue() {
 export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTransport {
 
     /**
+     * Resolve Node socket modules lazily so browser bundles can load this file safely.
+     * @returns {Promise<{ net: object, tls: object }>} Loaded Node socket modules.
+     */
+    async resolveNodeSocketModules() {
+
+        if ((CachedNetModule != null) && (CachedTlsModule != null)) {
+            return {
+                net: CachedNetModule,
+                tls: CachedTlsModule
+            };
+        }
+
+        if (PendingSocketModuleLoad == null) {
+            PendingSocketModuleLoad = Promise.all([
+                import("node:net"),
+                import("node:tls")
+            ]).then(([netModule, tlsModule]) => {
+                CachedNetModule = netModule?.default || netModule;
+                CachedTlsModule = tlsModule?.default || tlsModule;
+                return {
+                    net: CachedNetModule,
+                    tls: CachedTlsModule
+                };
+            }).catch((error) => {
+                throw new Exception(
+                    "Node DIMSE transport requires Node.js net/tls modules and is not available in this runtime.",
+                    GeneralErrorCodes.NotImplemented,
+                    error
+                );
+            }).finally(() => {
+                PendingSocketModuleLoad = null;
+            });
+        }
+
+        return await PendingSocketModuleLoad;
+
+    }
+
+    /**
      * Resolve one association option from read-call, instance config, and default.
      * @param {object | null} association Read-call association object.
      * @param {string} name Option property name.
@@ -1095,6 +1135,10 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
      */
     async connectSocket(association) {
 
+        var socketModules = await this.resolveNodeSocketModules();
+        var netModule = socketModules.net;
+        var tlsModule = socketModules.tls;
+
         const host = this.resolveAssociationValue(association, "host");
         const port = Number(this.resolveAssociationValue(association, "port", 4242));
         const tlsOptions = this.resolveAssociationValue(association, "tls", false);
@@ -1123,10 +1167,10 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
 
             if ((tlsOptions != null) && (tlsOptions !== false)) {
                 var options = Object.assign({}, (typeof tlsOptions == "object") ? tlsOptions : {}, { host, port });
-                socket = tls.connect(options, onConnect);
+                socket = tlsModule.connect(options, onConnect);
             }
             else {
-                socket = net.createConnection({ host, port }, onConnect);
+                socket = netModule.createConnection({ host, port }, onConnect);
             }
 
             socket.setNoDelay(true);
@@ -2026,6 +2070,10 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
      */
     async startMoveStoreServer(association, queryOptions) {
 
+        var socketModules = await this.resolveNodeSocketModules();
+        var netModule = socketModules.net;
+        var tlsModule = socketModules.tls;
+
         var host = String(queryOptions.moveStoreHost || "127.0.0.1");
         var port = Number(queryOptions.moveStorePort || 0);
         var maxPduLength = Number(this.resolveAssociationValue(association, "maxPduLength", 16384));
@@ -2120,10 +2168,10 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
             var tlsOptions = (typeof moveStoreTls === "object")
                 ? Object.assign({}, moveStoreTls)
                 : {};
-            moveStore.server = tls.createServer(tlsOptions, handleIncomingSocket);
+            moveStore.server = tlsModule.createServer(tlsOptions, handleIncomingSocket);
         }
         else {
-            moveStore.server = net.createServer(handleIncomingSocket);
+            moveStore.server = netModule.createServer(handleIncomingSocket);
         }
 
         moveStore.server.on("error", (error) => {

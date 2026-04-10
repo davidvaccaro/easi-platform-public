@@ -130,8 +130,11 @@ test('Test: toDicomData with onChunk streams bytes and can be chained with withD
         .build();
 
     var result = await reader.process(sourceBytes);
-    expect(typeof result).toBe('number');
-    expect(result).toBeGreaterThan(0);
+    expect(result.count).toBe(1);
+    expect(result.first().resultType).toBe('PipelineOperationResult');
+    expect(result.first().operation).toBe('toDicomData');
+    expect(result.first().materialized).toBe(false);
+    expect(result.first().bytesWritten).toBeGreaterThan(0);
     expect(chunks.length).toBeGreaterThan(1);
 
     var emittedBytes = combineChunks(chunks);

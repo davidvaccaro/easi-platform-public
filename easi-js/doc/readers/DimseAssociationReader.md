@@ -41,4 +41,4 @@ const pipeline = EASI
 ## Notes
 
 - Build-time validation requires a DIMSE source transport when using `fromDimseAssociation(...)`.
-- DIMSE source currently requires native DICOM parser semantics (`ofDicomData()`).
+- DIMSE source currently requires native DICOM&reg; parser semantics (`ofDicomData()`).

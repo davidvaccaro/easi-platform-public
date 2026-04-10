@@ -45,25 +45,25 @@ Parse the content-type from the response.
 
 ### `readUrl(url)`
 
-Read a DICOM instance from the response content of specified URL.
+Read a DICOM&reg; instance from the response content of specified URL.
 
 #### Parameters
 
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
-| `url` | `string` | The specified URL to a DICOM instance. |
+| `url` | `string` | The specified URL to a DICOM&reg; instance. |
 
 #### Returns
 
 | Type | Description |
 |------|-------------|
-| `*` | A Promise that resolves to the result from the DICOM parse operation. |
+| `*` | A Promise that resolves to the result from the DICOM&reg; parse operation. |
 
 ---
 
 ### `readData(data)`
 
-Read a DICOM instance from the specified data.
+Read a DICOM&reg; instance from the specified data.
 
 #### Parameters
 
@@ -75,13 +75,13 @@ Read a DICOM instance from the specified data.
 
 | Type | Description |
 |------|-------------|
-| `*` | A Promise that resolves to the result from the DICOM parse operation. |
+| `*` | A Promise that resolves to the result from the DICOM&reg; parse operation. |
 
 ---
 
 ### `read(source)`
 
-Read a DICOM instance from the specified source of data.
+Read a DICOM&reg; instance from the specified source of data.
 
 #### Parameters
 
@@ -93,7 +93,7 @@ Read a DICOM instance from the specified source of data.
 
 | Type | Description |
 |------|-------------|
-| `*` | A Promise that resolves to the result from the DICOM parse operation. |
+| `*` | A Promise that resolves to the result from the DICOM&reg; parse operation. |
 
 ## Usage Example
 

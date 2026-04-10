@@ -1,6 +1,6 @@
 # VisualizationFunctionModule Class
 
-Provides access to DICOM **Visualization Function Module** attributes, such as window center and window width for image display configuration.
+Provides access to DICOM&reg; **Visualization Function Module** attributes, such as window center and window width for image display configuration.
 
 ---
 
@@ -20,7 +20,7 @@ Creates a new instance of `VisualizationFunctionModule`.
 
 | Name           | Type           | Description                                     |
 |----------------|----------------|-------------------------------------------------|
-| `attributeSet` | `AttributeSet` | The DICOM attribute set to extract values from. |
+| `attributeSet` | `AttributeSet` | The DICOM&reg; attribute set to extract values from. |
 
 ---
 

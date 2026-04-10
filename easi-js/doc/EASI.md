@@ -1,13 +1,13 @@
-# EASI: Efficient API for Streaming in Healthcare Imaging
+# EASI: Expressive API Standard for Imaging
 
 ## Mission Statement
-EASI (Efficient API for Streaming in Healthcare Imaging) exists to provide a lightweight, high-performance, and developer-friendly foundation for stream reading and writing, parsing, and transforming medical imaging data — including DICOM and DICOMweb — using modern, portable, and scalable technologies.
+EASI (Expressive API Standard for Imaging) exists to provide a lightweight, high-performance, and developer-friendly foundation for fluent pipeline composition, stream reading and writing, parsing, and transforming medical imaging data — including DICOM&reg; and DICOMweb&trade; — using modern, portable, and scalable technologies.
 
-Our mission is to simplify access to complex imaging data, enable real-time and memory-efficient workflows, and empower developers to build next-generation imaging applications, viewers, and services — without requiring deep expertise in the DICOM standard.
+Our mission is to simplify access to complex imaging data, enable real-time and memory-efficient workflows, and empower developers to build next-generation imaging applications, viewers, and services — without requiring deep expertise in the DICOM&reg; standard.
 
 ## Technical Overview
 
-EASI provides a lightweight, extensible, and memory-efficient foundation for SAX-style parsing, stream reading and writing, and transformation of medical imaging data — including DICOM and DICOMweb metadata — entirely in modern JavaScript.
+EASI provides a lightweight, extensible, and memory-efficient foundation for SAX-style parsing, stream reading and writing, and transformation of medical imaging data — including DICOM&reg; and DICOMweb&trade; metadata — entirely in modern JavaScript.
 
 ### Designed for real-world healthcare environments, EASI enables:
 
@@ -17,11 +17,11 @@ EASI provides a lightweight, extensible, and memory-efficient foundation for SAX
 - Low-memory, zero-copy operation suitable for browsers, mobile, and servers
 - Pluggable handlers to generate high-level entities or application models
 
-EASI empowers developers to build scalable, high-performance imaging workflows and applications — with full control over performance and data transformation — without requiring deep expertise in the DICOM standard.
+EASI empowers developers to build scalable, high-performance imaging workflows and applications — with full control over performance and data transformation — without requiring deep expertise in the DICOM&reg; standard.
 
 # `EASI` Class
 
-The `EASI` class is the root entry point for the EASI DICOM system.  
+The `EASI` class is the root entry point for the EASI DICOM&reg; system.  
 
 It provides access to the primary constructs and builders of the system.  
 
@@ -34,35 +34,35 @@ Use `fromHttpStream()` for URL/fetch transport and `fromPartStream()` for direct
 
 | Parse Input Format | Emit Output Format | Pipeline Recipe |
 |--------------------|--------------------|-----------------|
-| DICOM bytes (Part-10 / native) | DICOM `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toInstances()` |
-| DICOM bytes (Part-10 / native) | DICOM `Entity` / `Array<Entity>` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toEntities()` |
-| DICOM bytes (Part-10 / native) | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toSelection(selection)` |
-| DICOM bytes (Part-10 / native) | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toMapping(mapping)` |
-| DICOM bytes (Part-10 / native) | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toFHIRImagingStudy()` |
-| DICOM bytes (Part-10 / native) | Native DICOM byte stream | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toDicomData(options)` |
-| DICOM JSON metadata | DICOM `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toInstances()` |
-| DICOM JSON metadata | DICOM `Entity` / `Array<Entity>` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toEntities()` |
-| DICOM JSON metadata | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toSelection(selection)` |
-| DICOM JSON metadata | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toMapping(mapping)` |
-| DICOM JSON metadata | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toFHIRImagingStudy()` |
-| DICOM XML metadata | DICOM `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toInstances()` |
-| DICOM XML metadata | DICOM `Entity` / `Array<Entity>` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toEntities()` |
-| DICOM XML metadata | Selected DICOM `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toSelection(selection)` |
-| DICOM XML metadata | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toMapping(mapping)` |
-| DICOM XML metadata | FHIR `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toFHIRImagingStudy()` |
-| Generic JSON text/bytes | JavaScript value/object/array | `EASI.pipelineBuilder().fromPartStream().ofJsonData().toJsonValue()` |
-| Generic JSON text/bytes | Wrapped document DICOM bytes (`Uint8Array` or `Array<Uint8Array>`) | `EASI.pipelineBuilder().fromPartStream().ofJsonData().toWrappedDocuments(options)` |
-| Generic raw bytes (PDF/XML/STL/OBJ/MTL/etc.) | Wrapped document DICOM bytes (`Uint8Array`) | `EASI.pipelineBuilder().fromPartStream().ofByteData().toWrappedDocuments(options)` |
-| Generic XML text/bytes | JavaScript object/array representation | `EASI.pipelineBuilder().fromPartStream().ofXmlData().toJsonValue()` |
-| DIMSE C-FIND (study query) | Study summary FHIR `ImagingStudy[]` | `EASI.pipelineBuilder().fromDimseAssociation(assoc, srcTransport).ofDicomData().toFHIRImagingStudy("study-summary")` |
-| DIMSE C-GET / C-MOVE source | DICOM `Instance` / FHIR mapping / byte stream | `EASI.pipelineBuilder().fromDimseAssociation(assoc, srcTransport).ofDicomData().toInstances()` |
-| DICOM bytes or DIMSE source | DIMSE C-STORE destination | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toDicomData().intoDimseAssociation(destAssoc, { transport: destTransport })` |
+| DICOM&reg; bytes (Part-10 / native) | DICOM&reg; `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toInstances()` |
+| DICOM&reg; bytes (Part-10 / native) | DICOM&reg; `Entity` / `Array<Entity>` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toEntities()` |
+| DICOM&reg; bytes (Part-10 / native) | Selected DICOM&reg; `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toSelection(selection)` |
+| DICOM&reg; bytes (Part-10 / native) | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toMapping(mapping)` |
+| DICOM&reg; bytes (Part-10 / native) | FHIR&reg; `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toFHIRImagingStudy()` |
+| DICOM&reg; bytes (Part-10 / native) | Native DICOM&reg; byte stream | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toDicomData(options)` |
+| DICOM&reg; JSON metadata | DICOM&reg; `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toInstances()` |
+| DICOM&reg; JSON metadata | DICOM&reg; `Entity` / `Array<Entity>` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toEntities()` |
+| DICOM&reg; JSON metadata | Selected DICOM&reg; `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toSelection(selection)` |
+| DICOM&reg; JSON metadata | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toMapping(mapping)` |
+| DICOM&reg; JSON metadata | FHIR&reg; `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomMetadata().toFHIRImagingStudy()` |
+| DICOM&reg; XML metadata | DICOM&reg; `Instance` / `Array<Instance>` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toInstances()` |
+| DICOM&reg; XML metadata | DICOM&reg; `Entity` / `Array<Entity>` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toEntities()` |
+| DICOM&reg; XML metadata | Selected DICOM&reg; `AttributeSet` / `Array<AttributeSet>` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toSelection(selection)` |
+| DICOM&reg; XML metadata | Custom mapped output model | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toMapping(mapping)` |
+| DICOM&reg; XML metadata | FHIR&reg; `ImagingStudy` | `EASI.pipelineBuilder().fromPartStream().ofDicomXmlMetadata().toFHIRImagingStudy()` |
+| Generic JSON text/bytes | JavaScript value/object/array | `EASI.pipelineBuilder().fromPartStream().ofJsonData().toStructuredValue()` |
+| Generic JSON text/bytes | Wrapped document DICOM&reg; bytes (`Uint8Array` or `Array<Uint8Array>`) | `EASI.pipelineBuilder().fromPartStream().ofJsonData().toWrappedDocuments(options)` |
+| Generic raw bytes (PDF/XML/STL/OBJ/MTL/etc.) | Wrapped document DICOM&reg; bytes (`Uint8Array`) | `EASI.pipelineBuilder().fromPartStream().ofByteData().toWrappedDocuments(options)` |
+| Generic XML text/bytes | JavaScript object/array representation | `EASI.pipelineBuilder().fromPartStream().ofXmlData().toStructuredValue()` |
+| DIMSE C-FIND (study query) | Study summary FHIR&reg; `ImagingStudy[]` | `EASI.pipelineBuilder().fromDimseAssociation(assoc, srcTransport).ofDicomData().toFHIRImagingStudy("study-summary")` |
+| DIMSE C-GET / C-MOVE source | DICOM&reg; `Instance` / FHIR&reg; mapping / byte stream | `EASI.pipelineBuilder().fromDimseAssociation(assoc, srcTransport).ofDicomData().toInstances()` |
+| DICOM&reg; bytes or DIMSE source | DIMSE C-STORE destination | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toDicomData().intoDimseAssociation(destAssoc, { transport: destTransport })` |
 
 > Pipeline-based scenarios are finalized with `.build().process(source)`.
 
 ## DIMSE Recipes
 
-### C-FIND -> FHIR Study Summaries
+### C-FIND -> FHIR&reg; Study Summaries
 
 ```js
 import EASI from "easi-dicom";
@@ -134,7 +134,7 @@ await pipeline.process({
 });
 ```
 
-### JSON document descriptor(s) -> wrapped DICOM bytes
+### JSON document descriptor(s) -> wrapped DICOM&reg; bytes
 
 ```js
 import EASI from "easi-dicom";
@@ -156,7 +156,7 @@ const wrappedDicomBytes = await EASI
   });
 ```
 
-### Raw document bytes -> wrapped DICOM bytes
+### Raw document bytes -> wrapped DICOM&reg; bytes
 
 ```js
 import EASI from "easi-dicom";
@@ -248,14 +248,14 @@ Creates a new instance of the EASI `DimseClientBuilder`.
 ```js
 import EASI from 'easi-dicom';
 
-// Build the DICOM parsing pipeline
+// Build the DICOM&reg; parsing pipeline
 const pipeline = EASI.pipelineBuilder()
     .fromHttpStream()
     .ofDicomData()
     .toInstances()
     .build();
 
-// Read and parse a DICOM file from a URL
+// Read and parse a DICOM&reg; file from a URL
 pipeline
     .process(url)
     .then(result => {

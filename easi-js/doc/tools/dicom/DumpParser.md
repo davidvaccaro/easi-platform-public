@@ -1,6 +1,6 @@
 # `DumpParser` Class
 
-The `DumpParser` class provides tooling support for parsing or generating diagnostic DICOM dumps.
+The `DumpParser` class provides tooling support for parsing or generating diagnostic DICOM&reg; dumps.
 
 ---
 
@@ -20,7 +20,7 @@ new DumpParser(dicomEmitter)
 
 | Parameter | Type    | Default | Description |
 |-----------|---------|---------|-------------|
-| `dicomEmitter` | `object` | `—` | The emitter used to emit dumped elements of the DICOM data. |
+| `dicomEmitter` | `object` | `—` | The emitter used to emit dumped elements of the DICOM&reg; data. |
 
 ## Properties
 

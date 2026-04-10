@@ -2,6 +2,7 @@ import EASI from '../../src/EASI.js';
 import DicomSelection from '../../src/handlers/selections/DicomSelection.js';
 import Tag from '../../src/dicom/Tag.js';
 import ImagingStudy from '../../src/fhir/ImagingStudy.js';
+import PipelineResultCollection from '../../src/pipelines/PipelineResultCollection.js';
 
 test("Test: DICOM JSON metadata selection emits selected attributes", async () => {
 
@@ -41,8 +42,8 @@ test("Test: DICOM JSON metadata selection emits selected attributes", async () =
     const result = await pipeline.process((new TextEncoder()).encode(metadata));
 
     // Validate
-    expect(Array.isArray(result)).toBe(true);
-    expect(result.length).toBe(2);
+    expect(PipelineResultCollection.isCollection(result)).toBe(true);
+    expect(result.count).toBe(2);
     expect(result[0].has(Tag.SOPInstanceUID)).toBe(true);
     expect(result[1].has(Tag.SOPInstanceUID)).toBe(true);
 
@@ -71,8 +72,9 @@ test("Test: DICOM JSON metadata to FHIR ImagingStudy mapping emits ImagingStudy"
     const result = await pipeline.process((new TextEncoder()).encode(metadata));
 
     // Validate
-    expect(result instanceof ImagingStudy).toBe(true);
-    expect(result.series.length).toBe(1);
-    expect(result.series[0].instances.length).toBe(1);
+    expect(PipelineResultCollection.isCollection(result)).toBe(true);
+    expect(result.first() instanceof ImagingStudy).toBe(true);
+    expect(result.first().series.length).toBe(1);
+    expect(result.first().series[0].instances.length).toBe(1);
 
 });

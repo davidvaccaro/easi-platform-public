@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Professional overview of what an EASI pipeline is and the full range of use cases it supports.">
+    <title>EASI | What Is an EASI Pipeline?</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>What Is an EASI Pipeline?</h2>
+                <p>
+                    An EASI pipeline is a declarative, staged data-processing contract for DICOM&reg; content.
+                    It lets a developer describe source, parse mode, transformations, output form, and destination
+                    as one readable flow with deterministic execution semantics.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout normative">
+                    <h4>Normative Definition</h4>
+                    <p>
+                        A conforming EASI pipeline preserves stage order and responsibility boundaries:
+                        <code>Reader -> Parser -> [Adapter] -> [Filter ...] -> Terminal -> [Writer]</code>.
+                        Implementations may vary by language, but behavior and composition intent remain equivalent.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Stage Guide</h3>
+                <p>
+                    The table below makes each stage explicit so a reader can quickly understand what each stage is
+                    responsible for and where each decision belongs.
+                </p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Stage</th>
+                                <th>Builder Clause</th>
+                                <th>Primary Purpose</th>
+                                <th>Consumes</th>
+                                <th>Produces</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Reader</td>
+                                <td><code>from...</code></td>
+                                <td>Acquire bytes/parts from a concrete source transport.</td>
+                                <td>Source handle or transport request (file path, URL, DIMSE request, stream).</td>
+                                <td>Ordered byte/part stream forwarded to parser.</td>
+                            </tr>
+                            <tr>
+                                <td>Parser</td>
+                                <td><code>of...</code></td>
+                                <td>Decode source bytes into deterministic lifecycle events.</td>
+                                <td>Reader-emitted bytes/parts.</td>
+                                <td>Structured parse events (<code>onStart...</code>, <code>onEnd...</code>, chunk events).</td>
+                            </tr>
+                            <tr>
+                                <td>Adapter (Optional)</td>
+                                <td>Selected implicitly by parser/terminal shape</td>
+                                <td>Bridge alternate parser domains into canonical DICOM&reg; semantic flow.</td>
+                                <td>Parser events from JSON/XML metadata modes.</td>
+                                <td>Normalized semantic events compatible with DICOM-oriented filters/terminals.</td>
+                            </tr>
+                            <tr>
+                                <td>Filter Chain (Optional)</td>
+                                <td><code>with...</code></td>
+                                <td>Apply in-flight policies and transformations without changing stage order.</td>
+                                <td>Canonical semantic events and payload chunks.</td>
+                                <td>Validated/de-identified/transcoded/redacted flow to terminal stage.</td>
+                            </tr>
+                            <tr>
+                                <td>Terminal</td>
+                                <td><code>to...</code></td>
+                                <td>Materialize or stream the target output contract.</td>
+                                <td>Filtered semantic flow.</td>
+                                <td>Terminal result items (for example <code>Instance</code>, assets, bytes, mappings).</td>
+                            </tr>
+                            <tr>
+                                <td>Writer (Optional)</td>
+                                <td><code>into...</code></td>
+                                <td>Deliver terminal output to a destination system.</td>
+                                <td>Terminal result payload.</td>
+                                <td>Destination write result envelope (for built-in writers) or writer-native result.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Why This Model Matters</h3>
+                <div class="grid three">
+                    <article class="card">
+                        <h4>Readable Intent</h4>
+                        <p><code>from...</code>, <code>of...</code>, <code>with...</code>, <code>to...</code>, and <code>into...</code> clauses make purpose explicit at each stage.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Composable Power</h4>
+                        <p>The same model scales from one-shot reads to de-identification, transcoding, asset extraction, and transport relay.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Operational Consistency</h4>
+                        <p>Whether processing files, DICOMweb&trade;, or DIMSE, result handling and lifecycle controls stay uniform.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Functional Range</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Capability Tier</th>
+                                <th>Typical Composition</th>
+                                <th>Practical Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Simple Read Access</td>
+                                <td><code>fromFileStream</code>/<code>fromHttpStream</code> + <code>ofDicomData</code> + <code>toInstances</code></td>
+                                <td>Read native DICOM&reg; into typed instance objects.</td>
+                            </tr>
+                            <tr>
+                                <td>Focused Data Access</td>
+                                <td><code>toSelection</code> or <code>toMapping</code></td>
+                                <td>Extract only needed tags or convert to domain/FHIR&reg; views.</td>
+                            </tr>
+                            <tr>
+                                <td>Privacy Processing</td>
+                                <td><code>withDeIdentification</code> + optional burned-in redaction</td>
+                                <td>Apply deterministic PHI minimization in-flight.</td>
+                            </tr>
+                            <tr>
+                                <td>Format Normalization</td>
+                                <td><code>withValidation</code> + <code>withTranscoding</code></td>
+                                <td>Enforce quality constraints and normalize transfer syntax.</td>
+                            </tr>
+                            <tr>
+                                <td>Asset Extraction</td>
+                                <td><code>toAssets</code></td>
+                                <td>Produce frame data, structured metadata, and encapsulated content assets.</td>
+                            </tr>
+                            <tr>
+                                <td>Delivery and Relay</td>
+                                <td><code>intoFileStream</code>, <code>intoHttpStream</code>, or <code>intoDimseAssociation</code></td>
+                                <td>Route outputs to archive, cloud APIs, or peer DICOM systems.</td>
+                            </tr>
+                            <tr>
+                                <td>DIMSE Listener Workloads</td>
+                                <td><code>fromDimseAssociation</code> + <code>start()</code></td>
+                                <td>Run long-lived inbound C-STORE services with per-transaction processing.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Execution Modes</h3>
+                <div class="grid two">
+                    <article class="card">
+                        <h4>Transactional Mode</h4>
+                        <p>Use <code>process(source)</code> when you provide one explicit source or request and want one result collection.</p>
+                        <pre><code>resultCollection := pipeline.process(source)</code></pre>
+                    </article>
+                    <article class="card">
+                        <h4>Listener Mode</h4>
+                        <p>Use <code>start()</code> when source is bound by transport (for example DIMSE C-STORE SCP) and traffic arrives over time.</p>
+                        <pre><code>run := pipeline.start(options)
+... handle inbound transactions ...
+run.stop()</code></pre>
+                    </article>
+                </div>
+                <div class="callout informative">
+                    <h4>Unified Result Contract</h4>
+                    <p>
+                        Pipeline terminal outputs are returned as <code>PipelineResultCollection</code> for stable cardinality handling.
+                        Consumers can safely access <code>first()</code> for single-output flows or iterate collections for multi-output flows.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Canonical Composition Pattern</h3>
+                <pre><code class="language-text">pipeline := EASI.pipelineBuilder()
+  .from&lt;SourceFamily&gt;(...)
+  .of&lt;ParseMode&gt;(...)
+  .with&lt;FilterOrPolicy&gt;(...)
+  .to&lt;TerminalContract&gt;(...)
+  .into&lt;OptionalWriter&gt;(...)
+  .build()
+
+resultCollection := pipeline.process(source)
+if resultCollection.isEmpty():
+  return noResult
+
+result := resultCollection.first()
+... continue with result ...</code></pre>
+                <p class="page-meta">
+                    This pattern is intentionally stable across use cases: only stage choices change as requirements grow.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Recommended Next Pages</h3>
+                <div class="grid three">
+                    <article class="card">
+                        <h4><a href="advanced-pipeline.html">Advanced Pipeline Use Cases</a></h4>
+                        <p>End-to-end scenarios that show what pipelines can actually accomplish in practice.</p>
+                    </article>
+                    <article class="card">
+                        <h4><a href="stream-processing-model.html">Stream Processing Model</a></h4>
+                        <p>Parser-handler stream protocol mechanics and real-time status feedback behavior.</p>
+                    </article>
+                    <article class="card">
+                        <h4><a href="lifecycle-status.html">Stream Lifecycle</a></h4>
+                        <p>Canonical event vocabulary and deterministic status semantics; then continue to Materialization Model for memory strategy.</p>
+                    </article>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                Informative orientation page intended to accelerate onboarding and architectural alignment.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

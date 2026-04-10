@@ -1,6 +1,6 @@
 # DicomDataParser Class
 
-The `DicomDataParser` class is a streaming parser for DICOM Part-10 formatted data, capable of processing standard DICOM structures such as the file preamble, prefix, metadata, and dataset. It is event-driven and supports asynchronous handlers for each parsing stage.
+The `DicomDataParser` class is a streaming parser for DICOM&reg; Part-10 formatted data, capable of processing standard DICOM&reg; structures such as the file preamble, prefix, metadata, and dataset. It is event-driven and supports asynchronous handlers for each parsing stage.
 
 ---
 
@@ -8,7 +8,7 @@ The `DicomDataParser` class is a streaming parser for DICOM Part-10 formatted da
 
 ### `new DicomDataParser()`
 
-Creates a new instance of the parser. Initializes internal states and sets the default DICOM Part-10 specification sequence.
+Creates a new instance of the parser. Initializes internal states and sets the default DICOM&reg; Part-10 specification sequence.
 
 ---
 
@@ -16,17 +16,17 @@ Creates a new instance of the parser. Initializes internal states and sets the d
 
 | Property        | Type     | Description |
 |-----------------|----------|-------------|
-| `isStrict`      | `boolean` | Whether strict parsing rules are enforced based on DICOM structural specifications. |
+| `isStrict`      | `boolean` | Whether strict parsing rules are enforced based on DICOM&reg; structural specifications. |
 | `handler`       | `object`  | An event handler that responds to parsing events such as `onReset`, `onStartInstance`, etc. |
 | `context`       | `any`     | A user-defined context object passed through stream events. |
 | `status`        | `Status`  | Current parser status. |
-| `data`          | `EncodedData` | Buffer storing parsed DICOM byte stream. |
+| `data`          | `EncodedData` | Buffer storing parsed DICOM&reg; byte stream. |
 | `bytesRead`     | `number`  | Total bytes read from input. |
 | `bytesProcessed`| `number`  | Total bytes processed so far. |
 | `bytesTotal`    | `number`  | Expected total byte size (if known). |
 | `dataElement`   | `Attribute` or `null` | The currently parsed data element. |
 | `dataElements`  | `Array`   | Stack of elements being parsed, typically for sequences. |
-| `partType`      | `string`  | Current part of the DICOM stream being parsed. |
+| `partType`      | `string`  | Current part of the DICOM&reg; stream being parsed. |
 | `partSpecification` | `Array` | The ordered parts to be parsed (e.g., preamble, prefix, metadata, dataset). |
 | `dataSetTransferSyntax` | `TransferSyntax` | Transfer syntax for the dataset (e.g., Explicit VR Little Endian). |
 
@@ -36,16 +36,16 @@ Creates a new instance of the parser. Initializes internal states and sets the d
 
 ### `reset()`
 
-Resets the parser state. Prepares for parsing a new DICOM instance.
+Resets the parser state. Prepares for parsing a new DICOM&reg; instance.
 
 ---
 
 ### `async parse(chunk, isDone = false, totalRead = null, totalLength = null)`
 
-Main parsing entry point. Parses a chunk of DICOM data and invokes appropriate methods for each DICOM part.
+Main parsing entry point. Parses a chunk of DICOM&reg; data and invokes appropriate methods for each DICOM&reg; part.
 
 - **Parameters:**
-  - `chunk`: A `Buffer` or `Uint8Array` containing DICOM data.
+  - `chunk`: A `Buffer` or `Uint8Array` containing DICOM&reg; data.
   - `isDone`: Boolean indicating if this is the final chunk.
   - `totalRead`: Number of bytes read so far.
   - `totalLength`: Total size of the data.
@@ -55,7 +55,7 @@ Main parsing entry point. Parses a chunk of DICOM data and invokes appropriate m
 
 ### `async parseNextPreamble()`
 
-Parses the 128-byte DICOM file preamble.
+Parses the 128-byte DICOM&reg; file preamble.
 
 - **Returns:** `Promise<Status>`
 
@@ -63,7 +63,7 @@ Parses the 128-byte DICOM file preamble.
 
 ### `async parseNextPrefix()`
 
-Parses the 4-byte DICOM prefix (`"DICM"`).
+Parses the 4-byte DICOM&reg; prefix (`"DICM"`).
 
 - **Returns:** `Promise<Status>`
 
@@ -79,7 +79,7 @@ Parses the metadata portion (group `0002`) using Explicit VR Little Endian synta
 
 ### `async parseNextDataSet(isDone)`
 
-Parses the main dataset portion of the DICOM instance.
+Parses the main dataset portion of the DICOM&reg; instance.
 
 - **Returns:** `Promise<Status>`
 
@@ -87,7 +87,7 @@ Parses the main dataset portion of the DICOM instance.
 
 ### `async parseNextDataElement(isDone)`
 
-Parses an individual DICOM data element from the current chunk.
+Parses an individual DICOM&reg; data element from the current chunk.
 
 - **Returns:** `Promise<boolean>`
 
@@ -151,7 +151,7 @@ Each is triggered at appropriate stages of the parsing lifecycle.
 
 ---
 
-## DICOM Part Types
+## DICOM&reg; Part Types
 
 | Constant Name | Value     | Description                                      |
 |---------------|-----------|--------------------------------------------------|
@@ -162,7 +162,7 @@ Each is triggered at appropriate stages of the parsing lifecycle.
 
 ---
 
-## DICOM Part Specifications
+## DICOM&reg; Part Specifications
 
 ### Part-10 Specification (File Format)
 
@@ -193,11 +193,11 @@ parser.handler = {
     console.log('Parser reset');
   },
   onStartInstance: (context) => {
-    console.log('DICOM instance started');
+    console.log('DICOM&reg; instance started');
     return context;
   },
   onEndInstance: (context) => {
-    console.log('DICOM instance completed');
+    console.log('DICOM&reg; instance completed');
     return context;
   },
   onStartDataSet: () => {
@@ -208,7 +208,7 @@ parser.handler = {
   }
 };
 
-// Simulated function to stream DICOM data chunks
+// Simulated function to stream DICOM&reg; data chunks
 async function streamDicomData(chunks) {
   for (let i = 0; i < chunks.length; i++) {
     const isLast = (i === chunks.length - 1);
@@ -216,7 +216,7 @@ async function streamDicomData(chunks) {
   }
 }
 
-// Example DICOM byte chunks (replace with actual Uint8Array chunks)
+// Example DICOM&reg; byte chunks (replace with actual Uint8Array chunks)
 const dicomChunks = [
   new Uint8Array([/* ... bytes ... */]),
   new Uint8Array([/* ... bytes ... */])

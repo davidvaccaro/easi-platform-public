@@ -19,7 +19,7 @@
 
 import JsonDataHandler from "./syntax/JsonDataHandler.js";
 import DicomDataWriterHandler from "./DicomDataWriterHandler.js";
-import DocumentWrapper from "../../dicom/documents/DocumentWrapper.js";
+import DocumentWrapper from "../../dicom/utilities/DocumentWrapper.js";
 
 export default class DicomDocumentWrappingHandler extends JsonDataHandler {
 

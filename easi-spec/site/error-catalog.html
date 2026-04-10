@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI error catalog: canonical failure families, concern codes, and reporting shape.">
+    <title>EASI | Error Catalog</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Error Catalog</h2>
+                <p>
+                    This page defines canonical EASI failure and concern families so implementations can report compatible diagnostics
+                    without requiring identical exception class names.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Concern Model</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Description</th>
+                            <th>Normative Guidance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>category</td>
+                            <td>High-level concern family.</td>
+                            <td>Implementations SHOULD use catalog categories.</td>
+                        </tr>
+                        <tr>
+                            <td>code</td>
+                            <td>Stable symbolic code for machine handling.</td>
+                            <td>Codes MUST be stable across minor releases.</td>
+                        </tr>
+                        <tr>
+                            <td>message</td>
+                            <td>Human-readable summary.</td>
+                            <td>MAY be localized; must preserve intent.</td>
+                        </tr>
+                        <tr>
+                            <td>severity</td>
+                            <td>Diagnostic impact (<code>info</code>, <code>warning</code>, <code>error</code>, <code>fatal</code>).</td>
+                            <td>Severity escalation rules SHOULD be documented.</td>
+                        </tr>
+                        <tr>
+                            <td>context</td>
+                            <td>Operation, stage, and source metadata.</td>
+                            <td>SHOULD include enough context for triage and replay.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Canonical Categories and Codes</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Representative Codes</th>
+                            <th>Typical Trigger</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Build</td>
+                            <td><code>BuildMissingParser</code>, <code>BuildMissingTerminal</code>, <code>BuildIncompatibleDestination</code></td>
+                            <td>Invalid pipeline composition during <code>build()</code>.</td>
+                        </tr>
+                        <tr>
+                            <td>Compatibility</td>
+                            <td><code>UnsupportedTerminalForParser</code>, <code>UnsupportedTransferSyntaxPair</code>, <code>PresentationContextRejected</code></td>
+                            <td>Parser/output/transport mismatch at build or runtime.</td>
+                        </tr>
+                        <tr>
+                            <td>Parse</td>
+                            <td><code>MalformedElement</code>, <code>UnexpectedEndOfStream</code>, <code>InvalidLength</code>, <code>InvalidTagEncoding</code></td>
+                            <td>Byte or metadata input cannot satisfy parser invariants.</td>
+                        </tr>
+                        <tr>
+                            <td>Lifecycle</td>
+                            <td><code>UnexpectedEndEvent</code>, <code>UnbalancedNesting</code>, <code>InvalidStatusTransition</code></td>
+                            <td>Lifecycle contract violation in parser/handler chain.</td>
+                        </tr>
+                        <tr>
+                            <td>Validation</td>
+                            <td><code>MissingRequiredAttribute</code>, <code>InvalidValueRepresentation</code>, <code>PolicyViolation</code></td>
+                            <td>Validation filter identifies semantic non-conformance.</td>
+                        </tr>
+                        <tr>
+                            <td>DeIdentification</td>
+                            <td><code>MaskConflict</code>, <code>UnsupportedReplacementMode</code>, <code>RedactionRegionInvalid</code></td>
+                            <td>De-identification policy cannot be safely applied.</td>
+                        </tr>
+                        <tr>
+                            <td>Transport</td>
+                            <td><code>AssociationOpenFailed</code>, <code>AssociationClosedUnexpectedly</code>, <code>Timeout</code></td>
+                            <td>Connection/session lifecycle failures.</td>
+                        </tr>
+                        <tr>
+                            <td>Protocol</td>
+                            <td><code>SourceOperationFailed</code>, <code>StoreOperationFailed</code>, <code>ProtocolStateViolation</code></td>
+                            <td>DIMSE or transport-protocol operation failure.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Status and Error Relationship</h3>
+                <div class="grid two">
+                    <article class="card">
+                        <h4><code>FAIL</code></h4>
+                        <p>Represents a terminal condition. A structured concern or exception payload must accompany pipeline failure.</p>
+                    </article>
+                    <article class="card">
+                        <h4><code>STOP</code></h4>
+                        <p>Represents intentional, non-failure termination. Should not be mapped to a fatal error unless contract conditions are violated.</p>
+                    </article>
+                    <article class="card">
+                        <h4><code>JUMP</code></h4>
+                        <p>Represents controlled subtree skipping. If skip target cannot be resolved, surface a lifecycle or parse concern.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Warnings</h4>
+                        <p>Non-fatal concerns may accumulate while output remains valid; implementations should expose concern collections consistently.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Recommended Concern Payload (Illustrative)</h3>
+                <pre><code>{
+  "category": "Parse",
+  "code": "UnexpectedEndOfStream",
+  "severity": "fatal",
+  "message": "End of stream reached before closing sequence delimiter.",
+  "context": {
+    "stage": "parser",
+    "offset": 1048576,
+    "tag": "fffe,e0dd"
+  }
+}</code></pre>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout normative">
+                    <h4>Interoperability Rule</h4>
+                    <p>
+                        Implementations MAY use runtime-specific exception types, but they SHOULD preserve canonical category and code semantics
+                        so monitoring, retries, and conformance tools can reason across languages.
+                    </p>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                Normative page: canonical error/concern taxonomy and reporting intent.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

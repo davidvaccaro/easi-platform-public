@@ -1,6 +1,6 @@
 # `Attribute` Class
 
-The `Attribute` class represents a single DICOM attribute, providing access to its parsed value from raw DICOM data based on the tag’s Value Representation (VR).
+The `Attribute` class represents a single DICOM&reg; attribute, providing access to its parsed value from raw DICOM&reg; data based on the tag’s Value Representation (VR).
 
 ## Inheritance
 
@@ -19,7 +19,7 @@ new Attribute(tag, valueLength, data, transferSyntax)
 
 | Parameter         | Type             | Description                                          |
 |-------------------|------------------|------------------------------------------------------|
-| `tag`             | `Tag`            | The DICOM tag corresponding to this attribute.       |
+| `tag`             | `Tag`            | The DICOM&reg; tag corresponding to this attribute.       |
 | `valueLength`     | `number`         | The length in bytes of the attribute value.          |
 | `data`            | `Uint8Array`     | The raw byte data for this attribute.                |
 | `transferSyntax`  | `TransferSyntax` | The transfer syntax used to decode this attribute.   |
@@ -61,7 +61,7 @@ import Attribute from 'easi-dicom/dicom/Attribute';
 import Tag from 'easi-dicom/dicom/Tag';
 import TransferSyntax from 'easi-dicom/dicom/TransferSyntax.js';
 
-// Example: Construct a DICOM Attribute and get its value
+// Example: Construct a DICOM&reg; Attribute and get its value
 const tag = Tag.FileMetaInformationVersion;
 const valueLength = 2;
 const data = new Uint8Array([0x00, 0x01]);

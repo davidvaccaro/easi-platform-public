@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Normative EASI DIMSE pipeline model and use-case patterns.">
+    <title>EASI | DIMSE Pipeline Model</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>DIMSE Pipeline Model</h2>
+                <p>
+                    This page defines how EASI composes DIMSE operations into the same fluent pipeline model,
+                    including request/response query-retrieve flows and source-bound listener lifecycles.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>DIMSE Operation Map</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Operation Family</th>
+                                <th>Pipeline Shape</th>
+                                <th>Typical Entry Point</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>C-ECHO</td>
+                                <td>Client operation (no parser chain required).</td>
+                                <td><code>EASI.dimseClientBuilder()<br />.withAssociation(...)<br />.build()<br />.echo()</code></td>
+                            </tr>
+                            <tr>
+                                <td>C-FIND</td>
+                                <td>DIMSE source -><br />DICOM&reg; parser -><br />instance terminal.</td>
+                                <td><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.toInstances()<br />.build()<br />.process(request)</code></td>
+                            </tr>
+                            <tr>
+                                <td>C-GET / C-MOVE Source</td>
+                                <td>DIMSE source -><br />parser -><br />filter(s) -><br />terminal (optionally re-write to DIMSE).</td>
+                                <td><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.withDeIdentification(...)<br />.intoDimseAssociation(...)<br />.build()<br />.process(request)</code></td>
+                            </tr>
+                            <tr>
+                                <td>C-STORE SCP Listener</td>
+                                <td>Source-bound DIMSE transport with long-running lifecycle.</td>
+                                <td><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.toInstances()<br />.build()<br />.start(null, options)<br />// later: run.stop()</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Execution Modes</h3>
+                <div class="grid two">
+                    <article class="card">
+                        <h4>Transactional</h4>
+                        <p>Caller supplies one request payload and expects one result collection.</p>
+                        <p><code>resultCollection = pipeline.process(request)</code></p>
+                    </article>
+                    <article class="card">
+                        <h4>Source-Bound Listener</h4>
+                        <p>Source is already bound by transport/association (for example inbound C-STORE SCP).</p>
+                        <p><code>run = pipeline.start(null, options)</code> (no <code>process()</code> call)</p>
+                    </article>
+                </div>
+                <div class="callout informative">
+                    <h4>Listener Semantics</h4>
+                    <p>
+                        In listener mode, the DIMSE source is the configured association + transport.
+                        The pipeline waits for inbound data and invokes <code>onResult</code> per transaction.
+                        Stop with <code>run.stop()</code> or <code>pipeline.stop()</code>.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>DIMSE Use-Case Gallery</h3>
+                <p>
+                    The examples below show practical DIMSE workflows and highlight the difference between
+                    request/response <code>process(...)</code> operations and long-running <code>start()</code> listeners.
+                </p>
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="DIMSE pipeline example tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="neutral">
+                        <h4>Language-Neutral Examples</h4>
+                        <p>Typical use case: verify DIMSE endpoint reachability (C-ECHO).</p>
+                        <pre><code class="language-text">association := EASI.dimseAssociationBuilder()
+  .withHost("127.0.0.1")
+  .withPort(4242)
+  .withCallingAeTitle("EASI_JS")
+  .withCalledAeTitle("ORTHANC")
+  .build()
+
+client := EASI.dimseClientBuilder()
+  .withAssociation(association)
+  .build()
+
+echoResult := client.echo()</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: C-FIND study discovery returned as native DICOM&reg; instances.</p>
+                        <pre><code class="language-text">findSourceAssociation := {
+  host: "127.0.0.1",
+  port: 4242,
+  callingAeTitle: "EASI_JS",
+  calledAeTitle: "ORTHANC"
+}
+
+findPipeline := EASI.pipelineBuilder()
+  .fromDimseAssociation(findSourceAssociation, NodeDimseQueryRetrieveSourceTransport)
+  .ofDicomData()
+  .toInstances()
+  .build()
+
+findRequest := {
+  operation: "cfind",
+  level: "STUDY",
+  keys: { Modality: "CT" }
+}
+
+instanceCollection := findPipeline.process(findRequest)
+instances := instanceCollection.toArray()</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: C-MOVE source with in-flight de-identification and C-STORE relay.</p>
+                        <pre><code class="language-text">moveSourceAssociation := { host: "127.0.0.1", port: 4242, callingAeTitle: "EASI_JS", calledAeTitle: "ORTHANC" }
+moveDestinationAssociation := { host: "127.0.0.1", port: 4242, callingAeTitle: "EASI_JS", calledAeTitle: "ORTHANC" }
+
+relayPipeline := EASI.pipelineBuilder()
+  .fromDimseAssociation(moveSourceAssociation, NodeDimseQueryRetrieveSourceTransport)
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoDimseAssociation(moveDestinationAssociation, { transport: NodeDimseCStoreScuTransport })
+  .build()
+
+relayPipeline.process({
+  operation: "cmove",
+  level: "IMAGE",
+  destinationAeTitle: "EASI_MOVE_DEST",
+  keys: { StudyInstanceUID: "{studyUID}" }
+})</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: inbound C-STORE SCP listener using <code>start()</code> (no <code>process()</code>).</p>
+                        <pre><code class="language-text">listenerAssociation := {
+  host: "0.0.0.0",
+  port: 11112,
+  calledAeTitle: "EASI_STORE"
+}
+
+listenerPipeline := EASI.pipelineBuilder()
+  .fromDimseAssociation(listenerAssociation, NodeDimseCStoreScpSourceTransport)
+  .ofDicomData()
+  .toInstances()
+  .build()
+
+run := listenerPipeline.start(null, {
+  onResult: (resultCollection, context) => {
+    instance := resultCollection.first()
+    log("received instance #" + context.iterations)
+    return true
+  }
+})
+
+... wait for inbound C-STORE traffic ...
+
+run.stop()
+await run.done</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="javascript">
+                        <h4>JavaScript Examples</h4>
+                        <p>Typical use case: verify DIMSE endpoint reachability (C-ECHO).</p>
+                        <pre><code class="language-javascript">const association = EASI.dimseAssociationBuilder()
+  .withHost("127.0.0.1")
+  .withPort(4242)
+  .withCallingAeTitle("EASI_JS")
+  .withCalledAeTitle("ORTHANC")
+  .build();
+
+const client = EASI.dimseClientBuilder()
+  .withAssociation(association)
+  .build();
+
+const echoResult = await client.echo();</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: C-FIND study discovery returned as native DICOM&reg; instances.</p>
+                        <pre><code class="language-javascript">const findSourceAssociation = {
+  host: "127.0.0.1",
+  port: 4242,
+  callingAeTitle: "EASI_JS",
+  calledAeTitle: "ORTHANC"
+};
+
+const findPipeline = EASI.pipelineBuilder()
+  .fromDimseAssociation(findSourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+  .ofDicomData()
+  .toInstances()
+  .build();
+
+const instanceCollection = await findPipeline.process({
+  operation: "cfind",
+  level: "STUDY",
+  keys: { Modality: "CT" }
+});
+
+const instances = instanceCollection.toArray();</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: C-MOVE source with in-flight de-identification and C-STORE relay.</p>
+                        <pre><code class="language-javascript">const moveSourceAssociation = {
+  host: "127.0.0.1",
+  port: 4242,
+  callingAeTitle: "EASI_JS",
+  calledAeTitle: "ORTHANC"
+};
+
+const moveDestinationAssociation = {
+  host: "127.0.0.1",
+  port: 4242,
+  callingAeTitle: "EASI_JS",
+  calledAeTitle: "ORTHANC"
+};
+
+const relayPipeline = EASI.pipelineBuilder()
+  .fromDimseAssociation(moveSourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoDimseAssociation(moveDestinationAssociation, {
+    transport: new NodeDimseCStoreScuTransport()
+  })
+  .build();
+
+await relayPipeline.process({
+  operation: "cmove",
+  level: "IMAGE",
+  destinationAeTitle: "EASI_MOVE_DEST",
+  keys: { StudyInstanceUID: "{studyUID}" }
+});</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: inbound C-STORE SCP listener using <code>start()</code> (no <code>process()</code>).</p>
+                        <pre><code class="language-javascript">const listenerAssociation = {
+  host: "0.0.0.0",
+  port: 11112,
+  calledAeTitle: "EASI_STORE"
+};
+
+const listenerPipeline = EASI.pipelineBuilder()
+  .fromDimseAssociation(listenerAssociation, new NodeDimseCStoreScpSourceTransport())
+  .ofDicomData()
+  .toInstances()
+  .build();
+
+const run = listenerPipeline.start(null, {
+  onResult: async (resultCollection, context) => {
+    const instance = resultCollection.first();
+    console.log("Received instance", context.iterations, instance?.dataSet?.value(Tag.SOPInstanceUID));
+    return true;
+  }
+});
+
+// ... listener remains active until explicitly stopped ...
+await run.stop();
+await run.done;</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="csharp">
+                        <h4>C# Examples</h4>
+                        <p>Typical use case: verify DIMSE endpoint reachability (C-ECHO).</p>
+                        <pre><code class="language-csharp">var association = EASI.DimseAssociationBuilder()
+    .WithHost("127.0.0.1")
+    .WithPort(4242)
+    .WithCallingAeTitle("EASI_JS")
+    .WithCalledAeTitle("ORTHANC")
+    .Build();
+
+var client = EASI.DimseClientBuilder()
+    .WithAssociation(association)
+    .Build();
+
+var echoResult = await client.Echo();</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: C-FIND study discovery returned as native DICOM&reg; instances.</p>
+                        <pre><code class="language-csharp">var findSourceAssociation = new {
+    host = "127.0.0.1",
+    port = 4242,
+    callingAeTitle = "EASI_JS",
+    calledAeTitle = "ORTHANC"
+};
+
+var findPipeline = EASI.PipelineBuilder()
+    .FromDimseAssociation(findSourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+    .OfDicomData()
+    .ToInstances()
+    .Build();
+
+var instanceCollection = await findPipeline.Process(new {
+    operation = "cfind",
+    level = "STUDY",
+    keys = new { Modality = "CT" }
+});
+
+var instances = instanceCollection.ToArray();</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: C-MOVE source with in-flight de-identification and C-STORE relay.</p>
+                        <pre><code class="language-csharp">var moveSourceAssociation = new {
+    host = "127.0.0.1",
+    port = 4242,
+    callingAeTitle = "EASI_JS",
+    calledAeTitle = "ORTHANC"
+};
+
+var moveDestinationAssociation = new {
+    host = "127.0.0.1",
+    port = 4242,
+    callingAeTitle = "EASI_JS",
+    calledAeTitle = "ORTHANC"
+};
+
+var relayPipeline = EASI.PipelineBuilder()
+    .FromDimseAssociation(moveSourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+    .OfDicomData()
+    .WithDeIdentification(Tag.DefaultDeIdentificationMask)
+    .ToDicomData()
+    .IntoDimseAssociation(moveDestinationAssociation, new {
+        transport = new NodeDimseCStoreScuTransport()
+    })
+    .Build();
+
+await relayPipeline.Process(new {
+    operation = "cmove",
+    level = "IMAGE",
+    destinationAeTitle = "EASI_MOVE_DEST",
+    keys = new { StudyInstanceUID = "{studyUID}" }
+});</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: inbound C-STORE SCP listener using <code>start()</code> (no <code>process()</code>).</p>
+                        <pre><code class="language-csharp">var listenerAssociation = new {
+    host = "0.0.0.0",
+    port = 11112,
+    calledAeTitle = "EASI_STORE"
+};
+
+var listenerPipeline = EASI.PipelineBuilder()
+    .FromDimseAssociation(listenerAssociation, new NodeDimseCStoreScpSourceTransport())
+    .OfDicomData()
+    .ToInstances()
+    .Build();
+
+var run = listenerPipeline.Start(null, new {
+    onResult = async (resultCollection, context) => {
+        var instance = resultCollection.First();
+        Console.WriteLine($"Received instance {context.iterations}");
+        return true;
+    }
+});
+
+await run.Stop();
+await run.Done;</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="java">
+                        <h4>Java Examples</h4>
+                        <p>Typical use case: verify DIMSE endpoint reachability (C-ECHO).</p>
+                        <pre><code class="language-java">var association = EASI.dimseAssociationBuilder()
+    .withHost("127.0.0.1")
+    .withPort(4242)
+    .withCallingAeTitle("EASI_JS")
+    .withCalledAeTitle("ORTHANC")
+    .build();
+
+var client = EASI.dimseClientBuilder()
+    .withAssociation(association)
+    .build();
+
+var echoResult = client.echo();</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: C-FIND study discovery returned as native DICOM&reg; instances.</p>
+                        <pre><code class="language-java">var findSourceAssociation = Map.of(
+    "host", "127.0.0.1",
+    "port", 4242,
+    "callingAeTitle", "EASI_JS",
+    "calledAeTitle", "ORTHANC"
+);
+
+var findPipeline = EASI.pipelineBuilder()
+    .fromDimseAssociation(findSourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+    .ofDicomData()
+    .toInstances()
+    .build();
+
+var instanceCollection = findPipeline.process(Map.of(
+    "operation", "cfind",
+    "level", "STUDY",
+    "keys", Map.of("Modality", "CT")
+));
+
+var instances = instanceCollection.toArray();</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: C-MOVE source with in-flight de-identification and C-STORE relay.</p>
+                        <pre><code class="language-java">var moveSourceAssociation = Map.of(
+    "host", "127.0.0.1",
+    "port", 4242,
+    "callingAeTitle", "EASI_JS",
+    "calledAeTitle", "ORTHANC"
+);
+
+var moveDestinationAssociation = Map.of(
+    "host", "127.0.0.1",
+    "port", 4242,
+    "callingAeTitle", "EASI_JS",
+    "calledAeTitle", "ORTHANC"
+);
+
+var relayPipeline = EASI.pipelineBuilder()
+    .fromDimseAssociation(moveSourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+    .ofDicomData()
+    .withDeIdentification(Tag.DefaultDeIdentificationMask)
+    .toDicomData()
+    .intoDimseAssociation(moveDestinationAssociation, Map.of(
+        "transport", new NodeDimseCStoreScuTransport()
+    ))
+    .build();
+
+relayPipeline.process(Map.of(
+    "operation", "cmove",
+    "level", "IMAGE",
+    "destinationAeTitle", "EASI_MOVE_DEST",
+    "keys", Map.of("StudyInstanceUID", "{studyUID}")
+));</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: inbound C-STORE SCP listener using <code>start()</code> (no <code>process()</code>).</p>
+                        <pre><code class="language-java">var listenerAssociation = Map.of(
+    "host", "0.0.0.0",
+    "port", 11112,
+    "calledAeTitle", "EASI_STORE"
+);
+
+var listenerPipeline = EASI.pipelineBuilder()
+    .fromDimseAssociation(listenerAssociation, new NodeDimseCStoreScpSourceTransport())
+    .ofDicomData()
+    .toInstances()
+    .build();
+
+var run = listenerPipeline.start(null, Map.of(
+    "onResult", (resultCollection, context) -> {
+        var instance = resultCollection.first();
+        System.out.println("Received instance " + context.iterations);
+        return true;
+    }
+));
+
+run.stop();
+run.done();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="python">
+                        <h4>Python Examples</h4>
+                        <p>Typical use case: verify DIMSE endpoint reachability (C-ECHO).</p>
+                        <pre><code class="language-python">association = (
+    EASI.dimse_association_builder()
+    .with_host("127.0.0.1")
+    .with_port(4242)
+    .with_calling_ae_title("EASI_JS")
+    .with_called_ae_title("ORTHANC")
+    .build()
+)
+
+client = EASI.dimse_client_builder().with_association(association).build()
+echo_result = client.echo()</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: C-FIND study discovery returned as native DICOM&reg; instances.</p>
+                        <pre><code class="language-python">find_source_association = {
+    "host": "127.0.0.1",
+    "port": 4242,
+    "callingAeTitle": "EASI_JS",
+    "calledAeTitle": "ORTHANC"
+}
+
+find_pipeline = (
+    EASI.pipeline_builder()
+    .from_dimse_association(find_source_association, NodeDimseQueryRetrieveSourceTransport())
+    .of_dicom_data()
+    .to_instances()
+    .build()
+)
+
+instance_collection = find_pipeline.process({
+    "operation": "cfind",
+    "level": "STUDY",
+    "keys": {"Modality": "CT"}
+})
+
+instances = instance_collection.to_array()</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: C-MOVE source with in-flight de-identification and C-STORE relay.</p>
+                        <pre><code class="language-python">move_source_association = {
+    "host": "127.0.0.1",
+    "port": 4242,
+    "callingAeTitle": "EASI_JS",
+    "calledAeTitle": "ORTHANC"
+}
+
+move_destination_association = {
+    "host": "127.0.0.1",
+    "port": 4242,
+    "callingAeTitle": "EASI_JS",
+    "calledAeTitle": "ORTHANC"
+}
+
+relay_pipeline = (
+    EASI.pipeline_builder()
+    .from_dimse_association(move_source_association, NodeDimseQueryRetrieveSourceTransport())
+    .of_dicom_data()
+    .with_de_identification(Tag.default_de_identification_mask)
+    .to_dicom_data()
+    .into_dimse_association(move_destination_association, {
+        "transport": NodeDimseCStoreScuTransport()
+    })
+    .build()
+)
+
+relay_pipeline.process({
+    "operation": "cmove",
+    "level": "IMAGE",
+    "destinationAeTitle": "EASI_MOVE_DEST",
+    "keys": {"StudyInstanceUID": "{studyUID}"}
+})</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: inbound C-STORE SCP listener using <code>start()</code> (no <code>process()</code>).</p>
+                        <pre><code class="language-python">listener_association = {
+    "host": "0.0.0.0",
+    "port": 11112,
+    "calledAeTitle": "EASI_STORE"
+}
+
+listener_pipeline = (
+    EASI.pipeline_builder()
+    .from_dimse_association(listener_association, NodeDimseCStoreScpSourceTransport())
+    .of_dicom_data()
+    .to_instances()
+    .build()
+)
+
+run = listener_pipeline.start(None, {
+    "onResult": lambda result_collection, context: True
+})
+
+run.stop()
+run.done()</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                Normative page for DIMSE-specific composition semantics and lifecycle patterns.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

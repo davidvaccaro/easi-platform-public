@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI DICOM&reg; type reference for Image.">
+    <title>EASI | DICOM&reg; Type | Image</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="../core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="../stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="../lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="../dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Image</h2>
+                <p>Extends entity access with image decode and frame-oriented behavior.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Snapshot</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Type</td>
+                            <td><code>Image</code></td>
+                        </tr>
+                        <tr>
+                            <td>Domain</td>
+                            <td>Entities</td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td>Entity Accessor</td>
+                        </tr>
+                        <tr>
+                            <td>Kind</td>
+                            <td>Entity Accessor Type</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Canonical Role</h3>
+                <p>Primary image-centric accessor for pixel-aware workflows.</p>
+                <div class="callout normative">
+                    <h4>Pipeline Exposure</h4>
+                    <p>Materialized by entity-oriented outputs and traversed during higher-level semantic access.</p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Definition</h3>
+                <p>
+                    Structure is presented first, followed by language-neutral and language-specific examples,
+                    and an explicit UML relationship view.
+                </p>
+
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Type definition tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="structure">Structure</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="uml">UML</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="structure">
+                        <h4>Type Structure</h4>
+                        <p>Directly available members for <code>Image</code>, separated by accessors/properties, methods, and constructors.</p>
+                        <h5>Accessors and Properties</h5>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Member</th>
+                                        <th>Signature</th>
+                                        <th>Kind</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        <tr>
+                            <td><code>imagePixelModule</code></td>
+                            <td><code>get imagePixelModule()</code></td>
+                            <td>Accessor</td>
+                            <td>Get the Image Pixel Module.</td>
+                        </tr>
+                        <tr>
+                            <td><code>pixels</code></td>
+                            <td><code>get pixels()</code></td>
+                            <td>Accessor</td>
+                            <td>Provides access to pixels.</td>
+                        </tr>
+                        <tr>
+                            <td><code>imagePlaneModule</code></td>
+                            <td><code>get imagePlaneModule()</code></td>
+                            <td>Accessor</td>
+                            <td>Get the Image Plane Module.</td>
+                        </tr>
+                        <tr>
+                            <td><code>multiFrameModule</code></td>
+                            <td><code>get multiFrameModule()</code></td>
+                            <td>Accessor</td>
+                            <td>Get the Multi Frame Module.</td>
+                        </tr>
+                        <tr>
+                            <td><code>visualizationFunctionModule</code></td>
+                            <td><code>get visualizationFunctionModule()</code></td>
+                            <td>Accessor</td>
+                            <td>Get the Visualization Function Module.</td>
+                        </tr>
+                        <tr>
+                            <td><code>modalityLookUpTableModule</code></td>
+                            <td><code>get modalityLookUpTableModule()</code></td>
+                            <td>Accessor</td>
+                            <td>Get the Visualization Function Module.</td>
+                        </tr>
+                        <tr>
+                            <td><code>isMultiFrame</code></td>
+                            <td><code>get isMultiFrame()</code></td>
+                            <td>Accessor</td>
+                            <td>Is the current image-object multi-frame?.</td>
+                        </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h5>Methods</h5>
+
+                    <article class="member-doc">
+                        <h6><code>decodeFrame(destination, decoder = null, frame = 0, windowCenter = null, windowWidth = null)</code></h6>
+                        <p>Decode the pixel data to the destination Uint8Array.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>destination</code></td>
+                                <td><code>ByteArray</code></td>
+                                <td>The destination ByteArray that serves as the destination of the decode operation.</td>
+                            </tr>
+                            <tr>
+                                <td><code>decoder</code></td>
+                                <td><code>Object</code></td>
+                                <td>(Optional) The desired decoder. Defaults to RGBA.</td>
+                            </tr>
+                            <tr>
+                                <td><code>frame</code></td>
+                                <td><code>Number</code></td>
+                                <td>(Optional) The frame index (for multi-frame images) to decode. Defaults to 0.</td>
+                            </tr>
+                            <tr>
+                                <td><code>windowCenter</code></td>
+                                <td><code>Any</code></td>
+                                <td>(Optional) Parameter used by this member.</td>
+                            </tr>
+                            <tr>
+                                <td><code>windowWidth</code></td>
+                                <td><code>Any</code></td>
+                                <td>(Optional) Parameter used by this member.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="member-doc-label">Possible Return Types</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>Any</code></td>
+                                <td>Method return value (implementation-dependent).</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                        <h5>Constructors</h5>
+
+                    <article class="member-doc">
+                        <h6><code>constructor(attributeSet)</code></h6>
+                        <p>Construct a DICOM Image Object instance.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>attributeSet</code></td>
+                                <td><a href="attribute-set.html"><code>AttributeSet</code></a></td>
+                                <td>Parameter used by this member.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    </div>
+                <div class="doc-tab-panel" data-tab-panel="neutral">
+                    <h4>Language-Neutral Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-text">pipeline := EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toEntities()
+  .build()
+
+resultCollection := pipeline.process(source)
+result := resultCollection.first()
+
+# Type usage
+image := result</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: pull frame geometry for rendering/decode planning.</p>
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+ingestResult := ingestResultCollection.first()
+image := ingestResult
+rows := image.imagePixelModule.rows
+columns := image.imagePixelModule.columns</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="javascript">
+                    <h4>JavaScript Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-javascript">const pipeline = EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toEntities()
+  .build();
+
+const resultCollection = await pipeline.process(source);
+const result = resultCollection.first();
+
+// Type usage
+const image = result;</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: pull frame geometry for rendering/decode planning.</p>
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+const ingestResult = ingestResultCollection.first();
+const image = ingestResult;
+const rows = image.imagePixelModule.rows;
+const columns = image.imagePixelModule.columns;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="csharp">
+                    <h4>C# Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-csharp">var pipeline = EASI.PipelineBuilder()
+    .FromPartStream()
+    .OfDicomData()
+    .ToEntities()
+    .Build();
+
+var resultCollection = await pipeline.Process(source);
+var result = resultCollection.First();
+
+// Type usage
+var image = result;</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: pull frame geometry for rendering/decode planning.</p>
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+var ingestResult = ingestResultCollection.First();
+var image = ingestResult;
+var rows = image.imagePixelModule.rows;
+var columns = image.imagePixelModule.columns;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="java">
+                    <h4>Java Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-java">var pipeline = EASI.pipelineBuilder()
+    .fromPartStream()
+    .ofDicomData()
+    .toEntities()
+    .build();
+
+var resultCollection = pipeline.process(source);
+var result = resultCollection.first();
+
+// Type usage
+var image = result;</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: pull frame geometry for rendering/decode planning.</p>
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+var ingestResult = ingestResultCollection.first();
+var image = ingestResult;
+var rows = image.imagePixelModule.rows;
+var columns = image.imagePixelModule.columns;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="python">
+                    <h4>Python Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-python">pipeline = (
+    EASI.pipeline_builder()
+    .from_part_stream()
+    .of_dicom_data()
+    .to_entities()
+    .build()
+)
+
+result_collection = pipeline.process(source)
+result = result_collection.first()
+
+# Type usage
+image = result</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: pull frame geometry for rendering/decode planning.</p>
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+ingest_result = ingest_result_collection.first()
+image = ingest_result
+rows = image.imagePixelModule.rows
+columns = image.imagePixelModule.columns</code></pre>
+                </div>
+
+                <div class="doc-tab-panel" data-tab-panel="uml">
+                    <h4>UML Class Diagram</h4>
+                    <p>Direct type relationships rendered as an inline UML SVG diagram.</p>
+
+                    <div class="uml-diagram">
+                        <svg class="uml-svg" viewBox="0 0 738 700" role="img" aria-label="Image UML diagram">
+                            <defs>
+                                <marker id="uml-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                                </marker>
+                                <marker id="uml-triangle" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto">
+                                    <path d="M 0 0 L 12 6 L 0 12 z"></path>
+                                </marker>
+                                <marker id="uml-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                                <marker id="uml-open-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                            </defs>
+        <path class="uml-edge" d="M 278 350 C 368 350, 340 56, 430 56" marker-end="url(#uml-triangle)"></path>
+        <path class="uml-edge dashed" d="M 278 350 C 368 350, 340 140, 430 140" marker-end="url(#uml-arrow)"></path>
+        <path class="uml-edge dashed" d="M 278 350 C 368 350, 340 224, 430 224" marker-end="url(#uml-arrow)"></path>
+        <path class="uml-edge dashed" d="M 278 350 C 368 350, 340 308, 430 308" marker-end="url(#uml-arrow)"></path>
+        <path class="uml-edge dashed" d="M 278 350 C 368 350, 340 392, 430 392" marker-end="url(#uml-arrow)"></path>
+        <path class="uml-edge dashed" d="M 278 350 C 368 350, 340 476, 430 476" marker-end="url(#uml-arrow)"></path>
+        <path class="uml-edge dashed" d="M 278 350 C 368 350, 340 560, 430 560" marker-end="url(#uml-arrow)"></path>
+        <path class="uml-edge dashed" d="M 278 350 C 368 350, 340 644, 430 644" marker-end="url(#uml-arrow)"></path>
+        <g class="uml-node primary">
+            <title>Image</title>
+            <rect x="28" y="318" width="250" height="64" rx="8" ry="8"></rect>
+            <text x="153" y="350" text-anchor="middle" dominant-baseline="middle">Image</text>
+        </g>
+        <g class="uml-node">
+            <title>Entity</title>
+            <rect x="430" y="28" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="56" text-anchor="middle" dominant-baseline="middle">Entity</text>
+        </g>
+        <g class="uml-node">
+            <title>ImagePixelModule</title>
+            <rect x="430" y="112" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="140" text-anchor="middle" dominant-baseline="middle">ImagePixelModule</text>
+        </g>
+        <g class="uml-node">
+            <title>ImagePlaneModule</title>
+            <rect x="430" y="196" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="224" text-anchor="middle" dominant-baseline="middle">ImagePlaneModule</text>
+        </g>
+        <g class="uml-node">
+            <title>ModalityLookUpTableModule</title>
+            <rect x="430" y="280" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="308" text-anchor="middle" dominant-baseline="middle">ModalityLookUpTableModule</text>
+        </g>
+        <g class="uml-node">
+            <title>MultiFrameModule</title>
+            <rect x="430" y="364" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="392" text-anchor="middle" dominant-baseline="middle">MultiFrameModule</text>
+        </g>
+        <g class="uml-node">
+            <title>PixelData</title>
+            <rect x="430" y="448" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="476" text-anchor="middle" dominant-baseline="middle">PixelData</text>
+        </g>
+        <g class="uml-node">
+            <title>Tag</title>
+            <rect x="430" y="532" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="560" text-anchor="middle" dominant-baseline="middle">Tag</text>
+        </g>
+        <g class="uml-node">
+            <title>VisualizationFunctionModule</title>
+            <rect x="430" y="616" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="644" text-anchor="middle" dominant-baseline="middle">VisualizationFunctionModule</text>
+        </g>
+        <text class="uml-edge-label" x="354" y="195" text-anchor="middle">--|&gt; inherits</text>
+        <text class="uml-edge-label" x="354" y="237" text-anchor="middle">..&gt; uses</text>
+        <text class="uml-edge-label" x="354" y="279" text-anchor="middle">..&gt; uses</text>
+        <text class="uml-edge-label" x="354" y="321" text-anchor="middle">..&gt; uses</text>
+        <text class="uml-edge-label" x="354" y="363" text-anchor="middle">..&gt; uses</text>
+        <text class="uml-edge-label" x="354" y="405" text-anchor="middle">..&gt; uses</text>
+        <text class="uml-edge-label" x="354" y="447" text-anchor="middle">..&gt; uses</text>
+        <text class="uml-edge-label" x="354" y="489" text-anchor="middle">..&gt; uses</text>
+                            
+                        </svg>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Relationship</th>
+                                    <th>Target</th>
+                                    <th>Intent</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <tr>
+                            <td><code>Image</code></td>
+                            <td><code>--|&gt;</code></td>
+                            <td><code>Entity</code></td>
+                            <td>inherits</td>
+                        </tr>
+                        <tr>
+                            <td><code>Image</code></td>
+                            <td><code>..&gt;</code></td>
+                            <td><code>ImagePixelModule</code></td>
+                            <td>uses</td>
+                        </tr>
+                        <tr>
+                            <td><code>Image</code></td>
+                            <td><code>..&gt;</code></td>
+                            <td><code>ImagePlaneModule</code></td>
+                            <td>uses</td>
+                        </tr>
+                        <tr>
+                            <td><code>Image</code></td>
+                            <td><code>..&gt;</code></td>
+                            <td><code>ModalityLookUpTableModule</code></td>
+                            <td>uses</td>
+                        </tr>
+                        <tr>
+                            <td><code>Image</code></td>
+                            <td><code>..&gt;</code></td>
+                            <td><code>MultiFrameModule</code></td>
+                            <td>uses</td>
+                        </tr>
+                        <tr>
+                            <td><code>Image</code></td>
+                            <td><code>..&gt;</code></td>
+                            <td><code>PixelData</code></td>
+                            <td>uses</td>
+                        </tr>
+                        <tr>
+                            <td><code>Image</code></td>
+                            <td><code>..&gt;</code></td>
+                            <td><code>Tag</code></td>
+                            <td>uses</td>
+                        </tr>
+                        <tr>
+                            <td><code>Image</code></td>
+                            <td><code>..&gt;</code></td>
+                            <td><code>VisualizationFunctionModule</code></td>
+                            <td>uses</td>
+                        </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Common Relationships</h3>
+                <p><a href="entity.html"><code>Entity</code></a>, <a href="image-pixel-module.html"><code>ImagePixelModule</code></a>, <a href="image-plane-module.html"><code>ImagePlaneModule</code></a>, <a href="modality-look-up-table-module.html"><code>ModalityLookUpTableModule</code></a>, <a href="multi-frame-module.html"><code>MultiFrameModule</code></a>, <a href="pixel-data.html"><code>PixelData</code></a>, <a href="tag.html"><code>Tag</code></a>, <a href="visualization-function-module.html"><code>VisualizationFunctionModule</code></a></p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Typical Output Context</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pipeline Surface</th>
+                            <th>How Image Commonly Appears</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>toEntities()</code></td>
+                            <td>Directly emitted, nested, or referenced as part of entity terminal output.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toSelection(...)</code></td>
+                            <td>Referenced for targeted extraction and structural traversal.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toMapping(...)</code></td>
+                            <td>Used as source semantics for projection into derived target models.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout warning">
+                    <h4>Specification Boundary</h4>
+                    <p>
+                        This reference describes interoperable semantics and usage intent.
+                        Language-specific implementation internals remain outside normative standard requirements.
+                    </p>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                <a href="index.html">Back to DICOM&reg; Type Index</a>
+            </p>
+        </main>
+    </div>
+</body>
+</html>

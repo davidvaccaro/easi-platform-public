@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Advanced EASI pipeline use cases for real-world DICOM deployments.">
+    <title>EASI | Advanced Pipeline Use Cases</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Advanced Pipeline Use Cases</h2>
+                <p>
+                    This page demonstrates how one EASI pipeline model can power advanced, production-style DICOM&reg;
+                    workflows across ingestion, transformation, routing, and non-DICOM&reg; asset extraction.
+                </p>
+                <p class="page-meta">
+                    Informative page: real-world scenario patterns intended to prove breadth and composability.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout informative">
+                    <h4>Practical Goal</h4>
+                    <p>
+                        Show that EASI pipelines are not only parser wrappers. They can serve as the execution core for
+                        imaging gateways, retrieval services, migration utilities, de-identification processors, and
+                        mixed DICOM&reg;/cloud asset workflows.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Advanced Pattern Map</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Scenario Family</th>
+                                <th>Typical Pipeline Primitives</th>
+                                <th>Operational Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Inbound Bridge Service</td>
+                                <td><code>fromDimseAssociation</code> + <code>start()</code> + <code>toAssets</code></td>
+                                <td>Continuous C-STORE ingestion with immediate metadata/frame/content extraction.</td>
+                            </tr>
+                            <tr>
+                                <td>Query + Retrieve Relay</td>
+                                <td><code>fromDimseAssociation</code> + <code>toInstances</code> + <code>intoDimseAssociation</code></td>
+                                <td>Selective C-FIND/C-MOVE orchestration and controlled forwarding.</td>
+                            </tr>
+                            <tr>
+                                <td>Bulk DICOMweb&trade; Migration</td>
+                                <td><code>fromHttpStream</code> + <code>withValidation</code> + <code>withTranscoding</code> + <code>intoFileStream</code></td>
+                                <td>Large-scale normalization of mixed source archives into a target transfer syntax.</td>
+                            </tr>
+                            <tr>
+                                <td>Privacy-First Processing</td>
+                                <td><code>withDeIdentification</code> + <code>withBurnedInRedaction</code></td>
+                                <td>Consistent metadata and burned-in text cleanup in one deterministic flow.</td>
+                            </tr>
+                            <tr>
+                                <td>Custom HTTP Integration</td>
+                                <td><code>toDicomData</code> + <code>intoHttpStream</code></td>
+                                <td>Push transformed output into proprietary APIs with custom method/header contracts.</td>
+                            </tr>
+                            <tr>
+                                <td>STOW-RS DICOMweb&trade; Store</td>
+                                <td><code>withTranscoding</code> + <code>intoHttpStream(..., { stow: true })</code></td>
+                                <td>Constrained STOW-safe upload semantics on top of the generic HTTP writer.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Operational Controls</h3>
+                <div class="grid two">
+                    <article class="card">
+                        <h4>Lifecycle Control</h4>
+                        <p>Use <code>process(source)</code> for one-shot transactions and <code>start()</code>/<code>stop()</code> for source-bound listeners.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Result Contract</h4>
+                        <p>Pipeline terminal results are normalized to <code>PipelineResultCollection</code> for stable cardinality handling.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Error Strategy</h4>
+                        <p>Use <code>continueOnError</code>, <code>onError</code>, and concern callbacks to preserve service uptime during noisy traffic.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Iteration Guardrails</h4>
+                        <p>Use <code>maxIterations</code> and cancellation signals for safe job and listener lifecycle control.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Advanced Use-Case Gallery</h3>
+                <p>
+                    Each scenario below is intentionally end-to-end. The goal is to make it obvious that EASI can be
+                    the runtime core for practical, advanced DICOM&reg; processing services.
+                </p>
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Advanced pipeline example tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="neutral">
+                        <h4>Language-Neutral Examples</h4>
+                        <p>Scenario: C-STORE listener bridge with de-identification, strict US redaction, and cloud asset push.</p>
+                        <pre><code class="language-text">listenerAssociation := { host: "0.0.0.0", port: 11112, calledAeTitle: "EASI_BRIDGE" }
+
+bridgePipeline := EASI.pipelineBuilder()
+  .fromDimseAssociation(listenerAssociation, NodeDimseCStoreScpSourceTransport)
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .withBurnedInRedaction({
+    mode: "regions",
+    regions: [
+      { x: 24, y: 10, width: 220, height: 40 },
+      { x: 24, y: 54, width: 260, height: 30 }
+    ]
+  })
+  .toAssets({
+    metadata: {
+      mapping: DicomToFHIRImagingStudyMapping({ profile: "study-summary" }),
+      collect: true
+    },
+    payload: {
+      frame: { frames: "first", decode: "rgba", encode: "png" },
+      collect: true
+    }
+  })
+  .build()
+
+run := bridgePipeline.start(null, {
+  onResult: (resultCollection, context) => {
+    assets := resultCollection.first()
+    cloud.putJSON("/ingest/" + context.iterations + "/metadata", assets.metadata)
+    cloud.putBinary("/ingest/" + context.iterations + "/frame-1.png", assets.frames[0].bytes)
+    return true
+  }
+})</code></pre>
+
+                        <br />
+
+                        <p>Scenario: query-first selective retrieve and relay to a destination archive.</p>
+                        <pre><code class="language-text">queryPipeline := EASI.pipelineBuilder()
+  .fromDimseAssociation(sourceAssociation, NodeDimseQueryRetrieveSourceTransport)
+  .ofDicomData()
+  .toInstances()
+  .build()
+
+relayPipeline := EASI.pipelineBuilder()
+  .fromDimseAssociation(sourceAssociation, NodeDimseQueryRetrieveSourceTransport)
+  .ofDicomData()
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoDimseAssociation(destinationAssociation, { transport: NodeDimseCStoreScuTransport })
+  .build()
+
+matches := queryPipeline.process({ operation: "cfind", level: "IMAGE", keys: { Modality: "CT" } })
+for each match in matches:
+  relayPipeline.process({
+    operation: "cmove",
+    level: "IMAGE",
+    destinationAeTitle: destinationAssociation.calledAeTitle,
+    keys: { SOPInstanceUID: match.dataSet.value(Tag.SOPInstanceUID) }
+  })</code></pre>
+
+                        <br />
+
+                        <p>Scenario: bulk DICOMweb&trade; migration with normalization to a target transfer syntax.</p>
+                        <pre><code class="language-text">migrationPipeline := EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .withValidation("strict")
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoFileStream("/archive/normalized/{instanceUID}.dcm")
+  .build()
+
+for each sourceUrl in manifest.urls:
+  migrationPipeline.process(sourceUrl, { continueOnError: true })</code></pre>
+
+                        <br />
+
+                        <p>Scenario: local DICOM&reg; de-identification followed by upload to a custom HTTP host.</p>
+                        <pre><code class="language-text">sourcePath := "/var/easi/inbox/ct/CT-001.dcm"
+
+customUploadPipeline := EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoHttpStream({
+    url: "https://custom-host.example.com/imaging/upload",
+    method: "PUT",
+    headers: {
+      Authorization: "Bearer {token}",
+      "X-Tenant": "acme-imaging",
+      "Content-Type": "application/vnd.acme.dicom-binary"
+    }
+  }, {
+    stream: false
+  })
+  .build()
+
+customUploadCollection := customUploadPipeline.process(sourcePath)
+customUploadResult := customUploadCollection.first()
+customStatus := customUploadResult.status</code></pre>
+
+                        <br />
+
+                        <p>Scenario: read, transcode, and POST to a STOW-RS endpoint using STOW-safe HTTP options.</p>
+                        <pre><code class="language-text">sourceUrl := "https://source.example.com/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}"
+
+stowPipeline := EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoHttpStream({
+    url: "https://pacs.example.com/dicom-web/studies",
+    headers: {
+      Authorization: "Bearer {token}"
+    }
+  }, {
+    stow: true,
+    stream: false
+  })
+  .build()
+
+stowCollection := stowPipeline.process(sourceUrl)
+stowResult := stowCollection.first()
+stowStatus := stowResult.status</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="javascript">
+                        <h4>JavaScript Examples</h4>
+                        <p>Scenario: C-STORE listener bridge with de-identification, strict US redaction, and cloud asset push.</p>
+                        <pre><code class="language-javascript">const listenerAssociation = {
+  host: "0.0.0.0",
+  port: 11112,
+  calledAeTitle: "EASI_BRIDGE"
+};
+
+const bridgePipeline = EASI.pipelineBuilder()
+  .fromDimseAssociation(listenerAssociation, new NodeDimseCStoreScpSourceTransport())
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .withBurnedInRedaction({
+    mode: "regions",
+    regions: [
+      { x: 24, y: 10, width: 220, height: 40 },
+      { x: 24, y: 54, width: 260, height: 30 }
+    ]
+  })
+  .toAssets({
+    metadata: {
+      mapping: new DicomToFHIRImagingStudyMapping({ profile: "study-summary" }),
+      collect: true
+    },
+    payload: {
+      frame: { frames: "first", decode: "rgba", encode: "png" },
+      collect: true
+    }
+  })
+  .build();
+
+const run = bridgePipeline.start(null, {
+  onResult: async (resultCollection, context) => {
+    const assets = resultCollection.first();
+    await cloudClient.putJSON(`/ingest/${context.iterations}/metadata`, assets.metadata);
+    await cloudClient.putBinary(`/ingest/${context.iterations}/frame-1.png`, assets.frames[0]?.bytes);
+    return true;
+  }
+});</code></pre>
+
+                        <br />
+
+                        <p>Scenario: query-first selective retrieve and relay to a destination archive.</p>
+                        <pre><code class="language-javascript">const queryPipeline = EASI.pipelineBuilder()
+  .fromDimseAssociation(sourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+  .ofDicomData()
+  .toInstances()
+  .build();
+
+const relayPipeline = EASI.pipelineBuilder()
+  .fromDimseAssociation(sourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+  .ofDicomData()
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoDimseAssociation(destinationAssociation, { transport: new NodeDimseCStoreScuTransport() })
+  .build();
+
+const matches = await queryPipeline.process({
+  operation: "cfind",
+  level: "IMAGE",
+  keys: { Modality: "CT" }
+});
+
+for (const match of matches) {
+  await relayPipeline.process({
+    operation: "cmove",
+    level: "IMAGE",
+    destinationAeTitle: destinationAssociation.calledAeTitle,
+    keys: { SOPInstanceUID: match.dataSet?.value(Tag.SOPInstanceUID) }
+  });
+}</code></pre>
+
+                        <br />
+
+                        <p>Scenario: bulk DICOMweb&trade; migration with normalization to a target transfer syntax.</p>
+                        <pre><code class="language-javascript">const migrationPipeline = EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .withValidation("strict")
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoFileStream("/archive/normalized/{instanceUID}.dcm")
+  .build();
+
+for (const sourceUrl of manifest.urls) {
+  await migrationPipeline.process(sourceUrl, { continueOnError: true });
+}</code></pre>
+
+                        <br />
+
+                        <p>Scenario: local DICOM&reg; de-identification followed by upload to a custom HTTP host.</p>
+                        <pre><code class="language-javascript">const sourcePath = "/var/easi/inbox/ct/CT-001.dcm";
+
+const customUploadPipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoHttpStream(
+    {
+      url: "https://custom-host.example.com/imaging/upload",
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "X-Tenant": "acme-imaging",
+        "Content-Type": "application/vnd.acme.dicom-binary"
+      }
+    },
+    { stream: false }
+  )
+  .build();
+
+const customUploadCollection = await customUploadPipeline.process(sourcePath);
+const customUploadResult = customUploadCollection.first();
+const customStatus = customUploadResult.status;</code></pre>
+
+                        <br />
+
+                        <p>Scenario: read, transcode, and POST to a STOW-RS endpoint using STOW-safe HTTP options.</p>
+                        <pre><code class="language-javascript">const sourceUrl = "https://source.example.com/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+
+const stowPipeline = EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoHttpStream(
+    {
+      url: "https://pacs.example.com/dicom-web/studies",
+      headers: { Authorization: `Bearer ${token}` }
+    },
+    {
+      stow: true,
+      stream: false
+    }
+  )
+  .build();
+
+const stowCollection = await stowPipeline.process(sourceUrl);
+const stowResult = stowCollection.first();
+const stowStatus = stowResult.status;</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="csharp">
+                        <h4>C# Examples</h4>
+                        <p>Scenario: C-STORE listener bridge with de-identification, strict US redaction, and cloud asset push.</p>
+                        <pre><code class="language-csharp">var listenerAssociation = new {
+    host = "0.0.0.0",
+    port = 11112,
+    calledAeTitle = "EASI_BRIDGE"
+};
+
+var bridgePipeline = EASI.PipelineBuilder()
+    .FromDimseAssociation(listenerAssociation, new NodeDimseCStoreScpSourceTransport())
+    .OfDicomData()
+    .WithDeIdentification(Tag.DefaultDeIdentificationMask)
+    .WithBurnedInRedaction(new {
+        mode = "regions",
+        regions = new[] {
+            new { x = 24, y = 10, width = 220, height = 40 },
+            new { x = 24, y = 54, width = 260, height = 30 }
+        }
+    })
+    .ToAssets(new {
+        metadata = new {
+            mapping = new DicomToFHIRImagingStudyMapping(new { profile = "study-summary" }),
+            collect = true
+        },
+        payload = new {
+            frame = new { frames = "first", decode = "rgba", encode = "png" },
+            collect = true
+        }
+    })
+    .Build();
+
+var run = bridgePipeline.Start(null, new {
+    onResult = async (resultCollection, context) => {
+        var assets = resultCollection.First();
+        await cloudClient.PutJson($"/ingest/{context.iterations}/metadata", assets.Metadata);
+        await cloudClient.PutBinary($"/ingest/{context.iterations}/frame-1.png", assets.Frames[0].Bytes);
+        return true;
+    }
+});</code></pre>
+
+                        <br />
+
+                        <p>Scenario: query-first selective retrieve and relay to a destination archive.</p>
+                        <pre><code class="language-csharp">var queryPipeline = EASI.PipelineBuilder()
+    .FromDimseAssociation(sourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+    .OfDicomData()
+    .ToInstances()
+    .Build();
+
+var relayPipeline = EASI.PipelineBuilder()
+    .FromDimseAssociation(sourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+    .OfDicomData()
+    .WithTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .ToDicomData()
+    .IntoDimseAssociation(destinationAssociation, new { transport = new NodeDimseCStoreScuTransport() })
+    .Build();
+
+var matches = await queryPipeline.Process(new {
+    operation = "cfind",
+    level = "IMAGE",
+    keys = new { Modality = "CT" }
+});
+
+foreach (var match in matches) {
+    await relayPipeline.Process(new {
+        operation = "cmove",
+        level = "IMAGE",
+        destinationAeTitle = destinationAssociation.calledAeTitle,
+        keys = new { SOPInstanceUID = match.DataSet.Value(Tag.SOPInstanceUID) }
+    });
+}</code></pre>
+
+                        <br />
+
+                        <p>Scenario: bulk DICOMweb&trade; migration with normalization to a target transfer syntax.</p>
+                        <pre><code class="language-csharp">var migrationPipeline = EASI.PipelineBuilder()
+    .FromHttpStream()
+    .OfDicomData()
+    .WithValidation("strict")
+    .WithTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .ToDicomData()
+    .IntoFileStream("/archive/normalized/{instanceUID}.dcm")
+    .Build();
+
+foreach (var sourceUrl in manifest.urls) {
+    await migrationPipeline.Process(sourceUrl, new { continueOnError = true });
+}</code></pre>
+
+                        <br />
+
+                        <p>Scenario: local DICOM&reg; de-identification followed by upload to a custom HTTP host.</p>
+                        <pre><code class="language-csharp">var sourcePath = "/var/easi/inbox/ct/CT-001.dcm";
+
+var customUploadPipeline = EASI.PipelineBuilder()
+    .FromFileStream()
+    .OfDicomData()
+    .WithDeIdentification(Tag.DefaultDeIdentificationMask)
+    .ToDicomData()
+    .IntoHttpStream(new {
+        url = "https://custom-host.example.com/imaging/upload",
+        method = "PUT",
+        headers = new Dictionary&lt;string, string&gt; {
+            ["Authorization"] = $"Bearer {token}",
+            ["X-Tenant"] = "acme-imaging",
+            ["Content-Type"] = "application/vnd.acme.dicom-binary"
+        }
+    }, new {
+        stream = false
+    })
+    .Build();
+
+var customUploadCollection = await customUploadPipeline.Process(sourcePath);
+var customUploadResult = customUploadCollection.First();
+var customStatus = customUploadResult.status;</code></pre>
+
+                        <br />
+
+                        <p>Scenario: read, transcode, and POST to a STOW-RS endpoint using STOW-safe HTTP options.</p>
+                        <pre><code class="language-csharp">var sourceUrl = "https://source.example.com/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+
+var stowPipeline = EASI.PipelineBuilder()
+    .FromHttpStream()
+    .OfDicomData()
+    .WithTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .ToDicomData()
+    .IntoHttpStream(new {
+        url = "https://pacs.example.com/dicom-web/studies",
+        headers = new {
+            Authorization = $"Bearer {token}"
+        }
+    }, new {
+        stow = true,
+        stream = false
+    })
+    .Build();
+
+var stowCollection = await stowPipeline.Process(sourceUrl);
+var stowResult = stowCollection.First();
+var stowStatus = stowResult.status;</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="java">
+                        <h4>Java Examples</h4>
+                        <p>Scenario: C-STORE listener bridge with de-identification, strict US redaction, and cloud asset push.</p>
+                        <pre><code class="language-java">var listenerAssociation = Map.of(
+    "host", "0.0.0.0",
+    "port", 11112,
+    "calledAeTitle", "EASI_BRIDGE"
+);
+
+var bridgePipeline = EASI.pipelineBuilder()
+    .fromDimseAssociation(listenerAssociation, new NodeDimseCStoreScpSourceTransport())
+    .ofDicomData()
+    .withDeIdentification(Tag.DefaultDeIdentificationMask)
+    .withBurnedInRedaction(Map.of(
+        "mode", "regions",
+        "regions", List.of(
+            Map.of("x", 24, "y", 10, "width", 220, "height", 40),
+            Map.of("x", 24, "y", 54, "width", 260, "height", 30)
+        )
+    ))
+    .toAssets(Map.of(
+        "metadata", Map.of(
+            "mapping", new DicomToFHIRImagingStudyMapping(Map.of("profile", "study-summary")),
+            "collect", true
+        ),
+        "payload", Map.of(
+            "frame", Map.of("frames", "first", "decode", "rgba", "encode", "png"),
+            "collect", true
+        )
+    ))
+    .build();
+
+var run = bridgePipeline.start(null, Map.of(
+    "onResult", (resultCollection, context) -> {
+        var assets = resultCollection.first();
+        cloudClient.putJson("/ingest/" + context.iterations + "/metadata", assets.metadata);
+        cloudClient.putBinary("/ingest/" + context.iterations + "/frame-1.png", assets.frames.get(0).bytes);
+        return true;
+    }
+));</code></pre>
+
+                        <br />
+
+                        <p>Scenario: query-first selective retrieve and relay to a destination archive.</p>
+                        <pre><code class="language-java">var queryPipeline = EASI.pipelineBuilder()
+    .fromDimseAssociation(sourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+    .ofDicomData()
+    .toInstances()
+    .build();
+
+var relayPipeline = EASI.pipelineBuilder()
+    .fromDimseAssociation(sourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
+    .ofDicomData()
+    .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .toDicomData()
+    .intoDimseAssociation(destinationAssociation, Map.of("transport", new NodeDimseCStoreScuTransport()))
+    .build();
+
+var matches = queryPipeline.process(Map.of(
+    "operation", "cfind",
+    "level", "IMAGE",
+    "keys", Map.of("Modality", "CT")
+));
+
+for (var match : matches) {
+    relayPipeline.process(Map.of(
+        "operation", "cmove",
+        "level", "IMAGE",
+        "destinationAeTitle", destinationAssociation.get("calledAeTitle"),
+        "keys", Map.of("SOPInstanceUID", match.dataSet.value(Tag.SOPInstanceUID))
+    ));
+}</code></pre>
+
+                        <br />
+
+                        <p>Scenario: bulk DICOMweb&trade; migration with normalization to a target transfer syntax.</p>
+                        <pre><code class="language-java">var migrationPipeline = EASI.pipelineBuilder()
+    .fromHttpStream()
+    .ofDicomData()
+    .withValidation("strict")
+    .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .toDicomData()
+    .intoFileStream("/archive/normalized/{instanceUID}.dcm")
+    .build();
+
+for (var sourceUrl : manifest.urls) {
+    migrationPipeline.process(sourceUrl, Map.of("continueOnError", true));
+}</code></pre>
+
+                        <br />
+
+                        <p>Scenario: local DICOM&reg; de-identification followed by upload to a custom HTTP host.</p>
+                        <pre><code class="language-java">var sourcePath = "/var/easi/inbox/ct/CT-001.dcm";
+
+var customUploadPipeline = EASI.pipelineBuilder()
+    .fromFileStream()
+    .ofDicomData()
+    .withDeIdentification(Tag.DefaultDeIdentificationMask)
+    .toDicomData()
+    .intoHttpStream(Map.of(
+        "url", "https://custom-host.example.com/imaging/upload",
+        "method", "PUT",
+        "headers", Map.of(
+            "Authorization", "Bearer " + token,
+            "X-Tenant", "acme-imaging",
+            "Content-Type", "application/vnd.acme.dicom-binary"
+        )
+    ), Map.of(
+        "stream", false
+    ))
+    .build();
+
+var customUploadCollection = customUploadPipeline.process(sourcePath);
+var customUploadResult = customUploadCollection.first();
+var customStatus = customUploadResult.status;</code></pre>
+
+                        <br />
+
+                        <p>Scenario: read, transcode, and POST to a STOW-RS endpoint using STOW-safe HTTP options.</p>
+                        <pre><code class="language-java">var sourceUrl = "https://source.example.com/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+
+var stowPipeline = EASI.pipelineBuilder()
+    .fromHttpStream()
+    .ofDicomData()
+    .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .toDicomData()
+    .intoHttpStream(Map.of(
+        "url", "https://pacs.example.com/dicom-web/studies",
+        "headers", Map.of(
+            "Authorization", "Bearer " + token
+        )
+    ), Map.of(
+        "stow", true,
+        "stream", false
+    ))
+    .build();
+
+var stowCollection = stowPipeline.process(sourceUrl);
+var stowResult = stowCollection.first();
+var stowStatus = stowResult.status;</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="python">
+                        <h4>Python Examples</h4>
+                        <p>Scenario: C-STORE listener bridge with de-identification, strict US redaction, and cloud asset push.</p>
+                        <pre><code class="language-python">listener_association = {
+    "host": "0.0.0.0",
+    "port": 11112,
+    "calledAeTitle": "EASI_BRIDGE"
+}
+
+bridge_pipeline = (
+    EASI.pipeline_builder()
+    .from_dimse_association(listener_association, NodeDimseCStoreScpSourceTransport())
+    .of_dicom_data()
+    .with_de_identification(Tag.default_de_identification_mask)
+    .with_burned_in_redaction({
+        "mode": "regions",
+        "regions": [
+            {"x": 24, "y": 10, "width": 220, "height": 40},
+            {"x": 24, "y": 54, "width": 260, "height": 30}
+        ]
+    })
+    .to_assets({
+        "metadata": {
+            "mapping": DicomToFHIRImagingStudyMapping({"profile": "study-summary"}),
+            "collect": True
+        },
+        "payload": {
+            "frame": {"frames": "first", "decode": "rgba", "encode": "png"},
+            "collect": True
+        }
+    })
+    .build()
+)
+
+run = bridge_pipeline.start(None, {
+    "onResult": lambda result_collection, context: cloud_bridge_upload(result_collection.first(), context)
+})</code></pre>
+
+                        <br />
+
+                        <p>Scenario: query-first selective retrieve and relay to a destination archive.</p>
+                        <pre><code class="language-python">query_pipeline = (
+    EASI.pipeline_builder()
+    .from_dimse_association(source_association, NodeDimseQueryRetrieveSourceTransport())
+    .of_dicom_data()
+    .to_instances()
+    .build()
+)
+
+relay_pipeline = (
+    EASI.pipeline_builder()
+    .from_dimse_association(source_association, NodeDimseQueryRetrieveSourceTransport())
+    .of_dicom_data()
+    .with_transcoding(TransferSyntax.explicit_vr_little_endian.id)
+    .to_dicom_data()
+    .into_dimse_association(destination_association, {"transport": NodeDimseCStoreScuTransport()})
+    .build()
+)
+
+matches = query_pipeline.process({
+    "operation": "cfind",
+    "level": "IMAGE",
+    "keys": {"Modality": "CT"}
+})
+
+for match in matches:
+    relay_pipeline.process({
+        "operation": "cmove",
+        "level": "IMAGE",
+        "destinationAeTitle": destination_association["calledAeTitle"],
+        "keys": {"SOPInstanceUID": match.data_set.value(Tag.sop_instance_uid)}
+    })</code></pre>
+
+                        <br />
+
+                        <p>Scenario: bulk DICOMweb&trade; migration with normalization to a target transfer syntax.</p>
+                        <pre><code class="language-python">migration_pipeline = (
+    EASI.pipeline_builder()
+    .from_http_stream()
+    .of_dicom_data()
+    .with_validation("strict")
+    .with_transcoding(TransferSyntax.explicit_vr_little_endian.id)
+    .to_dicom_data()
+    .into_file_stream("/archive/normalized/{instanceUID}.dcm")
+    .build()
+)
+
+for source_url in manifest.urls:
+    migration_pipeline.process(source_url, {"continueOnError": True})</code></pre>
+
+                        <br />
+
+                        <p>Scenario: local DICOM&reg; de-identification followed by upload to a custom HTTP host.</p>
+                        <pre><code class="language-python">source_path = "/var/easi/inbox/ct/CT-001.dcm"
+
+custom_upload_pipeline = (
+    EASI.pipeline_builder()
+    .from_file_stream()
+    .of_dicom_data()
+    .with_de_identification(Tag.default_de_identification_mask)
+    .to_dicom_data()
+    .into_http_stream({
+        "url": "https://custom-host.example.com/imaging/upload",
+        "method": "PUT",
+        "headers": {
+            "Authorization": f"Bearer {token}",
+            "X-Tenant": "acme-imaging",
+            "Content-Type": "application/vnd.acme.dicom-binary"
+        }
+    }, {
+        "stream": False
+    })
+    .build()
+)
+
+custom_upload_collection = custom_upload_pipeline.process(source_path)
+custom_upload_result = custom_upload_collection.first()
+custom_status = custom_upload_result.status</code></pre>
+
+                        <br />
+
+                        <p>Scenario: read, transcode, and POST to a STOW-RS endpoint using STOW-safe HTTP options.</p>
+                        <pre><code class="language-python">source_url = "https://source.example.com/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}"
+
+stow_pipeline = (
+    EASI.pipeline_builder()
+    .from_http_stream()
+    .of_dicom_data()
+    .with_transcoding(TransferSyntax.explicit_vr_little_endian.id)
+    .to_dicom_data()
+    .into_http_stream({
+        "url": "https://pacs.example.com/dicom-web/studies",
+        "headers": {
+            "Authorization": f"Bearer {token}"
+        }
+    }, {
+        "stow": True,
+        "stream": False
+    })
+    .build()
+)
+
+stow_collection = stow_pipeline.process(source_url)
+stow_result = stow_collection.first()
+stow_status = stow_result.status</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                Informative page showing advanced, real-world composition patterns built on the same EASI pipeline model.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

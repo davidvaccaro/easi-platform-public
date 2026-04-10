@@ -1,5 +1,6 @@
 import Pipeline from '../../src/pipelines/Pipeline.js';
 import Exception from '../../src/environment/Exception.js';
+import PipelineResultCollection from '../../src/pipelines/PipelineResultCollection.js';
 
 test('Test: Pipeline.process delegates to configured reader', async () => {
 
@@ -11,6 +12,8 @@ test('Test: Pipeline.process delegates to configured reader', async () => {
     const pipeline = new Pipeline(reader);
     const result = await pipeline.process('source-value', { key: 'value' });
 
+    expect(PipelineResultCollection.isCollection(result)).toBe(true);
+    expect(result.count).toBe(1);
     expect(result.ok).toBe(true);
     expect(result.source).toBe('source-value');
     expect(result.options.key).toBe('value');
@@ -27,7 +30,7 @@ test('Test: Pipeline.process', async () => {
     const pipeline = new Pipeline(reader);
     const result = await pipeline.process('ignored');
 
-    expect(result).toBe('result');
+    expect(result.first()).toBe('result');
 
 });
 
@@ -77,9 +80,9 @@ test('Test: Pipeline.process serializes concurrent calls on one pipeline instanc
         pipeline.process('C')
     ]);
 
-    expect(a).toBe('A');
-    expect(b).toBe('B');
-    expect(c).toBe('C');
+    expect(a.first()).toBe('A');
+    expect(b.first()).toBe('B');
+    expect(c.first()).toBe('C');
     expect(maxActive).toBe(1);
     expect(execution).toEqual([
         'start:A', 'end:A',
@@ -117,7 +120,8 @@ test('Test: Pipeline.process queue continues after one call fails', async () => 
     const second = pipeline.process('good');
 
     await expect(first).rejects.toThrow('boom');
-    await expect(second).resolves.toBe('good');
+    const secondResult = await second;
+    expect(secondResult.first()).toBe('good');
 
     expect(order).toEqual([
         'start:bad',
@@ -161,7 +165,7 @@ test('Test: Pipeline.start loops source-bound reads until onResult returns false
 
     const pipeline = new Pipeline(reader);
     const run = pipeline.start(null, {
-        onResult: async (result) => (result < 3)
+        onResult: async (result) => (result.first() < 3)
     });
 
     await run.done;

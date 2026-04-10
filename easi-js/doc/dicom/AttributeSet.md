@@ -1,6 +1,6 @@
 # `AttributeSet` Class
 
-Represents a collection of DICOM attributes that can be searched, queried, and extended dynamically. It provides utility functions to check for tag existence, retrieve values, and manage completeness state.
+Represents a collection of DICOM&reg; attributes that can be searched, queried, and extended dynamically. It provides utility functions to check for tag existence, retrieve values, and manage completeness state.
 
 ---
 
@@ -48,13 +48,13 @@ attributeSet.isComplete
 
 ### `find(tag)`
 
-Finds a DICOM attribute within the set by its tag.
+Finds a DICOM&reg; attribute within the set by its tag.
 
 #### Parameters
 
 | Parameter | Type  | Description                         |
 |-----------|-------|-------------------------------------|
-| `tag`     | `Tag` | The DICOM tag to search for.        |
+| `tag`     | `Tag` | The DICOM&reg; tag to search for.        |
 
 #### Returns
 
@@ -66,13 +66,13 @@ Finds a DICOM attribute within the set by its tag.
 
 ### `has(tag)`
 
-Checks whether a DICOM attribute with the specified tag exists in the set.
+Checks whether a DICOM&reg; attribute with the specified tag exists in the set.
 
 #### Parameters
 
 | Parameter | Type  | Description                         |
 |-----------|-------|-------------------------------------|
-| `tag`     | `Tag` | The DICOM tag to check for.         |
+| `tag`     | `Tag` | The DICOM&reg; tag to check for.         |
 
 #### Returns
 
@@ -126,7 +126,7 @@ Retrieves the value of an attribute by tag, or returns a default value if not fo
 
 | Parameter     | Type   | Description                                       |
 |---------------|--------|---------------------------------------------------|
-| `tag`         | `any`  | The DICOM tag whose value to retrieve.            |
+| `tag`         | `any`  | The DICOM&reg; tag whose value to retrieve.            |
 | `defaultValue`| `any`  | The value to return if the tag is not found. *(optional)* |
 
 #### Returns
@@ -146,7 +146,7 @@ import ValueRepresentations from './ValueRepresentations.js';
 // Create a new attribute set
 const attrSet = new AttributeSet();
 
-// Define a DICOM tag
+// Define a DICOM&reg; tag
 const patientNameTag = new Tag('00100010', ValueRepresentations.PN);
 
 // Create an attribute and set its value

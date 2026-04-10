@@ -1,6 +1,6 @@
 # `DicomToFHIRImagingStudyMapping` Class
 
-The `DicomToFHIRImagingStudyMapping` class defines DICOM-to-target mapping behavior used by streaming mapping handlers.
+The `DicomToFHIRImagingStudyMapping` class defines DICOM&reg;-to-target mapping behavior used by streaming mapping handlers.
 
 ---
 

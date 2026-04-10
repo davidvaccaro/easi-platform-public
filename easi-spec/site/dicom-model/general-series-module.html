@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI DICOM&reg; type reference for GeneralSeriesModule.">
+    <title>EASI | DICOM&reg; Type | GeneralSeriesModule</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="../core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="../stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="../lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="../dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>GeneralSeriesModule</h2>
+                <p>Provides general-series metadata accessors including modality and identifiers.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Snapshot</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Type</td>
+                            <td><code>GeneralSeriesModule</code></td>
+                        </tr>
+                        <tr>
+                            <td>Domain</td>
+                            <td>Modules</td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td>Module Accessor</td>
+                        </tr>
+                        <tr>
+                            <td>Kind</td>
+                            <td>Module Accessor Type</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Canonical Role</h3>
+                <p>Supports routing, grouping, and modality-aware pipeline behavior.</p>
+                <div class="callout normative">
+                    <h4>Pipeline Exposure</h4>
+                    <p>Constructed as focused access layer over attribute sets for module-scoped semantics.</p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Definition</h3>
+                <p>
+                    Structure is presented first, followed by language-neutral and language-specific examples,
+                    and an explicit UML relationship view.
+                </p>
+
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Type definition tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="structure">Structure</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="uml">UML</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="structure">
+                        <h4>Type Structure</h4>
+                        <p>Directly available members for <code>GeneralSeriesModule</code>, separated by accessors/properties, methods, and constructors.</p>
+                        <h5>Accessors and Properties</h5>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Member</th>
+                                        <th>Signature</th>
+                                        <th>Kind</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        <tr>
+                            <td><code>studyInstanceUid</code></td>
+                            <td><code>get studyInstanceUid()</code></td>
+                            <td>Accessor</td>
+                            <td>Gets the Study Instance UID value.</td>
+                        </tr>
+                        <tr>
+                            <td><code>seriesInstanceUid</code></td>
+                            <td><code>get seriesInstanceUid()</code></td>
+                            <td>Accessor</td>
+                            <td>Gets the Series Instance UID value.</td>
+                        </tr>
+                        <tr>
+                            <td><code>seriesNumber</code></td>
+                            <td><code>get seriesNumber()</code></td>
+                            <td>Accessor</td>
+                            <td>Gets the Series Number value.</td>
+                        </tr>
+                        <tr>
+                            <td><code>seriesDescription</code></td>
+                            <td><code>get seriesDescription()</code></td>
+                            <td>Accessor</td>
+                            <td>Gets the Series Description value.</td>
+                        </tr>
+                        <tr>
+                            <td><code>seriesDate</code></td>
+                            <td><code>get seriesDate()</code></td>
+                            <td>Accessor</td>
+                            <td>Gets the Series Date value.</td>
+                        </tr>
+                        <tr>
+                            <td><code>seriesTime</code></td>
+                            <td><code>get seriesTime()</code></td>
+                            <td>Accessor</td>
+                            <td>Gets the Series Time value.</td>
+                        </tr>
+                        <tr>
+                            <td><code>bodyPartExamined</code></td>
+                            <td><code>get bodyPartExamined()</code></td>
+                            <td>Accessor</td>
+                            <td>Gets the Body Part Examined value.</td>
+                        </tr>
+                        <tr>
+                            <td><code>laterality</code></td>
+                            <td><code>get laterality()</code></td>
+                            <td>Accessor</td>
+                            <td>Gets the Laterality value.</td>
+                        </tr>
+                        <tr>
+                            <td><code>protocolName</code></td>
+                            <td><code>get protocolName()</code></td>
+                            <td>Accessor</td>
+                            <td>Gets the Protocol Name value.</td>
+                        </tr>
+                        <tr>
+                            <td><code>operatorsName</code></td>
+                            <td><code>get operatorsName()</code></td>
+                            <td>Accessor</td>
+                            <td>Gets the Operators Name value.</td>
+                        </tr>
+                        <tr>
+                            <td><code>modality</code></td>
+                            <td><code>get modality()</code></td>
+                            <td>Accessor</td>
+                            <td>Gets the Modality value.</td>
+                        </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h5>Methods</h5>
+
+                    <p>No methods declared for this type.</p>
+                        <h5>Constructors</h5>
+
+                    <article class="member-doc">
+                        <h6><code>constructor(attributeSet)</code></h6>
+                        <p>Construct an Pixel Module Accessor instance.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>attributeSet</code></td>
+                                <td><a href="attribute-set.html"><code>AttributeSet</code></a></td>
+                                <td>Parameter used by this member.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    </div>
+                <div class="doc-tab-panel" data-tab-panel="neutral">
+                    <h4>Language-Neutral Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-text">pipeline := EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toInstances()
+  .build()
+
+resultCollection := pipeline.process(source)
+result := resultCollection.first()
+
+# Type usage
+generalSeriesModule := GeneralSeriesModule(result.dataSet)</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: access module-level metadata for routing and transformation.</p>
+                    <pre><code class="language-text">ingestResultCollection := ingestPipeline.process(source)
+ingestResult := ingestResultCollection.first()
+generalSeriesModule := GeneralSeriesModule(ingestResult.dataSet)
+seriesInstanceUid := generalSeriesModule.seriesInstanceUid
+modalityCode := generalSeriesModule.modality.ID</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="javascript">
+                    <h4>JavaScript Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-javascript">const pipeline = EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toInstances()
+  .build();
+
+const resultCollection = await pipeline.process(source);
+const result = resultCollection.first();
+
+// Type usage
+const generalSeriesModule = new GeneralSeriesModule(result.dataSet);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: access module-level metadata for routing and transformation.</p>
+                    <pre><code class="language-javascript">const ingestResultCollection = await ingestPipeline.process(source);
+const ingestResult = ingestResultCollection.first();
+const generalSeriesModule = new GeneralSeriesModule(ingestResult.dataSet);
+const seriesInstanceUid = generalSeriesModule.seriesInstanceUid;
+const modalityCode = generalSeriesModule.modality.ID;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="csharp">
+                    <h4>C# Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-csharp">var pipeline = EASI.PipelineBuilder()
+    .FromPartStream()
+    .OfDicomData()
+    .ToInstances()
+    .Build();
+
+var resultCollection = await pipeline.Process(source);
+var result = resultCollection.First();
+
+// Type usage
+var generalSeriesModule = new GeneralSeriesModule(result.dataSet);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: access module-level metadata for routing and transformation.</p>
+                    <pre><code class="language-csharp">var ingestResultCollection = await ingestPipeline.Process(source);
+var ingestResult = ingestResultCollection.First();
+var generalSeriesModule = new GeneralSeriesModule(ingestResult.dataSet);
+var seriesInstanceUid = generalSeriesModule.seriesInstanceUid;
+var modalityCode = generalSeriesModule.modality.ID;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="java">
+                    <h4>Java Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-java">var pipeline = EASI.pipelineBuilder()
+    .fromPartStream()
+    .ofDicomData()
+    .toInstances()
+    .build();
+
+var resultCollection = pipeline.process(source);
+var result = resultCollection.first();
+
+// Type usage
+var generalSeriesModule = new GeneralSeriesModule(result.dataSet);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: access module-level metadata for routing and transformation.</p>
+                    <pre><code class="language-java">var ingestResultCollection = ingestPipeline.process(source);
+var ingestResult = ingestResultCollection.first();
+var generalSeriesModule = new GeneralSeriesModule(ingestResult.dataSet);
+var seriesInstanceUid = generalSeriesModule.seriesInstanceUid;
+var modalityCode = generalSeriesModule.modality.ID;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="python">
+                    <h4>Python Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-python">pipeline = (
+    EASI.pipeline_builder()
+    .from_part_stream()
+    .of_dicom_data()
+    .to_instances()
+    .build()
+)
+
+result_collection = pipeline.process(source)
+result = result_collection.first()
+
+# Type usage
+general_series_module = GeneralSeriesModule(result.data_set)</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: access module-level metadata for routing and transformation.</p>
+                    <pre><code class="language-python">ingest_result_collection = ingest_pipeline.process(source)
+ingest_result = ingest_result_collection.first()
+general_series_module = GeneralSeriesModule(ingest_result.data_set)
+series_instance_uid = general_series_module.seriesInstanceUid
+modality_code = general_series_module.modality.ID</code></pre>
+                </div>
+
+                <div class="doc-tab-panel" data-tab-panel="uml">
+                    <h4>UML Class Diagram</h4>
+                    <p>Direct type relationships rendered as an inline UML SVG diagram.</p>
+
+                    <div class="uml-diagram">
+                        <svg class="uml-svg" viewBox="0 0 738 280" role="img" aria-label="GeneralSeriesModule UML diagram">
+                            <defs>
+                                <marker id="uml-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                                </marker>
+                                <marker id="uml-triangle" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto">
+                                    <path d="M 0 0 L 12 6 L 0 12 z"></path>
+                                </marker>
+                                <marker id="uml-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                                <marker id="uml-open-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                            </defs>
+        <path class="uml-edge dashed" d="M 278 140 C 368 140, 340 56, 430 56" marker-end="url(#uml-arrow)"></path>
+        <path class="uml-edge" d="M 278 140 C 368 140, 340 140, 430 140" marker-end="url(#uml-triangle)"></path>
+        <path class="uml-edge dashed" d="M 278 140 C 368 140, 340 224, 430 224" marker-end="url(#uml-arrow)"></path>
+        <g class="uml-node primary">
+            <title>GeneralSeriesModule</title>
+            <rect x="28" y="108" width="250" height="64" rx="8" ry="8"></rect>
+            <text x="153" y="140" text-anchor="middle" dominant-baseline="middle">GeneralSeriesModule</text>
+        </g>
+        <g class="uml-node">
+            <title>Modality</title>
+            <rect x="430" y="28" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="56" text-anchor="middle" dominant-baseline="middle">Modality</text>
+        </g>
+        <g class="uml-node">
+            <title>Module</title>
+            <rect x="430" y="112" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="140" text-anchor="middle" dominant-baseline="middle">Module</text>
+        </g>
+        <g class="uml-node">
+            <title>Tag</title>
+            <rect x="430" y="196" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="224" text-anchor="middle" dominant-baseline="middle">Tag</text>
+        </g>
+        <text class="uml-edge-label" x="354" y="90" text-anchor="middle">..&gt; uses</text>
+        <text class="uml-edge-label" x="354" y="132" text-anchor="middle">--|&gt; inherits</text>
+        <text class="uml-edge-label" x="354" y="174" text-anchor="middle">..&gt; uses</text>
+                            
+                        </svg>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Relationship</th>
+                                    <th>Target</th>
+                                    <th>Intent</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <tr>
+                            <td><code>GeneralSeriesModule</code></td>
+                            <td><code>..&gt;</code></td>
+                            <td><code>Modality</code></td>
+                            <td>uses</td>
+                        </tr>
+                        <tr>
+                            <td><code>GeneralSeriesModule</code></td>
+                            <td><code>--|&gt;</code></td>
+                            <td><code>Module</code></td>
+                            <td>inherits</td>
+                        </tr>
+                        <tr>
+                            <td><code>GeneralSeriesModule</code></td>
+                            <td><code>..&gt;</code></td>
+                            <td><code>Tag</code></td>
+                            <td>uses</td>
+                        </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Common Relationships</h3>
+                <p><a href="modality.html"><code>Modality</code></a>, <a href="module.html"><code>Module</code></a>, <a href="tag.html"><code>Tag</code></a></p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Typical Output Context</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pipeline Surface</th>
+                            <th>How GeneralSeriesModule Commonly Appears</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>toInstances()</code></td>
+                            <td>Directly emitted, nested, or referenced as part of instance materialization output.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toSelection(...)</code></td>
+                            <td>Referenced for targeted extraction and structural traversal.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toMapping(...)</code></td>
+                            <td>Used as source semantics for projection into derived target models.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout warning">
+                    <h4>Specification Boundary</h4>
+                    <p>
+                        This reference describes interoperable semantics and usage intent.
+                        Language-specific implementation internals remain outside normative standard requirements.
+                    </p>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                <a href="index.html">Back to DICOM&reg; Type Index</a>
+            </p>
+        </main>
+    </div>
+</body>
+</html>

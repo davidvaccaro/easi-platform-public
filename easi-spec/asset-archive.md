@@ -6,13 +6,13 @@ Normative for the EASI asset archive package shape and required behavior when an
 
 ## Purpose
 
-Define a portable, non-DICOM package for workflows that need:
+Define a portable, non-DICOM&reg; package for workflows that need:
 
 - mapped metadata in JSON
 - image frames in standard image formats (`png`, `jpeg`, `tiff`)
 - optional bulk content payload files
 
-This archive is intended as a derived interchange package. It is not a replacement for canonical DICOM for long-term clinical archive obligations.
+This archive is intended as a derived interchange package. It is not a replacement for canonical DICOM&reg; for long-term clinical archive obligations.
 
 ## Package Container
 

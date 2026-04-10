@@ -1,16 +1,16 @@
 # `Tag` Class
 
-A DICOM `Tag` represents a unique identifier for a specific attribute or element in a DICOM dataset.
+A DICOM&reg; `Tag` represents a unique identifier for a specific attribute or element in a DICOM&reg; dataset.
 
 Each tag is composed of a Group Number and an Element Number (written as (gggg,eeee)), and it defines a single piece of information — for example: Patient Name (0010,0010), Study Date (0008,0020), or Pixel Data (7FE0,0010).
 
-The EASI DICOM `Tag` class is a static accessor class that defines all known DICOM Tags.
+The EASI DICOM&reg; `Tag` class is a static accessor class that defines all known DICOM&reg; Tags.
 
-It represents the full set of DICOM Tags as a static map of `Tag` instances and provides static access via tag identifier lookup, utilities for working with DICOM data element tags, tag identifier generation, and detection of private tags.
+It represents the full set of DICOM&reg; Tags as a static map of `Tag` instances and provides static access via tag identifier lookup, utilities for working with DICOM&reg; data element tags, tag identifier generation, and detection of private tags.
 
-For further details on DICOM Tags in the DICOM Standard, see:
+For further details on DICOM&reg; Tags in the DICOM&reg; Standard, see:
 
-[Official DICOM Standard - Data Element Tags](https://dicom.nema.org/medical/dicom/current/output/html/part06.html#table_6-1)
+[Official DICOM&reg; Standard - Data Element Tags](https://dicom.nema.org/medical/dicom/current/output/html/part06.html#table_6-1)
 
 ---
 
@@ -22,8 +22,8 @@ Each `Tag` instance provides:
 |-------------|----------|---------------------------------------------|
 | `ID`        | string   | Tag identifier (e.g., `'00020000'`).         |
 | `Tag`       | string   | Tag in format `(gggg, eeee)`                 |
-| `Group`     | number   | DICOM Group Number.                         |
-| `Element`   | number   | DICOM Element Number.                       |
+| `Group`     | number   | DICOM&reg; Group Number.                         |
+| `Element`   | number   | DICOM&reg; Element Number.                       |
 | `VR`        | string   | Value Representation.                       |
 | `VM`        | object   | Value Multiplicity, e.g., `{ Exact: 1 }`.    |
 | `Name`      | string   | Tag name.                                   |
@@ -36,18 +36,18 @@ Each `Tag` instance provides:
 
 ### `Tag.identifier(group, element)`
 
-Constructs a DICOM tag identifier from a specified group and element.
+Constructs a DICOM&reg; tag identifier from a specified group and element.
 
 | Parameter | Type                  | Description                        |
 |-----------|-----------------------|------------------------------------|
-| group     | `number` or `byte[]`   | The DICOM Group Number              |
-| element   | `number` or `byte[]`   | The DICOM Element Number            |
+| group     | `number` or `byte[]`   | The DICOM&reg; Group Number              |
+| element   | `number` or `byte[]`   | The DICOM&reg; Element Number            |
 
 #### Returns
 
 | Type     | Description                                  |
 |----------|----------------------------------------------|
-| `string` | DICOM tag identifier in the form 'ggggeeee'   |
+| `string` | DICOM&reg; tag identifier in the form 'ggggeeee'   |
 
 ---
 
@@ -57,7 +57,7 @@ Finds and returns the corresponding `Tag` instance for the given tag identifier.
 
 | Parameter | Type     | Description                               |
 |-----------|----------|-------------------------------------------|
-| id        | `string` | The DICOM tag identifier (e.g., '00020000') |
+| id        | `string` | The DICOM&reg; tag identifier (e.g., '00020000') |
 
 | Returns   | Type   | Description                               |
 |-----------|--------|-------------------------------------------|
@@ -67,11 +67,11 @@ Finds and returns the corresponding `Tag` instance for the given tag identifier.
 
 ### `Tag.isPrivateGroup(group)`
 
-Determines whether the specified DICOM group number represents a **private group**.
+Determines whether the specified DICOM&reg; group number represents a **private group**.
 
 | Parameter | Type     | Description                |
 |-----------|----------|----------------------------|
-| group     | `number` | The DICOM Group Number.     |
+| group     | `number` | The DICOM&reg; Group Number.     |
 
 #### Returns
 
@@ -83,12 +83,12 @@ Determines whether the specified DICOM group number represents a **private group
 
 ### `Tag.isPrivateCreatorIDTag(group, element)`
 
-Determines whether the specified DICOM group and element identify a **Private Creator ID Tag**.
+Determines whether the specified DICOM&reg; group and element identify a **Private Creator ID Tag**.
 
 | Parameter | Type     | Description                      |
 |-----------|----------|----------------------------------|
-| group     | `number` | The DICOM Group Number.           |
-| element   | `number` | The DICOM Element Number.         |
+| group     | `number` | The DICOM&reg; Group Number.           |
+| element   | `number` | The DICOM&reg; Element Number.         |
 
 #### Returns
 
@@ -96,18 +96,18 @@ Determines whether the specified DICOM group and element identify a **Private Cr
 |-----------|-----------------------------------------------------|
 | `boolean` | `true` if the group/element is a Private Creator ID Tag, otherwise `false`. |
 
-**Reference:** [DICOM Part 5 §7.8](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html)
+**Reference:** [DICOM&reg; Part 5 §7.8](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html)
 
 ---
 
 ### `Tag.isPrivateTag(group, element)`
 
-Determines whether the specified DICOM group and element identify a **Private Tag**.
+Determines whether the specified DICOM&reg; group and element identify a **Private Tag**.
 
 | Parameter | Type     | Description                      |
 |-----------|----------|----------------------------------|
-| group     | `number` | The DICOM Group Number.           |
-| element   | `number` | The DICOM Element Number.         |
+| group     | `number` | The DICOM&reg; Group Number.           |
+| element   | `number` | The DICOM&reg; Element Number.         |
 
 #### Returns
 
@@ -115,11 +115,11 @@ Determines whether the specified DICOM group and element identify a **Private Ta
 |-----------|--------------------------------------------------|
 | `boolean` | `true` if the group/element is a Private Tag, otherwise `false`. |
 
-**Reference:** [DICOM Part 5 §7.8](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html)
+**Reference:** [DICOM&reg; Part 5 §7.8](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html)
 
 ---
 
-## Static Properties (Common DICOM Tags)
+## Static Properties (Common DICOM&reg; Tags)
 
 | Property Name                                 | Tag Identifier  | Description (Name)                           |
 |-----------------------------------------------|-----------------|----------------------------------------------|
@@ -146,7 +146,7 @@ Determines whether the specified DICOM group and element identify a **Private Ta
 
 ## PhotometricInterpretationType Enumeration
 
-The `PhotometricInterpretationType` enumeration defines constants representing various DICOM photometric interpretation values. These values describe the intended interpretation of pixel data in an image (e.g., grayscale, color).
+The `PhotometricInterpretationType` enumeration defines constants representing various DICOM&reg; photometric interpretation values. These values describe the intended interpretation of pixel data in an image (e.g., grayscale, color).
 
 | Value                          | Description                                 |
 |-------------------------------|---------------------------------------------|
@@ -170,7 +170,7 @@ The `PhotometricInterpretationType` enumeration defines constants representing v
 ```js
 import Tag from 'easi-dicom/dicom/Tag';
 
-// Create a DICOM tag identifier for group 0x0002 and element 0x0000
+// Create a DICOM&reg; tag identifier for group 0x0002 and element 0x0000
 const tagId = Tag.identifier(0x0002, 0x0000);
 console.log(tagId); // Output: "00020000"
 

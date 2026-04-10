@@ -1,6 +1,6 @@
 # `Utilities` Class
 
-The `Utilities` class provides a collection of static helper functions used in DICOM parsing and manipulation — including byte manipulation, string parsing, date parsing, and endian-handling.
+The `Utilities` class provides a collection of static helper functions used in DICOM&reg; parsing and manipulation — including byte manipulation, string parsing, date parsing, and endian-handling.
 
 ---
 
@@ -64,7 +64,7 @@ Performs a **deep copy** of the specified array.
 
 ### `getItem()`
 
-Returns the **byte buffer** for a DICOM *Item* marker.
+Returns the **byte buffer** for a DICOM&reg; *Item* marker.
 
 | Parameters | None |
 
@@ -76,7 +76,7 @@ Returns the **byte buffer** for a DICOM *Item* marker.
 
 ### `getEndSequence()`
 
-Returns the **byte buffer** for a DICOM *End Sequence* marker.
+Returns the **byte buffer** for a DICOM&reg; *End Sequence* marker.
 
 | Parameters | None |
 
@@ -88,11 +88,11 @@ Returns the **byte buffer** for a DICOM *End Sequence* marker.
 
 ### `parseDA(value)`
 
-Parses a DICOM **DA (Date)** value string into a `Date` object.
+Parses a DICOM&reg; **DA (Date)** value string into a `Date` object.
 
 | Parameter | Type    | Description                          |
 |-----------|---------|--------------------------------------|
-| `value`   | `string`| DICOM DA format: `YYYYMMDD`.          |
+| `value`   | `string`| DICOM&reg; DA format: `YYYYMMDD`.          |
 
 | Returns   | Description              |
 |-----------|--------------------------|
@@ -102,11 +102,11 @@ Parses a DICOM **DA (Date)** value string into a `Date` object.
 
 ### `parseDT(value)`
 
-Parses a DICOM **DT (DateTime)** value string into a `Date` object.
+Parses a DICOM&reg; **DT (DateTime)** value string into a `Date` object.
 
 | Parameter | Type    | Description                                             |
 |-----------|---------|---------------------------------------------------------|
-| `value`   | `string`| DICOM DT format: `YYYYMMDDHHMMSS.FFFFFF&ZZXX`.            |
+| `value`   | `string`| DICOM&reg; DT format: `YYYYMMDDHHMMSS.FFFFFF&ZZXX`.            |
 
 | Returns   | Description              |
 |-----------|--------------------------|
@@ -116,11 +116,11 @@ Parses a DICOM **DT (DateTime)** value string into a `Date` object.
 
 ### `parseTM(value)`
 
-Parses a DICOM **TM (Time)** value string into a `Date` object.
+Parses a DICOM&reg; **TM (Time)** value string into a `Date` object.
 
 | Parameter | Type    | Description                               |
 |-----------|---------|-------------------------------------------|
-| `value`   | `string`| DICOM TM format: `HHMMSS.FFFFFF`.          |
+| `value`   | `string`| DICOM&reg; TM format: `HHMMSS.FFFFFF`.          |
 
 | Returns   | Description              |
 |-----------|--------------------------|

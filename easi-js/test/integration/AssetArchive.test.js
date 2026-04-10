@@ -89,6 +89,21 @@ function readZipEntry(bytes, name) {
 
 }
 
+function concatChunks(chunks) {
+
+    var total = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+    var output = new Uint8Array(total);
+    var offset = 0;
+
+    for (var i = 0; i < chunks.length; i++) {
+        output.set(chunks[i], offset);
+        offset += chunks[i].length;
+    }
+
+    return output;
+
+}
+
 test('Test: toAssetArchive packages metadata and PNG frame payloads into ZIP', async () => {
 
     var result = await EASI.pipelineBuilder()
@@ -137,3 +152,42 @@ test('Test: toAssetArchive packages metadata and PNG frame payloads into ZIP', a
 
 });
 
+test('Test: toAssetArchive can stream ZIP chunks without materializing archive bytes in-memory', async () => {
+
+    var chunks = [];
+
+    var result = await EASI.pipelineBuilder()
+        .fromPartStream()
+        .ofDicomData()
+        .toAssetArchive({
+            metadata: {
+                mapping: new DicomToFHIRImagingStudyMapping()
+            },
+            payload: {
+                frame: {
+                    frames: 'first',
+                    decode: 'rgba',
+                    encode: 'png'
+                }
+            },
+            collectOutput: false,
+            onChunk: (chunk) => chunks.push(chunk)
+        })
+        .build()
+        .process(readDicomBytes('0002.DCM'));
+
+    expect(result.resultType).toBe('PipelineOperationResult');
+    expect(result.operation).toBe('toAssetArchive');
+    expect(result.materialized).toBe(false);
+    expect(result.bytesWritten).toBeGreaterThan(0);
+    expect(chunks.length).toBeGreaterThan(0);
+
+    var archiveBytes = concatChunks(chunks);
+    expect(archiveBytes.length).toBe(result.bytesWritten);
+
+    var entryNames = listZipEntries(archiveBytes).map((entry) => entry.name);
+    expect(entryNames).toContain('metadata.json');
+    expect(entryNames).toContain('manifest.json');
+    expect(entryNames).toContain('frames/frame-000001.png');
+
+});

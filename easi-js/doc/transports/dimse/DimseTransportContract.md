@@ -40,4 +40,4 @@ The transport is responsible for destination DIMSE writes (typically C-STORE SCU
 
 - DIMSE reader is configured without a source transport.
 - DIMSE writer is configured without a destination transport.
-- DIMSE writer is used without a terminal DICOM byte handler (`toDicomData(...)`).
+- DIMSE writer is used without a terminal DICOM&reg; byte handler (`toDicomData(...)`).

@@ -1,8 +1,8 @@
 # `Configuration` Class
 
-The `Configuration` class provides global configuration for EASI DICOM including configurable elements such as which encoders/decoders to use when processing encoded pixel data.  
+The `Configuration` class provides global configuration for EASI DICOM&reg; including configurable elements such as which encoders/decoders to use when processing encoded pixel data.  
 
-Decoding is manageed as a mapping between DICOM Transfer Syntaxes and their corresponding decoder instances, allowing dynamic control of how pixel data is interpreted and decoded.
+Decoding is manageed as a mapping between DICOM&reg; Transfer Syntaxes and their corresponding decoder instances, allowing dynamic control of how pixel data is interpreted and decoded.
 
 ---
 
@@ -42,14 +42,14 @@ Creates a new independent `CodecRegistry` pre-populated with the same default de
 
 ### `getDecoderFor(transferSyntax, dicomObject)`
 
-Returns a new decoder instance appropriate for the specified DICOM Transfer Syntax.
+Returns a new decoder instance appropriate for the specified DICOM&reg; Transfer Syntax.
 
 #### Parameters
 
 | Parameter        | Type    | Description                          |
 |------------------|---------|--------------------------------------|
 | `transferSyntax` | `TransferSyntax`     | The Transfer Syntax object.           |
-| `dicomObject`    | `*`     | The DICOM object to decode.           |
+| `dicomObject`    | `*`     | The DICOM&reg; object to decode.           |
 
 #### Returns
 

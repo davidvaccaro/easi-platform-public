@@ -1,13 +1,13 @@
 # `TransferSyntax` Class
 
-Transfer Syntaxes are central to decoding and interpreting DICOM streams, determining how pixel data and elements are encoded.
+Transfer Syntaxes are central to decoding and interpreting DICOM&reg; streams, determining how pixel data and elements are encoded.
 
-The EASI DICOM `TransferSyntax` class is a static accessor class that defines all known DICOM Transfer Syntaxes.
+The EASI DICOM&reg; `TransferSyntax` class is a static accessor class that defines all known DICOM&reg; Transfer Syntaxes.
 
 It represents the full set of Transfer Syntax values as a static map of `TransferSyntax` instances and provides static access via well-known UIDs through dynamic lookup as well as exposing a full complement of static Transfer Syntax accessor properties.
 
-For further details on Transfer Syntaxes in the DICOM Standard, see:  
-[Official DICOM Standard — Transfer Syntaxes](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_A.4.html)
+For further details on Transfer Syntaxes in the DICOM&reg; Standard, see:  
+[Official DICOM&reg; Standard — Transfer Syntaxes](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_A.4.html)
 
 ---
 
@@ -24,13 +24,13 @@ Each `TransferSyntax` instance provides:
 | `IsCompressed`    | `bool`    | Whether this syntax represents compressed data.  |
 | `IsLossy`         | `bool`    | Whether compression is lossy.                    |
 | `ApplicationType` | `string`  | The `TransferSyntaxApplicationType` — e.g. `SingleFrame`, `Video`, etc. |
-| `IsRetired`       | `bool`    | Whether the syntax is retired in the DICOM standard. |
+| `IsRetired`       | `bool`    | Whether the syntax is retired in the DICOM&reg; standard. |
 
 ---
 
 ## TransferSyntaxApplicationType Enumeration
 
-The `TransferSyntaxApplicationType` enumeration defines the categories of data that a DICOM Transfer Syntax can apply to. These values indicate the type of media or structure the Transfer Syntax is designed to encode.
+The `TransferSyntaxApplicationType` enumeration defines the categories of data that a DICOM&reg; Transfer Syntax can apply to. These values indicate the type of media or structure the Transfer Syntax is designed to encode.
 
 | Value                                                   | Description                                     |
 |--------------------------------------------------------|-------------------------------------------------|

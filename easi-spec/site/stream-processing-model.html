@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Normative stream processing model for EASI pipelines, including parser-to-handler lifecycle protocol semantics.">
+    <title>EASI | Stream Processing Model</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Stream Processing Model</h2>
+                <p>
+                    EASI is stream-first by design. Pipelines are not only compositional contracts; they are
+                    deterministic streaming protocols where the parser emits lifecycle events, handlers consume
+                    and transform those events, and returned statuses control parser progression in real time.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Why Stream-First Matters</h3>
+                <div class="grid three">
+                    <article class="card">
+                        <h4>Incremental Processing</h4>
+                        <p>Large DICOM&reg; payloads can be processed as data arrives instead of waiting for full materialization.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Deterministic Control</h4>
+                        <p>Status responses provide explicit flow control for continue, skip, jump, stop, and fail behavior.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Composable Runtime Policy</h4>
+                        <p>Validation, de-identification, transcoding, and mapping filters execute in one ordered stream.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Canonical Stream Protocol</h3>
+                <pre><code>Reader -> Parser -> Handler Chain -> Status -> Parser -> Reader (next bytes)</code></pre>
+                <div class="callout normative">
+                    <h4>Normative Contract</h4>
+                    <p>
+                        For canonical DICOM&reg; parsing, parser lifecycle events are the protocol backbone.
+                        Handler-returned statuses MUST be interpreted consistently to preserve deterministic stream behavior.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Parser-Handler Handshake</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Step</th>
+                            <th>Parser Action</th>
+                            <th>Handler Response</th>
+                            <th>Parser Behavior</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Emit lifecycle event (<code>onStart*</code>, <code>onAppend*</code>, <code>onEnd*</code>).</td>
+                            <td>Return status (or default continue).</td>
+                            <td>Normalize status and update stream flow state.</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Continue parsing current structure.</td>
+                            <td><code>CONTINUE</code> / <code>SUCCESS</code></td>
+                            <td>Read next bytes and emit next deterministic event.</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Encounter branchable subtree (sequence/item/segment).</td>
+                            <td><code>SKIP</code> / <code>JUMP</code></td>
+                            <td>Skip target scope using structural boundaries.</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Receive terminal directive.</td>
+                            <td><code>STOP</code> / <code>FAIL</code></td>
+                            <td>Finalize safely or abort with structured error state.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Execution Contexts</h3>
+                <div class="grid two">
+                    <article class="card">
+                        <h4>Transactional</h4>
+                        <p>One request/source input, one streaming transaction, one result collection.</p>
+                        <pre><code>resultCollection := pipeline.process(source)</code></pre>
+                    </article>
+                    <article class="card">
+                        <h4>Listener</h4>
+                        <p>Source is transport-bound (for example DIMSE C-STORE SCP) and stream transactions arrive continuously.</p>
+                        <pre><code>run := pipeline.start(options)
+... onResult per transaction ...
+run.stop()</code></pre>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Minimal Stream Trace</h3>
+                <pre><code>onStartInstance
+  onStartMetaSet
+    onStartAttribute (0002,0010)
+    onAppendAttribute (0002,0010)
+    onEndAttribute   (0002,0010)
+  onEndMetaSet
+  onStartDataSet
+    onStartAttribute (0010,0010)
+    onAppendAttribute (0010,0010)
+    onEndAttribute   (0010,0010)
+  onEndDataSet
+onEndInstance</code></pre>
+            </section>
+
+            <section class="section reveal">
+                <h3>Advanced Stream Trace (Nested Sequence)</h3>
+                <pre><code>onStartInstance
+  onStartMetaSet
+    onStartAttribute (0002,0010)
+    onAppendAttribute (0002,0010)
+    onEndAttribute   (0002,0010)
+  onEndMetaSet
+  onStartDataSet
+    onStartAttribute (0020,000D)
+    onAppendAttribute (0020,000D)
+    onEndAttribute   (0020,000D)
+    onStartSequence  (0008,1115)   // ReferencedSeriesSequence
+      onStartItem
+        onStartAttribute (0020,000E)
+        onAppendAttribute (0020,000E)
+        onEndAttribute   (0020,000E)
+        onStartSequence  (0008,114A) // ReferencedInstanceSequence
+          onStartItem
+            onStartAttribute (0008,1155)
+            onAppendAttribute (0008,1155)
+            onEndAttribute   (0008,1155)
+          onEndItem
+        onEndSequence   (0008,114A)
+      onEndItem
+    onEndSequence     (0008,1115)
+  onEndDataSet
+onEndInstance</code></pre>
+            </section>
+
+            <section class="section reveal">
+                <h3>Next: Stream Lifecycle</h3>
+                <p>
+                    This page defines the stream-processing backbone. The
+                    <a href="lifecycle-status.html">Stream Lifecycle</a> page provides the detailed canonical
+                    event vocabulary, status matrix, and determinism requirements, followed by
+                    <a href="materialization-model.html">Materialization Model</a> for output realization strategy.
+                </p>
+            </section>
+
+            <p class="footer-note">
+                Normative page: stream protocol semantics that govern parser-handler execution behavior.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

@@ -2,13 +2,13 @@
 
 `Modality` identifies the type of equipment or imaging procedure used to acquire the data (e.g., CT for Computed Tomography, MR for Magnetic Resonance Imaging, US for Ultrasound).
 
-The EASI DICOM `Modality` class is a static accessor class that defines all known DICOM Modalities.
+The EASI DICOM&reg; `Modality` class is a static accessor class that defines all known DICOM&reg; Modalities.
 
 It represents the full set of Modality values as a static map of `Modality` instances and provides static access via well-known IDs through dynamic lookup as well as exposing a full complement of static Modality accessor properties.
 
-For further details on Modality in the DICOM Standard, see: 
+For further details on Modality in the DICOM&reg; Standard, see: 
 
-[Official DICOM Standard — Modality](https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.3.1.html#table_C.7-3)
+[Official DICOM&reg; Standard — Modality](https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.3.1.html#table_C.7-3)
 
 
 ---
@@ -21,10 +21,10 @@ A `Modality` instance has the following properties:
 
 | Property        | Type      | Description |
 |-----------------|-----------|-------------|
-| `ID`            | `string`  | The DICOM modality code (e.g. `'CT'`, `'MR'`, `'XA'`) |
+| `ID`            | `string`  | The DICOM&reg; modality code (e.g. `'CT'`, `'MR'`, `'XA'`) |
 | `Name`          | `string`  | Human-readable name for the modality |
 | `IsMultiFrame`  | `boolean` | Indicates if this modality typically produces multi-frame images |
-| `IsRetired`     | `boolean` | Indicates if this modality is retired in the DICOM standard |
+| `IsRetired`     | `boolean` | Indicates if this modality is retired in the DICOM&reg; standard |
 
 ## Static Methods
 
@@ -44,7 +44,7 @@ Finds a Modality by its UID.
 |--------------------------|-------------------------------------------|
 | `Modality` or `undefined` | The matching modality instance, or `undefined` if not found. |
 
-## Common DICOM Modalities
+## Common DICOM&reg; Modalities
 
 | Code  | Name                           |
 |-------|--------------------------------|

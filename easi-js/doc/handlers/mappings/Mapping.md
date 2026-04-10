@@ -1,6 +1,6 @@
 # `Mapping` Class
 
-The `Mapping` class defines DICOM-to-target mapping behavior used by streaming mapping handlers.
+The `Mapping` class defines DICOM&reg;-to-target mapping behavior used by streaming mapping handlers.
 
 ---
 

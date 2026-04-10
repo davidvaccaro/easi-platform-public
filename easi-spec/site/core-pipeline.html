@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Normative EASI core pipeline model and component contracts.">
+    <title>EASI | Core Pipeline Model</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Core Pipeline Model</h2>
+                <p>
+                    This page defines the normative execution model for EASI pipelines. All conforming implementations
+                    must preserve these semantics even when language syntax differs.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Canonical Topology</h3>
+                <pre><code>Reader -> Parser -> [Adapter] -> [Filter ...] -> Terminal -> [Writer]</code></pre>
+                <div class="callout normative">
+                    <h4>Normative Requirement</h4>
+                    <p>
+                        Conforming implementations MUST preserve stage ordering and data responsibility boundaries.
+                        Internal class names and object models MAY vary by language.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Component Contracts</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Primary Responsibility</th>
+                            <th>Normative Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Reader</td>
+                            <td>Acquire source bytes/parts and forward parser-ready payloads.</td>
+                            <td>MUST isolate transport mechanics from parse semantics.</td>
+                        </tr>
+                        <tr>
+                            <td>Parser</td>
+                            <td>Decode one source format incrementally into lifecycle events.</td>
+                            <td>MUST implement deterministic status-handling behavior.</td>
+                        </tr>
+                        <tr>
+                            <td>Adapter</td>
+                            <td>Translate metadata syntaxes into canonical DICOM&reg; semantic events.</td>
+                            <td>Required when parser event model is not canonical DICOM&reg;-native.</td>
+                        </tr>
+                        <tr>
+                            <td>Filter</td>
+                            <td>Apply ordered semantic transformations/validation.</td>
+                            <td>MUST preserve upstream semantics unless explicitly configured otherwise.</td>
+                        </tr>
+                        <tr>
+                            <td>Terminal</td>
+                            <td>Materialize final output contract (instance/mapping/selection/assets).</td>
+                            <td>MUST be last semantic stage before optional writer packaging.</td>
+                        </tr>
+                        <tr>
+                            <td>Writer</td>
+                            <td>Package terminal output for downstream transport or stream sinks.</td>
+                            <td>MAY be omitted if terminal output is final consumer payload.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Builder Intent Semantics</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Intent Prefix</th>
+                            <th>Meaning</th>
+                            <th>Examples</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>from...</code></td>
+                            <td>Select source mode/transport family.</td>
+                            <td><code>fromHttpStream</code>, <code>fromPartStream</code>, <code>fromDimseAssociation</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>of...</code></td>
+                            <td>Select parse format behavior.</td>
+                            <td><code>ofDicomData</code>, <code>ofDicomMetadata</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>with...</code></td>
+                            <td>Apply explicit configuration and semantic filters.</td>
+                            <td><code>withDeIdentification</code>, <code>withValidation</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>to...</code></td>
+                            <td>Declare terminal output contract.</td>
+                            <td><code>toInstances</code>, <code>toMapping</code>, <code>toSelection</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>into...</code></td>
+                            <td>Apply output packaging/writer transport.</td>
+                            <td><code>intoByteStream</code>, <code>intoDimseAssociation</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>build()</code></td>
+                            <td>Compose and validate final pipeline.</td>
+                            <td>Must fail fast on invalid composition.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Pipeline Use-Case Gallery</h3>
+                <p>
+                    The examples below show what pipelines are for, how they are composed, and how one fluent model
+                    supports common DICOM&reg; workflows from simple reading through de-identification, transcoding,
+                    and asset extraction.
+                </p>
+                <p class="page-meta">
+                    Execution failures surface as thrown exceptions from <code>process(...)</code>. The samples also
+                    demonstrate contract-level success checks using <code>resultCollection.first()</code> (for example
+                    <code>bytesWritten &gt; 0</code> for writer paths; some writers also provide transport-specific
+                    fields such as <code>ok</code> and <code>status</code>).
+                </p>
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Pipeline example tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="neutral">
+                        <h4>Language-Neutral Examples</h4>
+                        <p>Typical use case: native DICOM&reg; reader to instance output.</p>
+                        <pre><code class="language-text">sourceUrl := "http://localhost:8042/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}"
+
+readerPipeline := EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .toInstances()
+  .build()
+
+instanceCollection := readerPipeline.process(sourceUrl)
+instance := instanceCollection.first()
+studyUid := instance.dataSet.value(Tag.StudyInstanceUID)</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: de-identify and write a clean DICOM&reg; output file.</p>
+                        <pre><code class="language-text">sourcePath := "/var/easi/inbox/ct/CT-001.dcm"
+
+deIdPipeline := EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoFileStream("out/deidentified.dcm")
+  .build()
+
+deIdResults := deIdPipeline.process(sourcePath)
+deIdWrite := deIdResults.first()
+if (deIdWrite == null) OR (deIdWrite.bytesWritten <= 0):
+  fail("De-identification pipeline did not produce output bytes")</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: strictly redact known burned-in overlay regions in a US image.</p>
+                        <pre><code class="language-text">usSourcePath := "/var/easi/inbox/us/US-PAL-8-10x-echo.dcm"
+
+usRedactionPipeline := EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .withBurnedInRedaction({
+    mode: "regions",
+    regions: [
+      { x: 24, y: 10, width: 220, height: 40 },
+      { x: 24, y: 54, width: 260, height: 30 }
+    ]
+  })
+  .toDicomData()
+  .intoFileStream("out/us-redacted.dcm")
+  .build()
+
+usRedactionResults := usRedactionPipeline.process(usSourcePath)
+usRedactionWrite := usRedactionResults.first()
+if (usRedactionWrite == null) OR (usRedactionWrite.bytesWritten <= 0):
+  fail("US redaction pipeline did not produce output bytes")</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: transcode to Explicit VR Little Endian for downstream compatibility.</p>
+                        <pre><code class="language-text">sourceUrl := "http://localhost:8042/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}"
+
+transcodePipeline := EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoFileStream("out/transcoded-explicit-le.dcm")
+  .build()
+
+transcodeResults := transcodePipeline.process(sourceUrl)
+transcodeWrite := transcodeResults.first()
+if (transcodeWrite == null) OR (transcodeWrite.bytesWritten <= 0):
+  fail("Transcode pipeline did not produce output bytes")</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: extract frames, metadata, and encapsulated content as non-DICOM assets.</p>
+                        <pre><code class="language-text">sourcePath := "/var/easi/inbox/mr/MR-0001.dcm"
+
+assetPipeline := EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .toAssets({
+    metadata: {
+      mapping: DicomToFHIRImagingStudyMapping({ profile: "study-summary" }),
+      collect: true
+    },
+    payload: {
+      frame: { frames: "all", decode: "rgba", encode: "png" },
+      collect: true
+    }
+  })
+  .build()
+
+assetsCollection := assetPipeline.process(sourcePath)
+if assetsCollection.isEmpty:
+  fail("Asset extraction emitted no results")
+assets := assetsCollection.first()
+if assets.instanceUID == null:
+  fail("Asset extraction did not resolve instance UID")
+frameCount := assets.frames.length
+metadataCount := assets.metadata.length
+contentCount := assets.content.length</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="javascript">
+                        <h4>JavaScript Examples</h4>
+                        <p>Typical use case: native DICOM&reg; reader to instance output.</p>
+                        <pre><code class="language-javascript">const sourceUrl = "http://localhost:8042/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+
+const readerPipeline = EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .toInstances()
+  .build();
+
+const instanceCollection = await readerPipeline.process(sourceUrl);
+const instance = instanceCollection.first();
+const studyUid = instance.dataSet.value(Tag.StudyInstanceUID);</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: de-identify and write a clean DICOM&reg; output file.</p>
+                        <pre><code class="language-javascript">const sourcePath = "/var/easi/inbox/ct/CT-001.dcm";
+
+const deIdPipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoFileStream("out/deidentified.dcm")
+  .build();
+
+const deIdResults = await deIdPipeline.process(sourcePath);
+const deIdWrite = deIdResults.first();
+if ((deIdWrite?.bytesWritten ?? 0) <= 0) {
+  throw new Error("De-identification pipeline did not produce output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: strictly redact known burned-in overlay regions in a US image.</p>
+                        <pre><code class="language-javascript">const usSourcePath = "/var/easi/inbox/us/US-PAL-8-10x-echo.dcm";
+
+const usRedactionPipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .withBurnedInRedaction({
+    mode: "regions",
+    regions: [
+      { x: 24, y: 10, width: 220, height: 40 },
+      { x: 24, y: 54, width: 260, height: 30 }
+    ]
+  })
+  .toDicomData()
+  .intoFileStream("out/us-redacted.dcm")
+  .build();
+
+const usRedactionResults = await usRedactionPipeline.process(usSourcePath);
+const usRedactionWrite = usRedactionResults.first();
+if ((usRedactionWrite?.bytesWritten ?? 0) <= 0) {
+  throw new Error("US redaction pipeline did not produce output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: transcode to Explicit VR Little Endian for downstream compatibility.</p>
+                        <pre><code class="language-javascript">const sourceUrl = "http://localhost:8042/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+
+const transcodePipeline = EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoFileStream("out/transcoded-explicit-le.dcm")
+  .build();
+
+const transcodeResults = await transcodePipeline.process(sourceUrl);
+const transcodeWrite = transcodeResults.first();
+if ((transcodeWrite?.bytesWritten ?? 0) <= 0) {
+  throw new Error("Transcode pipeline did not produce output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: extract frames, metadata, and encapsulated content as non-DICOM assets.</p>
+                        <pre><code class="language-javascript">const sourcePath = "/var/easi/inbox/mr/MR-0001.dcm";
+
+const assetPipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .toAssets({
+    metadata: {
+      mapping: new DicomToFHIRImagingStudyMapping({ profile: "study-summary" }),
+      collect: true
+    },
+    payload: {
+      frame: { frames: "all", decode: "rgba", encode: "png" },
+      collect: true
+    }
+  })
+  .build();
+
+const assetsCollection = await assetPipeline.process(sourcePath);
+if (assetsCollection.isEmpty) {
+  throw new Error("Asset extraction emitted no results.");
+}
+const assets = assetsCollection.first();
+if (assets.instanceUID == null) {
+  throw new Error("Asset extraction did not resolve instance UID.");
+}
+const frameCount = assets.frames.length;
+const metadataCount = assets.metadata.length;
+const contentCount = assets.content.length;</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="csharp">
+                        <h4>C# Examples</h4>
+                        <p>Typical use case: native DICOM&reg; reader to instance output.</p>
+                        <pre><code class="language-csharp">var sourceUrl = "http://localhost:8042/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+
+var readerPipeline = EASI.PipelineBuilder()
+    .FromHttpStream()
+    .OfDicomData()
+    .ToInstances()
+    .Build();
+
+var instanceCollection = await readerPipeline.Process(sourceUrl);
+var instance = instanceCollection.First();
+var studyUid = instance.DataSet.Value(Tag.StudyInstanceUID);</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: de-identify and write a clean DICOM&reg; output file.</p>
+                        <pre><code class="language-csharp">var sourcePath = "/var/easi/inbox/ct/CT-001.dcm";
+
+var deIdPipeline = EASI.PipelineBuilder()
+    .FromFileStream()
+    .OfDicomData()
+    .WithDeIdentification(Tag.DefaultDeIdentificationMask)
+    .ToDicomData()
+    .IntoFileStream("out/deidentified.dcm")
+    .Build();
+
+var deIdResults = await deIdPipeline.Process(sourcePath);
+var deIdWrite = deIdResults.First();
+if (Convert.ToInt64(deIdWrite?.bytesWritten ?? 0) <= 0) {
+    throw new InvalidOperationException("De-identification pipeline did not produce output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: strictly redact known burned-in overlay regions in a US image.</p>
+                        <pre><code class="language-csharp">var usSourcePath = "/var/easi/inbox/us/US-PAL-8-10x-echo.dcm";
+
+var usRedactionPipeline = EASI.PipelineBuilder()
+    .FromFileStream()
+    .OfDicomData()
+    .WithDeIdentification(Tag.DefaultDeIdentificationMask)
+    .WithBurnedInRedaction(new {
+        mode = "regions",
+        regions = new[] {
+            new { x = 24, y = 10, width = 220, height = 40 },
+            new { x = 24, y = 54, width = 260, height = 30 }
+        }
+    })
+    .ToDicomData()
+    .IntoFileStream("out/us-redacted.dcm")
+    .Build();
+
+var usRedactionResults = await usRedactionPipeline.Process(usSourcePath);
+var usRedactionWrite = usRedactionResults.First();
+if (Convert.ToInt64(usRedactionWrite?.bytesWritten ?? 0) <= 0) {
+    throw new InvalidOperationException("US redaction pipeline did not produce output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: transcode to Explicit VR Little Endian for downstream compatibility.</p>
+                        <pre><code class="language-csharp">var sourceUrl = "http://localhost:8042/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+
+var transcodePipeline = EASI.PipelineBuilder()
+    .FromHttpStream()
+    .OfDicomData()
+    .WithTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .ToDicomData()
+    .IntoFileStream("out/transcoded-explicit-le.dcm")
+    .Build();
+
+var transcodeResults = await transcodePipeline.Process(sourceUrl);
+var transcodeWrite = transcodeResults.First();
+if (Convert.ToInt64(transcodeWrite?.bytesWritten ?? 0) <= 0) {
+    throw new InvalidOperationException("Transcode pipeline did not produce output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: extract frames, metadata, and encapsulated content as non-DICOM assets.</p>
+                        <pre><code class="language-csharp">var sourcePath = "/var/easi/inbox/mr/MR-0001.dcm";
+
+var assetPipeline = EASI.PipelineBuilder()
+    .FromFileStream()
+    .OfDicomData()
+    .ToAssets(new {
+        metadata = new {
+            mapping = new DicomToFHIRImagingStudyMapping(new { profile = "study-summary" }),
+            collect = true
+        },
+        payload = new {
+            frame = new { frames = "all", decode = "rgba", encode = "png" },
+            collect = true
+        }
+    })
+    .Build();
+
+var assetsCollection = await assetPipeline.Process(sourcePath);
+if (assetsCollection.IsEmpty) {
+    throw new InvalidOperationException("Asset extraction emitted no results.");
+}
+var assets = assetsCollection.First();
+if (assets.InstanceUID == null) {
+    throw new InvalidOperationException("Asset extraction did not resolve instance UID.");
+}
+var frameCount = assets.Frames.Count;
+var metadataCount = assets.Metadata.Count;
+var contentCount = assets.Content.Count;</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="java">
+                        <h4>Java Examples</h4>
+                        <p>Typical use case: native DICOM&reg; reader to instance output.</p>
+                        <pre><code class="language-java">var sourceUrl = "http://localhost:8042/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+
+var readerPipeline = EASI.pipelineBuilder()
+    .fromHttpStream()
+    .ofDicomData()
+    .toInstances()
+    .build();
+
+var instanceCollection = readerPipeline.process(sourceUrl);
+var instance = instanceCollection.first();
+var studyUid = instance.dataSet.value(Tag.StudyInstanceUID);</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: de-identify and write a clean DICOM&reg; output file.</p>
+                        <pre><code class="language-java">var sourcePath = "/var/easi/inbox/ct/CT-001.dcm";
+
+var deIdPipeline = EASI.pipelineBuilder()
+    .fromFileStream()
+    .ofDicomData()
+    .withDeIdentification(Tag.DefaultDeIdentificationMask)
+    .toDicomData()
+    .intoFileStream("out/deidentified.dcm")
+    .build();
+
+var deIdResults = deIdPipeline.process(sourcePath);
+var deIdWrite = deIdResults.first();
+if (((Number)deIdWrite.bytesWritten).longValue() <= 0L) {
+    throw new RuntimeException("De-identification pipeline did not produce output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: strictly redact known burned-in overlay regions in a US image.</p>
+                        <pre><code class="language-java">var usSourcePath = "/var/easi/inbox/us/US-PAL-8-10x-echo.dcm";
+
+var usRedactionPipeline = EASI.pipelineBuilder()
+    .fromFileStream()
+    .ofDicomData()
+    .withDeIdentification(Tag.DefaultDeIdentificationMask)
+    .withBurnedInRedaction(Map.of(
+        "mode", "regions",
+        "regions", List.of(
+            Map.of("x", 24, "y", 10, "width", 220, "height", 40),
+            Map.of("x", 24, "y", 54, "width", 260, "height", 30)
+        )
+    ))
+    .toDicomData()
+    .intoFileStream("out/us-redacted.dcm")
+    .build();
+
+var usRedactionResults = usRedactionPipeline.process(usSourcePath);
+var usRedactionWrite = usRedactionResults.first();
+if (((Number)usRedactionWrite.bytesWritten).longValue() <= 0L) {
+    throw new RuntimeException("US redaction pipeline did not produce output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: transcode to Explicit VR Little Endian for downstream compatibility.</p>
+                        <pre><code class="language-java">var sourceUrl = "http://localhost:8042/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+
+var transcodePipeline = EASI.pipelineBuilder()
+    .fromHttpStream()
+    .ofDicomData()
+    .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .toDicomData()
+    .intoFileStream("out/transcoded-explicit-le.dcm")
+    .build();
+
+var transcodeResults = transcodePipeline.process(sourceUrl);
+var transcodeWrite = transcodeResults.first();
+if (((Number)transcodeWrite.bytesWritten).longValue() <= 0L) {
+    throw new RuntimeException("Transcode pipeline did not produce output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: extract frames, metadata, and encapsulated content as non-DICOM assets.</p>
+                        <pre><code class="language-java">var sourcePath = "/var/easi/inbox/mr/MR-0001.dcm";
+
+var assetPipeline = EASI.pipelineBuilder()
+    .fromFileStream()
+    .ofDicomData()
+    .toAssets(Map.of(
+        "metadata", Map.of(
+            "mapping", new DicomToFHIRImagingStudyMapping(Map.of("profile", "study-summary")),
+            "collect", true
+        ),
+        "payload", Map.of(
+            "frame", Map.of("frames", "all", "decode", "rgba", "encode", "png"),
+            "collect", true
+        )
+    ))
+    .build();
+
+var assetsCollection = assetPipeline.process(sourcePath);
+if (assetsCollection.isEmpty()) {
+    throw new RuntimeException("Asset extraction emitted no results.");
+}
+var assets = assetsCollection.first();
+if (assets.instanceUID == null) {
+    throw new RuntimeException("Asset extraction did not resolve instance UID.");
+}
+var frameCount = assets.frames.size();
+var metadataCount = assets.metadata.size();
+var contentCount = assets.content.size();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="python">
+                        <h4>Python Examples</h4>
+                        <p>Typical use case: native DICOM&reg; reader to instance output.</p>
+                        <pre><code class="language-python">source_url = "http://localhost:8042/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}"
+
+reader_pipeline = (
+    EASI.pipeline_builder()
+    .from_http_stream()
+    .of_dicom_data()
+    .to_instances()
+    .build()
+)
+
+instance_collection = reader_pipeline.process(source_url)
+instance = instance_collection.first()
+study_uid = instance.data_set.value(Tag.study_instance_uid)</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: de-identify and write a clean DICOM&reg; output file.</p>
+                        <pre><code class="language-python">source_path = "/var/easi/inbox/ct/CT-001.dcm"
+
+de_id_pipeline = (
+    EASI.pipeline_builder()
+    .from_file_stream()
+    .of_dicom_data()
+    .with_de_identification(Tag.default_de_identification_mask)
+    .to_dicom_data()
+    .into_file_stream("out/deidentified.dcm")
+    .build()
+)
+
+de_id_results = de_id_pipeline.process(source_path)
+de_id_write = de_id_results.first()
+if (de_id_write is None) or (int(getattr(de_id_write, "bytesWritten", 0)) <= 0):
+    raise RuntimeError("De-identification pipeline did not produce output bytes.")</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: strictly redact known burned-in overlay regions in a US image.</p>
+                        <pre><code class="language-python">us_source_path = "/var/easi/inbox/us/US-PAL-8-10x-echo.dcm"
+
+us_redaction_pipeline = (
+    EASI.pipeline_builder()
+    .from_file_stream()
+    .of_dicom_data()
+    .with_de_identification(Tag.default_de_identification_mask)
+    .with_burned_in_redaction({
+        "mode": "regions",
+        "regions": [
+            {"x": 24, "y": 10, "width": 220, "height": 40},
+            {"x": 24, "y": 54, "width": 260, "height": 30}
+        ]
+    })
+    .to_dicom_data()
+    .into_file_stream("out/us-redacted.dcm")
+    .build()
+)
+
+us_redaction_results = us_redaction_pipeline.process(us_source_path)
+us_redaction_write = us_redaction_results.first()
+if (us_redaction_write is None) or (int(getattr(us_redaction_write, "bytesWritten", 0)) <= 0):
+    raise RuntimeError("US redaction pipeline did not produce output bytes.")</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: transcode to Explicit VR Little Endian for downstream compatibility.</p>
+                        <pre><code class="language-python">source_url = "http://localhost:8042/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}"
+
+transcode_pipeline = (
+    EASI.pipeline_builder()
+    .from_http_stream()
+    .of_dicom_data()
+    .with_transcoding(TransferSyntax.explicit_vr_little_endian.id)
+    .to_dicom_data()
+    .into_file_stream("out/transcoded-explicit-le.dcm")
+    .build()
+)
+
+transcode_results = transcode_pipeline.process(source_url)
+transcode_write = transcode_results.first()
+if (transcode_write is None) or (int(getattr(transcode_write, "bytesWritten", 0)) <= 0):
+    raise RuntimeError("Transcode pipeline did not produce output bytes.")</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: extract frames, metadata, and encapsulated content as non-DICOM assets.</p>
+                        <pre><code class="language-python">source_path = "/var/easi/inbox/mr/MR-0001.dcm"
+
+asset_pipeline = (
+    EASI.pipeline_builder()
+    .from_file_stream()
+    .of_dicom_data()
+    .to_assets({
+        "metadata": {
+            "mapping": DicomToFHIRImagingStudyMapping({"profile": "study-summary"}),
+            "collect": True
+        },
+        "payload": {
+            "frame": {"frames": "all", "decode": "rgba", "encode": "png"},
+            "collect": True
+        }
+    })
+    .build()
+)
+
+assets_collection = asset_pipeline.process(source_path)
+if assets_collection.is_empty:
+    raise RuntimeError("Asset extraction emitted no results.")
+assets = assets_collection.first()
+if getattr(assets, "instanceUID", None) is None:
+    raise RuntimeError("Asset extraction did not resolve instance UID.")
+frame_count = len(assets.frames)
+metadata_count = len(assets.metadata)
+content_count = len(assets.content)</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Filter Composition Order</h3>
+                <p>Default canonical ordering when multiple semantic filters are enabled:</p>
+                <pre><code>Validation -> De-Identification -> Burned-In Redaction / Transcoding -> Terminal</code></pre>
+                <p>
+                    Implementations MUST document any ordering differences and their behavioral impact.
+                    If a profile claims conformance with this order, the runtime behavior MUST match.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Extension Points</h3>
+                <div class="grid two">
+                    <article class="card">
+                        <h4>Custom Mapping</h4>
+                        <p>
+                            Mappings may define domain-specific projection behavior if they consume canonical semantic events
+                            and preserve lifecycle boundaries.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h4>Custom Selection</h4>
+                        <p>
+                            Selection logic may be implementation-specific but SHOULD expose deterministic completion semantics.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h4>Custom Filter</h4>
+                        <p>
+                            Filters MAY add profile-specific logic. They MUST not violate parser status semantics or break terminal contracts.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h4>Custom Writer</h4>
+                        <p>
+                            Writers MAY package output for local files, HTTP, DIMSE, or stream adapters without redefining terminal semantics.
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                Normative page: core architecture and component contract semantics.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,8 +1,8 @@
 # Image Decoders
 
-EASI DICOM includes several decoder classes that convert DICOM pixel data into usable image buffers.  
+EASI DICOM&reg; includes several decoder classes that convert DICOM&reg; pixel data into usable image buffers.  
 
-All decoders implement a common public interface with a `decode()` method and a constructor that accepts a DICOM object.
+All decoders implement a common public interface with a `decode()` method and a constructor that accepts a DICOM&reg; object.
 
 ---
 
@@ -17,7 +17,7 @@ new Decoder(dicomObject)
 
 | Parameter      | Type    | Description                              |
 |----------------|---------|------------------------------------------|
-| `dicomObject`  | `*`     | The DICOM object associated with the pixel data. |
+| `dicomObject`  | `*`     | The DICOM&reg; object associated with the pixel data. |
 ### `decode(source, sourceStart, sourceStop, destination, destinationStart, windowCenter, windowWidth)`
 
 Decodes image pixel data from the source buffer to the destination buffer.
@@ -43,14 +43,14 @@ Decodes image pixel data from the source buffer to the destination buffer.
 
 ### `JpegDecoder`
 
-Decodes JPEG Baseline (8-bit lossy) DICOM pixel data.  
+Decodes JPEG Baseline (8-bit lossy) DICOM&reg; pixel data.  
 Supports transfer syntax: `TransferSyntax.JPEGBaseline8Bit`.
 
 ---
 
 ### `JpegLosslessDecoder`
 
-Decodes JPEG Lossless (14-bit) DICOM pixel data.  
+Decodes JPEG Lossless (14-bit) DICOM&reg; pixel data.  
 Supports transfer syntaxes:
 
 - `TransferSyntax.JPEGLossless`
@@ -60,7 +60,7 @@ Supports transfer syntaxes:
 
 ### `DicomNativePixelDataToRGBADecoder`
 
-Decodes native, uncompressed DICOM pixel data into RGBA output.  
+Decodes native, uncompressed DICOM&reg; pixel data into RGBA output.  
 Supports transfer syntax: `TransferSyntax.NONE`.
 
 ## Usage Example

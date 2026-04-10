@@ -1,6 +1,6 @@
 # `MetaSet` Class
 
-The `MetaSet` class represents the DICOM File Meta Information group, containing key metadata that describes how the rest of the DICOM file should be interpreted. It extends the `AttributeSet` class.
+The `MetaSet` class represents the DICOM&reg; File Meta Information group, containing key metadata that describes how the rest of the DICOM&reg; file should be interpreted. It extends the `AttributeSet` class.
 
 ---
 
@@ -14,7 +14,7 @@ MetaSet → AttributeSet
 
 ### `constructor()`
 
-Creates an empty new DICOM meta-set.
+Creates an empty new DICOM&reg; meta-set.
 
 ```javascript
 const meta = new MetaSet();
@@ -46,7 +46,7 @@ import Tag from './Tag.js';
 // Create a new MetaSet instance
 const meta = new MetaSet();
 
-// Optionally add attributes (normally populated during DICOM file parsing)
+// Optionally add attributes (normally populated during DICOM&reg; file parsing)
 meta.add({
   tag: Tag.TransferSyntaxUID,
   value: '1.2.840.10008.1.2.1' // Explicit VR Little Endian

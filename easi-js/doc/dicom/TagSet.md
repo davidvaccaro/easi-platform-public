@@ -1,6 +1,6 @@
 # `TagSet` Class
 
-The `TagSet` class represents a **collection of DICOM tags**, providing methods to add, find, and query tags within the set.
+The `TagSet` class represents a **collection of DICOM&reg; tags**, providing methods to add, find, and query tags within the set.
 
 ---
 
@@ -24,7 +24,7 @@ Finds a tag within the tag set by tag identifier.
 
 | Parameter | Type    | Description                |
 |-----------|---------|----------------------------|
-| `tag`     | `Tag`   | The DICOM tag to search for. |
+| `tag`     | `Tag`   | The DICOM&reg; tag to search for. |
 
 | Returns   | Description                      |
 |-----------|----------------------------------|
@@ -38,7 +38,7 @@ Determines if a tag exists within the tag set.
 
 | Parameter | Type    | Description              |
 |-----------|---------|--------------------------|
-| `tag`     | `Tag`   | The DICOM tag to test.    |
+| `tag`     | `Tag`   | The DICOM&reg; tag to test.    |
 
 | Returns   | Description                                    |
 |-----------|------------------------------------------------|
@@ -52,7 +52,7 @@ Adds a new tag to the tag set.
 
 | Parameter | Type    | Description                     |
 |-----------|---------|---------------------------------|
-| `tag`     | `Tag`   | The DICOM tag to add to the set. |
+| `tag`     | `Tag`   | The DICOM&reg; tag to add to the set. |
 
 | Returns   | Description              |
 |-----------|--------------------------|

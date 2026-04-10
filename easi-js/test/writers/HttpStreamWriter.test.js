@@ -170,3 +170,128 @@ test('Test: HttpStreamWriter defaults to streaming upload when supported', async
     }
 
 });
+
+test('Test: HttpStreamWriter STOW mode enforces multipart defaults and wraps single instance source', async () => {
+
+    const originalFetch = global.fetch;
+
+    try {
+
+        const writer = new HttpStreamWriter();
+        writer._partWriter = {
+            createBoundary: jest.fn().mockReturnValue('stow-boundary'),
+            buildMultiPartContentType: jest.fn().mockReturnValue('multipart/related; type="application/dicom"; boundary=stow-boundary'),
+            write: jest.fn().mockResolvedValue({
+                body: new Uint8Array([1, 2, 3, 4]),
+                bytesWritten: 4,
+                contentType: 'multipart/related; type="application/dicom"; boundary=stow-boundary'
+            })
+        };
+
+        global.fetch = jest.fn().mockResolvedValue({
+            status: 200,
+            ok: true
+        });
+
+        await writer.write(
+            { url: 'https://example.test/dicom-web/studies' },
+            new Uint8Array([9, 8, 7]),
+            { stream: false, stow: true }
+        );
+
+        expect(writer._partWriter.write).toHaveBeenCalledTimes(1);
+        expect(writer._partWriter.write).toHaveBeenCalledWith(
+            expect.any(Array),
+            expect.objectContaining({
+                isMultiPart: true,
+                type: 'application/dicom',
+                partContentType: 'application/dicom',
+                boundary: 'stow-boundary',
+                collectOutput: true
+            })
+        );
+
+        const writeSource = writer._partWriter.write.mock.calls[0][0];
+        expect(Array.isArray(writeSource)).toBe(true);
+        expect(writeSource.length).toBe(1);
+        expect(writeSource[0]).toBeInstanceOf(Uint8Array);
+
+        expect(global.fetch).toHaveBeenCalledTimes(1);
+        expect(global.fetch).toHaveBeenCalledWith(
+            'https://example.test/dicom-web/studies',
+            expect.objectContaining({
+                method: 'POST',
+                headers: expect.objectContaining({
+                    'Content-Type': 'multipart/related; type="application/dicom"; boundary=stow-boundary',
+                    Accept: 'application/dicom+json, application/json'
+                })
+            })
+        );
+
+    }
+    finally {
+        global.fetch = originalFetch;
+    }
+
+});
+
+test('Test: HttpStreamWriter STOW strict mode rejects non-POST request method', async () => {
+
+    const originalFetch = global.fetch;
+
+    try {
+
+        const writer = new HttpStreamWriter();
+
+        await expect(writer.write(
+            {
+                url: 'https://example.test/dicom-web/studies',
+                method: 'PUT'
+            },
+            new Uint8Array([1]),
+            { stream: false, stow: true }
+        )).rejects.toThrow('Invalid STOW request method');
+
+        expect(global.fetch).toBe(originalFetch);
+
+    }
+    finally {
+        global.fetch = originalFetch;
+    }
+
+});
+
+test('Test: HttpStreamWriter STOW strict mode enforces success HTTP statuses', async () => {
+
+    const originalFetch = global.fetch;
+
+    try {
+
+        const writer = new HttpStreamWriter();
+        writer._partWriter = {
+            createBoundary: jest.fn().mockReturnValue('stow-boundary'),
+            buildMultiPartContentType: jest.fn().mockReturnValue('multipart/related; type="application/dicom"; boundary=stow-boundary'),
+            write: jest.fn().mockResolvedValue({
+                body: new Uint8Array([1]),
+                bytesWritten: 1,
+                contentType: 'multipart/related; type="application/dicom"; boundary=stow-boundary'
+            })
+        };
+
+        global.fetch = jest.fn().mockResolvedValue({
+            status: 409,
+            ok: false
+        });
+
+        await expect(writer.write(
+            'https://example.test/dicom-web/studies',
+            new Uint8Array([1]),
+            { stream: false, stow: true }
+        )).rejects.toThrow('STOW request failed with HTTP status 409');
+
+    }
+    finally {
+        global.fetch = originalFetch;
+    }
+
+});

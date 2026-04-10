@@ -2,13 +2,13 @@
 
 ## Purpose
 
-Define how DICOM DIMSE TCP/IP transport composes with the EASI pipeline so developers can stream:
+Define how DICOM&reg; DIMSE TCP/IP transport composes with the EASI pipeline so developers can stream:
 
 - from a DIMSE source (for example PACS)
 - through standard EASI parser/filter/terminal stages
 - into a DIMSE destination (for example PACS/VNA/router)
 
-This document is an extension to EASI Core and does not replace DICOM PS3.7/PS3.8 protocol rules.
+This document is an extension to EASI Core and does not replace DICOM&reg; PS3.7/PS3.8 protocol rules.
 
 ## Scope
 
@@ -31,7 +31,7 @@ This draft standardizes pipeline-facing API semantics for DIMSE integration:
 
 DIMSE integrates as transport boundaries around canonical EASI parse/process stages:
 
-- `DIMSE Source -> DICOM Parser -> [Adapters] -> [Filters] -> Terminal -> [Writer] -> DIMSE Destination`
+- `DIMSE Source -> DICOM&reg; Parser -> [Adapters] -> [Filters] -> Terminal -> [Writer] -> DIMSE Destination`
 
 Normative behavior:
 
@@ -48,7 +48,7 @@ Normative behavior:
 Normative intent:
 
 - Establish DIMSE association/session and stream inbound data-sets into parser flow.
-- Require parser compatibility (`ofDicomData()` for byte DICOM input).
+- Require parser compatibility (`ofDicomData()` for byte DICOM&reg; input).
 
 ### Destination Transport
 
@@ -179,9 +179,9 @@ Recommended concern codes (examples):
 
 ## Compatibility Rules (Normative Intent)
 
-1. `fromDimseAssociation(...)` MUST be compatible with parsers expecting native DICOM byte stream input.
-2. `intoDimseAssociation(...)` MUST be compatible with terminal/writer output that produces native DICOM byte instances.
-3. If the selected terminal output is not byte DICOM output, `build()` MUST fail-fast with a compatibility exception.
+1. `fromDimseAssociation(...)` MUST be compatible with parsers expecting native DICOM&reg; byte stream input.
+2. `intoDimseAssociation(...)` MUST be compatible with terminal/writer output that produces native DICOM&reg; byte instances.
+3. If the selected terminal output is not byte DICOM&reg; output, `build()` MUST fail-fast with a compatibility exception.
 
 ## Example Pipelines
 
@@ -234,7 +234,7 @@ const instance = await pipeline.process(null, {
 });
 ```
 
-### PACS -> FHIR Mapping -> HTTP (non-DIMSE sink)
+### PACS -> FHIR&reg; Mapping -> HTTP (non-DIMSE sink)
 
 ```js
 const pipeline = EASI.pipelineBuilder()

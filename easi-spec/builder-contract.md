@@ -111,7 +111,7 @@ Define and freeze precedence for combinations such as:
 
 - `fromXxx().withParser(customParser)`
 - `withParser(customParser).toInstances()`
-- `toMapping(mapping)` when a non-DICOM parser is already selected
+- `toMapping(mapping)` when a non-DICOM&reg; parser is already selected
 - `withMask(mask).withHandler(customHandler)` and `withHandler(customHandler).withMask(mask)` (whether mask wraps the explicit handler)
 
 Current implementation behavior should be documented before this is frozen.

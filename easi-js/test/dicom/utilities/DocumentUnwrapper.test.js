@@ -1,4 +1,5 @@
-import DocumentUnwrapper from "../../../src/dicom/documents/DocumentUnwrapper.js";
+import DocumentUnwrapper from "../../../src/dicom/utilities/DocumentUnwrapper.js";
+import UnwrappedDocument from "../../../src/dicom/utilities/UnwrappedDocument.js";
 import EncapsulatedDocument from "../../../src/dicom/entities/EncapsulatedDocument.js";
 import Instance from "../../../src/dicom/Instance.js";
 import DataSet from "../../../src/dicom/DataSet.js";
@@ -73,6 +74,7 @@ test("Test: DocumentUnwrapper unwraps binary encapsulated document with declared
     var document = unwrapper.unwrap(entity);
 
     expect(document).not.toBeNull();
+    expect(document).toBeInstanceOf(UnwrappedDocument);
     expect(document.mimeType).toBe('application/pdf');
     expect(document.extension).toBe('pdf');
     expect(document.fileName).toBe('Report.pdf');
@@ -91,6 +93,7 @@ test("Test: DocumentUnwrapper decodes text payload for text MIME content", () =>
     var unwrapper = new DocumentUnwrapper();
     var document = unwrapper.unwrap(entity);
 
+    expect(document).toBeInstanceOf(UnwrappedDocument);
     expect(document.mimeType).toBe('text/plain');
     expect(document.extension).toBe('txt');
     expect(document.fileName).toBe('notes.txt');
@@ -107,6 +110,7 @@ test("Test: DocumentUnwrapper infers extension from SOP Class when MIME is absen
     var unwrapper = new DocumentUnwrapper();
     var document = unwrapper.unwrap(entity);
 
+    expect(document).toBeInstanceOf(UnwrappedDocument);
     expect(document.mimeType).toBe('application/octet-stream');
     expect(document.extension).toBe('obj');
     expect(document.fileName).toBe('mesh output.obj');

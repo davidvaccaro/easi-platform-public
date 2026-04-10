@@ -1,6 +1,6 @@
 # `Period` Class
 
-The `Period` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+The `Period` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
 
 ---
 

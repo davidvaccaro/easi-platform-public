@@ -1,6 +1,6 @@
 # `EncodedData` Class
 
-The `EncodedData` class represents a DICOM data buffer with an associated Transfer Syntax.  
+The `EncodedData` class represents a DICOM&reg; data buffer with an associated Transfer Syntax.  
 
 It extends the `Data` class and adds transfer-syntax awareness, including automatic byte-swapping when appending or converting data.
 

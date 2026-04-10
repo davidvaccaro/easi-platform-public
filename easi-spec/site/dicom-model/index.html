@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI DICOM&reg; type index covering core, entity, and module types used by composition flows.">
+    <title>EASI | DICOM&reg; Model Types</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="../core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="../stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="../lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="../dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>DICOM&reg; Type Index</h2>
+                <p>
+                    Primary type reference for EASI DICOM&reg; composition, organized across core model types,
+                    entity accessors, and module accessors.
+                </p>
+                <p class="page-meta">
+                    Each type page follows the same format: structure, language-neutral and language-specific examples,
+                    then UML relationships. For a complete system view, open the
+                    <a href="diagram.html">DICOM&reg; type diagram</a>.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout informative">
+                    <h4>Type Diagram</h4>
+                    <p>
+                        Explore the complete DICOM&reg; type relationship map:
+                        <a href="diagram.html">Open DICOM&reg; Type Diagram</a>.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <div class="search">
+                    <label for="type-search">Filter types</label>
+                    <input id="type-search" type="search" placeholder="Search by type, domain, category, module, entity, pixel, mapping..."
+                           data-filter-input data-filter-target="#type-catalog">
+                </div>
+            </section>
+
+            <div id="type-catalog">
+
+                <section class="section reveal domain-catalog">
+                    <h3>Core</h3>
+                    <table class="type-catalog-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Category</th>
+                                <th>Kind</th>
+                                <th>Summary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr data-filter-item="attribute core core element instance type represents one decoded dicom® attribute with tag and vr-aware value semantics. attributeset dataelement tag valuerepresentation">
+                                    <td><a href="attribute.html">Attribute</a></td>
+                                    <td>Core Element</td>
+                                    <td>Instance Type</td>
+                                    <td>Represents one decoded DICOM&reg; attribute with tag and VR-aware value semantics.</td>
+                                </tr>
+                                <tr data-filter-item="attributesequence core container instance type represents a sequence attribute containing nested item collections. attribute attributeset item">
+                                    <td><a href="attribute-sequence.html">AttributeSequence</a></td>
+                                    <td>Container</td>
+                                    <td>Instance Type</td>
+                                    <td>Represents a sequence attribute containing nested item collections.</td>
+                                </tr>
+                                <tr data-filter-item="attributeset core container instance type represents a searchable collection of attributes keyed by tag identity. attribute dataset item metaset tag">
+                                    <td><a href="attribute-set.html">AttributeSet</a></td>
+                                    <td>Container</td>
+                                    <td>Instance Type</td>
+                                    <td>Represents a searchable collection of attributes keyed by tag identity.</td>
+                                </tr>
+                                <tr data-filter-item="dataelement core encoding instance type represents one encoded data element with value-length and completion state. attribute encodeddata preamble prefix">
+                                    <td><a href="data-element.html">DataElement</a></td>
+                                    <td>Encoding</td>
+                                    <td>Instance Type</td>
+                                    <td>Represents one encoded data element with value-length and completion state.</td>
+                                </tr>
+                                <tr data-filter-item="dataset core container instance type represents the primary clinical attribute payload for one instance. attribute attributeset pixeldata tag">
+                                    <td><a href="data-set.html">DataSet</a></td>
+                                    <td>Container</td>
+                                    <td>Instance Type</td>
+                                    <td>Represents the primary clinical attribute payload for one instance.</td>
+                                </tr>
+                                <tr data-filter-item="encodeddata core encoding instance type wraps raw bytes with transfer-syntax awareness and endian-safe operations. dataelement transfersyntax">
+                                    <td><a href="encoded-data.html">EncodedData</a></td>
+                                    <td>Encoding</td>
+                                    <td>Instance Type</td>
+                                    <td>Wraps raw bytes with transfer-syntax awareness and endian-safe operations.</td>
+                                </tr>
+                                <tr data-filter-item="instance core top-level object instance type represents one full part-10 object including preamble, prefix, meta-set, and data-set. dataset metaset preamble prefix">
+                                    <td><a href="instance.html">Instance</a></td>
+                                    <td>Top-Level Object</td>
+                                    <td>Instance Type</td>
+                                    <td>Represents one full Part-10 object including preamble, prefix, meta-set, and data-set.</td>
+                                </tr>
+                                <tr data-filter-item="item core container instance type represents one sequence-item scope containing its own attribute collection. attributesequence attributeset">
+                                    <td><a href="item.html">Item</a></td>
+                                    <td>Container</td>
+                                    <td>Instance Type</td>
+                                    <td>Represents one sequence-item scope containing its own attribute collection.</td>
+                                </tr>
+                                <tr data-filter-item="metaset core container instance type represents file meta information attributes for framing and encoding context. attributeset sopclass tag transfersyntax">
+                                    <td><a href="meta-set.html">MetaSet</a></td>
+                                    <td>Container</td>
+                                    <td>Instance Type</td>
+                                    <td>Represents File Meta Information attributes for framing and encoding context.</td>
+                                </tr>
+                                <tr data-filter-item="modality core vocabulary static type provides modality code definitions and lookup by well-known identifiers. attribute dataset tag">
+                                    <td><a href="modality.html">Modality</a></td>
+                                    <td>Vocabulary</td>
+                                    <td>Static Type</td>
+                                    <td>Provides modality code definitions and lookup by well-known identifiers.</td>
+                                </tr>
+                                <tr data-filter-item="pixeldata core pixel payload instance type parses encapsulated pixel payload structures including offset tables and frame items. attribute encodeddata transfersyntax">
+                                    <td><a href="pixel-data.html">PixelData</a></td>
+                                    <td>Pixel Payload</td>
+                                    <td>Instance Type</td>
+                                    <td>Parses encapsulated pixel payload structures including offset tables and frame items.</td>
+                                </tr>
+                                <tr data-filter-item="preamble core part-10 envelope instance type represents the 128-byte part-10 preamble field. dataelement prefix transfersyntax">
+                                    <td><a href="preamble.html">Preamble</a></td>
+                                    <td>Part-10 Envelope</td>
+                                    <td>Instance Type</td>
+                                    <td>Represents the 128-byte Part-10 preamble field.</td>
+                                </tr>
+                                <tr data-filter-item="prefix core part-10 envelope instance type represents the 4-byte dicm prefix field in part-10 files. dataelement preamble transfersyntax">
+                                    <td><a href="prefix.html">Prefix</a></td>
+                                    <td>Part-10 Envelope</td>
+                                    <td>Instance Type</td>
+                                    <td>Represents the 4-byte DICM prefix field in Part-10 files.</td>
+                                </tr>
+                                <tr data-filter-item="sopclass core vocabulary static type provides sop class uid definitions and lookup behavior. instance metaset tag">
+                                    <td><a href="sop-class.html">SOPClass</a></td>
+                                    <td>Vocabulary</td>
+                                    <td>Static Type</td>
+                                    <td>Provides SOP Class UID definitions and lookup behavior.</td>
+                                </tr>
+                                <tr data-filter-item="tag core vocabulary static registry + instance type represents tag identifiers and dictionary-backed lookup helpers. attribute attributeset tagset valuerepresentation">
+                                    <td><a href="tag.html">Tag</a></td>
+                                    <td>Vocabulary</td>
+                                    <td>Static Registry + Instance Type</td>
+                                    <td>Represents tag identifiers and dictionary-backed lookup helpers.</td>
+                                </tr>
+                                <tr data-filter-item="tagset core container instance type represents a collection of tags for policy-driven selection and filtering. attributeset tag">
+                                    <td><a href="tag-set.html">TagSet</a></td>
+                                    <td>Container</td>
+                                    <td>Instance Type</td>
+                                    <td>Represents a collection of tags for policy-driven selection and filtering.</td>
+                                </tr>
+                                <tr data-filter-item="transfersyntax core vocabulary static type provides transfer syntax uid definitions and encoding capability metadata. encodeddata metaset pixeldata valuerepresentation">
+                                    <td><a href="transfer-syntax.html">TransferSyntax</a></td>
+                                    <td>Vocabulary</td>
+                                    <td>Static Type</td>
+                                    <td>Provides transfer syntax UID definitions and encoding capability metadata.</td>
+                                </tr>
+                                <tr data-filter-item="valuerepresentation core vocabulary static type provides vr definitions to interpret attribute value typing and length rules. attribute tag transfersyntax">
+                                    <td><a href="value-representation.html">ValueRepresentation</a></td>
+                                    <td>Vocabulary</td>
+                                    <td>Static Type</td>
+                                    <td>Provides VR definitions to interpret attribute value typing and length rules.</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section class="section reveal domain-catalog">
+                    <h3>Entities</h3>
+                    <table class="type-catalog-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Category</th>
+                                <th>Kind</th>
+                                <th>Summary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr data-filter-item="encapsulateddocument entities entity accessor entity accessor type entity accessor for encapsulated document objects and payload metadata. encapsulateddocumentmodule entity">
+                                    <td><a href="encapsulated-document.html">EncapsulatedDocument</a></td>
+                                    <td>Entity Accessor</td>
+                                    <td>Entity Accessor Type</td>
+                                    <td>Entity accessor for encapsulated document objects and payload metadata.</td>
+                                </tr>
+                                <tr data-filter-item="entity entities entity accessor entity accessor type provides high-level object accessors over instance or attribute-set content. attributeset generalseriesmodule imagepixelmodule instance patientmodule tag">
+                                    <td><a href="entity.html">Entity</a></td>
+                                    <td>Entity Accessor</td>
+                                    <td>Entity Accessor Type</td>
+                                    <td>Provides high-level object accessors over instance or attribute-set content.</td>
+                                </tr>
+                                <tr data-filter-item="image entities entity accessor entity accessor type extends entity access with image decode and frame-oriented behavior. entity imagepixelmodule imageplanemodule modalitylookuptablemodule multiframemodule pixeldata tag visualizationfunctionmodule">
+                                    <td><a href="image.html">Image</a></td>
+                                    <td>Entity Accessor</td>
+                                    <td>Entity Accessor Type</td>
+                                    <td>Extends entity access with image decode and frame-oriented behavior.</td>
+                                </tr>
+                                <tr data-filter-item="keyobjectselection entities entity accessor entity accessor type entity accessor specialized for key-object selection instances. currentrequestedprocedureevidencemodule entity">
+                                    <td><a href="key-object-selection.html">KeyObjectSelection</a></td>
+                                    <td>Entity Accessor</td>
+                                    <td>Entity Accessor Type</td>
+                                    <td>Entity accessor specialized for key-object selection instances.</td>
+                                </tr>
+                                <tr data-filter-item="presentationstate entities entity accessor entity accessor type entity accessor specialized for presentation state objects. entity presentationstatemodule">
+                                    <td><a href="presentation-state.html">PresentationState</a></td>
+                                    <td>Entity Accessor</td>
+                                    <td>Entity Accessor Type</td>
+                                    <td>Entity accessor specialized for presentation state objects.</td>
+                                </tr>
+                                <tr data-filter-item="segmentation entities entity accessor entity accessor type entity accessor specialized for segmentation objects. image segmentationmodule">
+                                    <td><a href="segmentation.html">Segmentation</a></td>
+                                    <td>Entity Accessor</td>
+                                    <td>Entity Accessor Type</td>
+                                    <td>Entity accessor specialized for segmentation objects.</td>
+                                </tr>
+                                <tr data-filter-item="structuredreport entities entity accessor entity accessor type entity accessor specialized for structured report objects. entity structuredreportmodule">
+                                    <td><a href="structured-report.html">StructuredReport</a></td>
+                                    <td>Entity Accessor</td>
+                                    <td>Entity Accessor Type</td>
+                                    <td>Entity accessor specialized for structured report objects.</td>
+                                </tr>
+                                <tr data-filter-item="waveform entities entity accessor entity accessor type entity accessor specialized for waveform objects. entity waveformmodule">
+                                    <td><a href="waveform.html">Waveform</a></td>
+                                    <td>Entity Accessor</td>
+                                    <td>Entity Accessor Type</td>
+                                    <td>Entity accessor specialized for waveform objects.</td>
+                                </tr>
+                                <tr data-filter-item="worklistitem entities entity accessor entity accessor type entity accessor specialized for modality worklist-style items. entity requestedproceduremodule scheduledprocedurestepmodule">
+                                    <td><a href="worklist-item.html">WorklistItem</a></td>
+                                    <td>Entity Accessor</td>
+                                    <td>Entity Accessor Type</td>
+                                    <td>Entity accessor specialized for modality worklist-style items.</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section class="section reveal domain-catalog">
+                    <h3>Modules</h3>
+                    <table class="type-catalog-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Category</th>
+                                <th>Kind</th>
+                                <th>Summary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <tr data-filter-item="currentrequestedprocedureevidencemodule modules module accessor module accessor type provides evidence-sequence traversal and normalized referenced-study details. attributeset module tag">
+                                    <td><a href="current-requested-procedure-evidence-module.html">CurrentRequestedProcedureEvidenceModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides evidence-sequence traversal and normalized referenced-study details.</td>
+                                </tr>
+                                <tr data-filter-item="encapsulateddocumentmodule modules module accessor module accessor type provides encapsulated-document metadata and payload accessors. module tag">
+                                    <td><a href="encapsulated-document-module.html">EncapsulatedDocumentModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides encapsulated-document metadata and payload accessors.</td>
+                                </tr>
+                                <tr data-filter-item="generalseriesmodule modules module accessor module accessor type provides general-series metadata accessors including modality and identifiers. modality module tag">
+                                    <td><a href="general-series-module.html">GeneralSeriesModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides general-series metadata accessors including modality and identifiers.</td>
+                                </tr>
+                                <tr data-filter-item="imagepixelmodule modules module accessor module accessor type provides image-pixel metadata accessors such as rows, columns, and pixel layout. module tag valuerepresentation">
+                                    <td><a href="image-pixel-module.html">ImagePixelModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides image-pixel metadata accessors such as rows, columns, and pixel layout.</td>
+                                </tr>
+                                <tr data-filter-item="imageplanemodule modules module accessor module accessor type provides image-plane metadata such as position, orientation, and spacing. module tag">
+                                    <td><a href="image-plane-module.html">ImagePlaneModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides image-plane metadata such as position, orientation, and spacing.</td>
+                                </tr>
+                                <tr data-filter-item="modalitylookuptablemodule modules module accessor module accessor type provides modality lut metadata such as rescale intercept and slope. module tag">
+                                    <td><a href="modality-look-up-table-module.html">ModalityLookUpTableModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides modality LUT metadata such as rescale intercept and slope.</td>
+                                </tr>
+                                <tr data-filter-item="module modules module base module accessor type base module accessor class with shared value and sequence helper methods. attributeset tag">
+                                    <td><a href="module.html">Module</a></td>
+                                    <td>Module Base</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Base module accessor class with shared value and sequence helper methods.</td>
+                                </tr>
+                                <tr data-filter-item="multiframemodule modules module accessor module accessor type provides multi-frame metadata including frame count and stereo-pair indicators. module tag">
+                                    <td><a href="multi-frame-module.html">MultiFrameModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides multi-frame metadata including frame count and stereo-pair indicators.</td>
+                                </tr>
+                                <tr data-filter-item="patientmodule modules module accessor module accessor type provides patient-demographic accessors over an attribute-set context. attributeset module tag">
+                                    <td><a href="patient-module.html">PatientModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides patient-demographic accessors over an attribute-set context.</td>
+                                </tr>
+                                <tr data-filter-item="presentationstatemodule modules module accessor module accessor type provides presentation-state metadata such as content labels and references. module tag">
+                                    <td><a href="presentation-state-module.html">PresentationStateModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides presentation-state metadata such as content labels and references.</td>
+                                </tr>
+                                <tr data-filter-item="requestedproceduremodule modules module accessor module accessor type provides requested-procedure metadata such as accession and procedure identifiers. module tag">
+                                    <td><a href="requested-procedure-module.html">RequestedProcedureModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides requested-procedure metadata such as accession and procedure identifiers.</td>
+                                </tr>
+                                <tr data-filter-item="scheduledprocedurestepmodule modules module accessor module accessor type provides scheduled-procedure-step sequence access and first-item helpers. module tag">
+                                    <td><a href="scheduled-procedure-step-module.html">ScheduledProcedureStepModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides scheduled-procedure-step sequence access and first-item helpers.</td>
+                                </tr>
+                                <tr data-filter-item="segmentationmodule modules module accessor module accessor type provides segmentation metadata such as segment descriptors and overlap details. module tag">
+                                    <td><a href="segmentation-module.html">SegmentationModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides segmentation metadata such as segment descriptors and overlap details.</td>
+                                </tr>
+                                <tr data-filter-item="structuredreportmodule modules module accessor module accessor type provides structured-report metadata and content-sequence accessors. module tag">
+                                    <td><a href="structured-report-module.html">StructuredReportModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides structured-report metadata and content-sequence accessors.</td>
+                                </tr>
+                                <tr data-filter-item="visualizationfunctionmodule modules module accessor module accessor type provides windowing metadata such as window center and window width. module tag">
+                                    <td><a href="visualization-function-module.html">VisualizationFunctionModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides windowing metadata such as window center and window width.</td>
+                                </tr>
+                                <tr data-filter-item="waveformmodule modules module accessor module accessor type provides waveform sequence and multiplex group metadata accessors. module tag">
+                                    <td><a href="waveform-module.html">WaveformModule</a></td>
+                                    <td>Module Accessor</td>
+                                    <td>Module Accessor Type</td>
+                                    <td>Provides waveform sequence and multiplex group metadata accessors.</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+
+            <p class="footer-note">
+                Informative catalog with language-neutral and language-specific documentation tabs.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

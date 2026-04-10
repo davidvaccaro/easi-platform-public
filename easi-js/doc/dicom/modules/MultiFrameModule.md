@@ -1,6 +1,6 @@
 # MultiFrameModule Class
 
-Provides access to DICOM **Multi-frame Module** attributes, including number of frames and stereo pair presence.
+Provides access to DICOM&reg; **Multi-frame Module** attributes, including number of frames and stereo pair presence.
 
 ## Inheritance
 
@@ -18,7 +18,7 @@ Creates a new instance of `MultiFrameModule`.
 
 | Name           | Type           | Description                                     |
 |----------------|----------------|-------------------------------------------------|
-| `attributeSet` | `AttributeSet` | The DICOM attribute set to extract values from. |
+| `attributeSet` | `AttributeSet` | The DICOM&reg; attribute set to extract values from. |
 
 ---
 

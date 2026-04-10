@@ -1,32 +1,33 @@
 # EASI Specification (Normative Hub)
 
-EASI (Efficient API for Streaming in Healthcare Imaging) is a language-neutral API specification for streaming-first interaction with DICOM and related healthcare imaging formats.
+EASI (Expressive API Standard for Imaging) is a language-neutral API specification for fluent pipeline composition and efficient, streaming-first interaction with DICOM&reg; and related healthcare imaging formats.
 
-EASI is not a replacement for the DICOM data standard. DICOM remains the authoritative data standard. EASI defines a consistent, recognizable API contract for reading, parsing, transforming, validating, de-identifying, selecting, mapping, and emitting DICOM data efficiently across programming languages.
+EASI is not a replacement for the DICOM&reg; data standard. DICOM&reg; remains the authoritative data standard. EASI defines a consistent, recognizable API contract for reading, parsing, transforming, validating, de-identifying, selecting, mapping, and emitting DICOM&reg; data efficiently across programming languages.
 
 This `README.md` is the primary hub of the EASI specification. It defines the value, scope, conformance model, and core design principles, and links to supporting spec documents that elaborate the details.
 
 ## Why EASI Exists
 
-DICOM is ubiquitous and powerful, but application developers often need to handle:
+DICOM&reg; is ubiquitous and powerful, but application developers often need to handle:
 
 - multipart transport and streaming input
 - nested sequence parsing complexity
 - large payloads (for example pixel data)
-- multiple source encodings (native DICOM bytes, DICOMweb JSON metadata, DICOMweb XML metadata)
+- multiple source encodings (native DICOM&reg; bytes, DICOMweb&trade; JSON metadata, DICOMweb&trade; XML metadata)
 - transformation and extraction workflows (selection, mapping, de-identification, validation)
 
-EASI standardizes a clean API interaction model so client applications can work with DICOM efficiently without re-implementing parser orchestration and event flow logic in every project and language.
+EASI standardizes a clean API interaction model so client applications can work with DICOM&reg; efficiently without re-implementing parser orchestration and event flow logic in every project and language.
 
 ## EASI Value Proposition
 
 EASI provides:
 
-- A simple, recognizable API shape across languages
-- A streaming-first execution model designed for large imaging payloads
+- An expressive, fluent API shape that is recognizable across languages
+- A simple mental model for composition and extension
+- An efficient, streaming-first execution model designed for large imaging payloads
 - A composable pipeline for adapters, filters, and terminal outputs
 - Explicit flow-control semantics (`CONTINUE`, `STOP`, `JUMP`, `FAIL`, `SUCCESS`)
-- A clean separation between source parsing and downstream DICOM-domain processing
+- A clean separation between source parsing and downstream DICOM&reg;-domain processing
 - A conformance target for multiple implementations (`easi-js`, `easi-cs`, `easi-java`, `easi-py`, etc.)
 
 ## What Is Normative vs Informative
@@ -65,7 +66,7 @@ EASI Core v0.1 defines:
 
 1. The streaming pipeline model:
    - `Reader -> Parser -> [Adapters] -> [Filters] -> Terminal -> [Writer]`
-2. The canonical DICOM semantic lifecycle event contract and ordering semantics
+2. The canonical DICOM&reg; semantic lifecycle event contract and ordering semantics
 3. Status flow-control semantics:
    - `CONTINUE`, `SUCCESS`, `STOP`, `JUMP`, `FAIL`
 4. Core builder semantics:
@@ -73,13 +74,13 @@ EASI Core v0.1 defines:
 5. Parser/adapter/filter/terminal compatibility behavior
 6. Conformance levels and baseline scenario expectations
 
-EASI Core v0.1 intentionally does not attempt to restate the DICOM standard itself.
+EASI Core v0.1 intentionally does not attempt to restate the DICOM&reg; standard itself.
 
 ## Non-Goals (Initial)
 
 The following are out of scope for EASI Core v0.1:
 
-- restating DICOM encoding rules beyond what is needed for API semantics
+- restating DICOM&reg; encoding rules beyond what is needed for API semantics
 - standardizing internal implementation data structures
 - prescribing language-specific naming casing (`camelCase` vs `PascalCase`)
 - prescribing transport framework choices (Node streams, .NET streams, Java I/O, etc.)
@@ -110,8 +111,8 @@ These terms are the normative vocabulary used throughout the spec:
 
 - `Reader`: owns I/O / stream ingestion and source part orchestration
 - `Parser`: decodes a source format incrementally
-- `Adapter`: translates parser-specific syntax events into canonical DICOM semantic events
-- `Filter`: pass-through transform/validation stage on canonical DICOM semantic events
+- `Adapter`: translates parser-specific syntax events into canonical DICOM&reg; semantic events
+- `Filter`: pass-through transform/validation stage on canonical DICOM&reg; semantic events
 - `Terminal`: final handler stage that materializes output or emits transformed bytes
 - `Writer` (optional): post-terminal packaging/framing stage for transport output
 
@@ -142,23 +143,23 @@ A Level 1 implementation MUST provide:
 - core builder semantics (`from...`, `to...`, `with...`, `build()`)
 - fail-fast build validation for invalid pipeline composition
 
-### Level 2: DICOM Core Scenario Conformance
+### Level 2: DICOM&reg; Core Scenario Conformance
 
-A Level 2 implementation MUST additionally support the core DICOM scenarios:
+A Level 2 implementation MUST additionally support the core DICOM&reg; scenarios:
 
-- native DICOM bytes -> DICOM Instance model
-- native DICOM bytes -> selection output
-- native DICOM bytes -> mapping output
+- native DICOM&reg; bytes -> DICOM&reg; Instance model
+- native DICOM&reg; bytes -> selection output
+- native DICOM&reg; bytes -> mapping output
 
 ### Level 3: Extended Scenario Conformance
 
 A Level 3 implementation MAY include additional standardized scenarios such as:
 
-- DICOMweb JSON metadata parsing
-- DICOMweb XML metadata parsing
+- DICOMweb&trade; JSON metadata parsing
+- DICOMweb&trade; XML metadata parsing
 - de-identification filters
 - validation filters
-- native DICOM byte re-emission
+- native DICOM&reg; byte re-emission
 - transport writers
 
 ### Official Implementation Guidance
@@ -222,14 +223,14 @@ The exact casing differs, but the EASI interaction model remains recognizable.
 
 ## Example EASI Pipeline Shapes (Normative Concepts, Informative Examples)
 
-- Native DICOM parse to Instance:
-  - `Reader -> DICOM Parser -> DICOM Instance Terminal`
-- DICOMweb JSON metadata to shared DICOM handlers:
-  - `Reader -> JSON Parser -> DICOM JSON Metadata Adapter -> DICOM Terminal`
-- Native DICOM de-identify and emit native DICOM bytes:
-  - `Reader -> DICOM Parser -> Validation Filter (optional) -> DeIdentification Filter -> DICOM Data Writer Terminal -> Writer (optional)`
+- Native DICOM&reg; parse to Instance:
+  - `Reader -> DICOM&reg; Parser -> DICOM&reg; Instance Terminal`
+- DICOMweb&trade; JSON metadata to shared DICOM&reg; handlers:
+  - `Reader -> JSON Parser -> DICOM&reg; JSON Metadata Adapter -> DICOM&reg; Terminal`
+- Native DICOM&reg; de-identify and emit native DICOM&reg; bytes:
+  - `Reader -> DICOM&reg; Parser -> Validation Filter (optional) -> DeIdentification Filter -> DICOM&reg; Data Writer Terminal -> Writer (optional)`
 - DIMSE PACS source to DIMSE PACS destination:
-  - `DIMSE Source -> DICOM Parser -> [Filters] -> DICOM Data Writer Terminal -> DIMSE Destination`
+  - `DIMSE Source -> DICOM&reg; Parser -> [Filters] -> DICOM&reg; Data Writer Terminal -> DIMSE Destination`
 
 ## Specification Document Map
 
@@ -257,7 +258,7 @@ Use this `README` as the primary overview and entry point. Use the supporting do
 - [`scenario-matrix.md`](./scenario-matrix.md)
   - implemented vs planned source/output combinations and roadmap tracking
 - [`dicom-capability-statement.md`](./dicom-capability-statement.md)
-  - implementation-facing statement of current `easi-js` DICOM support
+  - implementation-facing statement of current `easi-js` DICOM&reg; support
 
 ## Relationship to Implementations
 
@@ -285,4 +286,4 @@ To stabilize EASI before broad multi-language rollout:
 
 ## Summary
 
-EASI succeeds if a developer can recognize the same streaming imaging API model across languages, while DICOM remains the underlying data standard. The specification should therefore standardize semantics and vocabulary first, and fluent syntax second.
+EASI succeeds if a developer can recognize the same streaming imaging API model across languages, while DICOM&reg; remains the underlying data standard. The specification should therefore standardize semantics and vocabulary first, and fluent syntax second.

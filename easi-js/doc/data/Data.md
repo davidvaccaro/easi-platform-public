@@ -1,12 +1,12 @@
 # `Data` Class
 
-The `Data` class provides a dynamic byte buffer used as the base of the EASI DICOM stream reading process.  
+The `Data` class provides a dynamic byte buffer used as the base of the EASI DICOM&reg; stream reading process.  
 
 It supports appending, consuming, peeking, and searching byte sequences — optimized for streaming scenarios.
 
 ## Design Notes
 
-The `Data` class serves as the foundational dynamic byte buffer for the entire EASI DICOM streaming reading architecture.
+The `Data` class serves as the foundational dynamic byte buffer for the entire EASI DICOM&reg; streaming reading architecture.
 
 ### Goals
 
@@ -19,13 +19,13 @@ The `Data` class serves as the foundational dynamic byte buffer for the entire E
 
 ### Rationale
 
-Many DICOM file formats — especially streamed formats like WADO-RS — require partial and progressive reading of potentially large data sets. This class enables:
+Many DICOM&reg; file formats — especially streamed formats like WADO-RS — require partial and progressive reading of potentially large data sets. This class enables:
 
-- Safe and efficient parsing of DICOM tags, sequences, and pixel data blocks.
+- Safe and efficient parsing of DICOM&reg; tags, sequences, and pixel data blocks.
 - On-demand reading of stream segments without having to load the entire file in memory.
-- Support for high-performance browser or server-side processing of streaming DICOM data.
+- Support for high-performance browser or server-side processing of streaming DICOM&reg; data.
 
-The design avoids the complexity of larger buffer abstractions (like Node.js streams or BufferList) in favor of a minimal, high-performance core primitive tailored to DICOM parsing needs.
+The design avoids the complexity of larger buffer abstractions (like Node.js streams or BufferList) in favor of a minimal, high-performance core primitive tailored to DICOM&reg; parsing needs.
 
 ### Typical Use Cases
 

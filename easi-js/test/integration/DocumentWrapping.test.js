@@ -1,4 +1,5 @@
 import EASI from "../../src/EASI.js";
+import UnwrappedDocument from "../../src/dicom/utilities/UnwrappedDocument.js";
 
 function toJsonBytes(value) {
     return (new TextEncoder()).encode(JSON.stringify(value));
@@ -30,6 +31,7 @@ test("Test: pipeline wraps one JSON document descriptor to DICOM and unwraps it 
         .process(wrappedBytes, { contentType: "application/dicom" });
 
     expect(unwrapped).not.toBeNull();
+    expect(unwrapped).toBeInstanceOf(UnwrappedDocument);
     expect(unwrapped.mimeType).toBe("application/pdf");
     expect(unwrapped.title).toBe("Sample Report");
     expect(Array.from(unwrapped.bytes)).toEqual(descriptor.bytes);
@@ -58,7 +60,7 @@ test("Test: pipeline wraps a JSON array of descriptors to DICOM byte payload arr
         .build()
         .process(toJsonBytes(descriptors), { contentType: "application/json" });
 
-    expect(Array.isArray(wrapped)).toBe(true);
+    expect(wrapped.count).toBe(2);
     expect(wrapped.length).toBe(2);
     expect(wrapped[0] instanceof Uint8Array).toBe(true);
     expect(wrapped[1] instanceof Uint8Array).toBe(true);
@@ -70,6 +72,7 @@ test("Test: pipeline wraps a JSON array of descriptors to DICOM byte payload arr
         .build()
         .process(wrapped[0], { contentType: "application/dicom" });
 
+    expect(unwrappedFirst).toBeInstanceOf(UnwrappedDocument);
     expect(unwrappedFirst.mimeType).toBe("application/pdf");
     expect(unwrappedFirst.title).toBe("First");
 
@@ -99,6 +102,7 @@ test("Test: pipeline wraps direct raw bytes to wrapped-document DICOM", async ()
         .process(wrappedBytes, { contentType: "application/dicom" });
 
     expect(unwrapped).not.toBeNull();
+    expect(unwrapped).toBeInstanceOf(UnwrappedDocument);
     expect(unwrapped.mimeType).toBe("application/pdf");
     expect(unwrapped.title).toBe("Raw Bytes Report");
     expect(Array.from(unwrapped.bytes)).toEqual(Array.from(rawPayload));

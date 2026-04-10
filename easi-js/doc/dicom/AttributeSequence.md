@@ -1,6 +1,6 @@
 # AttributeSequence
 
-Represents a DICOM Attribute Sequence — a collection of items (each containing DICOM attributes), supporting operations such as adding items, searching for attributes, and checking for attribute existence.
+Represents a DICOM&reg; Attribute Sequence — a collection of items (each containing DICOM&reg; attributes), supporting operations such as adding items, searching for attributes, and checking for attribute existence.
 
 ---
 
@@ -8,13 +8,13 @@ Represents a DICOM Attribute Sequence — a collection of items (each containing
 
 ### `constructor(tag, valueLength, data, transferSyntax)`
 
-Constructs an empty new DICOM Attribute Sequence instance.
+Constructs an empty new DICOM&reg; Attribute Sequence instance.
 
 #### Parameters
 
 | Parameter        | Type    | Description                                      |
 |------------------|---------|--------------------------------------------------|
-| `tag`            | `any`   | The DICOM tag of this sequence.                  |
+| `tag`            | `any`   | The DICOM&reg; tag of this sequence.                  |
 | `valueLength`    | `any`   | The value length of the sequence data.           |
 | `data`           | `any`   | The raw sequence data (usually empty at init).   |
 | `transferSyntax` | `any`   | The transfer syntax used for encoding.           |
@@ -73,7 +73,7 @@ Finds all items in the sequence that contain the specified tag.
 
 | Parameter | Type  | Description                          |
 |-----------|-------|--------------------------------------|
-| `tag`     | `Tag` | The DICOM tag to search for.          |
+| `tag`     | `Tag` | The DICOM&reg; tag to search for.          |
 
 #### Returns
 
@@ -91,7 +91,7 @@ Determines if the specified tag exists in any of the sequence items.
 
 | Parameter | Type  | Description                 |
 |-----------|-------|-----------------------------|
-| `tag`     | `Tag` | The DICOM tag to check for.  |
+| `tag`     | `Tag` | The DICOM&reg; tag to check for.  |
 
 #### Returns
 
@@ -105,7 +105,7 @@ Determines if the specified tag exists in any of the sequence items.
 
 | Property | Type      | Description                                      |
 |----------|-----------|--------------------------------------------------|
-| `items`  | `Array`   | The collection of sequence items. Each item is typically a set of DICOM attributes. |
+| `items`  | `Array`   | The collection of sequence items. Each item is typically a set of DICOM&reg; attributes. |
 
 ---
 

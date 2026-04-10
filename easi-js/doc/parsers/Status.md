@@ -1,6 +1,6 @@
 # `Status` Enum
 
-The `Status` enum defines a set of symbolic constants representing the result or action directive of a parsing operation. Each value is a unique `Symbol` and is intended to guide the control flow during DICOM parsing or similar data stream processing.
+The `Status` enum defines a set of symbolic constants representing the result or action directive of a parsing operation. Each value is a unique `Symbol` and is intended to guide the control flow during DICOM&reg; parsing or similar data stream processing.
 
 ---
 

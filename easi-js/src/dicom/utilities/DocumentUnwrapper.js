@@ -19,6 +19,7 @@
 
 import EncapsulatedDocument from "../entities/EncapsulatedDocument.js";
 import SOPClass from "../SOPClass.js";
+import UnwrappedDocument from "./UnwrappedDocument.js";
 
 export default class DocumentUnwrapper {
 
@@ -316,7 +317,7 @@ export default class DocumentUnwrapper {
      * Unwrap one encapsulated document entity.
      * @param {EncapsulatedDocument} entity The source encapsulated document entity.
      * @param {object | null} options Unwrapper options.
-     * @returns {object | null} The unwrapped document payload.
+     * @returns {UnwrappedDocument | null} The unwrapped document payload.
      */
     unwrap(entity, options = null) {
 
@@ -336,7 +337,7 @@ export default class DocumentUnwrapper {
         var sopInstanceUid = this.toScalarString(entity.sopInstanceUid);
         var title = this.toScalarString(module?.documentTitle);
 
-        var output = {
+        var output = new UnwrappedDocument({
             sopClassUid: sopClassUid,
             sopInstanceUid: sopInstanceUid,
             title: title,
@@ -344,11 +345,10 @@ export default class DocumentUnwrapper {
             extension: this.resolveExtension(mimeType, sopClassUid),
             fileName: null,
             bytes: bytes,
-            byteLength: bytes.length,
             declaredByteLength: declaredByteLength,
             text: null,
             entity: entity
-        };
+        });
 
         output.fileName = this.buildFileName(output, options);
         output.text = this.decodeText(bytes, mimeType, options);

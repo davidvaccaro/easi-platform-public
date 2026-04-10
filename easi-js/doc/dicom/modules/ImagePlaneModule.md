@@ -1,6 +1,6 @@
 # ImagePlaneModule Class
 
-Provides access to DICOM **Image Plane Module** attributes such as slice thickness, image position, orientation, and pixel spacing.
+Provides access to DICOM&reg; **Image Plane Module** attributes such as slice thickness, image position, orientation, and pixel spacing.
 
 ## Inheritance
 
@@ -18,7 +18,7 @@ Creates a new instance of `ImagePlaneModule`.
 
 | Name           | Type           | Description                                     |
 |----------------|----------------|-------------------------------------------------|
-| `attributeSet` | `AttributeSet` | The DICOM attribute set to extract values from. |
+| `attributeSet` | `AttributeSet` | The DICOM&reg; attribute set to extract values from. |
 
 ---
 

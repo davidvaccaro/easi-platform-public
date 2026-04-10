@@ -1,4 +1,5 @@
 import DicomDocumentHandler from "../../../src/handlers/terminals/DicomDocumentHandler.js";
+import UnwrappedDocument from "../../../src/dicom/utilities/UnwrappedDocument.js";
 import DataSet from "../../../src/dicom/DataSet.js";
 import Attribute from "../../../src/dicom/Attribute.js";
 import Tag from "../../../src/dicom/Tag.js";
@@ -37,6 +38,7 @@ test("Test: DicomDocumentHandler unwraps one encapsulated document", () => {
     const result = handler.onEndInstance(context);
 
     expect(result).not.toBeNull();
+    expect(result).toBeInstanceOf(UnwrappedDocument);
     expect(result.sopClassUid).toBe(SOPClass.EncapsulatedPDFStorage.ID);
     expect(result.sopInstanceUid).toBe("1.2.3");
     expect(result.mimeType).toBe("application/pdf");
@@ -64,6 +66,7 @@ test("Test: DicomDocumentHandler ignores non-encapsulated instances and later em
 
     const second = handler.onEndInstance(context);
     expect(second).not.toBeNull();
+    expect(second).toBeInstanceOf(UnwrappedDocument);
     expect(second.sopInstanceUid).toBe("1.2.840.2");
 });
 
@@ -81,5 +84,6 @@ test("Test: DicomDocumentHandler supports custom file-name factory", () => {
     addBinaryAttribute(context.instance.dataSet, Tag.EncapsulatedDocument, new Uint8Array([1]));
 
     const result = handler.onEndInstance(context);
+    expect(result).toBeInstanceOf(UnwrappedDocument);
     expect(result.fileName).toBe("custom-1.2.3.4.pdf");
 });

@@ -1,15 +1,15 @@
 # SOPClass Class
 
-A DICOM SOP Class (Service-Object Pair Class) represents a specific combination of a service (an operation or set of operations that can be performed) and an object (a type of medical data, such as an image, report, or waveform).
+A DICOM&reg; SOP Class (Service-Object Pair Class) represents a specific combination of a service (an operation or set of operations that can be performed) and an object (a type of medical data, such as an image, report, or waveform).
 
 In simple terms: it defines what kind of data is being exchanged and what can be done with it — for example, storing CT images or querying patient information.
 
-The EASI DICOM `SOPClass` class is a static accessor class that defines all known DICOM SOP Classes. 
+The EASI DICOM&reg; `SOPClass` class is a static accessor class that defines all known DICOM&reg; SOP Classes. 
 
 It represents the full set of SOP Class values as a static map of `SOPClass` instances and provides static access via well-known Names through dynamic lookup as well as exposing a full complement of static SOP Class accessor properties.
 
-For further details on SOP Classes in the DICOM Standard, see:  
-[Official DICOM Standard - Service-Object Pair (SOP) Classes](https://dicom.nema.org/medical/dicom/current/output/html/part04.html#chapter_A)
+For further details on SOP Classes in the DICOM&reg; Standard, see:  
+[Official DICOM&reg; Standard - Service-Object Pair (SOP) Classes](https://dicom.nema.org/medical/dicom/current/output/html/part04.html#chapter_A)
 
 ---
 

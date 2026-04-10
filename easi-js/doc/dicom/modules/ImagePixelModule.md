@@ -1,6 +1,6 @@
 # ImagePixelModule Class
 
-Provides access to the **Image Pixel Module** of a DICOM object, exposing key attributes related to pixel structure, image dimensions, and photometric interpretation.
+Provides access to the **Image Pixel Module** of a DICOM&reg; object, exposing key attributes related to pixel structure, image dimensions, and photometric interpretation.
 
 ---
 

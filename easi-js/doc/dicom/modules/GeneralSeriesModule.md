@@ -1,6 +1,6 @@
 # `GeneralSeriesModule` Class
 
-Represents the DICOM *General Series Module*, providing access to key attributes such as `Modality` from a DICOM data set.
+Represents the DICOM&reg; *General Series Module*, providing access to key attributes such as `Modality` from a DICOM&reg; data set.
 
 ## Inheritance
 
@@ -18,7 +18,7 @@ Creates a new instance of `GeneralSeriesModule`.
 
 | Name          | Type             | Description                          |
 |---------------|------------------|--------------------------------------|
-| `attributeSet`| `AttributeSet`   | The set of DICOM attributes to access. |
+| `attributeSet`| `AttributeSet`   | The set of DICOM&reg; attributes to access. |
 
 ---
 
@@ -26,7 +26,7 @@ Creates a new instance of `GeneralSeriesModule`.
 
 ### `modality`
 
-Gets the value of the Modality (DICOM Tag `0008,0060`) in the series.
+Gets the value of the Modality (DICOM&reg; Tag `0008,0060`) in the series.
 
 #### Returns
 

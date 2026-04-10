@@ -257,11 +257,11 @@ test("Test: build throws IncompatibleParserAndHandler", () => {
     expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
 });
 
-test("Test: build throws IncompatibleParserAndHandler for toJsonValue with DICOM parser", () => {
+test("Test: build throws IncompatibleParserAndHandler for toStructuredValue with DICOM parser", () => {
     const error = captureBuildError(
         new PipelineBuilder()
             .fromPartStream().ofDicomData()
-            .toJsonValue()
+            .toStructuredValue()
     );
 
     expect(error instanceof Exception).toBe(true);
@@ -691,22 +691,22 @@ test("Test: toAssetArchive builds with DicomAssetArchiveHandler", () => {
     expect(pipeline.parser.handler instanceof DicomAssetArchiveHandler).toBe(true);
 });
 
-test("Test: toJsonValue builds with JsonDataHandler for JSON parser", () => {
+test("Test: toStructuredValue builds with JsonDataHandler for JSON parser", () => {
     const pipeline = new PipelineBuilder()
         .fromPartStream()
         .ofJsonData()
-        .toJsonValue()
+        .toStructuredValue()
         .build();
 
     expect(pipeline.parser instanceof JsonDataParser).toBe(true);
     expect(pipeline.parser.handler instanceof JsonDataHandler).toBe(true);
 });
 
-test("Test: toJsonValue builds with XmlDataHandler for XML parser", () => {
+test("Test: toStructuredValue builds with XmlDataHandler for XML parser", () => {
     const pipeline = new PipelineBuilder()
         .fromPartStream()
         .ofXmlData()
-        .toJsonValue()
+        .toStructuredValue()
         .build();
 
     expect(pipeline.parser instanceof XmlDataParser).toBe(true);
@@ -816,7 +816,7 @@ test("Test: build throws IncompatibleReaderAndParser for DIMSE reader with JSON 
                 calledAeTitle: "PACS"
             }, sourceTransport)
             .ofJsonData()
-            .toJsonValue()
+            .toStructuredValue()
     );
 
     expect(error instanceof Exception).toBe(true);

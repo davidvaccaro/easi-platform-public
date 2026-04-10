@@ -1,6 +1,6 @@
 # `Item` Class
 
-The `Item` class represents a DICOM Part-10 Sequence Item, extending `AttributeSet` to encapsulate a group of attributes within a DICOM sequence.
+The `Item` class represents a DICOM&reg; Part-10 Sequence Item, extending `AttributeSet` to encapsulate a group of attributes within a DICOM&reg; sequence.
 
 ---
 
@@ -14,7 +14,7 @@ Item → AttributeSet
 
 ### `constructor(valueLength)`
 
-Constructs a DICOM Part-10 Sequence Item.
+Constructs a DICOM&reg; Part-10 Sequence Item.
 
 #### Parameters
 

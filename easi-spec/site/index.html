@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI primary documentation site with language-neutral specification content and language-specific usage references.">
+    <title>EASI Standard Reference</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>EASI Standard Technical Reference</h2>
+                <p>
+                    EASI (Expressive API Standard for Imaging) defines a fluent, language-neutral contract for
+                    the efficient stream processing of DICOM&reg; medical information.
+                </p>
+                <br />
+                <p>
+                    This site is the primary source for both language-neutral semantics and language-specific usage,
+                    with ample cross-lanuguage samples presented throughout.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout normative">
+                    <h4>Normative Focus</h4>
+                    <p>
+                        A topic belongs in this standard when independent implementations must behave the same way to remain interoperable.
+                        Internal class structures, runtime utilities, and language-specific ergonomics remain language-specific implementation details.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Reference Index</h3>
+                <p>
+                    The following index organizes the EASI processing architecture, materialization scheme, result output models, error handling and advanced features all with language-neutral and language-specific examples and real-world DICOM&reg; use-cases.
+                </p>
+
+                <div class="search">
+                    <label for="index-search">Filter pages</label>
+                    <input id="index-search" type="search" placeholder="Search by topic, contract, status, DICOM&reg;, conformance..."
+                           data-filter-input data-filter-target="#index-cards">
+                </div>
+
+                <div id="index-cards" class="grid two">
+                    <article class="card reveal" data-filter-item="what is easi pipeline primer onboarding model read process start listener transform">
+                        <h4><a href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a></h4>
+                        <p>A practical orientation to pipeline intent and capability range, from simple reads to listener-based DIMSE processing.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="core pipeline reader parser adapter filter terminal writer build semantics">
+                        <h4><a href="core-pipeline.html">Core Pipeline Model</a></h4>
+                        <p>Normative structure and component responsibilities: Reader -> Parser -> Adapter -> Filter -> Terminal -> Writer.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="dimse c-echo c-find c-get c-move c-store association ae title listener start process">
+                        <h4><a href="dimse-pipeline.html">DIMSE Pipeline Model</a></h4>
+                        <p>DIMSE composition patterns for query/retrieve and C-STORE listener lifecycles, including <code>start()</code> source-bound pipelines.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="advanced pipelines real world scenarios migration bridge de-identification redaction transcoding routing cloud assets">
+                        <h4><a href="advanced-pipeline.html">Advanced Pipeline Use Cases</a></h4>
+                        <p>Production-style patterns showing how one pipeline model powers bridge services, selective relay, and large-scale migration.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="stream processing model parser handler protocol lifecycle events statuses handshake incrementally">
+                        <h4><a href="stream-processing-model.html">Stream Processing Model</a></h4>
+                        <p>Parser-to-handler stream protocol semantics that explain how lifecycle events and status responses drive real-time processing.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="stream lifecycle status continue success stop jump fail events ordering callbacks">
+                        <h4><a href="lifecycle-status.html">Stream Lifecycle</a></h4>
+                        <p>Detailed callback vocabulary, ordering constraints, and flow-control status behavior (<code>CONTINUE</code>, <code>SUCCESS</code>, <code>STOP</code>, <code>JUMP</code>, <code>FAIL</code>).</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="materialization model non materializing materializing hybrid memory throughput streaming payload chunks">
+                        <h4><a href="materialization-model.html">Materialization Model</a></h4>
+                        <p>Defines when to materialize outputs versus stream them, with practical controls for memory-aware pipeline design.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="conformance levels claims fixtures compatibility validation">
+                        <h4><a href="conformance.html">Conformance</a></h4>
+                        <p>Conformance levels, mandatory claims, compatibility assertions, and validation expectations.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="dicom entities modules elements patient study series instance profile">
+                        <h4><a href="dicom-profile-index.html">Profile Index</a></h4>
+                        <p>EASI-specific index of DICOM&reg; entities, modules, and high-value elements used by common workflows.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="dicom model classes instance dataset attribute tag transfer syntax value representation">
+                        <h4><a href="dicom-model/index.html">Model Types</a></h4>
+                        <p>Resource-style references with Language-Neutral and language-specific tabs, plus concise composition and usage examples.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="error catalog parse builder transport compatibility concern codes">
+                        <h4><a href="error-catalog.html">Error Catalog</a></h4>
+                        <p>Canonical error condition families for parse, composition, transport, validation, and extension contracts.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="boundary standard implementation language neutral runtime environment exception">
+                        <h4><a href="implementation-boundary.html">Standard Boundary</a></h4>
+                        <p>Decision framework for what is normative EASI versus language-specific implementation detail.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Conformance Ladder (Snapshot)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Intent</th>
+                            <th>Minimum Capability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>L1</td>
+                            <td>Core API Conformance</td>
+                            <td>Pipeline semantics, lifecycle contract, status behavior, build-time validation.</td>
+                        </tr>
+                        <tr>
+                            <td>L2</td>
+                            <td>DICOM&reg; Core Scenarios</td>
+                            <td>Instance materialization, selection, and mapping over native DICOM&reg; data streams.</td>
+                        </tr>
+                        <tr>
+                            <td>L3</td>
+                            <td>Extended Scenarios</td>
+                            <td>DICOMweb&trade; metadata adapters, de-identification, validation, transcoding, and writer integrations.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <p class="footer-note">
+                Standalone static reference website. No runtime markdown conversion required.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

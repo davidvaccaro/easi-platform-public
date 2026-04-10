@@ -30,7 +30,7 @@ Called when the parser is reset.
 
 ### `onStartInstance(context)`
 
-Called at the beginning of a new DICOM instance.
+Called at the beginning of a new DICOM&reg; instance.
 
 #### Parameters
 
@@ -116,7 +116,7 @@ Called when the parser encounters a new sequence.
 | Parameter | Type    | Description |
 |-----------|---------|-------------|
 | `context` | `object` | The same context object that was returned by the implementor from the onStartInstance event method. |
-| `sequence` | `object` | A sequence attribute object, derived from the attribute, representing a DICOM sequence. |
+| `sequence` | `object` | A sequence attribute object, derived from the attribute, representing a DICOM&reg; sequence. |
 
 #### Returns
 

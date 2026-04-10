@@ -1,6 +1,6 @@
 # `JpegLosslessDecoder` Class
 
-The `JpegLosslessDecoder` class provides pixel decoding functionality for DICOM image data processing.
+The `JpegLosslessDecoder` class provides pixel decoding functionality for DICOM&reg; image data processing.
 
 ---
 

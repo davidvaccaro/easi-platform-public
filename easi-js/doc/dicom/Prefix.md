@@ -1,15 +1,15 @@
 # `Prefix` Class
 
-The `Prefix` class represents the DICOM Part-10 File Meta Information "Prefix" field.  
+The `Prefix` class represents the DICOM&reg; Part-10 File Meta Information "Prefix" field.  
 
-It extends the `DataElement` class and is used to parse and encapsulate the Prefix from a DICOM file header.
+It extends the `DataElement` class and is used to parse and encapsulate the Prefix from a DICOM&reg; file header.
 
 ## Notes
 
 - The Prefix field is a **fixed-length field** — length = `Constants.PrefixLength` (4 bytes).
-- The DICOM standard value for Prefix is `'DICM'`.
-- The Prefix immediately follows the Preamble in a Part-10 compliant DICOM file.
-- Used when reading and writing DICOM Part-10 file headers.
+- The DICOM&reg; standard value for Prefix is `'DICM'`.
+- The Prefix immediately follows the Preamble in a Part-10 compliant DICOM&reg; file.
+- Used when reading and writing DICOM&reg; Part-10 file headers.
 - Inherits all methods and properties from `DataElement`, `EncodedData`, and `Data`.
 
 ---

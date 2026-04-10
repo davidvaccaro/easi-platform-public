@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI DICOM&reg; type reference for Modality.">
+    <title>EASI | DICOM&reg; Type | Modality</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="../core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="../stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="../lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="../dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Modality</h2>
+                <p>Provides modality code definitions and lookup by well-known identifiers.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Snapshot</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Type</td>
+                            <td><code>Modality</code></td>
+                        </tr>
+                        <tr>
+                            <td>Domain</td>
+                            <td>Core</td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td>Vocabulary</td>
+                        </tr>
+                        <tr>
+                            <td>Kind</td>
+                            <td>Static Type</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Canonical Role</h3>
+                <p>Supports modality-based routing, filtering, and profile constraints.</p>
+                <div class="callout normative">
+                    <h4>Pipeline Exposure</h4>
+                    <p>Referenced as shared vocabulary support in parser, filter, mapping, and validation flows.</p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Definition</h3>
+                <p>
+                    Structure is presented first, followed by language-neutral and language-specific examples,
+                    and an explicit UML relationship view.
+                </p>
+
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Type definition tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="structure">Structure</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="uml">UML</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="structure">
+                        <h4>Type Structure</h4>
+                        <p>Directly available members for <code>Modality</code>, separated by accessors/properties, methods, and constructors.</p>
+                        <h5>Accessors and Properties</h5>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Member</th>
+                                        <th>Signature</th>
+                                        <th>Kind</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        <tr>
+                            <td><code>AR</code></td>
+                            <td><code>static get AR()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ar.</td>
+                        </tr>
+                        <tr>
+                            <td><code>ASMT</code></td>
+                            <td><code>static get ASMT()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to asmt.</td>
+                        </tr>
+                        <tr>
+                            <td><code>AU</code></td>
+                            <td><code>static get AU()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to au.</td>
+                        </tr>
+                        <tr>
+                            <td><code>BI</code></td>
+                            <td><code>static get BI()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to bi.</td>
+                        </tr>
+                        <tr>
+                            <td><code>BMD</code></td>
+                            <td><code>static get BMD()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to bmd.</td>
+                        </tr>
+                        <tr>
+                            <td><code>CFM</code></td>
+                            <td><code>static get CFM()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to cfm.</td>
+                        </tr>
+                        <tr>
+                            <td><code>EPS</code></td>
+                            <td><code>static get EPS()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to eps.</td>
+                        </tr>
+                        <tr>
+                            <td><code>CR</code></td>
+                            <td><code>static get CR()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to cr.</td>
+                        </tr>
+                        <tr>
+                            <td><code>CT</code></td>
+                            <td><code>static get CT()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ct.</td>
+                        </tr>
+                        <tr>
+                            <td><code>CTPROTOCOL</code></td>
+                            <td><code>static get CTPROTOCOL()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ctprotocol.</td>
+                        </tr>
+                        <tr>
+                            <td><code>DMS</code></td>
+                            <td><code>static get DMS()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to dms.</td>
+                        </tr>
+                        <tr>
+                            <td><code>DG</code></td>
+                            <td><code>static get DG()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to dg.</td>
+                        </tr>
+                        <tr>
+                            <td><code>DOC</code></td>
+                            <td><code>static get DOC()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to doc.</td>
+                        </tr>
+                        <tr>
+                            <td><code>DX</code></td>
+                            <td><code>static get DX()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to dx.</td>
+                        </tr>
+                        <tr>
+                            <td><code>ECG</code></td>
+                            <td><code>static get ECG()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ecg.</td>
+                        </tr>
+                        <tr>
+                            <td><code>EEG</code></td>
+                            <td><code>static get EEG()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to eeg.</td>
+                        </tr>
+                        <tr>
+                            <td><code>EMG</code></td>
+                            <td><code>static get EMG()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to emg.</td>
+                        </tr>
+                        <tr>
+                            <td><code>EOG</code></td>
+                            <td><code>static get EOG()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to eog.</td>
+                        </tr>
+                        <tr>
+                            <td><code>ES</code></td>
+                            <td><code>static get ES()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to es.</td>
+                        </tr>
+                        <tr>
+                            <td><code>FID</code></td>
+                            <td><code>static get FID()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to fid.</td>
+                        </tr>
+                        <tr>
+                            <td><code>XC</code></td>
+                            <td><code>static get XC()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to xc.</td>
+                        </tr>
+                        <tr>
+                            <td><code>GM</code></td>
+                            <td><code>static get GM()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to gm.</td>
+                        </tr>
+                        <tr>
+                            <td><code>HC</code></td>
+                            <td><code>static get HC()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to hc.</td>
+                        </tr>
+                        <tr>
+                            <td><code>HD</code></td>
+                            <td><code>static get HD()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to hd.</td>
+                        </tr>
+                        <tr>
+                            <td><code>IO</code></td>
+                            <td><code>static get IO()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to io.</td>
+                        </tr>
+                        <tr>
+                            <td><code>IOL</code></td>
+                            <td><code>static get IOL()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to iol.</td>
+                        </tr>
+                        <tr>
+                            <td><code>IVOCT</code></td>
+                            <td><code>static get IVOCT()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ivoct.</td>
+                        </tr>
+                        <tr>
+                            <td><code>IVUS</code></td>
+                            <td><code>static get IVUS()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ivus.</td>
+                        </tr>
+                        <tr>
+                            <td><code>KER</code></td>
+                            <td><code>static get KER()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ker.</td>
+                        </tr>
+                        <tr>
+                            <td><code>KO</code></td>
+                            <td><code>static get KO()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ko.</td>
+                        </tr>
+                        <tr>
+                            <td><code>LS</code></td>
+                            <td><code>static get LS()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ls.</td>
+                        </tr>
+                        <tr>
+                            <td><code>LEN</code></td>
+                            <td><code>static get LEN()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to len.</td>
+                        </tr>
+                        <tr>
+                            <td><code>M3D</code></td>
+                            <td><code>static get M3D()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to m3 d.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MR</code></td>
+                            <td><code>static get MR()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mr.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MG</code></td>
+                            <td><code>static get MG()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mg.</td>
+                        </tr>
+                        <tr>
+                            <td><code>NM</code></td>
+                            <td><code>static get NM()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to nm.</td>
+                        </tr>
+                        <tr>
+                            <td><code>OAM</code></td>
+                            <td><code>static get OAM()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to oam.</td>
+                        </tr>
+                        <tr>
+                            <td><code>OPM</code></td>
+                            <td><code>static get OPM()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to opm.</td>
+                        </tr>
+                        <tr>
+                            <td><code>OP</code></td>
+                            <td><code>static get OP()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to op.</td>
+                        </tr>
+                        <tr>
+                            <td><code>OPT</code></td>
+                            <td><code>static get OPT()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to opt.</td>
+                        </tr>
+                        <tr>
+                            <td><code>OPTBSV</code></td>
+                            <td><code>static get OPTBSV()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to optbsv.</td>
+                        </tr>
+                        <tr>
+                            <td><code>OPTENF</code></td>
+                            <td><code>static get OPTENF()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to optenf.</td>
+                        </tr>
+                        <tr>
+                            <td><code>OPV</code></td>
+                            <td><code>static get OPV()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to opv.</td>
+                        </tr>
+                        <tr>
+                            <td><code>OCT</code></td>
+                            <td><code>static get OCT()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to oct.</td>
+                        </tr>
+                        <tr>
+                            <td><code>OSS</code></td>
+                            <td><code>static get OSS()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to oss.</td>
+                        </tr>
+                        <tr>
+                            <td><code>OT</code></td>
+                            <td><code>static get OT()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ot.</td>
+                        </tr>
+                        <tr>
+                            <td><code>PA</code></td>
+                            <td><code>static get PA()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to pa.</td>
+                        </tr>
+                        <tr>
+                            <td><code>PX</code></td>
+                            <td><code>static get PX()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to px.</td>
+                        </tr>
+                        <tr>
+                            <td><code>PLAN</code></td>
+                            <td><code>static get PLAN()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to plan.</td>
+                        </tr>
+                        <tr>
+                            <td><code>POS</code></td>
+                            <td><code>static get POS()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to pos.</td>
+                        </tr>
+                        <tr>
+                            <td><code>PR</code></td>
+                            <td><code>static get PR()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to pr.</td>
+                        </tr>
+                        <tr>
+                            <td><code>PT</code></td>
+                            <td><code>static get PT()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to pt.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RF</code></td>
+                            <td><code>static get RF()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rf.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RG</code></td>
+                            <td><code>static get RG()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rg.</td>
+                        </tr>
+                        <tr>
+                            <td><code>REG</code></td>
+                            <td><code>static get REG()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to reg.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RESP</code></td>
+                            <td><code>static get RESP()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to resp.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RTDOSE</code></td>
+                            <td><code>static get RTDOSE()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rtdose.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RTIMAGE</code></td>
+                            <td><code>static get RTIMAGE()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rtimage.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RTINTENT</code></td>
+                            <td><code>static get RTINTENT()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rtintent.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RTPLAN</code></td>
+                            <td><code>static get RTPLAN()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rtplan.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RTRAD</code></td>
+                            <td><code>static get RTRAD()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rtrad.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RTRECORD</code></td>
+                            <td><code>static get RTRECORD()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rtrecord.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RTSEGANN</code></td>
+                            <td><code>static get RTSEGANN()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rtsegann.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RTSTRUCT</code></td>
+                            <td><code>static get RTSTRUCT()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rtstruct.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RWV</code></td>
+                            <td><code>static get RWV()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rwv.</td>
+                        </tr>
+                        <tr>
+                            <td><code>SEG</code></td>
+                            <td><code>static get SEG()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to seg.</td>
+                        </tr>
+                        <tr>
+                            <td><code>SM</code></td>
+                            <td><code>static get SM()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to sm.</td>
+                        </tr>
+                        <tr>
+                            <td><code>SMR</code></td>
+                            <td><code>static get SMR()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to smr.</td>
+                        </tr>
+                        <tr>
+                            <td><code>SR</code></td>
+                            <td><code>static get SR()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to sr.</td>
+                        </tr>
+                        <tr>
+                            <td><code>SRF</code></td>
+                            <td><code>static get SRF()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to srf.</td>
+                        </tr>
+                        <tr>
+                            <td><code>STAIN</code></td>
+                            <td><code>static get STAIN()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to stain.</td>
+                        </tr>
+                        <tr>
+                            <td><code>TEXTUREMAP</code></td>
+                            <td><code>static get TEXTUREMAP()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to texturemap.</td>
+                        </tr>
+                        <tr>
+                            <td><code>TG</code></td>
+                            <td><code>static get TG()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to tg.</td>
+                        </tr>
+                        <tr>
+                            <td><code>US</code></td>
+                            <td><code>static get US()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to us.</td>
+                        </tr>
+                        <tr>
+                            <td><code>BDUS</code></td>
+                            <td><code>static get BDUS()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to bdus.</td>
+                        </tr>
+                        <tr>
+                            <td><code>VA</code></td>
+                            <td><code>static get VA()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to va.</td>
+                        </tr>
+                        <tr>
+                            <td><code>XA</code></td>
+                            <td><code>static get XA()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to xa.</td>
+                        </tr>
+                        <tr>
+                            <td><code>XAPROTOCOL</code></td>
+                            <td><code>static get XAPROTOCOL()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to xaprotocol.</td>
+                        </tr>
+                        <tr>
+                            <td><code>NONE</code></td>
+                            <td><code>static get NONE()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to none.</td>
+                        </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h5>Methods</h5>
+
+                    <article class="member-doc">
+                        <h6><code>static find(id)</code></h6>
+                        <p>Executes find behavior for this type.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>id</code></td>
+                                <td><code>Any</code></td>
+                                <td>Parameter used by this member.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="member-doc-label">Possible Return Types</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>Any</code></td>
+                                <td>Method return value (implementation-dependent).</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                        <h5>Constructors</h5>
+
+                    <article class="member-doc">
+                        <h6><code>constructor(data)</code></h6>
+                        <p>Constructs a new instance of this type.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>data</code></td>
+                                <td><code>Any</code></td>
+                                <td>Parameter used by this member.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    </div>
+                <div class="doc-tab-panel" data-tab-panel="neutral">
+                    <h4>Language-Neutral Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-text">pipeline := EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toInstances()
+  .build()
+
+resultCollection := pipeline.process(source)
+result := resultCollection.first()
+
+# Type usage
+modality := Modality.find(&quot;CT&quot;)</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: route workflows by modality capabilities.</p>
+                    <pre><code class="language-text">modality := Modality.find(&quot;CT&quot;)
+modalityCode := modality.ID
+isMultiFrame := modality.IsMultiFrame</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="javascript">
+                    <h4>JavaScript Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-javascript">const pipeline = EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toInstances()
+  .build();
+
+const resultCollection = await pipeline.process(source);
+const result = resultCollection.first();
+
+// Type usage
+const modality = Modality.find(&quot;CT&quot;);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: route workflows by modality capabilities.</p>
+                    <pre><code class="language-javascript">const modality = Modality.find(&quot;CT&quot;);
+const modalityCode = modality.ID;
+const isMultiFrame = modality.IsMultiFrame;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="csharp">
+                    <h4>C# Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-csharp">var pipeline = EASI.PipelineBuilder()
+    .FromPartStream()
+    .OfDicomData()
+    .ToInstances()
+    .Build();
+
+var resultCollection = await pipeline.Process(source);
+var result = resultCollection.First();
+
+// Type usage
+var modality = Modality.find(&quot;CT&quot;);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: route workflows by modality capabilities.</p>
+                    <pre><code class="language-csharp">var modality = Modality.find(&quot;CT&quot;);
+var modalityCode = modality.ID;
+var isMultiFrame = modality.IsMultiFrame;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="java">
+                    <h4>Java Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-java">var pipeline = EASI.pipelineBuilder()
+    .fromPartStream()
+    .ofDicomData()
+    .toInstances()
+    .build();
+
+var resultCollection = pipeline.process(source);
+var result = resultCollection.first();
+
+// Type usage
+var modality = Modality.find(&quot;CT&quot;);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: route workflows by modality capabilities.</p>
+                    <pre><code class="language-java">var modality = Modality.find(&quot;CT&quot;);
+var modalityCode = modality.ID;
+var isMultiFrame = modality.IsMultiFrame;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="python">
+                    <h4>Python Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-python">pipeline = (
+    EASI.pipeline_builder()
+    .from_part_stream()
+    .of_dicom_data()
+    .to_instances()
+    .build()
+)
+
+result_collection = pipeline.process(source)
+result = result_collection.first()
+
+# Type usage
+modality = Modality.find(&quot;CT&quot;)</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: route workflows by modality capabilities.</p>
+                    <pre><code class="language-python">modality = Modality.find(&quot;CT&quot;)
+modality_code = modality.ID
+is_multi_frame = modality.IsMultiFrame</code></pre>
+                </div>
+
+                <div class="doc-tab-panel" data-tab-panel="uml">
+                    <h4>UML Class Diagram</h4>
+                    <p>Direct type relationships rendered as an inline UML SVG diagram.</p>
+
+                    <div class="uml-diagram">
+                        <svg class="uml-svg" viewBox="0 0 738 280" role="img" aria-label="Modality UML diagram">
+                            <defs>
+                                <marker id="uml-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                                </marker>
+                                <marker id="uml-triangle" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto">
+                                    <path d="M 0 0 L 12 6 L 0 12 z"></path>
+                                </marker>
+                                <marker id="uml-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                                <marker id="uml-open-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                            </defs>
+        <path class="uml-edge" d="M 278 140 C 368 140, 340 56, 430 56"></path>
+        <path class="uml-edge" d="M 278 140 C 368 140, 340 140, 430 140"></path>
+        <path class="uml-edge" d="M 278 140 C 368 140, 340 224, 430 224"></path>
+        <g class="uml-node primary">
+            <title>Modality</title>
+            <rect x="28" y="108" width="250" height="64" rx="8" ry="8"></rect>
+            <text x="153" y="140" text-anchor="middle" dominant-baseline="middle">Modality</text>
+        </g>
+        <g class="uml-node">
+            <title>Attribute</title>
+            <rect x="430" y="28" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="56" text-anchor="middle" dominant-baseline="middle">Attribute</text>
+        </g>
+        <g class="uml-node">
+            <title>DataSet</title>
+            <rect x="430" y="112" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="140" text-anchor="middle" dominant-baseline="middle">DataSet</text>
+        </g>
+        <g class="uml-node">
+            <title>Tag</title>
+            <rect x="430" y="196" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="224" text-anchor="middle" dominant-baseline="middle">Tag</text>
+        </g>
+        <text class="uml-edge-label" x="354" y="90" text-anchor="middle">-- associated with</text>
+        <text class="uml-edge-label" x="354" y="132" text-anchor="middle">-- associated with</text>
+        <text class="uml-edge-label" x="354" y="174" text-anchor="middle">-- associated with</text>
+                            
+                        </svg>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Relationship</th>
+                                    <th>Target</th>
+                                    <th>Intent</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <tr>
+                            <td><code>Modality</code></td>
+                            <td><code>--</code></td>
+                            <td><code>Attribute</code></td>
+                            <td>associated with</td>
+                        </tr>
+                        <tr>
+                            <td><code>Modality</code></td>
+                            <td><code>--</code></td>
+                            <td><code>DataSet</code></td>
+                            <td>associated with</td>
+                        </tr>
+                        <tr>
+                            <td><code>Modality</code></td>
+                            <td><code>--</code></td>
+                            <td><code>Tag</code></td>
+                            <td>associated with</td>
+                        </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Common Relationships</h3>
+                <p><a href="attribute.html"><code>Attribute</code></a>, <a href="data-set.html"><code>DataSet</code></a>, <a href="tag.html"><code>Tag</code></a></p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Typical Output Context</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pipeline Surface</th>
+                            <th>How Modality Commonly Appears</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>toInstances()</code></td>
+                            <td>Directly emitted, nested, or referenced as part of instance materialization output.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toSelection(...)</code></td>
+                            <td>Referenced for targeted extraction and structural traversal.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toMapping(...)</code></td>
+                            <td>Used as source semantics for projection into derived target models.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout warning">
+                    <h4>Specification Boundary</h4>
+                    <p>
+                        This reference describes interoperable semantics and usage intent.
+                        Language-specific implementation internals remain outside normative standard requirements.
+                    </p>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                <a href="index.html">Back to DICOM&reg; Type Index</a>
+            </p>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI DICOM&reg; type reference for TransferSyntax.">
+    <title>EASI | DICOM&reg; Type | TransferSyntax</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI Standard</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <a class="nav-link" data-nav-link href="../core-pipeline.html">Core Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <a class="nav-link" data-nav-link href="../stream-processing-model.html">Stream Processing Model</a>
+                <a class="nav-link" data-nav-link href="../lifecycle-status.html">Stream Lifecycle</a>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="../dicom-profile-index.html">Profile Index</a>
+                <a class="nav-link" data-nav-link href="index.html">Model Types</a>
+                <a class="nav-link" data-nav-link href="diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>TransferSyntax</h2>
+                <p>Provides transfer syntax UID definitions and encoding capability metadata.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Snapshot</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Type</td>
+                            <td><code>TransferSyntax</code></td>
+                        </tr>
+                        <tr>
+                            <td>Domain</td>
+                            <td>Core</td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td>Vocabulary</td>
+                        </tr>
+                        <tr>
+                            <td>Kind</td>
+                            <td>Static Type</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Canonical Role</h3>
+                <p>Drives decode, encode, and compatibility behavior across pipelines.</p>
+                <div class="callout normative">
+                    <h4>Pipeline Exposure</h4>
+                    <p>Referenced as shared vocabulary support in parser, filter, mapping, and validation flows.</p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Type Definition</h3>
+                <p>
+                    Structure is presented first, followed by language-neutral and language-specific examples,
+                    and an explicit UML relationship view.
+                </p>
+
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Type definition tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="structure">Structure</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="uml">UML</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="structure">
+                        <h4>Type Structure</h4>
+                        <p>Directly available members for <code>TransferSyntax</code>, separated by accessors/properties, methods, and constructors.</p>
+                        <h5>Accessors and Properties</h5>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Member</th>
+                                        <th>Signature</th>
+                                        <th>Kind</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        <tr>
+                            <td><code>NONE</code></td>
+                            <td><code>static get NONE()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to none.</td>
+                        </tr>
+                        <tr>
+                            <td><code>ImplicitVRLittleEndian</code></td>
+                            <td><code>static get ImplicitVRLittleEndian()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to implicit vr little endian.</td>
+                        </tr>
+                        <tr>
+                            <td><code>ExplicitVRLittleEndian</code></td>
+                            <td><code>static get ExplicitVRLittleEndian()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to explicit vr little endian.</td>
+                        </tr>
+                        <tr>
+                            <td><code>ExplicitVRBigEndian</code></td>
+                            <td><code>static get ExplicitVRBigEndian()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to explicit vr big endian.</td>
+                        </tr>
+                        <tr>
+                            <td><code>EncapsulatedUncompressedExplicitVRLittleEndian</code></td>
+                            <td><code>static get EncapsulatedUncompressedExplicitVRLittleEndian()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to encapsulated uncompressed explicit vr little endian.</td>
+                        </tr>
+                        <tr>
+                            <td><code>DeflatedExplicitVRLittleEndian</code></td>
+                            <td><code>static get DeflatedExplicitVRLittleEndian()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to deflated explicit vr little endian.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGBaseline8Bit</code></td>
+                            <td><code>static get JPEGBaseline8Bit()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg baseline8 bit.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGExtended12Bit</code></td>
+                            <td><code>static get JPEGExtended12Bit()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg extended12 bit.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGExtended35</code></td>
+                            <td><code>static get JPEGExtended35()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg extended35.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGSpectralSelectionNonHierarchical68</code></td>
+                            <td><code>static get JPEGSpectralSelectionNonHierarchical68()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg spectral selection non hierarchical68.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGSpectralSelectionNonHierarchical79</code></td>
+                            <td><code>static get JPEGSpectralSelectionNonHierarchical79()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg spectral selection non hierarchical79.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGFullProgressionNonHierarchical1012</code></td>
+                            <td><code>static get JPEGFullProgressionNonHierarchical1012()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg full progression non hierarchical1012.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGFullProgressionNonHierarchical1113</code></td>
+                            <td><code>static get JPEGFullProgressionNonHierarchical1113()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg full progression non hierarchical1113.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGLossless</code></td>
+                            <td><code>static get JPEGLossless()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg lossless.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGLosslessNonHierarchical15</code></td>
+                            <td><code>static get JPEGLosslessNonHierarchical15()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg lossless non hierarchical15.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGExtendedHierarchical1618</code></td>
+                            <td><code>static get JPEGExtendedHierarchical1618()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg extended hierarchical1618.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGExtendedHierarchical1719</code></td>
+                            <td><code>static get JPEGExtendedHierarchical1719()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg extended hierarchical1719.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGSpectralSelectionHierarchical2022</code></td>
+                            <td><code>static get JPEGSpectralSelectionHierarchical2022()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg spectral selection hierarchical2022.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGSpectralSelectionHierarchical2123</code></td>
+                            <td><code>static get JPEGSpectralSelectionHierarchical2123()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg spectral selection hierarchical2123.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGFullProgressionHierarchical2426</code></td>
+                            <td><code>static get JPEGFullProgressionHierarchical2426()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg full progression hierarchical2426.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGFullProgressionHierarchical2527</code></td>
+                            <td><code>static get JPEGFullProgressionHierarchical2527()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg full progression hierarchical2527.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGLosslessHierarchical28</code></td>
+                            <td><code>static get JPEGLosslessHierarchical28()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg lossless hierarchical28.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGLosslessHierarchical29</code></td>
+                            <td><code>static get JPEGLosslessHierarchical29()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg lossless hierarchical29.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGLosslessSV1</code></td>
+                            <td><code>static get JPEGLosslessSV1()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg lossless sv1.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGLSLossless</code></td>
+                            <td><code>static get JPEGLSLossless()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpegls lossless.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGLSNearLossless</code></td>
+                            <td><code>static get JPEGLSNearLossless()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpegls near lossless.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEG2000Lossless</code></td>
+                            <td><code>static get JPEG2000Lossless()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg2000 lossless.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEG2000</code></td>
+                            <td><code>static get JPEG2000()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg2000.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEG2000MCLossless</code></td>
+                            <td><code>static get JPEG2000MCLossless()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg2000 mc lossless.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEG2000MC</code></td>
+                            <td><code>static get JPEG2000MC()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpeg2000 mc.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPIPReferenced</code></td>
+                            <td><code>static get JPIPReferenced()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpip referenced.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPIPReferencedDeflate</code></td>
+                            <td><code>static get JPIPReferencedDeflate()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpip referenced deflate.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG2MPML</code></td>
+                            <td><code>static get MPEG2MPML()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg2 mpml.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG2MPMLF</code></td>
+                            <td><code>static get MPEG2MPMLF()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg2 mpmlf.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG2MPHL</code></td>
+                            <td><code>static get MPEG2MPHL()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg2 mphl.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG2MPHLF</code></td>
+                            <td><code>static get MPEG2MPHLF()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg2 mphlf.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG4HP41</code></td>
+                            <td><code>static get MPEG4HP41()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg4 hp41.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG4HP41F</code></td>
+                            <td><code>static get MPEG4HP41F()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg4 hp41 f.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG4HP41BD</code></td>
+                            <td><code>static get MPEG4HP41BD()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg4 hp41 bd.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG4HP41BDF</code></td>
+                            <td><code>static get MPEG4HP41BDF()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg4 hp41 bdf.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG4HP422D</code></td>
+                            <td><code>static get MPEG4HP422D()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg4 hp422 d.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG4HP422DF</code></td>
+                            <td><code>static get MPEG4HP422DF()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg4 hp422 df.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG4HP423D</code></td>
+                            <td><code>static get MPEG4HP423D()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg4 hp423 d.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG4HP423DF</code></td>
+                            <td><code>static get MPEG4HP423DF()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg4 hp423 df.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG4HP42STEREO</code></td>
+                            <td><code>static get MPEG4HP42STEREO()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg4 hp42 stereo.</td>
+                        </tr>
+                        <tr>
+                            <td><code>MPEG4HP42STEREOF</code></td>
+                            <td><code>static get MPEG4HP42STEREOF()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to mpeg4 hp42 stereof.</td>
+                        </tr>
+                        <tr>
+                            <td><code>HEVCMP51</code></td>
+                            <td><code>static get HEVCMP51()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to hevcmp51.</td>
+                        </tr>
+                        <tr>
+                            <td><code>HEVCM10P51</code></td>
+                            <td><code>static get HEVCM10P51()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to hevcm10 p51.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGXLLossless</code></td>
+                            <td><code>static get JPEGXLLossless()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpegxl lossless.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGXLJPEGRecompression</code></td>
+                            <td><code>static get JPEGXLJPEGRecompression()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpegxljpeg recompression.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPEGXL</code></td>
+                            <td><code>static get JPEGXL()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpegxl.</td>
+                        </tr>
+                        <tr>
+                            <td><code>HTJ2KLossless</code></td>
+                            <td><code>static get HTJ2KLossless()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to htj2 k lossless.</td>
+                        </tr>
+                        <tr>
+                            <td><code>HTJ2KLosslessRPCL</code></td>
+                            <td><code>static get HTJ2KLosslessRPCL()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to htj2 k lossless rpcl.</td>
+                        </tr>
+                        <tr>
+                            <td><code>HTJ2K</code></td>
+                            <td><code>static get HTJ2K()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to htj2 k.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPIPHTJ2KReferenced</code></td>
+                            <td><code>static get JPIPHTJ2KReferenced()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpiphtj2 k referenced.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JPIPHTJ2KReferencedDeflate</code></td>
+                            <td><code>static get JPIPHTJ2KReferencedDeflate()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to jpiphtj2 k referenced deflate.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RLELossless</code></td>
+                            <td><code>static get RLELossless()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rle lossless.</td>
+                        </tr>
+                        <tr>
+                            <td><code>RFC2557MIMEEncapsulation</code></td>
+                            <td><code>static get RFC2557MIMEEncapsulation()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to rfc2557 mime encapsulation.</td>
+                        </tr>
+                        <tr>
+                            <td><code>XMLEncoding</code></td>
+                            <td><code>static get XMLEncoding()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to xml encoding.</td>
+                        </tr>
+                        <tr>
+                            <td><code>SMPTEST211020UncompressedProgressiveActiveVideo</code></td>
+                            <td><code>static get SMPTEST211020UncompressedProgressiveActiveVideo()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to smptest211020 uncompressed progressive active video.</td>
+                        </tr>
+                        <tr>
+                            <td><code>SMPTEST211020UncompressedInterlacedActiveVideo</code></td>
+                            <td><code>static get SMPTEST211020UncompressedInterlacedActiveVideo()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to smptest211020 uncompressed interlaced active video.</td>
+                        </tr>
+                        <tr>
+                            <td><code>SMPTEST211030PCMDigitalAudio</code></td>
+                            <td><code>static get SMPTEST211030PCMDigitalAudio()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to smptest211030 pcm digital audio.</td>
+                        </tr>
+                        <tr>
+                            <td><code>DeflatedImageFrameCompression</code></td>
+                            <td><code>static get DeflatedImageFrameCompression()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to deflated image frame compression.</td>
+                        </tr>
+                        <tr>
+                            <td><code>Papyrus3ImplicitVRLittleEndian</code></td>
+                            <td><code>static get Papyrus3ImplicitVRLittleEndian()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to papyrus3 implicit vr little endian.</td>
+                        </tr>
+                        <tr>
+                            <td><code>GEImplicitVRLittleEndianExceptBigEndianPixels</code></td>
+                            <td><code>static get GEImplicitVRLittleEndianExceptBigEndianPixels()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ge implicit vr little endian except big endian pixels.</td>
+                        </tr>
+                        <tr>
+                            <td><code>PixelMedBzip2ExplicitVRLittleEndian</code></td>
+                            <td><code>static get PixelMedBzip2ExplicitVRLittleEndian()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to pixel med bzip2 explicit vr little endian.</td>
+                        </tr>
+                        <tr>
+                            <td><code>PixelMedEncapsulatedRawLittleEndian</code></td>
+                            <td><code>static get PixelMedEncapsulatedRawLittleEndian()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to pixel med encapsulated raw little endian.</td>
+                        </tr>
+                        <tr>
+                            <td><code>AlgotecCompressed</code></td>
+                            <td><code>static get AlgotecCompressed()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to algotec compressed.</td>
+                        </tr>
+                        <tr>
+                            <td><code>ALIWavelet</code></td>
+                            <td><code>static get ALIWavelet()</code></td>
+                            <td>Static Accessor</td>
+                            <td>Provides access to ali wavelet.</td>
+                        </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h5>Methods</h5>
+
+                    <article class="member-doc">
+                        <h6><code>static find(id)</code></h6>
+                        <p>Executes find behavior for this type.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>id</code></td>
+                                <td><code>Any</code></td>
+                                <td>Parameter used by this member.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="member-doc-label">Possible Return Types</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>Any</code></td>
+                                <td>Method return value (implementation-dependent).</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                        <h5>Constructors</h5>
+
+                    <article class="member-doc">
+                        <h6><code>constructor(data)</code></h6>
+                        <p>Constructs a new instance of this type.</p>
+                        <p class="member-doc-label">Parameters</p>
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            <tr>
+                                <td><code>data</code></td>
+                                <td><code>Any</code></td>
+                                <td>Parameter used by this member.</td>
+                            </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    </div>
+                <div class="doc-tab-panel" data-tab-panel="neutral">
+                    <h4>Language-Neutral Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-text">pipeline := EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toInstances()
+  .build()
+
+resultCollection := pipeline.process(source)
+result := resultCollection.first()
+
+# Type usage
+transferSyntax := TransferSyntax.find(&quot;1.2.840.10008.1.2.1&quot;)</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: choose decode/transcode policy.</p>
+                    <pre><code class="language-text">transferSyntax := TransferSyntax.find(&quot;1.2.840.10008.1.2.1&quot;)
+isCompressed := transferSyntax.IsCompressed
+isLittleEndian := transferSyntax.IsLittleEndian</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="javascript">
+                    <h4>JavaScript Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-javascript">const pipeline = EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toInstances()
+  .build();
+
+const resultCollection = await pipeline.process(source);
+const result = resultCollection.first();
+
+// Type usage
+const transferSyntax = TransferSyntax.find(&quot;1.2.840.10008.1.2.1&quot;);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: choose decode/transcode policy.</p>
+                    <pre><code class="language-javascript">const transferSyntax = TransferSyntax.find(&quot;1.2.840.10008.1.2.1&quot;);
+const isCompressed = transferSyntax.IsCompressed;
+const isLittleEndian = transferSyntax.IsLittleEndian;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="csharp">
+                    <h4>C# Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-csharp">var pipeline = EASI.PipelineBuilder()
+    .FromPartStream()
+    .OfDicomData()
+    .ToInstances()
+    .Build();
+
+var resultCollection = await pipeline.Process(source);
+var result = resultCollection.First();
+
+// Type usage
+var transferSyntax = TransferSyntax.find(&quot;1.2.840.10008.1.2.1&quot;);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: choose decode/transcode policy.</p>
+                    <pre><code class="language-csharp">var transferSyntax = TransferSyntax.find(&quot;1.2.840.10008.1.2.1&quot;);
+var isCompressed = transferSyntax.IsCompressed;
+var isLittleEndian = transferSyntax.IsLittleEndian;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="java">
+                    <h4>Java Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-java">var pipeline = EASI.pipelineBuilder()
+    .fromPartStream()
+    .ofDicomData()
+    .toInstances()
+    .build();
+
+var resultCollection = pipeline.process(source);
+var result = resultCollection.first();
+
+// Type usage
+var transferSyntax = TransferSyntax.find(&quot;1.2.840.10008.1.2.1&quot;);</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: choose decode/transcode policy.</p>
+                    <pre><code class="language-java">var transferSyntax = TransferSyntax.find(&quot;1.2.840.10008.1.2.1&quot;);
+var isCompressed = transferSyntax.IsCompressed;
+var isLittleEndian = transferSyntax.IsLittleEndian;</code></pre>
+                </div>
+                <div class="doc-tab-panel" data-tab-panel="python">
+                    <h4>Python Examples</h4>
+                    <p>Basic usage:</p>
+                    <pre><code class="language-python">pipeline = (
+    EASI.pipeline_builder()
+    .from_part_stream()
+    .of_dicom_data()
+    .to_instances()
+    .build()
+)
+
+result_collection = pipeline.process(source)
+result = result_collection.first()
+
+# Type usage
+transfer_syntax = TransferSyntax.find(&quot;1.2.840.10008.1.2.1&quot;)</code></pre>
+                    
+                    <br />
+                    <p>Real-world usage: choose decode/transcode policy.</p>
+                    <pre><code class="language-python">transfer_syntax = TransferSyntax.find(&quot;1.2.840.10008.1.2.1&quot;)
+is_compressed = transfer_syntax.IsCompressed
+is_little_endian = transfer_syntax.IsLittleEndian</code></pre>
+                </div>
+
+                <div class="doc-tab-panel" data-tab-panel="uml">
+                    <h4>UML Class Diagram</h4>
+                    <p>Direct type relationships rendered as an inline UML SVG diagram.</p>
+
+                    <div class="uml-diagram">
+                        <svg class="uml-svg" viewBox="0 0 738 364" role="img" aria-label="TransferSyntax UML diagram">
+                            <defs>
+                                <marker id="uml-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                                </marker>
+                                <marker id="uml-triangle" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto">
+                                    <path d="M 0 0 L 12 6 L 0 12 z"></path>
+                                </marker>
+                                <marker id="uml-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                                <marker id="uml-open-diamond" markerWidth="14" markerHeight="10" refX="7" refY="5" orient="auto-start-reverse">
+                                    <path d="M 0 5 L 4 0 L 8 5 L 4 10 z"></path>
+                                </marker>
+                            </defs>
+        <path class="uml-edge" d="M 278 182 C 368 182, 340 56, 430 56"></path>
+        <path class="uml-edge" d="M 278 182 C 368 182, 340 140, 430 140"></path>
+        <path class="uml-edge" d="M 278 182 C 368 182, 340 224, 430 224"></path>
+        <path class="uml-edge" d="M 278 182 C 368 182, 340 308, 430 308"></path>
+        <g class="uml-node primary">
+            <title>TransferSyntax</title>
+            <rect x="28" y="150" width="250" height="64" rx="8" ry="8"></rect>
+            <text x="153" y="182" text-anchor="middle" dominant-baseline="middle">TransferSyntax</text>
+        </g>
+        <g class="uml-node">
+            <title>EncodedData</title>
+            <rect x="430" y="28" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="56" text-anchor="middle" dominant-baseline="middle">EncodedData</text>
+        </g>
+        <g class="uml-node">
+            <title>MetaSet</title>
+            <rect x="430" y="112" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="140" text-anchor="middle" dominant-baseline="middle">MetaSet</text>
+        </g>
+        <g class="uml-node">
+            <title>PixelData</title>
+            <rect x="430" y="196" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="224" text-anchor="middle" dominant-baseline="middle">PixelData</text>
+        </g>
+        <g class="uml-node">
+            <title>ValueRepresentation</title>
+            <rect x="430" y="280" width="280" height="56" rx="8" ry="8"></rect>
+            <text x="570" y="308" text-anchor="middle" dominant-baseline="middle">ValueRepresentation</text>
+        </g>
+        <text class="uml-edge-label" x="354" y="111" text-anchor="middle">-- associated with</text>
+        <text class="uml-edge-label" x="354" y="153" text-anchor="middle">-- associated with</text>
+        <text class="uml-edge-label" x="354" y="195" text-anchor="middle">-- associated with</text>
+        <text class="uml-edge-label" x="354" y="237" text-anchor="middle">-- associated with</text>
+                            
+                        </svg>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Relationship</th>
+                                    <th>Target</th>
+                                    <th>Intent</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <tr>
+                            <td><code>TransferSyntax</code></td>
+                            <td><code>--</code></td>
+                            <td><code>EncodedData</code></td>
+                            <td>associated with</td>
+                        </tr>
+                        <tr>
+                            <td><code>TransferSyntax</code></td>
+                            <td><code>--</code></td>
+                            <td><code>MetaSet</code></td>
+                            <td>associated with</td>
+                        </tr>
+                        <tr>
+                            <td><code>TransferSyntax</code></td>
+                            <td><code>--</code></td>
+                            <td><code>PixelData</code></td>
+                            <td>associated with</td>
+                        </tr>
+                        <tr>
+                            <td><code>TransferSyntax</code></td>
+                            <td><code>--</code></td>
+                            <td><code>ValueRepresentation</code></td>
+                            <td>associated with</td>
+                        </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Common Relationships</h3>
+                <p><a href="encoded-data.html"><code>EncodedData</code></a>, <a href="meta-set.html"><code>MetaSet</code></a>, <a href="pixel-data.html"><code>PixelData</code></a>, <a href="value-representation.html"><code>ValueRepresentation</code></a></p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Typical Output Context</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pipeline Surface</th>
+                            <th>How TransferSyntax Commonly Appears</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>toInstances()</code></td>
+                            <td>Directly emitted, nested, or referenced as part of instance materialization output.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toSelection(...)</code></td>
+                            <td>Referenced for targeted extraction and structural traversal.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toMapping(...)</code></td>
+                            <td>Used as source semantics for projection into derived target models.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout warning">
+                    <h4>Specification Boundary</h4>
+                    <p>
+                        This reference describes interoperable semantics and usage intent.
+                        Language-specific implementation internals remain outside normative standard requirements.
+                    </p>
+                </div>
+            </section>
+
+            <p class="footer-note">
+                <a href="index.html">Back to DICOM&reg; Type Index</a>
+            </p>
+        </main>
+    </div>
+</body>
+</html>

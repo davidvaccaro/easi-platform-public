@@ -1,6 +1,6 @@
 # `ContactPoint` Class
 
-The `ContactPoint` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+The `ContactPoint` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
 
 ---
 

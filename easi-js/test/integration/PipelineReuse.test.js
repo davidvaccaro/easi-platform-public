@@ -1,6 +1,7 @@
 import EASI from '../../src/EASI.js';
 import DicomSelection from '../../src/handlers/selections/DicomSelection.js';
 import Tag from '../../src/dicom/Tag.js';
+import PipelineResultCollection from '../../src/pipelines/PipelineResultCollection.js';
 
 const path = require('path');
 const fs = require('fs');
@@ -21,11 +22,13 @@ test('Test: one built toInstances pipeline can process repeatedly without result
     const first = await pipeline.process(readDicomBytes('0002.DCM'));
     const second = await pipeline.process(readDicomBytes('0002.DCM'));
 
-    expect(Array.isArray(first)).toBe(false);
-    expect(Array.isArray(second)).toBe(false);
+    expect(PipelineResultCollection.isCollection(first)).toBe(true);
+    expect(PipelineResultCollection.isCollection(second)).toBe(true);
+    expect(first.count).toBe(1);
+    expect(second.count).toBe(1);
     expect(first).not.toBe(second);
-    expect(first.dataSet).toBeDefined();
-    expect(second.dataSet).toBeDefined();
+    expect(first.first().dataSet).toBeDefined();
+    expect(second.first().dataSet).toBeDefined();
 
 });
 
@@ -43,11 +46,12 @@ test('Test: one built toSelection pipeline can process repeatedly without result
     const first = await pipeline.process(readDicomBytes('0002.DCM'));
     const second = await pipeline.process(readDicomBytes('0002.DCM'));
 
-    expect(Array.isArray(first)).toBe(false);
-    expect(Array.isArray(second)).toBe(false);
+    expect(PipelineResultCollection.isCollection(first)).toBe(true);
+    expect(PipelineResultCollection.isCollection(second)).toBe(true);
+    expect(first.count).toBe(1);
+    expect(second.count).toBe(1);
     expect(first).not.toBe(second);
-    expect(first.find(Tag.SOPInstanceUID)).toBeDefined();
-    expect(second.find(Tag.SOPInstanceUID)).toBeDefined();
+    expect(first.first().find(Tag.SOPInstanceUID)).toBeDefined();
+    expect(second.first().find(Tag.SOPInstanceUID)).toBeDefined();
 
 });
-

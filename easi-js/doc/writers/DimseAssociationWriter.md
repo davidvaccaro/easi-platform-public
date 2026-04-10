@@ -2,7 +2,7 @@
 
 `DimseAssociationWriter` is the DIMSE destination writer for EASI pipelines.
 
-It is used on pipeline output stages to send terminal DICOM byte payloads through DIMSE C-STORE style destination transports.
+It is used on pipeline output stages to send terminal DICOM&reg; byte payloads through DIMSE C-STORE style destination transports.
 
 ## Constructor
 
@@ -40,4 +40,4 @@ const pipeline = EASI
 ## Notes
 
 - Build-time validation requires a DIMSE destination transport when using `intoDimseAssociation(...)`.
-- Build-time validation also requires terminal DICOM byte emission (`toDicomData(...)`) when routing into DIMSE association output.
+- Build-time validation also requires terminal DICOM&reg; byte emission (`toDicomData(...)`) when routing into DIMSE association output.

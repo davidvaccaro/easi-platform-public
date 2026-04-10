@@ -1,6 +1,6 @@
 # `DicomJsonMetadataAdapter` Class
 
-The `DicomJsonMetadataAdapter` class adapts DICOMweb JSON metadata parser events into canonical DICOM semantic handler events so shared downstream handlers (instance, selection, mapping, de-identification, DICOM writer) can be reused.
+The `DicomJsonMetadataAdapter` class adapts DICOMweb&trade; JSON metadata parser events into canonical DICOM&reg; semantic handler events so shared downstream handlers (instance, selection, mapping, de-identification, DICOM&reg; writer) can be reused.
 
 ---
 
@@ -20,14 +20,14 @@ new DicomJsonMetadataAdapter(nextHandler = null)
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `nextHandler` | `object \| null` | Downstream canonical DICOM semantic handler that receives replayed DICOM lifecycle events. |
+| `nextHandler` | `object \| null` | Downstream canonical DICOM&reg; semantic handler that receives replayed DICOM&reg; lifecycle events. |
 
 ## Purpose
 
 - Consumes JSON parser callbacks produced by `JsonDataParser`.
-- Reconstructs DICOM `Instance`/`Attribute`/`AttributeSequence` objects from DICOMweb metadata.
-- Replays canonical DICOM lifecycle events to `nextHandler`.
-- Preserves handler-chain composition for shared DICOM handlers across native DICOM and DICOMweb metadata sources.
+- Reconstructs DICOM&reg; `Instance`/`Attribute`/`AttributeSequence` objects from DICOMweb&trade; metadata.
+- Replays canonical DICOM&reg; lifecycle events to `nextHandler`.
+- Preserves handler-chain composition for shared DICOM&reg; handlers across native DICOM&reg; and DICOMweb&trade; metadata sources.
 
 ## Usage Example
 

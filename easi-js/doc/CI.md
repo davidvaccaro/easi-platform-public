@@ -38,7 +38,7 @@ The workflow is intentionally split into separate lanes (jobs) so fast determini
   - `npm run test:orthanc-dimse-all`
 - Purpose:
   - End-to-end DIMSE validation against Orthanc.
-  - Uses an Orthanc service container and seeds sample DICOM files from `data/dicoms`.
+  - Uses an Orthanc service container and seeds sample DICOM&reg; files from `data/dicoms`.
 
 ### 4) Streaming Benchmarks
 

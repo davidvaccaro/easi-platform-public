@@ -19,8 +19,18 @@
 
 import Exception from "../environment/Exception.js";
 import { GeneralErrorCodes } from "../environment/Exception.js";
+import PipelineResultCollection from "./PipelineResultCollection.js";
 
 export default class Pipeline {
+
+    /**
+     * Normalize one process result to a stable result collection shape.
+     * @param {*} result The source process result.
+     * @returns {PipelineResultCollection} Normalized result collection.
+     */
+    normalizeResult(result) {
+        return PipelineResultCollection.from(result);
+    }
 
     /**
      * Clone one start options object to reader-read options (removing lifecycle control fields).
@@ -86,9 +96,9 @@ export default class Pipeline {
             const result = await this._reader.read(source, options);
 
             if (this._onResult == null)
-                return result;
+                return this.normalizeResult(result);
 
-            return this._onResult(result, options);
+            return this.normalizeResult(await this._onResult(result, options));
 
         };
 

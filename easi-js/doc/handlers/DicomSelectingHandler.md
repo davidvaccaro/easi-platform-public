@@ -20,7 +20,7 @@ new DicomSelectingHandler(selection)
 
 | Parameter | Type    | Default | Description |
 |-----------|---------|---------|-------------|
-| `selection` | `Selection` | `—` | The specified selection to apply when processing the DICOM Data. |
+| `selection` | `Selection` | `—` | The specified selection to apply when processing the DICOM&reg; Data. |
 
 ## Properties
 

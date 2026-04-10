@@ -1,12 +1,12 @@
 # `Module` Class
 
-A DICOM Module is a logical grouping of attributes (data elements) that describe a specific aspect of a DICOM entity (e.g., Patient, Study, Series, Image, etc.). Modules define which attributes are required, optional, or conditional in a given context and are used as building blocks in Information Object Definitions (IODs). Each IOD is composed of multiple modules appropriate to its purpose (e.g., CT Image IOD includes Patient Module, General Study Module, CT Image Module, etc.).
+A DICOM&reg; Module is a logical grouping of attributes (data elements) that describe a specific aspect of a DICOM&reg; entity (e.g., Patient, Study, Series, Image, etc.). Modules define which attributes are required, optional, or conditional in a given context and are used as building blocks in Information Object Definitions (IODs). Each IOD is composed of multiple modules appropriate to its purpose (e.g., CT Image IOD includes Patient Module, General Study Module, CT Image Module, etc.).
 
-The EASI DICOM `Module` class provides accesst to the `AttributeSet` as well as a number of accessor methods used to access and parse DICOM string-based number representations while respecting value multiplicity (VM).
+The EASI DICOM&reg; `Module` class provides accesst to the `AttributeSet` as well as a number of accessor methods used to access and parse DICOM&reg; string-based number representations while respecting value multiplicity (VM).
 
-For further details on Modality in the DICOM Standard, see: 
+For further details on Modality in the DICOM&reg; Standard, see: 
 
-[Official DICOM Standard — Modules](https://dicom.nema.org/medical/dicom/current/output/chtml/part03/chapter_A.html#sect_A.1.3.1)
+[Official DICOM&reg; Standard — Modules](https://dicom.nema.org/medical/dicom/current/output/chtml/part03/chapter_A.html#sect_A.1.3.1)
 
 ---
 
@@ -20,7 +20,7 @@ Creates a new instance of the `Module` class with the specified `AttributeSet` s
 
 | Parameter     | Type | Description                        |
 |---------------|------|------------------------------------|
-| `attributeSet` | `AttributeSet`  | The associated EASI DICOM `AttributeSet` |
+| `attributeSet` | `AttributeSet`  | The associated EASI DICOM&reg; `AttributeSet` |
 
 ---
 
@@ -28,7 +28,7 @@ Creates a new instance of the `Module` class with the specified `AttributeSet` s
 
 ### `accessIntegerString(value, vm)`
 
-Parses a DICOM IS (Integer String) value, considering the value multiplicity.
+Parses a DICOM&reg; IS (Integer String) value, considering the value multiplicity.
 
 #### Parameters
 
@@ -47,7 +47,7 @@ Parses a DICOM IS (Integer String) value, considering the value multiplicity.
 
 ### `(value, vm)`
 
-Parses a DICOM DS (Decimal String) value, considering the value multiplicity.
+Parses a DICOM&reg; DS (Decimal String) value, considering the value multiplicity.
 
 #### Parameters
 

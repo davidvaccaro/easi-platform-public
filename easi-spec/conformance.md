@@ -26,20 +26,20 @@ Must implement:
 - Status semantics (`CONTINUE`, `STOP`, `JUMP`, `FAIL`, `SUCCESS`) as specified
 - Builder contract core methods (`from...`, `to...`, `with...`, `into...`, `build()`)
 
-### Level 2: DICOM Core Scenarios
+### Level 2: DICOM&reg; Core Scenarios
 
 Must implement:
 
-- Native DICOM bytes -> Instance output
-- Native DICOM bytes -> Selection output
-- Native DICOM bytes -> Mapping output
+- Native DICOM&reg; bytes -> Instance output
+- Native DICOM&reg; bytes -> Selection output
+- Native DICOM&reg; bytes -> Mapping output
 
 ### Level 3: Extended Scenarios
 
 May include:
 
-- DICOM JSON metadata parsing
-- Native DICOM write output
+- DICOM&reg; JSON metadata parsing
+- Native DICOM&reg; write output
 - Dump parsing
 - Handler chaining (de-identification, linting, manifesting)
 - DIMSE transport extensions (source and/or destination profiles, see `dimse.md`)
@@ -48,11 +48,11 @@ May include:
 
 Conformance should rely on shared fixtures:
 
-- Valid Part-10 DICOM files
+- Valid Part-10 DICOM&reg; files
 - Multipart payload fixtures
 - Nested sequence edge cases
 - Truncated / malformed but tolerated inputs (for non-strict mode behavior)
-- DICOM JSON metadata fixtures
+- DICOM&reg; JSON metadata fixtures
 - Dump text fixtures
 
 ## Expected Assertions (Draft)

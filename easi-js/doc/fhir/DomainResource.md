@@ -1,6 +1,6 @@
 # `DomainResource` Class
 
-The `DomainResource` class models a FHIR resource or element used by EASI DICOM mapping workflows.
+The `DomainResource` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
 
 ---
 

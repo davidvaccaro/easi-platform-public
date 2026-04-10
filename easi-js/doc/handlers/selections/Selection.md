@@ -1,6 +1,6 @@
 # `Selection` Class
 
-The `Selection` class defines DICOM tag selection behavior for selective stream extraction workflows.
+The `Selection` class defines DICOM&reg; tag selection behavior for selective stream extraction workflows.
 
 ---
 

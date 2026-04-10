@@ -1,6 +1,6 @@
 # `Exception` Class
 
-The `Exception` class provides a standardized way to represent error conditions in EASI DICOM. It encapsulates an error message, an identifying code, and an optional underlying error object. This class helps ensure consistent error handling across the EASI DICOM library.
+The `Exception` class provides a standardized way to represent error conditions in EASI DICOM&reg;. It encapsulates an error message, an identifying code, and an optional underlying error object. This class helps ensure consistent error handling across the EASI DICOM&reg; library.
 
 ---
 
@@ -39,9 +39,9 @@ new Exception(message, code, error)
 
 | Code                              | Description                                   |
 |-----------------------------------|-----------------------------------------------|
-| `InvalidPart`                     | Invalid part in DICOM object.                 |
+| `InvalidPart`                     | Invalid part in DICOM&reg; object.                 |
 | `InvalidValueRepresentation`      | Invalid value representation (VR).            |
-| `InvalidTag`                      | Invalid DICOM tag.                            |
+| `InvalidTag`                      | Invalid DICOM&reg; tag.                            |
 | `UnknownTagAndValueRepresentation`| Unknown tag and VR combination.               |
 | `InvalidDataElement`              | Invalid data element structure.               |
 | `InvalidSequence`                 | Invalid sequence element.                     |
@@ -55,7 +55,7 @@ import Exception, { DicomErrorCodes } from 'easi-dicom';
 
 try {
     // Some operation that may fail
-    throw new Exception('Invalid DICOM tag encountered.', DicomErrorCodes.InvalidTag);
+    throw new Exception('Invalid DICOM&reg; tag encountered.', DicomErrorCodes.InvalidTag);
 } catch (ex) {
     console.error(`Error: ${ex.message}, Code: ${ex.code}`);
 }

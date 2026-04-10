@@ -14,26 +14,26 @@ This document should distinguish:
 
 | Source Input | Parser | Handler / Strategy | Output | Status |
 |---|---|---|---|---|
-| Native DICOM bytes | Streaming DICOM parser | Instance handler | DICOM `Instance` model | Implemented (`easi-js`) |
-| Native DICOM bytes | Streaming DICOM parser | Selection handler | Attribute selection result | Implemented (`easi-js`) |
-| Native DICOM bytes | Streaming DICOM parser | Mapping handler | Custom mapped output (e.g. FHIR) | Implemented (`easi-js`) |
-| Native DICOM bytes | Streaming DICOM parser | DICOM data writer handler | Native DICOM bytes | Implemented (`easi-js`) |
-| Native DICOM bytes | Streaming DICOM parser + transcoding filter | DICOM data writer handler | Transfer-syntax transcoded native DICOM bytes | Planned (`withTranscoding` contract drafted) |
-| Native DICOM bytes | DICOM parser + assets archive handler | ZIP package (`metadata.json` + `frames/*` + `manifest.json`) | Standard metadata + image payload package | Implemented (`easi-js`) |
-| DICOM JSON metadata | Streaming JSON parser | Metadata instance handler | DICOM `Instance` model | Implemented (`easi-js`) |
-| DICOM JSON metadata | Streaming JSON parser | Metadata selection handler | Attribute selection result | Implemented (`easi-js`) |
-| DICOM JSON metadata | Streaming JSON parser | Metadata mapping handler | Custom mapped output (e.g. FHIR) | Implemented (`easi-js`) |
+| Native DICOM&reg; bytes | Streaming DICOM&reg; parser | Instance handler | DICOM&reg; `Instance` model | Implemented (`easi-js`) |
+| Native DICOM&reg; bytes | Streaming DICOM&reg; parser | Selection handler | Attribute selection result | Implemented (`easi-js`) |
+| Native DICOM&reg; bytes | Streaming DICOM&reg; parser | Mapping handler | Custom mapped output (e.g. FHIR&reg;) | Implemented (`easi-js`) |
+| Native DICOM&reg; bytes | Streaming DICOM&reg; parser | DICOM&reg; data writer handler | Native DICOM&reg; bytes | Implemented (`easi-js`) |
+| Native DICOM&reg; bytes | Streaming DICOM&reg; parser + transcoding filter | DICOM&reg; data writer handler | Transfer-syntax transcoded native DICOM&reg; bytes | Planned (`withTranscoding` contract drafted) |
+| Native DICOM&reg; bytes | DICOM&reg; parser + assets archive handler | ZIP package (`metadata.json` + `frames/*` + `manifest.json`) | Standard metadata + image payload package | Implemented (`easi-js`) |
+| DICOM&reg; JSON metadata | Streaming JSON parser | Metadata instance handler | DICOM&reg; `Instance` model | Implemented (`easi-js`) |
+| DICOM&reg; JSON metadata | Streaming JSON parser | Metadata selection handler | Attribute selection result | Implemented (`easi-js`) |
+| DICOM&reg; JSON metadata | Streaming JSON parser | Metadata mapping handler | Custom mapped output (e.g. FHIR&reg;) | Implemented (`easi-js`) |
 | JSON (generic) | Streaming JSON parser | JSON value handler | JS value tree | Implemented (`easi-js`) |
-| DICOM dump text | Dump parser | Instance/selection/mapping handlers | Multiple outputs | Implemented (`easi-js`) |
-| DICOM JSON metadata | JSON parser + DICOM data writer handler path | Native DICOM bytes | Planned / evaluate |
-| Native DICOM bytes | DICOM parser + de-identify handler + DICOM data writer handler | De-identified native DICOM bytes | Implemented pattern (`easi-js`) |
-| Native DICOM bytes | DICOM parser + lint handler | Validation/lint report | Planned |
-| Native DICOM bytes | DICOM parser + manifest handler | Lightweight manifest / index | Planned |
-| DIMSE source association (PACS) | DICOM parser | Instance handler | DICOM `Instance` model | Planned (`dimse.md` draft) |
-| DIMSE source association (PACS) | DICOM parser + de-identify filter + DICOM data writer terminal | De-identified native DICOM bytes | Planned (`dimse.md` draft) |
-| DIMSE source association (PACS) | DICOM parser + mapping handler | Mapped output (e.g. FHIR) | Planned (`dimse.md` draft) |
-| Native DICOM bytes | DICOM parser + filters + DICOM data writer terminal + DIMSE destination association | Streamed C-STORE to PACS/VNA | Planned (`dimse.md` draft) |
-| DIMSE source association (PACS) | DICOM parser + filters + DICOM data writer terminal + DIMSE destination association | PACS -> process -> PACS relay | Planned (`dimse.md` draft) |
+| DICOM&reg; dump text | Dump parser | Instance/selection/mapping handlers | Multiple outputs | Implemented (`easi-js`) |
+| DICOM&reg; JSON metadata | JSON parser + DICOM&reg; data writer handler path | Native DICOM&reg; bytes | Planned / evaluate |
+| Native DICOM&reg; bytes | DICOM&reg; parser + de-identify handler + DICOM&reg; data writer handler | De-identified native DICOM&reg; bytes | Implemented pattern (`easi-js`) |
+| Native DICOM&reg; bytes | DICOM&reg; parser + lint handler | Validation/lint report | Planned |
+| Native DICOM&reg; bytes | DICOM&reg; parser + manifest handler | Lightweight manifest / index | Planned |
+| DIMSE source association (PACS) | DICOM&reg; parser | Instance handler | DICOM&reg; `Instance` model | Planned (`dimse.md` draft) |
+| DIMSE source association (PACS) | DICOM&reg; parser + de-identify filter + DICOM&reg; data writer terminal | De-identified native DICOM&reg; bytes | Planned (`dimse.md` draft) |
+| DIMSE source association (PACS) | DICOM&reg; parser + mapping handler | Mapped output (e.g. FHIR&reg;) | Planned (`dimse.md` draft) |
+| Native DICOM&reg; bytes | DICOM&reg; parser + filters + DICOM&reg; data writer terminal + DIMSE destination association | Streamed C-STORE to PACS/VNA | Planned (`dimse.md` draft) |
+| DIMSE source association (PACS) | DICOM&reg; parser + filters + DICOM&reg; data writer terminal + DIMSE destination association | PACS -> process -> PACS relay | Planned (`dimse.md` draft) |
 
 ## Notes
 

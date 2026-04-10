@@ -1,6 +1,6 @@
 # `Instance` Class
 
-The `Instance` class represents a complete DICOM object, including its preamble, prefix, metadata (MetaSet), and main dataset (DataSet).
+The `Instance` class represents a complete DICOM&reg; object, including its preamble, prefix, metadata (MetaSet), and main dataset (DataSet).
 
 ---
 
@@ -8,7 +8,7 @@ The `Instance` class represents a complete DICOM object, including its preamble,
 
 ### `constructor()`
 
-Creates a new, empty DICOM instance.
+Creates a new, empty DICOM&reg; instance.
 
 #### Parameters
 
@@ -20,10 +20,10 @@ _None_
 
 | Property        | Type      | Description                                  |
 |-----------------|-----------|----------------------------------------------|
-| `preamble`      | `*`       | Gets or sets the 128-byte DICOM preamble.    |
-| `prefix`        | `*`       | Gets or sets the 4-byte DICOM prefix ("DICM"). |
-| `metaSet`       | `MetaSet` | Gets or sets the DICOM metadata group.       |
-| `dataSet`       | `DataSet` | Gets or sets the main DICOM dataset.         |
+| `preamble`      | `*`       | Gets or sets the 128-byte DICOM&reg; preamble.    |
+| `prefix`        | `*`       | Gets or sets the 4-byte DICOM&reg; prefix ("DICM"). |
+| `metaSet`       | `MetaSet` | Gets or sets the DICOM&reg; metadata group.       |
+| `dataSet`       | `DataSet` | Gets or sets the main DICOM&reg; dataset.         |
 | `sopInstanceUid`| `string`  | Gets the SOP Instance UID from the dataset.  |
 
 ---

@@ -21,6 +21,7 @@ import Constants from "../../dicom/Constants.js";
 import Tag from "../../dicom/Tag.js";
 import TransferSyntax from "../../dicom/TransferSyntax.js";
 import ValueRepresentations from "../../dicom/ValueRepresentation.js";
+import PipelineOperationResult from "../../pipelines/PipelineOperationResult.js";
 
 const ExplicitLongLengthVRs = new Set(['OB', 'OD', 'OF', 'OL', 'OV', 'OW', 'SQ', 'UC', 'UR', 'UT', 'UN']);
 
@@ -735,7 +736,19 @@ export default class DicomDataWriterHandler {
 
     onEndInstance(context) {
 
-        var result = this.collectOutput ? this.toOutputBytes() : this.bytesWritten;
+        var result = null;
+        if (this.collectOutput == true) {
+            result = this.toOutputBytes();
+        }
+        else {
+            result = PipelineOperationResult.fromTerminal(
+                "toDicomData",
+                this.bytesWritten,
+                null,
+                null
+            );
+        }
+
         context.results.push(result);
 
         return (context.results.length == 1) ? result : context.results;

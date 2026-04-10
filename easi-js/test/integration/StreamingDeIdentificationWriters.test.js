@@ -383,8 +383,11 @@ describe('Streaming de-identification and writer integration', () => {
             contentLength: sourceLength
         });
 
-        expect(typeof bytesWritten).toBe('number');
-        expect(bytesWritten).toBeGreaterThan(0);
+        expect(bytesWritten.count).toBe(1);
+        expect(bytesWritten.first().resultType).toBe('PipelineOperationResult');
+        expect(bytesWritten.first().operation).toBe('toDicomData');
+        expect(bytesWritten.first().materialized).toBe(false);
+        expect(bytesWritten.first().bytesWritten).toBeGreaterThan(0);
         expect(outputChunks.length).toBeGreaterThan(20);
         expect(Math.max(...outputChunkLengths)).toBeLessThanOrEqual(24 * 1024);
 
@@ -392,7 +395,7 @@ describe('Streaming de-identification and writer integration', () => {
         expect(terminalHandler.peakPixelDataMaterializedBytes).toBe(0);
 
         var rewrittenBytes = concatBytes(outputChunks);
-        expect(rewrittenBytes.length).toBe(bytesWritten);
+        expect(rewrittenBytes.length).toBe(bytesWritten.first().bytesWritten);
         writeOutputBytes(outputDirectory, 'SYNTHETIC_LARGE_DEID_STREAM_HANDLER.dcm', rewrittenBytes);
 
         var rewrittenInstance = await parseDicomInstance(rewrittenBytes);

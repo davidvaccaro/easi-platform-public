@@ -64,7 +64,7 @@ Terminal target methods:
 - `toMapping(mapping)`
 - `toFHIRImagingStudy(profile = "full")`
 - `toDicomData(options?)`
-- `toJsonValue()`
+- `toStructuredValue()`
 - `toAssets(options?)`
 - `toAssetArchive(options?)`
 - `withHandler(handler)`
@@ -107,6 +107,39 @@ Finalize:
 
 - `build()`
 
+### HTTP STOW-RS Safe Options
+
+`intoHttpStream(request, options?)` supports a STOW-safe profile without adding a dedicated STOW writer method.
+
+- Enable with `options.stow = true` for defaults.
+- Or use `options.stow = { ... }` for explicit control.
+
+Default STOW-safe behavior:
+
+- Enforces `POST`
+- Enforces multipart output (`multipart/related; type="application/dicom"`)
+- Defaults part content-type to `application/dicom`
+- Adds `Accept: application/dicom+json, application/json` when missing
+- Validates HTTP status in `[200, 202]`
+
+Example:
+
+```js
+const pipeline = EASI
+  .pipelineBuilder()
+  .fromPartStream()
+  .ofDicomData()
+  .toDicomData()
+  .intoHttpStream(
+    { url: "https://dicom.example.com/dicom-web/studies" },
+    {
+      stow: true,
+      stream: false
+    }
+  )
+  .build();
+```
+
 ## DIMSE Notes
 
 ### DIMSE source
@@ -133,11 +166,11 @@ Use `NodeDimseCStoreScuTransport` for C-STORE SCU destination write.
 
 Build-time validation enforces:
 
-- DIMSE reader must be paired with native DICOM parser (`ofDicomData()`).
-- DIMSE writer must be paired with terminal DICOM byte emission (`toDicomData(...)`).
+- DIMSE reader must be paired with native DICOM&reg; parser (`ofDicomData()`).
+- DIMSE writer must be paired with terminal DICOM&reg; byte emission (`toDicomData(...)`).
 - DIMSE source and destination transports are required (no default stubs).
 
-## Example: C-FIND Study Discovery -> FHIR ImagingStudy (Study Summary)
+## Example: C-FIND Study Discovery -> FHIR&reg; ImagingStudy (Study Summary)
 
 ```js
 import EASI from "../../src/EASI.js";

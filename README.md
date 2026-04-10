@@ -1,36 +1,38 @@
-# EASI DICOM
-## Efficient API for Streaming in Healthcare Imaging
-### OVERVIEW
-Over four decades of continuous development, Digital Imaging and Communication in Medicine (DICOM) has evolved to become one of the most ubiquitous technologies in healthcare IT. The DICOM Standard is comprehensive and adaptable, having proven its resilience and relevance over time. However, for those new to this standard, it can seem immense and complex, with a significant learning curve. Furthermore, as new use-cases emerge outside of direct radiological workflows, such as applications in artificial intelligence and data science and even new emerging clinical uses like digital pathology, the challenge of fully understanding the DICOM Standard increases.
+# EASI
+## Expressive API Standard for Imaging
+### A fluent, language-neutral interface for efficient streaming, transformation, and composition of DICOM&reg; data.
 
-A modern approach to medical imaging is needed - one that fully leverages the DICOM Standard but also introduces powerful and flexible functions to shoulder the burden of its expansive nature. Such an approach would not only offer a more gradual entry point for newcomers but also ensure that traditional access to the standard is not compromised.
+### OVERVIEW
+After over four decades of continuous standardization, Digital Imaging and Communication in Medicine (DICOM&reg;) has evolved to become one of the most ubiquitous technologies in healthcare IT. The [DICOM&reg; Standard](https://www.dicomstandard.org/) is comprehensive and adaptable, having proven its resilience and relevance over time. However, for those new to this standard, it can appear immense and complex, with a significant learning curve. Furthermore, as new use-cases emerge outside of direct radiological workflows, such as applications in artificial intelligence and data science and even new emerging clinical uses like digital pathology, the challenge of efficiently utilizing the DICOM&reg; Standard increases.
+
+A modern approach to medical imaging is needed - one that fully embraces the DICOM&reg; Standard but also introduces a powerful and flexible new expressive paradigm to shoulder the burden of its expansive and detailed nature. Such an approach would not only offer a more coherent entry point for newcomers but also ensures a more comprehensible interface for AI Agentic development while ensuring that traditional access to the entier standard is not compromised.
 
 ### Solution
-To tame the complexity of this substantial standard, EASI DICOM offers a novel programming interface. This interface is not only suitable for traditioinal radiological implementations, but also adaptable to accommodate many medical imaging information processing use-cases and accomodate wide range of developer skill levels.
+To tame the complexity of this substantial medical imaging standard, EASI&reg; offers a highly expressive and fluent, yet comprehensive and comprehensible application programming interface for the DICOM&reg; standard. This interface is not only suitable for traditioinal radiological implementations, but also adaptable to accommodate many medical imaging information processing use-cases and a wide range of developers, human or agentic.
 
-Additionally, the architecture is designed to leverage a novel streaming scheme, providing remarkable levels of performance, efficiency and flexibility when reading, extracting, transforming and composing medical image information.
+Additionally, the architecture is designed to fully leverage a novel streaming processing scheme, providing remarkable levels of performance, efficiency and flexibility when reading, extracting, transforming, de-identifying and composing medical image information.
 
 ### Key Features
 
-- Efficient streaming pipeline architecture for stream-reading, parsing, transforming and writing DICOM data.
-- A coder-friendly programming interface that allows for productive implementations without requiring expert knowledge of the DICOM Standard.
-- An extensible architecture that simplifies authoring custom mappings, transformations and asset extractions of DICOM data to any data model.
-- Clean multi-language implemntation sutiable for use either on the server and then traditional client via multiple implementation languages (Java, C#, Python, JavaScript) or within the browser via pure-JavaScript.
+- Expressive, fluent, stanged builder composition paradigm ideal for Agentic AI powered development.
+- Efficient streaming pipeline architecture for high performance stream-reading, parsing, transforming, de-identifying and stream-writing DICOM&reg; data.
+- A coherent application programming interface that allows for productive implementations whether powered by AI coding agents or human developers of any skill level.
+- Clean multi-language implemntation sutiable for use either on the server and/or the traditional client via multiple implementation languages (Java, C#, Python, JavaScript) or within the browser via pure-JavaScript.
 
-# Stream Processing DICOM Data from a Remote Source
-Retrieving DICOM data from a remote data source is a common operation in most medical imaging applications. The source and the transmission encoding can vary widely based on the specific environment.
+# Stream Processing DICOM&reg; Data from a Remote Source
+Retrieving DICOM&reg; data from a remote data source is a common operation in most medical imaging applications. The source and the transmission encoding can vary widely based on the specific environment.
 
-Some common DICOM retrieval scenarios:
+Some common DICOM&reg; retrieval scenarios:
 
-- A traditional native DICOM data file or DICOM JSON/XML metadata file is retrieved either from a local file-system or via a standard HTTP GET request.
-- A DICOMweb service source offering access to native DICOM data and/or DICOM JSON/XML metadata via WADO-RS or WADO-URI via standard HTTP GET requests.
-- An IHE XDS-I Imaging Document Source delivering native DICOM data and/or DICOM JSON/XML metadata through RAD-55 transcation via HTTP GET requests.
-- A traditional PACS offering access to native DICOM data via the traditional TCP/IP-based DIMSE (DICOM Message Service Element) C-GET transaction.
+- A traditional native DICOM&reg; data file or DICOM&reg; JSON/XML metadata file is retrieved either from a local file-system or via a standard HTTP GET request.
+- A DICOMweb&trade; service source offering access to native DICOM&reg; data and/or DICOM&reg; JSON/XML metadata via WADO-RS or WADO-URI via standard HTTP GET requests.
+- An IHE XDS-I Imaging Document Source delivering native DICOM&reg; data and/or DICOM&reg; JSON/XML metadata through RAD-55 transcation via HTTP GET requests.
+- A traditional PACS offering access to native DICOM&reg; data via the traditional TCP/IP-based DIMSE (DICOM&reg; Message Service Element) C-GET transaction.
 
-Regardless of the scenario, EASI DICOM simplifies the process of efficiently retrieving DICOM data and then stream reading, parsing and processing these requests using a novel declarative pipeline methedology.
+Regardless of the scenario, EASI&reg; simplifies the process of efficiently retrieving DICOM&reg; data and then stream reading, parsing and processing these requests using a novel declarative pipeline methedology.
 
-## Example: Stream Processing native DICOM Data and Emitting "Instances"
-The following code snippet "builds" a streaming pipeline, which is configured to stream-read and parse native DICOM data into one or more DICOM instances objects:
+## Example: Stream Processing native DICOM&reg; Data and Emitting "Instances"
+The following code snippet "builds" a streaming pipeline, which is configured to stream-read and parse native DICOM&reg; data into one or more DICOM&reg; instances objects:
 
 ### JavaScript:
 ```js
@@ -69,7 +71,7 @@ var pipeline = EASI
     .toInstances()
     .build();
 ```
-Using the above configured pipeline, the following code snippet then stream-reads and parses DICOM data from a specified URI (using HTTP GET by default) and results in one (or more) DICOM instances that can be used to directly access typical DICOM data elements. 
+Using the above configured pipeline, the following code snippet then stream-reads and parses DICOM&reg; data from a specified URI (using HTTP GET by default) and results in one (or more) DICOM&reg; instances that can be used to directly access typical DICOM&reg; data elements. 
 
 NOTE: Whether the remote service delivers a single 'application/dicom' response payload or an HTTP Multipart response consisting of multiple 'application/dicom' data parts, the stream reading will automatically detect and correctly process each response part as appropriate.
 
@@ -79,7 +81,7 @@ pipeline
     .process(uri)
     .then(instance => {
 
-		// Access primitive DICOM data directly from the data-set
+		// Access primitive DICOM&reg; data directly from the data-set
         const patientId = instance.dataSet.value(Tag.PatientID);
         const patientName = instance.dataSet.value(Tag.PatientName);
         const patientDOB = instance.dataSet.value(Tag.PatientBirthDate);
@@ -94,10 +96,10 @@ pipeline
     })
     .catch(err => console.log(err));
 ```
-Notice that the above code snippet assumes that the developer is fairly familiar with the typical DICOM Standard concepts like a DICOM instance that contains a DICOM Dataset comprised of DICOM Attriutes that can be retrieved via standard DICOM Tags. But this is only one approach. For more generic access to the DICOM data, an "entity" pipeline can be utilized.
+Notice that the above code snippet assumes that the developer is fairly familiar with the typical DICOM&reg; Standard concepts like a DICOM&reg; instance that contains a DICOM&reg; Dataset comprised of DICOM&reg; Attriutes that can be retrieved via standard DICOM&reg; Tags. But this is only one approach. For more generic access to the DICOM&reg; data, an "entity" pipeline can be utilized.
 
-## Example: Stream Processing native DICOM Data and Emitting "Entities"
-Implementations seeking to avoid direct DICOM data element processing could use the following code snippets to make the same request but with a simplified DICOM "entity" application programming interface as the stream-parsed result:
+## Example: Stream Processing native DICOM&reg; Data and Emitting "Entities"
+Implementations seeking to avoid direct DICOM&reg; data element processing could use the following code snippets to make the same request but with a simplified DICOM&reg; "entity" application programming interface as the stream-parsed result:
 ```js:
 const pipeline = EASI
     .pipelineBuilder()
@@ -106,7 +108,7 @@ const pipeline = EASI
     .toEntities()
     .build();
 ```
-Then processed as one or more DICOM entities as follows:
+Then processed as one or more DICOM&reg; entities as follows:
 ```js:
 pipeline
     .process(uri)
@@ -129,12 +131,12 @@ pipeline
     })
     .catch(err => console.log(err));    
 ```
-Notice that the above code snippet still assumes a basic level of knowledge of a DICOM, for example, that a DICOM data entity has associated patient, series and image components. 
+Notice that the above code snippet still assumes a basic level of knowledge of a DICOM&reg;, for example, that a DICOM&reg; data entity has associated patient, series and image components. 
 
-## Example: Stream Processing DICOM Data and Emitting "FHIR Imaging Study"
-But what if the preferred data representation is not DICOM at all but the Fast Healthcare Interoperability Resources (FHIR) ImagingStudy resource?
+## Example: Stream Processing DICOM&reg; Data and Emitting "FHIR&reg; Imaging Study"
+But what if the preferred data representation is not DICOM&reg; at all but the Fast Healthcare Interoperability Resources (FHIR&reg;) ImagingStudy resource?
 
-The following code snippet makes the same request as the two transactions above except this time, the pipeline processing results in an extended FHIR ImagingStudy resource:
+The following code snippet makes the same request as the two transactions above except this time, the pipeline processing results in an extended FHIR&reg; ImagingStudy resource:
 ```js:
 const pipeline = EASI
     .pipelineBuilder()
@@ -143,7 +145,7 @@ const pipeline = EASI
     .toFHIRImagingStudy()
     .build();
 ```
-Then processed as FHIR data as follows:
+Then processed as FHIR&reg; data as follows:
 ```js:
 pipeline
     .process(uri)
@@ -168,4 +170,4 @@ pipeline
     })
     .catch(err => console.log(err));  
 ```
-Notice that in the above code snippet, a streaming-mapping handler is used to stream-map the DICOM data given a FHIR Imaging Study mapping (an additional feature of EASI DICOM) to map traditional DICOM data to a FHIR ImagingStudy resource instance.
+Notice that in the above code snippet, a streaming-mapping handler is used to stream-map the DICOM&reg; data given a FHIR&reg; Imaging Study mapping (an additional feature of EASI DICOM&reg;) to map traditional DICOM&reg; data to a FHIR&reg; ImagingStudy resource instance.
