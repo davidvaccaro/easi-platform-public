@@ -161,8 +161,26 @@ export default class Pipeline {
         if (args.length === 0)
             return {};
 
-        if ((args.length === 1) && (this.isProcessEnvelope(args[0]) == true)) {
-            return Object.assign({}, args[0]);
+        if (args.length === 1) {
+
+            if (this.isProcessEnvelope(args[0]) == true) {
+                return Object.assign({}, args[0]);
+            }
+
+            return { source: args[0] };
+        }
+
+        if (args.length === 2) {
+
+            var second = args[1];
+            if (this.isStructuredProcessOptions(second) == true) {
+                return Object.assign({ source: args[0] }, second);
+            }
+
+            return {
+                source: args[0],
+                destination: args[1]
+            };
         }
 
         if (args.length === 3) {
@@ -177,7 +195,9 @@ export default class Pipeline {
                 );
             }
 
-            if ((structured != null) && (this.isStructuredProcessOptions(structured) == false)) {
+            if ((structured != null)
+                && (this.isStructuredProcessOptions(structured) == false)
+                && (Object.keys(structured).length > 0)) {
                 throw new Exception(
                     "Invalid process options object. Expected { sourceOptions, destinationOptions, options }.",
                     GeneralErrorCodes.InvalidParameter
@@ -191,7 +211,7 @@ export default class Pipeline {
         }
 
         throw new Exception(
-            "Invalid process signature. Supported forms: process(), process({ source, destination, sourceOptions, destinationOptions, options }), or process(source, destination, { sourceOptions, destinationOptions, options }).",
+            "Invalid process signature. Supported forms: process(), process(source), process(source, destination), process(source, options), process({ source, destination, sourceOptions, destinationOptions, options }), or process(source, destination, { sourceOptions, destinationOptions, options }).",
             GeneralErrorCodes.InvalidParameter
         );
 
@@ -201,6 +221,9 @@ export default class Pipeline {
      * Normalize start arguments to one invocation envelope.
      * Supported forms:
      * - start()
+     * - start(source)
+     * - start(source, destination)
+     * - start(source, options)
      * - start({ source, destination, sourceOptions, destinationOptions, options, onResult, onError, continueOnError, signal, maxIterations, lifecycle })
      * - start(source, destination, { sourceOptions, destinationOptions, options, onResult, onError, continueOnError, signal, maxIterations, lifecycle })
      * @param  {...any} args Start call args.
@@ -211,8 +234,26 @@ export default class Pipeline {
         if (args.length === 0)
             return {};
 
-        if ((args.length === 1) && (this.isStartEnvelope(args[0]) == true)) {
-            return Object.assign({}, args[0]);
+        if (args.length === 1) {
+
+            if (this.isStartEnvelope(args[0]) == true) {
+                return Object.assign({}, args[0]);
+            }
+
+            return { source: args[0] };
+        }
+
+        if (args.length === 2) {
+
+            var second = args[1];
+            if (this.isStructuredStartOptions(second) == true) {
+                return Object.assign({ source: args[0] }, second);
+            }
+
+            return {
+                source: args[0],
+                destination: args[1]
+            };
         }
 
         if (args.length === 3) {
@@ -227,7 +268,9 @@ export default class Pipeline {
                 );
             }
 
-            if ((structured != null) && (this.isStructuredStartOptions(structured) == false)) {
+            if ((structured != null)
+                && (this.isStructuredStartOptions(structured) == false)
+                && (Object.keys(structured).length > 0)) {
                 throw new Exception(
                     "Invalid start options object. Expected { sourceOptions, destinationOptions, options, onResult, onError, continueOnError, signal, maxIterations, lifecycle }.",
                     GeneralErrorCodes.InvalidParameter
@@ -241,7 +284,7 @@ export default class Pipeline {
         }
 
         throw new Exception(
-            "Invalid start signature. Supported forms: start(), start({ source, destination, sourceOptions, destinationOptions, options, onResult, onError, continueOnError, signal, maxIterations, lifecycle }), or start(source, destination, { sourceOptions, destinationOptions, options, onResult, onError, continueOnError, signal, maxIterations, lifecycle }).",
+            "Invalid start signature. Supported forms: start(), start(source), start(source, destination), start(source, options), start({ source, destination, sourceOptions, destinationOptions, options, onResult, onError, continueOnError, signal, maxIterations, lifecycle }), or start(source, destination, { sourceOptions, destinationOptions, options, onResult, onError, continueOnError, signal, maxIterations, lifecycle }).",
             GeneralErrorCodes.InvalidParameter
         );
 
@@ -415,10 +458,13 @@ export default class Pipeline {
      * Process one pipeline transaction through the configured reader/parser/handler pipeline.
      * Supported forms:
      * - process()
+     * - process(source)
+     * - process(source, destination)
+     * - process(source, options)
      * - process({ source, destination, sourceOptions, destinationOptions, options })
      * - process(source, destination, { sourceOptions, destinationOptions, options })
      * @param {any} source Source value or process envelope.
-     * @param {any} destination Destination value when using the positional 3-arg form.
+     * @param {any} destination Destination value or structured options for positional forms.
      * @param {any} options Structured options object for the positional 3-arg form.
      * @returns {Promise<any>} The terminal pipeline output.
      */
@@ -477,10 +523,13 @@ export default class Pipeline {
      *
      * Supported forms:
      * - start()
+     * - start(source)
+     * - start(source, destination)
+     * - start(source, options)
      * - start({ source, destination, sourceOptions, destinationOptions, options, onResult, onError, continueOnError, signal, maxIterations, lifecycle })
      * - start(source, destination, { sourceOptions, destinationOptions, options, onResult, onError, continueOnError, signal, maxIterations, lifecycle })
      * @param {any} source Source value or start envelope.
-     * @param {any} destination Destination value when using the positional 3-arg form.
+     * @param {any} destination Destination value or structured options for positional forms.
      * @param {any} options Structured options object for the positional 3-arg form.
      * @returns {{ stop: Function, done: Promise<void>, running: boolean, iterations: number }} Run handle.
      */
@@ -495,7 +544,7 @@ export default class Pipeline {
 
         if ((this.isSourceBound() == false) && (typeof this._reader?.start !== "function")) {
             throw new Exception(
-                "Pipeline.start is only supported for source-bound readers. Use process({ source }) for caller-provided sources.",
+                "Pipeline.start is only supported for source-bound readers. Use process(source) or process({ source }) for caller-provided sources.",
                 GeneralErrorCodes.InvalidParameter
             );
         }

@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI pipeline mapping model for deterministic projection from DICOM&reg; stream events to domain outputs.">
+    <title>EASI | Pipeline Mappings</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dicom-model/index.html">Model Types</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Model Types section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Pipeline Mappings</h2>
+                <p>
+                    Mappings define deterministic projection from parsed DICOM&reg; semantics into domain-specific output shapes
+                    (for example FHIR&reg; resources or custom business objects) while preserving stream lifecycle boundaries.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Purpose</h3>
+                <p>
+                    Use mappings when the caller needs semantic output instead of native DICOM&reg; object model materialization.
+                    A mapping receives parser lifecycle callbacks through the terminal handler chain and emits final projection output
+                    at end-of-transaction boundaries.
+                </p>
+                <div class="callout normative">
+                    <h4>Normative Requirement</h4>
+                    <p>
+                        Mapping implementations MUST remain deterministic for the same input stream and MUST NOT violate lifecycle
+                        ordering semantics established by parser status transitions.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Typical Composition</h3>
+                <pre><code>Reader -> Parser -> [Adapter] -> [Filter ...] -> Mapping Terminal -> [Writer]</code></pre>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Builder Surface</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>toMapping(mapping)</code></td>
+                            <td>Bind one custom mapping implementation.</td>
+                        </tr>
+                        <tr>
+                            <td><code>toFHIRImagingStudy(options)</code></td>
+                            <td>Bind the built-in DICOM&reg; to FHIR&reg; ImagingStudy mapping profile.</td>
+                        </tr>
+                        <tr>
+                            <td><code>EASI.mappingBuilder()</code></td>
+                            <td>Compose custom mapping contracts with declarative mapping builders.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Usage</h3>
+                <p class="page-meta">
+                    Mapping terminals return one <code>PipelineResultCollection</code> per transaction. The
+                    <code>first()</code> item is the mapping contract output (for example one FHIR&reg; ImagingStudy
+                    or one custom routing object).
+                </p>
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Pipeline mappings examples">
+                        <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="neutral">
+                        <h4>Language-Neutral Examples</h4>
+                        <p>Typical use case: map to FHIR&reg; ImagingStudy study-summary output.</p>
+                        <pre><code class="language-text">studySummaryMapping := DicomToFHIRImagingStudyMapping({ profile: "study-summary" })
+
+pipeline := EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .toMapping(studySummaryMapping)
+  .build()
+
+resultCollection := pipeline.process(sourceUrl)
+if resultCollection.isEmpty:
+  fail("Expected one ImagingStudy mapping result")
+imagingStudy := resultCollection.first()
+studyIdentifier := imagingStudy.identifier[0].value</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: map recognizable DICOM&reg; tags to an operational routing card.</p>
+                        <pre><code class="language-text">class RoutingCardMapping extends DicomMapping
+  constructor():
+    super()
+    EASI.mappingBuilder()
+      .withMapping(this)
+      .withTemplatePolicy("omit")
+      .withProperty("routeBase", "dicom-ingest")
+      .map(Tag.StudyInstanceUID, "card.study.uid")
+      .map(Tag.SeriesInstanceUID, "card.series.uid")
+      .map(Tag.SOPInstanceUID, "card.instance.uid")
+      .map(Tag.PatientID, "card.patient.id")
+      .map(Tag.Modality, "card.classification.modality")
+      .map(Tag.BodyPartExamined, "card.classification.bodyPart")
+      .map(Tag.InstanceNumber, "card.instance.number", { transform: toInteger })
+      .withComputed("card.route.key", { template: "{dicom.Modality}|{dicom.StudyInstanceUID}|{dicom.SeriesInstanceUID}" })
+      .withComputed("card.route.path", { template: "{prop.routeBase}/{dicom.Modality}/{dicom.StudyInstanceUID}/{dicom.SeriesInstanceUID}" })
+      .build()
+
+  start(context):
+    super.start(context)
+    context.card := {
+      study: {},
+      series: {},
+      instance: {},
+      patient: {},
+      classification: {},
+      route: {}
+    }
+    return context
+
+  end(context):
+    super.end(context)
+    return context.card
+
+routingPipeline := EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .toMapping(RoutingCardMapping())
+  .build()
+
+routingResults := routingPipeline.process(sourcePath)
+if routingResults.isEmpty:
+  fail("Expected one routing card")
+routingCard := routingResults.first()</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="javascript">
+                        <h4>JavaScript Examples</h4>
+                        <p>Typical use case: map to FHIR&reg; ImagingStudy study-summary output.</p>
+                        <pre><code class="language-javascript">const studySummaryMapping = new DicomToFHIRImagingStudyMapping({
+  profile: "study-summary"
+});
+
+const pipeline = EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .toMapping(studySummaryMapping)
+  .build();
+
+const resultCollection = await pipeline.process(sourceUrl);
+if (resultCollection.isEmpty) {
+  throw new Error("Expected one ImagingStudy mapping result.");
+}
+const imagingStudy = resultCollection.first();
+const studyIdentifier = imagingStudy.identifier?.[0]?.value;</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: map recognizable DICOM&reg; tags to an operational routing card.</p>
+                        <pre><code class="language-javascript">class RoutingCardMapping extends DicomMapping {
+  constructor() {
+    super();
+
+    EASI.mappingBuilder()
+      .withMapping(this)
+      .withTemplatePolicy("omit")
+      .withProperty("routeBase", "dicom-ingest")
+      .map(Tag.StudyInstanceUID, "card.study.uid")
+      .map(Tag.SeriesInstanceUID, "card.series.uid")
+      .map(Tag.SOPInstanceUID, "card.instance.uid")
+      .map(Tag.PatientID, "card.patient.id")
+      .map(Tag.Modality, "card.classification.modality")
+      .map(Tag.BodyPartExamined, "card.classification.bodyPart")
+      .map(Tag.InstanceNumber, "card.instance.number", {
+        transform: (value) => {
+          const parsed = Number.parseInt(String(value), 10);
+          return Number.isFinite(parsed) ? parsed : null;
+        }
+      })
+      .withComputed("card.route.key", {
+        template: "{dicom.Modality}|{dicom.StudyInstanceUID}|{dicom.SeriesInstanceUID}"
+      })
+      .withComputed("card.route.path", {
+        template: "{prop.routeBase}/{dicom.Modality}/{dicom.StudyInstanceUID}/{dicom.SeriesInstanceUID}"
+      })
+      .build();
+  }
+
+  start(context) {
+    context = super.start(context);
+    context.card = {
+      study: {},
+      series: {},
+      instance: {},
+      patient: {},
+      classification: {},
+      route: {}
+    };
+    return context;
+  }
+
+  end(context) {
+    super.end(context);
+    return context.card;
+  }
+}
+
+const routingPipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .toMapping(new RoutingCardMapping())
+  .build();
+
+const routingResults = await routingPipeline.process(sourcePath);
+if (routingResults.isEmpty) {
+  throw new Error("Expected one routing card.");
+}
+const routingCard = routingResults.first();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="csharp">
+                        <h4>C# Examples</h4>
+                        <p>Typical use case: map to FHIR&reg; ImagingStudy study-summary output.</p>
+                        <pre><code class="language-csharp">var studySummaryMapping = new DicomToFHIRImagingStudyMapping(new {
+    profile = "study-summary"
+});
+
+var pipeline = EASI.PipelineBuilder()
+    .FromHttpStream()
+    .OfDicomData()
+    .ToMapping(studySummaryMapping)
+    .Build();
+
+var resultCollection = await pipeline.Process(sourceUrl);
+if (resultCollection.IsEmpty) {
+    throw new InvalidOperationException("Expected one ImagingStudy mapping result.");
+}
+var imagingStudy = resultCollection.First();
+var studyIdentifier = imagingStudy.identifier?[0]?.value;</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: map recognizable DICOM&reg; tags to an operational routing card.</p>
+                        <pre><code class="language-csharp">public sealed class RoutingCardMapping : DicomMapping
+{
+    public RoutingCardMapping()
+    {
+        EASI.MappingBuilder()
+            .WithMapping(this)
+            .WithTemplatePolicy("omit")
+            .WithProperty("routeBase", "dicom-ingest")
+            .Map(Tag.StudyInstanceUID, "card.study.uid")
+            .Map(Tag.SeriesInstanceUID, "card.series.uid")
+            .Map(Tag.SOPInstanceUID, "card.instance.uid")
+            .Map(Tag.PatientID, "card.patient.id")
+            .Map(Tag.Modality, "card.classification.modality")
+            .Map(Tag.BodyPartExamined, "card.classification.bodyPart")
+            .Map(Tag.InstanceNumber, "card.instance.number", new {
+                transform = (Func&lt;object, object&gt;)(value =&gt; int.TryParse(value?.ToString(), out var n) ? n : null)
+            })
+            .WithComputed("card.route.key", new {
+                template = "{dicom.Modality}|{dicom.StudyInstanceUID}|{dicom.SeriesInstanceUID}"
+            })
+            .WithComputed("card.route.path", new {
+                template = "{prop.routeBase}/{dicom.Modality}/{dicom.StudyInstanceUID}/{dicom.SeriesInstanceUID}"
+            })
+            .Build();
+    }
+
+    public override object Start(object context)
+    {
+        context = base.Start(context);
+        context.card = new { study = new { }, series = new { }, instance = new { }, patient = new { }, classification = new { }, route = new { } };
+        return context;
+    }
+
+    public override object End(object context)
+    {
+        base.End(context);
+        return context.card;
+    }
+}
+
+var routingPipeline = EASI.PipelineBuilder()
+    .FromFileStream()
+    .OfDicomData()
+    .ToMapping(new RoutingCardMapping())
+    .Build();
+
+var routingResults = await routingPipeline.Process(sourcePath);
+if (routingResults.IsEmpty) {
+    throw new InvalidOperationException("Expected one routing card.");
+}
+var routingCard = routingResults.First();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="java">
+                        <h4>Java Examples</h4>
+                        <p>Typical use case: map to FHIR&reg; ImagingStudy study-summary output.</p>
+                        <pre><code class="language-java">var studySummaryMapping = new DicomToFHIRImagingStudyMapping(Map.of(
+    "profile", "study-summary"
+));
+
+var pipeline = EASI.pipelineBuilder()
+    .fromHttpStream()
+    .ofDicomData()
+    .toMapping(studySummaryMapping)
+    .build();
+
+var resultCollection = pipeline.process(sourceUrl);
+if (resultCollection.isEmpty()) {
+    throw new RuntimeException("Expected one ImagingStudy mapping result.");
+}
+var imagingStudy = resultCollection.first();
+var studyIdentifier = imagingStudy.identifier.get(0).value;</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: map recognizable DICOM&reg; tags to an operational routing card.</p>
+                        <pre><code class="language-java">public final class RoutingCardMapping extends DicomMapping {
+
+    public RoutingCardMapping() {
+        EASI.mappingBuilder()
+            .withMapping(this)
+            .withTemplatePolicy("omit")
+            .withProperty("routeBase", "dicom-ingest")
+            .map(Tag.StudyInstanceUID, "card.study.uid")
+            .map(Tag.SeriesInstanceUID, "card.series.uid")
+            .map(Tag.SOPInstanceUID, "card.instance.uid")
+            .map(Tag.PatientID, "card.patient.id")
+            .map(Tag.Modality, "card.classification.modality")
+            .map(Tag.BodyPartExamined, "card.classification.bodyPart")
+            .map(Tag.InstanceNumber, "card.instance.number", Map.of(
+                "transform", (Function&lt;Object, Object&gt;) value -&gt; {
+                    try { return Integer.valueOf(String.valueOf(value)); }
+                    catch (Exception error) { return null; }
+                }
+            ))
+            .withComputed("card.route.key", Map.of(
+                "template", "{dicom.Modality}|{dicom.StudyInstanceUID}|{dicom.SeriesInstanceUID}"
+            ))
+            .withComputed("card.route.path", Map.of(
+                "template", "{prop.routeBase}/{dicom.Modality}/{dicom.StudyInstanceUID}/{dicom.SeriesInstanceUID}"
+            ))
+            .build();
+    }
+
+    @Override
+    public Object start(Object context) {
+        context = super.start(context);
+        context.card = Map.of(
+            "study", new HashMap&lt;String, Object&gt;(),
+            "series", new HashMap&lt;String, Object&gt;(),
+            "instance", new HashMap&lt;String, Object&gt;(),
+            "patient", new HashMap&lt;String, Object&gt;(),
+            "classification", new HashMap&lt;String, Object&gt;(),
+            "route", new HashMap&lt;String, Object&gt;()
+        );
+        return context;
+    }
+
+    @Override
+    public Object end(Object context) {
+        super.end(context);
+        return context.card;
+    }
+}
+
+var routingPipeline = EASI.pipelineBuilder()
+    .fromFileStream()
+    .ofDicomData()
+    .toMapping(new RoutingCardMapping())
+    .build();
+
+var routingResults = routingPipeline.process(sourcePath);
+if (routingResults.isEmpty()) {
+    throw new RuntimeException("Expected one routing card.");
+}
+var routingCard = routingResults.first();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="python">
+                        <h4>Python Examples</h4>
+                        <p>Typical use case: map to FHIR&reg; ImagingStudy study-summary output.</p>
+                        <pre><code class="language-python">study_summary_mapping = DicomToFHIRImagingStudyMapping({
+    "profile": "study-summary"
+})
+
+pipeline = (
+    EASI.pipeline_builder()
+    .from_http_stream()
+    .of_dicom_data()
+    .to_mapping(study_summary_mapping)
+    .build()
+)
+
+result_collection = pipeline.process(source_url)
+if result_collection.is_empty:
+    raise RuntimeError("Expected one ImagingStudy mapping result.")
+imaging_study = result_collection.first()
+study_identifier = imaging_study.identifier[0].value if imaging_study.identifier else None</code></pre>
+
+                        <br />
+
+                        <p>Real-world use case: map recognizable DICOM&reg; tags to an operational routing card.</p>
+                        <pre><code class="language-python">class RoutingCardMapping(DicomMapping):
+    def __init__(self):
+        super().__init__()
+        (
+            EASI.mapping_builder()
+            .with_mapping(self)
+            .with_template_policy("omit")
+            .with_property("routeBase", "dicom-ingest")
+            .map(Tag.study_instance_uid, "card.study.uid")
+            .map(Tag.series_instance_uid, "card.series.uid")
+            .map(Tag.sop_instance_uid, "card.instance.uid")
+            .map(Tag.patient_id, "card.patient.id")
+            .map(Tag.modality, "card.classification.modality")
+            .map(Tag.body_part_examined, "card.classification.bodyPart")
+            .map(Tag.instance_number, "card.instance.number", {
+                "transform": lambda value: int(value) if str(value).isdigit() else None
+            })
+            .with_computed("card.route.key", {
+                "template": "{dicom.Modality}|{dicom.StudyInstanceUID}|{dicom.SeriesInstanceUID}"
+            })
+            .with_computed("card.route.path", {
+                "template": "{prop.routeBase}/{dicom.Modality}/{dicom.StudyInstanceUID}/{dicom.SeriesInstanceUID}"
+            })
+            .build()
+        )
+
+    def start(self, context):
+        context = super().start(context)
+        context.card = {
+            "study": {},
+            "series": {},
+            "instance": {},
+            "patient": {},
+            "classification": {},
+            "route": {}
+        }
+        return context
+
+    def end(self, context):
+        super().end(context)
+        return context.card
+
+routing_pipeline = (
+    EASI.pipeline_builder()
+    .from_file_stream()
+    .of_dicom_data()
+    .to_mapping(RoutingCardMapping())
+    .build()
+)
+
+routing_results = routing_pipeline.process(source_path)
+if routing_results.is_empty:
+    raise RuntimeError("Expected one routing card.")
+routing_card = routing_results.first()</code></pre>
+                    </div>
+                </div>
+
+                <br />
+
+                <h4>Example Transformed RoutingCard Output</h4>
+                <p>
+                    The custom mapping above converts recognizable DICOM&reg; tags into an operational routing model.
+                    A typical <code>resultCollection.first()</code> value can look like:
+                </p>
+                <pre><code class="language-json">{
+  "study": {
+    "uid": "2.25.139254845538721942487332656230608751867"
+  },
+  "series": {
+    "uid": "2.25.180872733450123804026381004226284329191"
+  },
+  "instance": {
+    "uid": "2.25.255879619601343988358768357051691985683",
+    "number": 42
+  },
+  "patient": {
+    "id": "PAT-100045"
+  },
+  "classification": {
+    "modality": "CT",
+    "bodyPart": "CHEST"
+  },
+  "route": {
+    "key": "CT|2.25.139254845538721942487332656230608751867|2.25.180872733450123804026381004226284329191",
+    "path": "dicom-ingest/CT/2.25.139254845538721942487332656230608751867/2.25.180872733450123804026381004226284329191"
+  }
+}</code></pre>
+            </section>
+
+            <section class="section reveal">
+                <h3>Authoring Checklist</h3>
+                <ul>
+                    <li>Keep projection logic pure with respect to input lifecycle state.</li>
+                    <li>Handle multi-part or repeated emit boundaries without duplicate finalization.</li>
+                    <li>Define clear completion semantics for partial input and missing tags.</li>
+                    <li>Document expected output contract and cardinality.</li>
+                </ul>
+            </section>
+
+            <p class="footer-note">
+                Informative page: extension model for mapping-native pipeline outputs.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

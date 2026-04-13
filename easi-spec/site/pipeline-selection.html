@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="EASI standard boundary: what is normative language-neutral contract versus implementation detail.">
-    <title>EASI | Standard Boundary</title>
+    <meta name="description" content="EASI pipeline selection model for targeted attribute extraction without full materialization.">
+    <title>EASI | Pipeline Selection</title>
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="./assets/app.js"></script>
 </head>
@@ -127,128 +127,227 @@
 
         <main class="page">
             <section class="page-hero reveal">
-                <h2>Standard Boundary</h2>
+                <h2>Pipeline Selection</h2>
                 <p>
-                    This page defines the line between language-neutral EASI standard semantics and implementation-specific details.
-                    The goal is interoperability without constraining runtime internals.
+                    Selection terminals provide targeted extraction of DICOM&reg; attributes and values without requiring
+                    full native object materialization when only a constrained subset is needed.
                 </p>
             </section>
 
             <section class="section reveal">
-                <h3>Boundary Rule</h3>
+                <h3>Purpose</h3>
+                <p>
+                    Use selection when workloads need specific tags or value paths for indexing, routing, analytics, or pre-flight
+                    validation. Selection is often the lowest-cost semantic terminal for metadata-first workflows.
+                </p>
                 <div class="callout normative">
-                    <h4>Normative Inclusion Test</h4>
+                    <h4>Normative Requirement</h4>
                     <p>
-                        A behavior belongs in the standard when independent implementations must do the same thing to remain interoperable.
-                        Internal data structures, helper classes, and runtime ergonomics remain implementation documentation.
+                        Selection implementations MUST expose deterministic completion semantics and MUST preserve parser lifecycle
+                        event ordering when deciding early completion or partial extraction.
                     </p>
                 </div>
             </section>
 
             <section class="section reveal">
-                <h3>What Is Normative vs Implementation Detail</h3>
+                <h3>Builder Surface</h3>
                 <table>
                     <thead>
                         <tr>
-                            <th>Belongs In EASI Standard</th>
-                            <th>Belongs In Implementation Docs</th>
+                            <th>Builder Surface</th>
+                            <th>Description</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Pipeline stage semantics and ordering.</td>
-                            <td>Class/file names (<code>Runtime</code>, <code>PartStreamReader</code>, etc.).</td>
+                            <td><code>toSelection(selection)</code></td>
+                            <td>Bind one custom selection implementation.</td>
                         </tr>
                         <tr>
-                            <td>Lifecycle events and status semantics.</td>
-                            <td>Internal callback dispatch mechanisms.</td>
+                            <td><code>EASI.selectionBuilder()</code></td>
+                            <td>Compose tag/criteria extraction contracts using the staged selection builder.</td>
                         </tr>
                         <tr>
-                            <td>Builder intent contract (<code>from/of/with/to/into/build</code>).</td>
-                            <td>Exact method casing and overload style per language.</td>
-                        </tr>
-                        <tr>
-                            <td>Compatibility expectations and fail-fast composition behavior.</td>
-                            <td>Exception class hierarchies and stack trace formats.</td>
-                        </tr>
-                        <tr>
-                            <td>Conformance claims and scenario definitions.</td>
-                            <td>Default logging adapters and telemetry frameworks.</td>
+                            <td><code>process(source)</code></td>
+                            <td>Late-bind source and receive one <code>PipelineResultCollection</code> with selection output.</td>
                         </tr>
                     </tbody>
                 </table>
             </section>
 
             <section class="section reveal">
-                <h3>Decision Framework</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Question</th>
-                            <th>If Yes</th>
-                            <th>If No</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Would divergence break cross-language behavior compatibility?</td>
-                            <td>Standardize as normative semantics.</td>
-                            <td>Keep as implementation detail.</td>
-                        </tr>
-                        <tr>
-                            <td>Is this required for a conformance test to pass/fail reliably?</td>
-                            <td>Standardize assertion and expected outcome.</td>
-                            <td>Document as local implementation guidance.</td>
-                        </tr>
-                        <tr>
-                            <td>Is this primarily naming/style ergonomics?</td>
-                            <td>Document only intent, not syntax.</td>
-                            <td>Allow language/runtime-specific expression.</td>
-                        </tr>
-                        <tr>
-                            <td>Is this transport/runtime-specific infrastructure?</td>
-                            <td>Define extension profile contracts only.</td>
-                            <td>Keep internal implementation optional.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
+                <h3>Usage</h3>
+                <p class="page-meta">
+                    Selection terminals return one <code>PipelineResultCollection</code> per transaction. The
+                    <code>first()</code> item is an <code>AttributeSet</code> containing only the selected attributes.
+                </p>
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Pipeline selection examples">
+                        <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                    </div>
 
-            <section class="section reveal">
-                <h3>Examples</h3>
-                <div class="grid two">
-                    <article class="card">
-                        <h4>Normative Example</h4>
-                        <p><code>FAIL</code> must terminate parse and expose structured failure diagnostics across implementations.</p>
-                    </article>
-                    <article class="card">
-                        <h4>Implementation Example</h4>
-                        <p>Whether concerns are represented by class instances, plain objects, or records is implementation-specific.</p>
-                    </article>
-                    <article class="card">
-                        <h4>Normative Extension Example</h4>
-                        <p>DIMSE extension profile may define source/destination compatibility and concern categories.</p>
-                    </article>
-                    <article class="card">
-                        <h4>Implementation Extension Example</h4>
-                        <p>Socket pooling strategy, TLS engine selection, and retry backoff policy are runtime concerns.</p>
-                    </article>
+                    <div class="doc-tab-panel active" data-tab-panel="neutral">
+                        <h4>Language-Neutral Examples</h4>
+                        <pre><code class="language-text">selection := EASI.selectionBuilder()
+  .include([
+    Tag.StudyInstanceUID,
+    Tag.SeriesInstanceUID,
+    Tag.SOPInstanceUID,
+    Tag.Modality
+  ])
+  .build()
+
+pipeline := EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .toSelection(selection)
+  .build()
+
+resultCollection := pipeline.process(sourcePath)
+if resultCollection.isEmpty:
+  fail("Expected one selection result")
+selectionResult := resultCollection.first()
+
+studyUid := selectionResult.value(Tag.StudyInstanceUID)
+seriesUid := selectionResult.value(Tag.SeriesInstanceUID)
+sopUid := selectionResult.value(Tag.SOPInstanceUID)
+modality := selectionResult.value(Tag.Modality)</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="javascript">
+                        <h4>JavaScript Examples</h4>
+                        <pre><code class="language-javascript">const selection = EASI.selectionBuilder()
+  .include([
+    Tag.StudyInstanceUID,
+    Tag.SeriesInstanceUID,
+    Tag.SOPInstanceUID,
+    Tag.Modality
+  ])
+  .build();
+
+const pipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .toSelection(selection)
+  .build();
+
+const resultCollection = await pipeline.process(sourcePath);
+if (resultCollection.isEmpty) {
+  throw new Error("Expected one selection result.");
+}
+const selectionResult = resultCollection.first();
+const studyUid = selectionResult.value(Tag.StudyInstanceUID);
+const seriesUid = selectionResult.value(Tag.SeriesInstanceUID);
+const sopUid = selectionResult.value(Tag.SOPInstanceUID);
+const modality = selectionResult.value(Tag.Modality);</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="csharp">
+                        <h4>C# Examples</h4>
+                        <pre><code class="language-csharp">var selection = EASI.SelectionBuilder()
+    .Include(new[] {
+        Tag.StudyInstanceUID,
+        Tag.SeriesInstanceUID,
+        Tag.SOPInstanceUID,
+        Tag.Modality
+    })
+    .Build();
+
+var pipeline = EASI.PipelineBuilder()
+    .FromFileStream()
+    .OfDicomData()
+    .ToSelection(selection)
+    .Build();
+
+var resultCollection = await pipeline.Process(sourcePath);
+if (resultCollection.IsEmpty) {
+    throw new InvalidOperationException("Expected one selection result.");
+}
+var selectionResult = resultCollection.First();
+var studyUid = selectionResult.Value(Tag.StudyInstanceUID);
+var seriesUid = selectionResult.Value(Tag.SeriesInstanceUID);
+var sopUid = selectionResult.Value(Tag.SOPInstanceUID);
+var modality = selectionResult.Value(Tag.Modality);</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="java">
+                        <h4>Java Examples</h4>
+                        <pre><code class="language-java">var selection = EASI.selectionBuilder()
+    .include(List.of(
+        Tag.StudyInstanceUID,
+        Tag.SeriesInstanceUID,
+        Tag.SOPInstanceUID,
+        Tag.Modality
+    ))
+    .build();
+
+var pipeline = EASI.pipelineBuilder()
+    .fromFileStream()
+    .ofDicomData()
+    .toSelection(selection)
+    .build();
+
+var resultCollection = pipeline.process(sourcePath);
+if (resultCollection.isEmpty()) {
+    throw new RuntimeException("Expected one selection result.");
+}
+var selectionResult = resultCollection.first();
+var studyUid = selectionResult.value(Tag.StudyInstanceUID);
+var seriesUid = selectionResult.value(Tag.SeriesInstanceUID);
+var sopUid = selectionResult.value(Tag.SOPInstanceUID);
+var modality = selectionResult.value(Tag.Modality);</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="python">
+                        <h4>Python Examples</h4>
+                        <pre><code class="language-python">selection = (
+    EASI.selection_builder()
+    .include([
+        Tag.study_instance_uid,
+        Tag.series_instance_uid,
+        Tag.sop_instance_uid,
+        Tag.modality
+    ])
+    .build()
+)
+
+pipeline = (
+    EASI.pipeline_builder()
+    .from_file_stream()
+    .of_dicom_data()
+    .to_selection(selection)
+    .build()
+)
+
+result_collection = pipeline.process(source_path)
+if result_collection.is_empty:
+    raise RuntimeError("Expected one selection result.")
+selection_result = result_collection.first()
+study_uid = selection_result.value(Tag.study_instance_uid)
+series_uid = selection_result.value(Tag.series_instance_uid)
+sop_uid = selection_result.value(Tag.sop_instance_uid)
+modality = selection_result.value(Tag.modality)</code></pre>
+                    </div>
                 </div>
+
             </section>
 
             <section class="section reveal">
-                <h3>Change Control Guidance</h3>
-                <p>
-                    Standard updates should prioritize semantic stability. Breaking semantic changes must increment major version and
-                    include migration guidance for conformance claims.
-                </p>
-                <p>
-                    Implementation docs can evolve more rapidly as long as normative behavior and published conformance claims remain accurate.
-                </p>
+                <h3>Selection Design Notes</h3>
+                <ul>
+                    <li>Prefer explicit tag contracts over broad wildcard extraction.</li>
+                    <li>Define behavior for missing, empty, and repeated values.</li>
+                    <li>If early completion is supported, document the stop condition clearly.</li>
+                    <li>Keep output shape stable so downstream integrations remain deterministic.</li>
+                </ul>
             </section>
 
             <p class="footer-note">
-                Normative page: governance boundary between interoperable semantics and implementation internals.
+                Informative page: extension model for targeted extraction terminals.
             </p>
         </main>
     </div>

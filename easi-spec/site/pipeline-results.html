@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="EASI standard boundary: what is normative language-neutral contract versus implementation detail.">
-    <title>EASI | Standard Boundary</title>
+    <meta name="description" content="Unified EASI pipeline result contract: PipelineResultCollection and PipelineOperationResult semantics.">
+    <title>EASI | Pipeline Result Contract</title>
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="./assets/app.js"></script>
 </head>
@@ -127,128 +127,295 @@
 
         <main class="page">
             <section class="page-hero reveal">
-                <h2>Standard Boundary</h2>
+                <h2>Pipeline Result Contract</h2>
                 <p>
-                    This page defines the line between language-neutral EASI standard semantics and implementation-specific details.
-                    The goal is interoperability without constraining runtime internals.
+                    EASI uses one unified result contract so callers always handle pipeline outputs consistently.
+                    The contract has two layers: <code>PipelineResultCollection</code> (outer container) and
+                    <code>PipelineOperationResult</code> (standardized operation envelope when applicable).
                 </p>
             </section>
 
             <section class="section reveal">
-                <h3>Boundary Rule</h3>
                 <div class="callout normative">
-                    <h4>Normative Inclusion Test</h4>
+                    <h4>Normative Intent</h4>
                     <p>
-                        A behavior belongs in the standard when independent implementations must do the same thing to remain interoperable.
-                        Internal data structures, helper classes, and runtime ergonomics remain implementation documentation.
+                        <code>process(...)</code> and per-transaction <code>start(...)</code> callbacks return
+                        <code>PipelineResultCollection</code>. This provides stable cardinality handling independent of
+                        terminal shape. When terminal or writer operations expose operation metadata, the item value may
+                        be a <code>PipelineOperationResult</code> envelope.
                     </p>
                 </div>
             </section>
 
             <section class="section reveal">
-                <h3>What Is Normative vs Implementation Detail</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Belongs In EASI Standard</th>
-                            <th>Belongs In Implementation Docs</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Pipeline stage semantics and ordering.</td>
-                            <td>Class/file names (<code>Runtime</code>, <code>PartStreamReader</code>, etc.).</td>
-                        </tr>
-                        <tr>
-                            <td>Lifecycle events and status semantics.</td>
-                            <td>Internal callback dispatch mechanisms.</td>
-                        </tr>
-                        <tr>
-                            <td>Builder intent contract (<code>from/of/with/to/into/build</code>).</td>
-                            <td>Exact method casing and overload style per language.</td>
-                        </tr>
-                        <tr>
-                            <td>Compatibility expectations and fail-fast composition behavior.</td>
-                            <td>Exception class hierarchies and stack trace formats.</td>
-                        </tr>
-                        <tr>
-                            <td>Conformance claims and scenario definitions.</td>
-                            <td>Default logging adapters and telemetry frameworks.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <section class="section reveal">
-                <h3>Decision Framework</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Question</th>
-                            <th>If Yes</th>
-                            <th>If No</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Would divergence break cross-language behavior compatibility?</td>
-                            <td>Standardize as normative semantics.</td>
-                            <td>Keep as implementation detail.</td>
-                        </tr>
-                        <tr>
-                            <td>Is this required for a conformance test to pass/fail reliably?</td>
-                            <td>Standardize assertion and expected outcome.</td>
-                            <td>Document as local implementation guidance.</td>
-                        </tr>
-                        <tr>
-                            <td>Is this primarily naming/style ergonomics?</td>
-                            <td>Document only intent, not syntax.</td>
-                            <td>Allow language/runtime-specific expression.</td>
-                        </tr>
-                        <tr>
-                            <td>Is this transport/runtime-specific infrastructure?</td>
-                            <td>Define extension profile contracts only.</td>
-                            <td>Keep internal implementation optional.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-
-            <section class="section reveal">
-                <h3>Examples</h3>
-                <div class="grid two">
-                    <article class="card">
-                        <h4>Normative Example</h4>
-                        <p><code>FAIL</code> must terminate parse and expose structured failure diagnostics across implementations.</p>
-                    </article>
-                    <article class="card">
-                        <h4>Implementation Example</h4>
-                        <p>Whether concerns are represented by class instances, plain objects, or records is implementation-specific.</p>
-                    </article>
-                    <article class="card">
-                        <h4>Normative Extension Example</h4>
-                        <p>DIMSE extension profile may define source/destination compatibility and concern categories.</p>
-                    </article>
-                    <article class="card">
-                        <h4>Implementation Extension Example</h4>
-                        <p>Socket pooling strategy, TLS engine selection, and retry backoff policy are runtime concerns.</p>
-                    </article>
+                <h3><code>PipelineResultCollection</code></h3>
+                <p>
+                    This is the universal top-level return type for pipeline transactions.
+                    It gives callers one predictable way to check for output and access the first (or only) item.
+                </p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Surface</th>
+                                <th>Purpose</th>
+                                <th>Typical Use</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>isEmpty</code> / <code>count</code></td>
+                                <td>Cardinality checks before reading output.</td>
+                                <td>Fail fast if no result was produced.</td>
+                            </tr>
+                            <tr>
+                                <td><code>first()</code></td>
+                                <td>Direct access to first (or only) item.</td>
+                                <td>Most common call-site pattern.</td>
+                            </tr>
+                            <tr>
+                                <td><code>at(...)</code>, <code>last()</code></td>
+                                <td>Indexed access for multi-item transactions.</td>
+                                <td>Work with plural outputs when needed.</td>
+                            </tr>
+                            <tr>
+                                <td><code>toArray()</code>, iteration helpers</td>
+                                <td>Collection traversal utilities.</td>
+                                <td>Batch processing, filtering, projection.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
             <section class="section reveal">
-                <h3>Change Control Guidance</h3>
+                <h3><code>PipelineOperationResult</code></h3>
                 <p>
-                    Standard updates should prioritize semantic stability. Breaking semantic changes must increment major version and
-                    include migration guidance for conformance claims.
+                    This is a standardized operation envelope for terminal/writer outcomes when operation metadata is relevant.
+                    It allows callers to evaluate write/materialization outcomes without relying on destination-specific custom fields.
                 </p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Meaning</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>resultType</code></td>
+                                <td><code>String</code></td>
+                                <td>Stable discriminator (<code>"PipelineOperationResult"</code>).</td>
+                            </tr>
+                            <tr>
+                                <td><code>version</code></td>
+                                <td><code>String</code></td>
+                                <td>Envelope contract version.</td>
+                            </tr>
+                            <tr>
+                                <td><code>operation</code></td>
+                                <td><code>String</code></td>
+                                <td>Operation identity (for example terminal operation name or <code>"into"</code>).</td>
+                            </tr>
+                            <tr>
+                                <td><code>category</code></td>
+                                <td><code>String</code></td>
+                                <td>Operation class (for example <code>"terminal"</code> or <code>"writer"</code>).</td>
+                            </tr>
+                            <tr>
+                                <td><code>bytesWritten</code></td>
+                                <td><code>Integer</code></td>
+                                <td>Standardized byte count for write/emit outcomes.</td>
+                            </tr>
+                            <tr>
+                                <td><code>materialized</code></td>
+                                <td><code>Boolean</code></td>
+                                <td>Whether a payload was materialized on the result.</td>
+                            </tr>
+                            <tr>
+                                <td><code>payload</code></td>
+                                <td><code>ByteArray</code> or <code>Null</code></td>
+                                <td>Materialized payload bytes when present.</td>
+                            </tr>
+                            <tr>
+                                <td><code>output</code></td>
+                                <td><code>Any</code></td>
+                                <td>Raw terminal/writer output object captured by the envelope.</td>
+                            </tr>
+                            <tr>
+                                <td><code>writer</code> (Optional)</td>
+                                <td><code>String</code></td>
+                                <td>Writer type identity when emitted by writer-category results.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>How They Work Together</h3>
+                <pre><code class="language-text">resultCollection := pipeline.process(...)
+if resultCollection.isEmpty:
+  fail("No result")
+
+item := resultCollection.first()
+if item.resultType == "PipelineOperationResult":
+  evaluate(item.bytesWritten, item.materialized)
+else:
+  consume domain output directly</code></pre>
+                <p class="page-meta">
+                    The caller always starts with the collection contract; operation envelopes are detected only when needed.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Usage</h3>
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Pipeline result contract examples">
+                        <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="neutral">
+                        <h4>Transactional and Listener Patterns</h4>
+                        <pre><code class="language-text">results := pipeline.process(source, destination)
+if results.isEmpty:
+  fail("Expected result")
+
+item := results.first()
+if item.resultType == "PipelineOperationResult":
+  if item.bytesWritten <= 0:
+    fail("No output bytes")
+
+run := listenerPipeline.start({
+  onResult: (resultCollection, context) => {
+    if resultCollection.isEmpty:
+      return true
+    first := resultCollection.first()
+    // first may be a domain object or a PipelineOperationResult
+    return true
+  }
+})</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="javascript">
+                        <h4>JavaScript Pattern</h4>
+                        <pre><code class="language-javascript">const results = await pipeline.process(source, destination);
+if (results.isEmpty) {
+  throw new Error("Expected result.");
+}
+
+const item = results.first();
+if (item?.resultType === "PipelineOperationResult") {
+  if ((item.bytesWritten ?? 0) <= 0) {
+    throw new Error("No output bytes.");
+  }
+}
+
+const run = await listenerPipeline.start({
+  onResult: async (resultCollection, context) => {
+    if (resultCollection.isEmpty) {
+      return true;
+    }
+
+    const first = resultCollection.first();
+    // first may be a domain object or a PipelineOperationResult
+    return true;
+  }
+});</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="csharp">
+                        <h4>C# Pattern</h4>
+                        <pre><code class="language-csharp">var results = await pipeline.Process(source, destination);
+if (results.IsEmpty) {
+    throw new InvalidOperationException("Expected result.");
+}
+
+var item = results.First();
+if (item?.resultType == "PipelineOperationResult") {
+    if ((item.bytesWritten ?? 0) <= 0) {
+        throw new InvalidOperationException("No output bytes.");
+    }
+}
+
+var run = await listenerPipeline.Start(new {
+    onResult = (Func&lt;dynamic, dynamic, bool&gt;)((resultCollection, context) =&gt; {
+        if (resultCollection.IsEmpty) {
+            return true;
+        }
+
+        var first = resultCollection.First();
+        // first may be a domain object or a PipelineOperationResult
+        return true;
+    })
+});</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="java">
+                        <h4>Java Pattern</h4>
+                        <pre><code class="language-java">var results = pipeline.process(source, destination);
+if (results.isEmpty()) {
+    throw new RuntimeException("Expected result.");
+}
+
+var item = results.first();
+if ((item != null) && "PipelineOperationResult".equals(item.resultType)) {
+    if (((Number) item.bytesWritten).longValue() <= 0L) {
+        throw new RuntimeException("No output bytes.");
+    }
+}
+
+var run = listenerPipeline.start(Map.of(
+    "onResult", (BiFunction&lt;Object, Object, Boolean&gt;) (resultCollection, context) -> {
+        if (resultCollection.isEmpty()) {
+            return true;
+        }
+
+        var first = resultCollection.first();
+        // first may be a domain object or a PipelineOperationResult
+        return true;
+    }
+));</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="python">
+                        <h4>Python Pattern</h4>
+                        <pre><code class="language-python">results = pipeline.process(source, destination)
+if results.is_empty:
+    raise RuntimeError("Expected result.")
+
+item = results.first()
+if getattr(item, "resultType", None) == "PipelineOperationResult":
+    if int(getattr(item, "bytesWritten", 0)) <= 0:
+        raise RuntimeError("No output bytes.")
+
+run = listener_pipeline.start({
+    "onResult": lambda result_collection, context: (
+        True if result_collection.is_empty
+        else True  # result_collection.first() may be domain output or PipelineOperationResult
+    )
+})</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Related Pages</h3>
                 <p>
-                    Implementation docs can evolve more rapidly as long as normative behavior and published conformance claims remain accurate.
+                    See <a href="core-pipeline.html">Core Pipeline Model</a> for stage semantics,
+                    <a href="pipeline-writing.html">Writing</a> for destination behavior,
+                    and <a href="materialization-model.html">Materialization Model</a> for output collection strategy.
                 </p>
             </section>
 
             <p class="footer-note">
-                Normative page: governance boundary between interoperable semantics and implementation internals.
+                Informative page: unified result contract behavior for pipeline callers.
             </p>
         </main>
     </div>

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="EASI primary documentation site with language-neutral specification content and language-specific usage references.">
-    <title>EASI Standard Reference</title>
+    <title>EASI | Technical Reference</title>
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="./assets/app.js"></script>
 </head>
@@ -14,7 +14,7 @@
             <div class="brand">
                 <div class="brand-mark">E</div>
                 <div>
-                    <h1>EASI Standard</h1>
+                    <h1>EASI</h1>
                     <p>Technical Reference</p>
                 </div>
             </div>
@@ -24,16 +24,96 @@
 
             <div class="nav-section">
                 <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
                 <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
-                <a class="nav-link" data-nav-link href="core-pipeline.html">Core Pipeline Model</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
                 <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
                 <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
-                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>
-                <a class="nav-link" data-nav-link href="lifecycle-status.html">Stream Lifecycle</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
                 <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
                 <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
                 <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
-                <a class="nav-link" data-nav-link href="dicom-model/index.html">Model Types</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dicom-model/index.html">Model Types</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Model Types section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
                 <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
                 <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
                 <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
@@ -47,15 +127,28 @@
 
         <main class="page">
             <section class="page-hero reveal">
-                <h2>EASI Standard Technical Reference</h2>
+                <h2>EASI - Technical Reference</h2>
                 <p>
-                    EASI (Expressive API Standard for Imaging) defines a fluent, language-neutral contract for
-                    the efficient stream processing of DICOM&reg; medical information.
+                    EASI (Expressive API Standard for Imaging) defines a fluent, language-neutral domain specific language for DICOM&reg; orchestration and stream processing.
                 </p>
                 <br />
                 <p>
-                    This site is the primary source for both language-neutral semantics and language-specific usage,
-                    with ample cross-lanuguage samples presented throughout.
+                    The primary goals of this standard are:
+                    <ul>
+                        <li>Expressive composition</li>
+                        <li>Emphasize efficient, event-driven, "in-flight" stream processing</li>
+                        <li>Define a fluent, language-neutral DSL that is implementation-portable</li>
+                        <li>Standardize staged pipeline semantics for predictable composition and execution</li>
+                        <li>Provide deterministic stream lifecycle events and consistent result contracts</li>
+                        <li>Support early-bound, late-bound, and hybrid binding models for reusable pipeline contracts</li>
+                        <li>Maintain first-class interoperability across DIMSE, DICOMweb&trade; and bespoke workflows</li>
+                        <li>Enable extension through mappings, selections, filters, and writers without weakening conformance</li>
+                        <li>Improve AI agentic fluency through readable, constrained, intent-first pipeline definitions</li>
+                    </ul>
+                </p>
+                <p>
+                    This reference is the primary source for both language-neutral semantics and language-specific usage,
+                    with ample cross-language samples presented throughout.
                 </p>
             </section>
 
@@ -76,12 +169,21 @@
                 </p>
 
                 <div class="search">
-                    <label for="index-search">Filter pages</label>
                     <input id="index-search" type="search" placeholder="Search by topic, contract, status, DICOM&reg;, conformance..."
                            data-filter-input data-filter-target="#index-cards">
                 </div>
 
                 <div id="index-cards" class="grid two">
+                    <article class="card reveal" data-filter-item="why easi value proposition adoption pitch readability composition dicom workflows agentic development">
+                        <h4><a href="why-easi.html">Advantages of EASI</a></h4>
+                        <p>A practical adoption pitch showing why projects choose EASI for clear composition, reusable contracts, and modern DICOM&reg; workflow design.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="why expressive fluent builder staged composition clarity intent readability agentic ai development">
+                        <h4><a href="why-expressive.html">Why Expressive?</a></h4>
+                        <p>Design rationale for the staged fluent builder model and why it improves readability, safety, and AI-assisted composition.</p>
+                    </article>
+
                     <article class="card reveal" data-filter-item="what is easi pipeline primer onboarding model read process start listener transform">
                         <h4><a href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a></h4>
                         <p>A practical orientation to pipeline intent and capability range, from simple reads to listener-based DIMSE processing.</p>
@@ -90,6 +192,11 @@
                     <article class="card reveal" data-filter-item="core pipeline reader parser adapter filter terminal writer build semantics">
                         <h4><a href="core-pipeline.html">Core Pipeline Model</a></h4>
                         <p>Normative structure and component responsibilities: Reader -> Parser -> Adapter -> Filter -> Terminal -> Writer.</p>
+                    </article>
+
+                    <article class="card reveal" data-filter-item="result contract pipeline result collection operation result writer terminal bytes materialized">
+                        <h4><a href="pipeline-results.html">Pipeline Result Contract</a></h4>
+                        <p>Unified caller contract for pipeline outputs, centered on <code>PipelineResultCollection</code> and <code>PipelineOperationResult</code>.</p>
                     </article>
 
                     <article class="card reveal" data-filter-item="dimse c-echo c-find c-get c-move c-store association ae title listener start process">
@@ -108,7 +215,7 @@
                     </article>
 
                     <article class="card reveal" data-filter-item="stream lifecycle status continue success stop jump fail events ordering callbacks">
-                        <h4><a href="lifecycle-status.html">Stream Lifecycle</a></h4>
+                        <h4><a href="lifecycle-status.html">Stream Lifecycle Events</a></h4>
                         <p>Detailed callback vocabulary, ordering constraints, and flow-control status behavior (<code>CONTINUE</code>, <code>SUCCESS</code>, <code>STOP</code>, <code>JUMP</code>, <code>FAIL</code>).</p>
                     </article>
 

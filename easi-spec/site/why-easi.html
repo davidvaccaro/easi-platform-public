@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Adoption pitch for EASI: why teams choose an expressive, staged DICOM pipeline model for real-world imaging workflows.">
+    <title>EASI | Rationale and Advantages of EASI</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dicom-model/index.html">Model Types</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Model Types section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Rationale and Advantages of EASI</h2>
+                <p>
+                    EASI gives developers a practical way to orchastrate modern DICOM&reg; workflows without absorbing the full
+                    complexity of native DICOM&reg; data processing and communications.
+                    It abstracts dense DICOM protocol-stack details (DIMSE/DICOMweb&trade; transport plus DICOM&reg; encoding/parsing semantics) behind a fluent, language-neutral DSL that is easier to compose, verify, automate, and maintain.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout informative">
+                    <h4>Adoption Pitch</h4>
+                    <p>
+                        If your project touches medical imaging data, an EASI approach reduces delivery friction immediately: clearer composition,
+                        reusable contracts, deterministic event-driven stream processing semantics, and stronger AI agentic fluency for implementation and maintenance.
+                        EASI is not a cosmetic API layer, it is an operational model for building and generating more reliable and maintainable modern DICOM&reg; workflows.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Why EASI is better</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Project Need</th>
+                                <th>EASI Response</th>
+                                <th>Practical Effect</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Readable processing logic</td>
+                                <td>Staged fluent contract (<code>from -> of -> with -> to -> into</code>)</td>
+                                <td>New engineers and reviewers understand intent quickly.</td>
+                            </tr>
+                            <tr>
+                                <td>One model for many workflows</td>
+                                <td>Same pipeline shape across file, HTTP, DICOMweb&trade;, DIMSE and bespoke</td>
+                                <td>Less architectural drift and fewer bespoke one-off flows.</td>
+                            </tr>
+                            <tr>
+                                <td>Privacy and policy controls</td>
+                                <td>In-band de-identification, validation, filtering, redaction, transcoding</td>
+                                <td>Policy enforcement becomes composable and testable.</td>
+                            </tr>
+                            <tr>
+                                <td>Streaming-first behavior</td>
+                                <td>Deterministic, event-driven parser-lifecycle model with materialization control</td>
+                                <td>Scales better for large studies and real-time ingestion paths.</td>
+                            </tr>
+                            <tr>
+                                <td>AI-assisted implementation</td>
+                                <td>Low-ambiguity stage vocabulary and explicit contracts</td>
+                                <td>Higher-quality agentic code generation and maintenance.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Real-World Use Cases</h3>
+                <p>
+                    The examples below start with a simple reader and build toward production-grade workflows.
+                    Each tab shows the same scenarios in a language-neutral and language-specific form.
+                </p>
+
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Why EASI examples tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="neutral">
+                        <h4>1) Read one instance for immediate business logic</h4>
+                        <pre><code class="language-text">sourcePath := "/ingest/inbox/ct/CT-001.dcm"
+
+readerPipeline := EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .toInstances()
+  .build()
+
+resultCollection := readerPipeline.process(sourcePath)
+instance := resultCollection.first()
+studyUid := instance.dataSet.value(Tag.StudyInstanceUID)</code></pre>
+
+                        <br />
+
+                        <h4>2) Apply de-identification and produce compliant outbound DICOM&reg;</h4>
+                        <pre><code class="language-text">destinationPath := "/egress/deidentified/CT-001.dcm"
+
+deIdPipeline := EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoFileStream()
+  .build()
+
+writeResults := deIdPipeline.process(sourcePath, destinationPath)
+writeResult := writeResults.first()
+if (writeResult.bytesWritten <= 0):
+  fail("Expected de-identified output bytes")</code></pre>
+
+                        <br />
+
+                        <h4>3) Convert DICOMweb&trade; metadata retrieval into FHIR&reg; ImagingStudy resources</h4>
+                        <pre><code class="language-text">studyMetadataUrl := "https://pacs.example.org/dicom-web/studies/{studyUID}/metadata"
+
+imagingStudyPipeline := EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomMetadata()
+  .toMapping(new DicomToFHIRImagingStudyMapping({ profile: "full" }))
+  .build()
+
+imagingStudyResults := imagingStudyPipeline.process(studyMetadataUrl)
+imagingStudy := imagingStudyResults.first()</code></pre>
+
+                        <br />
+
+                        <h4>4) Run an inbound DIMSE C-STORE listener and relay normalized output</h4>
+                        <pre><code class="language-text">listenerPipeline := EASI.pipelineBuilder()
+  .fromDimseAssociation({
+    role: "scp",
+    host: "0.0.0.0",
+    port: 4104,
+    calledAET: "IMAGEBRIDGE"
+  })
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoHttpStream("https://cloud.example.org/dicom-web/studies", {
+    method: "POST",
+    stow: true
+  })
+  .build()
+
+run := listenerPipeline.start()
+
+... service runs continuously ...
+run.stop()</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="javascript">
+                        <h4>1) Read one instance for immediate business logic</h4>
+                        <pre><code class="language-javascript">const sourcePath = "/ingest/inbox/ct/CT-001.dcm";
+
+const readerPipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .toInstances()
+  .build();
+
+const resultCollection = await readerPipeline.process(sourcePath);
+const instance = resultCollection.first();
+const studyUid = instance.dataSet.value(Tag.StudyInstanceUID);</code></pre>
+
+                        <br />
+
+                        <h4>2) Apply de-identification and produce compliant outbound DICOM&reg;</h4>
+                        <pre><code class="language-javascript">const destinationPath = "/egress/deidentified/CT-001.dcm";
+
+const deIdPipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoFileStream()
+  .build();
+
+const writeResults = await deIdPipeline.process(sourcePath, destinationPath);
+const writeResult = writeResults.first();
+if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
+  throw new Error("Expected de-identified output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <h4>3) Convert DICOMweb&trade; metadata retrieval into FHIR&reg; ImagingStudy resources</h4>
+                        <pre><code class="language-javascript">const studyMetadataUrl = "https://pacs.example.org/dicom-web/studies/{studyUID}/metadata";
+
+const imagingStudyPipeline = EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomMetadata()
+  .toMapping(new DicomToFHIRImagingStudyMapping({ profile: "full" }))
+  .build();
+
+const imagingStudyResults = await imagingStudyPipeline.process(studyMetadataUrl);
+const imagingStudy = imagingStudyResults.first();</code></pre>
+
+                        <br />
+
+                        <h4>4) Run an inbound DIMSE C-STORE listener and relay normalized output</h4>
+                        <pre><code class="language-javascript">const listenerPipeline = EASI.pipelineBuilder()
+  .fromDimseAssociation({
+    role: "scp",
+    host: "0.0.0.0",
+    port: 4104,
+    calledAET: "IMAGEBRIDGE"
+  })
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoHttpStream("https://cloud.example.org/dicom-web/studies", {
+    method: "POST",
+    stow: true
+  })
+  .build();
+
+const run = await listenerPipeline.start();
+
+// ... service runs continuously ...
+await run.stop();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="csharp">
+                        <h4>1) Read one instance for immediate business logic</h4>
+                        <pre><code class="language-csharp">var sourcePath = "/ingest/inbox/ct/CT-001.dcm";
+
+var readerPipeline = EASI.PipelineBuilder()
+    .FromFileStream()
+    .OfDicomData()
+    .ToInstances()
+    .Build();
+
+var resultCollection = await readerPipeline.Process(sourcePath);
+var instance = resultCollection.First();
+var studyUid = instance.dataSet.Value(Tag.StudyInstanceUID);</code></pre>
+
+                        <br />
+
+                        <h4>2) Apply de-identification and produce compliant outbound DICOM&reg;</h4>
+                        <pre><code class="language-csharp">var destinationPath = "/egress/deidentified/CT-001.dcm";
+
+var deIdPipeline = EASI.PipelineBuilder()
+    .FromFileStream()
+    .OfDicomData()
+    .WithDeIdentification(Tag.DefaultDeIdentificationMask)
+    .ToDicomData()
+    .IntoFileStream()
+    .Build();
+
+var writeResults = await deIdPipeline.Process(sourcePath, destinationPath);
+var writeResult = writeResults.First();
+if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
+    throw new InvalidOperationException("Expected de-identified output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <h4>3) Convert DICOMweb&trade; metadata retrieval into FHIR&reg; ImagingStudy resources</h4>
+                        <pre><code class="language-csharp">var studyMetadataUrl = "https://pacs.example.org/dicom-web/studies/{studyUID}/metadata";
+
+var imagingStudyPipeline = EASI.PipelineBuilder()
+    .FromHttpStream()
+    .OfDicomMetadata()
+    .ToMapping(new DicomToFHIRImagingStudyMapping(new { profile = "full" }))
+    .Build();
+
+var imagingStudyResults = await imagingStudyPipeline.Process(studyMetadataUrl);
+var imagingStudy = imagingStudyResults.First();</code></pre>
+
+                        <br />
+
+                        <h4>4) Run an inbound DIMSE C-STORE listener and relay normalized output</h4>
+                        <pre><code class="language-csharp">var listenerPipeline = EASI.PipelineBuilder()
+    .FromDimseAssociation(new {
+        role = "scp",
+        host = "0.0.0.0",
+        port = 4104,
+        calledAET = "IMAGEBRIDGE"
+    })
+    .OfDicomData()
+    .WithDeIdentification(Tag.DefaultDeIdentificationMask)
+    .ToDicomData()
+    .IntoHttpStream("https://cloud.example.org/dicom-web/studies", new {
+        method = "POST",
+        stow = true
+    })
+    .Build();
+
+var run = await listenerPipeline.Start();
+
+// ... service runs continuously ...
+await run.Stop();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="java">
+                        <h4>1) Read one instance for immediate business logic</h4>
+                        <pre><code class="language-java">var sourcePath = "/ingest/inbox/ct/CT-001.dcm";
+
+var readerPipeline = EASI.pipelineBuilder()
+    .fromFileStream()
+    .ofDicomData()
+    .toInstances()
+    .build();
+
+var resultCollection = readerPipeline.process(sourcePath);
+var instance = resultCollection.first();
+var studyUid = instance.dataSet().value(Tag.StudyInstanceUID);</code></pre>
+
+                        <br />
+
+                        <h4>2) Apply de-identification and produce compliant outbound DICOM&reg;</h4>
+                        <pre><code class="language-java">var destinationPath = "/egress/deidentified/CT-001.dcm";
+
+var deIdPipeline = EASI.pipelineBuilder()
+    .fromFileStream()
+    .ofDicomData()
+    .withDeIdentification(Tag.DefaultDeIdentificationMask)
+    .toDicomData()
+    .intoFileStream()
+    .build();
+
+var writeResults = deIdPipeline.process(sourcePath, destinationPath);
+var writeResult = writeResults.first();
+if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
+    throw new RuntimeException("Expected de-identified output bytes.");
+}</code></pre>
+
+                        <br />
+
+                        <h4>3) Convert DICOMweb&trade; metadata retrieval into FHIR&reg; ImagingStudy resources</h4>
+                        <pre><code class="language-java">var studyMetadataUrl = "https://pacs.example.org/dicom-web/studies/{studyUID}/metadata";
+
+var imagingStudyPipeline = EASI.pipelineBuilder()
+    .fromHttpStream()
+    .ofDicomMetadata()
+    .toMapping(new DicomToFHIRImagingStudyMapping(Map.of("profile", "full")))
+    .build();
+
+var imagingStudyResults = imagingStudyPipeline.process(studyMetadataUrl);
+var imagingStudy = imagingStudyResults.first();</code></pre>
+
+                        <br />
+
+                        <h4>4) Run an inbound DIMSE C-STORE listener and relay normalized output</h4>
+                        <pre><code class="language-java">var listenerPipeline = EASI.pipelineBuilder()
+    .fromDimseAssociation(Map.of(
+        "role", "scp",
+        "host", "0.0.0.0",
+        "port", 4104,
+        "calledAET", "IMAGEBRIDGE"
+    ))
+    .ofDicomData()
+    .withDeIdentification(Tag.DefaultDeIdentificationMask)
+    .toDicomData()
+    .intoHttpStream(
+        "https://cloud.example.org/dicom-web/studies",
+        Map.of(
+            "method", "POST",
+            "stow", true
+        )
+    )
+    .build();
+
+var run = listenerPipeline.start();
+
+// ... service runs continuously ...
+run.stop();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="python">
+                        <h4>1) Read one instance for immediate business logic</h4>
+                        <pre><code class="language-python">source_path = "/ingest/inbox/ct/CT-001.dcm"
+
+reader_pipeline = (
+    EASI.pipeline_builder()
+    .from_file_stream()
+    .of_dicom_data()
+    .to_instances()
+    .build()
+)
+
+result_collection = reader_pipeline.process(source_path)
+instance = result_collection.first()
+study_uid = instance.data_set.value(Tag.study_instance_uid)</code></pre>
+
+                        <br />
+
+                        <h4>2) Apply de-identification and produce compliant outbound DICOM&reg;</h4>
+                        <pre><code class="language-python">destination_path = "/egress/deidentified/CT-001.dcm"
+
+deid_pipeline = (
+    EASI.pipeline_builder()
+    .from_file_stream()
+    .of_dicom_data()
+    .with_de_identification(Tag.default_de_identification_mask)
+    .to_dicom_data()
+    .into_file_stream()
+    .build()
+)
+
+write_results = deid_pipeline.process(source_path, destination_path)
+write_result = write_results.first()
+if (write_result is None) or (write_result.bytesWritten <= 0):
+    raise RuntimeError("Expected de-identified output bytes.")</code></pre>
+
+                        <br />
+
+                        <h4>3) Convert DICOMweb&trade; metadata retrieval into FHIR&reg; ImagingStudy resources</h4>
+                        <pre><code class="language-python">study_metadata_url = "https://pacs.example.org/dicom-web/studies/{studyUID}/metadata"
+
+imaging_study_pipeline = (
+    EASI.pipeline_builder()
+    .from_http_stream()
+    .of_dicom_metadata()
+    .to_mapping(DicomToFHIRImagingStudyMapping({"profile": "full"}))
+    .build()
+)
+
+imaging_study_results = imaging_study_pipeline.process(study_metadata_url)
+imaging_study = imaging_study_results.first()</code></pre>
+
+                        <br />
+
+                        <h4>4) Run an inbound DIMSE C-STORE listener and relay normalized output</h4>
+                        <pre><code class="language-python">listener_pipeline = (
+    EASI.pipeline_builder()
+    .from_dimse_association({
+        "role": "scp",
+        "host": "0.0.0.0",
+        "port": 4104,
+        "calledAET": "IMAGEBRIDGE"
+    })
+    .of_dicom_data()
+    .with_de_identification(Tag.default_de_identification_mask)
+    .to_dicom_data()
+    .into_http_stream(
+        "https://cloud.example.org/dicom-web/studies",
+        {
+            "method": "POST",
+            "stow": True
+        }
+    )
+    .build()
+)
+
+run = listener_pipeline.start()
+
+# ... service runs continuously ...
+run.stop()</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Why This Is A Meaningful Shift For DICOM&reg; Orchastration</h3>
+                <p>
+                    EASI keeps DICOM&reg; at the core while making sophisticated workflow orchastration much simpler to compose, understand, and maintain thereby reducing friction and expanding where DICOM&reg; workflows are practical in modern application architectures.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Continue Evaluation</h3>
+                <p>
+                    Next, read <a href="why-expressive.html">Why Expressive?</a> for the staged fluent builder rationale,
+                    then continue to <a href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a> for normative model orientation.
+                </p>
+            </section>
+
+            <p class="footer-note">
+                Informative page: adoption rationale and practical value demonstration for EASI.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

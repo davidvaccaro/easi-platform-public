@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Why EASI uses an expressive staged builder model and why it is effective for human and AI-assisted development.">
+    <title>EASI | Why Expressive?</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+
+            <div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dicom-model/index.html">Model Types</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Model Types section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Why Expressive?</h2>
+                <p>
+                    EASI utilizes an expressive design pattern that makes the intent of complex DICOM&reg; orchestrations clear and intuitive. 
+                    The EASI fluent builder is more than a style choice; it is a staged design requirement that enforces compositional guardrails. This structure 
+                    ensures high reliability, making sophisticated imaging workflows accessible to both general developers and agentic coding environments.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <div class="callout informative">
+                    <h4>Core Advantage</h4>
+                    <p>
+                        Expressiveness allows a developer to consolidate five distinct processing primitives into a single, cohesive declaration. In one clear statement, EASI defines the entire lifecycle of a complex orchastration:
+                        <ul>
+                            <li><strong>Ingestion:</strong> Where the data originates.</li>
+                            <li><strong>Parsing:</strong> How the data is interpreted.</li>
+                            <li><strong>Policy:</strong> Which logic and constraints apply.</li>
+                            <li><strong>Contract:</strong> What the expected output format must be.</li>
+                            <li><strong>Delivery:</strong> Where the final results are routed.</li>
+                        </ul>                        
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Design Merits</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Principle</th>
+                            <th>Builder Signal</th>
+                            <th>Benefit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Intent-First Composition</td>
+                            <td><code>from...</code> -> <code>of...</code> -> <code>with...</code> -> <code>to...</code> -> <code>into...</code></td>
+                            <td>Makes purpose obvious at code review time and lowers onboarding cost.</td>
+                        </tr>
+                        <tr>
+                            <td>Staged Safety</td>
+                            <td>Builder stages constrain what can be called next</td>
+                            <td>Reduces invalid pipeline shapes and catches mistakes before runtime traffic.</td>
+                        </tr>
+                        <tr>
+                            <td>Deterministic Semantics</td>
+                            <td>Stable stage order and lifecycle contract</td>
+                            <td>Cross-language implementations can stay behaviorally equivalent.</td>
+                        </tr>
+                        <tr>
+                            <td>Progressive Specificity</td>
+                            <td>Optional filters and writers compose without breaking core shape</td>
+                            <td>The same model scales from simple reads to advanced relay and extraction workloads.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>The Power of a "Staged" Fluent Domain Specific Language</h3>
+                <p>
+                    Each stage exposes only the valid next methods. Fluent chaining therefore guides composition in-order
+                    and blocks invalid transitions by construction.
+                </p>
+                <div class="uml-diagram fluent-stage-diagram">
+                    <svg class="uml-svg fluent-stage-svg" viewBox="0 0 920 1080" role="img" aria-label="Staged fluent composition diagram showing ordered EASI pipeline stages and blocked invalid transitions.">
+                        <defs>
+                            <marker id="uml-stage-arrow-vertical" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10 z" />
+                            </marker>
+                        </defs>
+
+                        <g class="uml-node primary">
+                            <rect x="130" y="40" width="460" height="92" rx="10" />
+                            <text x="360" y="74" text-anchor="middle">Ingestion Stage</text>
+                            <text x="360" y="102" text-anchor="middle">from...</text>
+                        </g>
+
+                        <g class="uml-node primary">
+                            <rect x="130" y="190" width="460" height="92" rx="10" />
+                            <text x="360" y="224" text-anchor="middle">Parse Stage</text>
+                            <text x="360" y="252" text-anchor="middle">of...</text>
+                        </g>
+
+                        <g class="uml-node primary">
+                            <rect x="130" y="340" width="460" height="92" rx="10" />
+                            <text x="360" y="374" text-anchor="middle">Policy Stage</text>
+                            <text x="360" y="402" text-anchor="middle">with...</text>
+                        </g>
+
+                        <g class="uml-node primary">
+                            <rect x="130" y="490" width="460" height="92" rx="10" />
+                            <text x="360" y="524" text-anchor="middle">Terminal Stage</text>
+                            <text x="360" y="552" text-anchor="middle">to...</text>
+                        </g>
+
+                        <g class="uml-node primary">
+                            <rect x="130" y="640" width="460" height="92" rx="10" />
+                            <text x="360" y="674" text-anchor="middle">Delivery Stage</text>
+                            <text x="360" y="702" text-anchor="middle">into...</text>
+                        </g>
+
+                        <g class="uml-node primary">
+                            <rect x="130" y="790" width="460" height="92" rx="10" />
+                            <text x="360" y="824" text-anchor="middle">Pipeline Runtime</text>
+                            <text x="360" y="852" text-anchor="middle">build + process/start</text>
+                        </g>
+
+                        <line class="uml-edge" x1="360" y1="132" x2="360" y2="190" marker-end="url(#uml-stage-arrow-vertical)" />
+                        <line class="uml-edge" x1="360" y1="282" x2="360" y2="340" marker-end="url(#uml-stage-arrow-vertical)" />
+                        <line class="uml-edge" x1="360" y1="432" x2="360" y2="490" marker-end="url(#uml-stage-arrow-vertical)" />
+                        <line class="uml-edge" x1="360" y1="582" x2="360" y2="640" marker-end="url(#uml-stage-arrow-vertical)" />
+                        <line class="uml-edge" x1="360" y1="732" x2="360" y2="790" marker-end="url(#uml-stage-arrow-vertical)" />
+
+                        <path class="uml-edge" d="M 590 536 C 770 596, 770 792, 590 836" marker-end="url(#uml-stage-arrow-vertical)" />
+                        <text class="uml-edge-label" x="720" y="668">Materializing terminals may skip into...</text>
+
+                        <path class="uml-edge" d="M 590 368 C 715 368, 715 414, 590 414" marker-end="url(#uml-stage-arrow-vertical)" />
+                        <text class="uml-edge-label" x="724" y="396">with... may repeat</text>
+
+                        <path class="uml-edge dashed" d="M 590 236 C 820 282, 820 790, 590 836" style="stroke:#9f5d5d;" />
+                        <text class="uml-note" x="734" y="512">Blocked transition example:</text>
+                        <text class="uml-note" x="734" y="534">build/process unavailable before terminal selection</text>
+
+                        <text class="uml-note" x="132" y="982">Solid arrows: valid fluent transitions between staged builder contracts.</text>
+                        <text class="uml-note" x="132" y="1006">Dashed edge: invalid jump that staged composition prevents.</text>
+                    </svg>
+                </div>
+                <p class="page-meta">
+                    This staged shape is what makes pipeline declarations reviewable, safer to compose, and easier for both humans and AI tooling to reason about.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Why This Helps Agentic Development</h3>
+                <div class="grid three">
+                    <article class="card">
+                        <h4>Low-Ambiguity Planning</h4>
+                        <p>Agents can infer intent from stage verbs directly, which improves automated planning and patch precision.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Bounded Search Space</h4>
+                        <p>Staged APIs narrow valid next moves, making tool-assisted composition more reliable and less error-prone.</p>
+                    </article>
+                    <article class="card">
+                        <h4>Explainable Output</h4>
+                        <p>The pipeline declaration doubles as an execution narrative that both humans and AI systems can explain and audit.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Expressive DICOM&reg; orchastration with clear, understandable intent</h3>
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Why expressive example tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="neutral">
+                        <h4>Real-world use case: de-identify and transcode before relaying to an outbound DICOMweb&trade; endpoint.</h4>
+                        <p class="page-meta">
+                            This declaration is readable as a contract, not just an implementation detail.
+                        </p>
+<pre><code class="language-text">sourceUrl := "https://pacs.example.org/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}"
+destinationUrl := "https://relay.example.org/dicom-web/studies"
+
+relayPipeline := EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoHttpStream()
+  .build()
+
+writeResults := relayPipeline.process(sourceUrl, destinationUrl)
+writeResult := writeResults.first()
+if (writeResult == null) OR (writeResult.bytesWritten <= 0):
+  fail("Expected normalized outbound DICOM bytes")</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="javascript">
+                        <h4>Real-world use case: de-identify and transcode before relaying to an outbound DICOMweb&trade; endpoint.</h4>
+                        <p class="page-meta">
+                            This declaration is readable as a contract, not just an implementation detail.
+                        </p>
+<pre><code class="language-javascript">const sourceUrl = "https://pacs.example.org/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+const destinationUrl = "https://relay.example.org/dicom-web/studies";
+
+const relayPipeline = EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoHttpStream()
+  .build();
+
+const writeResults = await relayPipeline.process(sourceUrl, destinationUrl);
+const writeResult = writeResults.first();
+if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
+  throw new Error("Expected normalized outbound DICOM bytes.");
+}</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="csharp">
+                        <h4>Real-world use case: de-identify and transcode before relaying to an outbound DICOMweb&trade; endpoint.</h4>
+                        <p class="page-meta">
+                            This declaration is readable as a contract, not just an implementation detail.
+                        </p>                    
+<pre><code class="language-csharp">var sourceUrl = "https://pacs.example.org/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+var destinationUrl = "https://relay.example.org/dicom-web/studies";
+
+var relayPipeline = EASI.PipelineBuilder()
+    .FromHttpStream()
+    .OfDicomData()
+    .WithDeIdentification(Tag.DefaultDeIdentificationMask)
+    .WithTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .ToDicomData()
+    .IntoHttpStream()
+    .Build();
+
+var writeResults = await relayPipeline.Process(sourceUrl, destinationUrl);
+var writeResult = writeResults.First();
+if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
+    throw new InvalidOperationException("Expected normalized outbound DICOM bytes.");
+}</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="java">
+                        <h4>Real-world use case: de-identify and transcode before relaying to an outbound DICOMweb&trade; endpoint.</h4>
+                        <p class="page-meta">
+                            This declaration is readable as a contract, not just an implementation detail.
+                        </p>
+<pre><code class="language-java">var sourceUrl = "https://pacs.example.org/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}";
+var destinationUrl = "https://relay.example.org/dicom-web/studies";
+
+var relayPipeline = EASI.pipelineBuilder()
+    .fromHttpStream()
+    .ofDicomData()
+    .withDeIdentification(Tag.DefaultDeIdentificationMask)
+    .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .toDicomData()
+    .intoHttpStream()
+    .build();
+
+var writeResults = relayPipeline.process(sourceUrl, destinationUrl);
+var writeResult = writeResults.first();
+if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
+    throw new RuntimeException("Expected normalized outbound DICOM bytes.");
+}</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="python">
+                        <h4>Real-world use case: de-identify and transcode before relaying to an outbound DICOMweb&trade; endpoint.</h4>
+                        <p class="page-meta">
+                            This declaration is readable as a contract, not just an implementation detail.
+                        </p>
+<pre><code class="language-python">source_url = "https://pacs.example.org/dicom-web/studies/{studyUID}/series/{seriesUID}/instances/{instanceUID}"
+destination_url = "https://relay.example.org/dicom-web/studies"
+
+relay_pipeline = (
+    EASI.pipeline_builder()
+    .from_http_stream()
+    .of_dicom_data()
+    .with_de_identification(Tag.default_de_identification_mask)
+    .with_transcoding(TransferSyntax.explicit_vr_little_endian.id)
+    .to_dicom_data()
+    .into_http_stream()
+    .build()
+)
+
+write_results = relay_pipeline.process(source_url, destination_url)
+write_result = write_results.first()
+if (write_result is None) or (write_result.bytesWritten <= 0):
+    raise RuntimeError("Expected normalized outbound DICOM bytes.")</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Next Pages</h3>
+                <p>
+                    Continue to <a href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a> for concrete
+                    operational examples, then <a href="core-pipeline.html">Core Pipeline Model</a> for normative stage semantics.
+                </p>
+            </section>
+
+            <p class="footer-note">
+                Informative page: design rationale for expressive staged composition in EASI.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="EASI standard boundary: what is normative language-neutral contract versus implementation detail.">
-    <title>EASI | Standard Boundary</title>
+    <meta name="description" content="EASI pipeline filtering model for deterministic semantic transforms within lifecycle boundaries.">
+    <title>EASI | Pipeline Filtering</title>
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="./assets/app.js"></script>
 </head>
@@ -127,128 +127,172 @@
 
         <main class="page">
             <section class="page-hero reveal">
-                <h2>Standard Boundary</h2>
+                <h2>Pipeline Filtering</h2>
                 <p>
-                    This page defines the line between language-neutral EASI standard semantics and implementation-specific details.
-                    The goal is interoperability without constraining runtime internals.
+                    Filters apply semantic transforms or policy enforcement between parser/adapter layers and terminal output
+                    without breaking stream lifecycle behavior.
                 </p>
             </section>
 
             <section class="section reveal">
-                <h3>Boundary Rule</h3>
+                <h3>Canonical Filter Order</h3>
+                <pre><code>Validation -> De-Identification -> Burned-In Redaction / Transcoding -> Terminal</code></pre>
                 <div class="callout normative">
-                    <h4>Normative Inclusion Test</h4>
+                    <h4>Normative Requirement</h4>
                     <p>
-                        A behavior belongs in the standard when independent implementations must do the same thing to remain interoperable.
-                        Internal data structures, helper classes, and runtime ergonomics remain implementation documentation.
+                        Filters MUST preserve parser status semantics and terminal contracts. If implementations reorder filters,
+                        they MUST document behavior differences and profile impact.
                     </p>
                 </div>
             </section>
 
             <section class="section reveal">
-                <h3>What Is Normative vs Implementation Detail</h3>
+                <h3>Built-In Filters</h3>
                 <table>
                     <thead>
                         <tr>
-                            <th>Belongs In EASI Standard</th>
-                            <th>Belongs In Implementation Docs</th>
+                            <th>Filter</th>
+                            <th>Builder Surface</th>
+                            <th>Purpose</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Pipeline stage semantics and ordering.</td>
-                            <td>Class/file names (<code>Runtime</code>, <code>PartStreamReader</code>, etc.).</td>
+                            <td>Validation</td>
+                            <td><code>withValidation(...)</code></td>
+                            <td>Apply semantic and profile checks during stream handling.</td>
                         </tr>
                         <tr>
-                            <td>Lifecycle events and status semantics.</td>
-                            <td>Internal callback dispatch mechanisms.</td>
+                            <td>De-Identification</td>
+                            <td><code>withDeIdentification(mask)</code></td>
+                            <td>Apply deterministic tag-level de-identification policy.</td>
                         </tr>
                         <tr>
-                            <td>Builder intent contract (<code>from/of/with/to/into/build</code>).</td>
-                            <td>Exact method casing and overload style per language.</td>
+                            <td>Burned-In Redaction</td>
+                            <td><code>withBurnedInRedaction(policy)</code></td>
+                            <td>Apply pixel-space redaction for burned-in overlays.</td>
                         </tr>
                         <tr>
-                            <td>Compatibility expectations and fail-fast composition behavior.</td>
-                            <td>Exception class hierarchies and stack trace formats.</td>
-                        </tr>
-                        <tr>
-                            <td>Conformance claims and scenario definitions.</td>
-                            <td>Default logging adapters and telemetry frameworks.</td>
+                            <td>Transcoding</td>
+                            <td><code>withTranscoding(transferSyntaxUid)</code></td>
+                            <td>Normalize transfer syntax for downstream compatibility.</td>
                         </tr>
                     </tbody>
                 </table>
             </section>
 
             <section class="section reveal">
-                <h3>Decision Framework</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Question</th>
-                            <th>If Yes</th>
-                            <th>If No</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Would divergence break cross-language behavior compatibility?</td>
-                            <td>Standardize as normative semantics.</td>
-                            <td>Keep as implementation detail.</td>
-                        </tr>
-                        <tr>
-                            <td>Is this required for a conformance test to pass/fail reliably?</td>
-                            <td>Standardize assertion and expected outcome.</td>
-                            <td>Document as local implementation guidance.</td>
-                        </tr>
-                        <tr>
-                            <td>Is this primarily naming/style ergonomics?</td>
-                            <td>Document only intent, not syntax.</td>
-                            <td>Allow language/runtime-specific expression.</td>
-                        </tr>
-                        <tr>
-                            <td>Is this transport/runtime-specific infrastructure?</td>
-                            <td>Define extension profile contracts only.</td>
-                            <td>Keep internal implementation optional.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
+                <h3>Usage</h3>
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Pipeline filtering examples">
+                        <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                    </div>
 
-            <section class="section reveal">
-                <h3>Examples</h3>
-                <div class="grid two">
-                    <article class="card">
-                        <h4>Normative Example</h4>
-                        <p><code>FAIL</code> must terminate parse and expose structured failure diagnostics across implementations.</p>
-                    </article>
-                    <article class="card">
-                        <h4>Implementation Example</h4>
-                        <p>Whether concerns are represented by class instances, plain objects, or records is implementation-specific.</p>
-                    </article>
-                    <article class="card">
-                        <h4>Normative Extension Example</h4>
-                        <p>DIMSE extension profile may define source/destination compatibility and concern categories.</p>
-                    </article>
-                    <article class="card">
-                        <h4>Implementation Extension Example</h4>
-                        <p>Socket pooling strategy, TLS engine selection, and retry backoff policy are runtime concerns.</p>
-                    </article>
+                    <div class="doc-tab-panel active" data-tab-panel="neutral">
+                        <h4>Language-Neutral Examples</h4>
+                        <pre><code class="language-text">pipeline := EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .withValidation({ goals: ["consistency", "required"] })
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .withBurnedInRedaction({ mode: "regions", regions: knownOverlayRegions })
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoFileStream()
+  .build()
+
+resultCollection := pipeline.process(sourcePath, destinationPath)
+writeResult := resultCollection.first()</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="javascript">
+                        <h4>JavaScript Examples</h4>
+                        <pre><code class="language-javascript">const pipeline = EASI.pipelineBuilder()
+  .fromFileStream()
+  .ofDicomData()
+  .withValidation({ goals: ["consistency", "required"] })
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .withBurnedInRedaction({ mode: "regions", regions: knownOverlayRegions })
+  .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+  .toDicomData()
+  .intoFileStream()
+  .build();
+
+const resultCollection = await pipeline.process(sourcePath, destinationPath);
+const writeResult = resultCollection.first();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="csharp">
+                        <h4>C# Examples</h4>
+                        <pre><code class="language-csharp">var pipeline = EASI.PipelineBuilder()
+    .FromFileStream()
+    .OfDicomData()
+    .WithValidation(new { goals = new[] { "consistency", "required" } })
+    .WithDeIdentification(Tag.DefaultDeIdentificationMask)
+    .WithBurnedInRedaction(new { mode = "regions", regions = knownOverlayRegions })
+    .WithTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .ToDicomData()
+    .IntoFileStream()
+    .Build();
+
+var resultCollection = await pipeline.Process(sourcePath, destinationPath);
+var writeResult = resultCollection.First();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="java">
+                        <h4>Java Examples</h4>
+                        <pre><code class="language-java">var pipeline = EASI.pipelineBuilder()
+    .fromFileStream()
+    .ofDicomData()
+    .withValidation(Map.of("goals", List.of("consistency", "required")))
+    .withDeIdentification(Tag.DefaultDeIdentificationMask)
+    .withBurnedInRedaction(Map.of("mode", "regions", "regions", knownOverlayRegions))
+    .withTranscoding(TransferSyntax.ExplicitVRLittleEndian.ID)
+    .toDicomData()
+    .intoFileStream()
+    .build();
+
+var resultCollection = pipeline.process(sourcePath, destinationPath);
+var writeResult = resultCollection.first();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="python">
+                        <h4>Python Examples</h4>
+                        <pre><code class="language-python">pipeline = (
+    EASI.pipeline_builder()
+    .from_file_stream()
+    .of_dicom_data()
+    .with_validation({"goals": ["consistency", "required"]})
+    .with_de_identification(Tag.default_de_identification_mask)
+    .with_burned_in_redaction({"mode": "regions", "regions": known_overlay_regions})
+    .with_transcoding(TransferSyntax.explicit_vr_little_endian.id)
+    .to_dicom_data()
+    .into_file_stream()
+    .build()
+)
+
+result_collection = pipeline.process(source_path, destination_path)
+write_result = result_collection.first()</code></pre>
+                    </div>
                 </div>
             </section>
 
             <section class="section reveal">
-                <h3>Change Control Guidance</h3>
-                <p>
-                    Standard updates should prioritize semantic stability. Breaking semantic changes must increment major version and
-                    include migration guidance for conformance claims.
-                </p>
-                <p>
-                    Implementation docs can evolve more rapidly as long as normative behavior and published conformance claims remain accurate.
-                </p>
+                <h3>Custom Filter Guidelines</h3>
+                <ul>
+                    <li>Do not mutate lifecycle state in a way that breaks handler expectations.</li>
+                    <li>Clearly document input and output invariants for downstream terminals.</li>
+                    <li>Define idempotence expectations when filters are reused in multi-stage pipelines.</li>
+                    <li>Keep policy options explicit and profile-safe.</li>
+                </ul>
             </section>
 
             <p class="footer-note">
-                Normative page: governance boundary between interoperable semantics and implementation internals.
+                Informative page: extension model for stream-safe semantic filtering.
             </p>
         </main>
     </div>

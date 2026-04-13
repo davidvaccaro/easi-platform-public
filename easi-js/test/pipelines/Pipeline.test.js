@@ -110,6 +110,36 @@ test('Test: Pipeline.process throws when source is missing and no default source
 
 });
 
+test('Test: Pipeline.process supports simplified positional signatures', async () => {
+
+  const reader = {
+    parser: { handler: {} },
+    read: async (source, options) => ({ source, options, ok: true })
+  };
+
+  const onResult = jest.fn(async (result, context) => ({
+    result,
+    context
+  }));
+
+  const pipeline = new Pipeline(reader, onResult);
+
+  const sourceOnly = await pipeline.process('source-only');
+  expect(sourceOnly.first().result.source).toBe('source-only');
+
+  const sourceWithOptions = await pipeline.process('source-with-options', {
+    sourceOptions: { contentType: 'application/dicom' }
+  });
+  expect(sourceWithOptions.first().result.source).toBe('source-with-options');
+  expect(sourceWithOptions.first().result.options).toEqual({ contentType: 'application/dicom' });
+
+  const sourceWithDestination = await pipeline.process('source-with-destination', 'destination-target');
+  expect(sourceWithDestination.first().context.destination).toBe('destination-target');
+
+  expect(onResult).toHaveBeenCalledTimes(3);
+
+});
+
 test('Test: Pipeline.process rejects unsupported signature variants', async () => {
 
   const reader = {
@@ -119,9 +149,9 @@ test('Test: Pipeline.process rejects unsupported signature variants', async () =
 
   const pipeline = new Pipeline(reader);
 
-  await expect(pipeline.process('source-only')).rejects.toThrow(Exception);
-  await expect(pipeline.process('source-only', { contentType: 'application/dicom' })).rejects.toThrow(Exception);
   await expect(pipeline.process('source-only', null, { contentType: 'application/dicom' })).rejects.toThrow(Exception);
+  await expect(pipeline.process('source-only', 'destination', { contentType: 'application/dicom' })).rejects.toThrow(Exception);
+  await expect(pipeline.process('source-only', 'destination', 'invalid-options')).rejects.toThrow(Exception);
 
 });
 
@@ -251,6 +281,31 @@ test('Test: Pipeline.start rejects non-source-bound readers', () => {
 
 });
 
+test('Test: Pipeline.start supports simplified positional signatures', async () => {
+
+  const reader = {
+    isSourceBound: true,
+    parser: { handler: {} },
+    read: jest.fn(async (source, options) => ({ source, options })),
+    stop: async () => {
+    }
+  };
+
+  const pipeline = new Pipeline(reader);
+
+  const fromSourceOnly = pipeline.start('source-only', { maxIterations: 1 });
+  await fromSourceOnly.done;
+  expect(fromSourceOnly.iterations).toBe(1);
+
+  const fromSourceAndDestination = pipeline.start('source-two', 'destination-two', { maxIterations: 1 });
+  await fromSourceAndDestination.done;
+  expect(fromSourceAndDestination.iterations).toBe(1);
+
+  expect(reader.read).toHaveBeenNthCalledWith(1, 'source-only', null);
+  expect(reader.read).toHaveBeenNthCalledWith(2, 'source-two', null);
+
+});
+
 test('Test: Pipeline.start rejects unsupported signature variants', () => {
 
   const reader = {
@@ -263,10 +318,10 @@ test('Test: Pipeline.start rejects unsupported signature variants', () => {
 
   const pipeline = new Pipeline(reader);
 
-  expect(() => pipeline.start(null, { maxIterations: 1 })).toThrow(Exception);
-  expect(() => pipeline.start(null, { maxIterations: 1 })).toThrow('Invalid start signature');
-  expect(() => pipeline.start('source-only')).toThrow(Exception);
-  expect(() => pipeline.start('source-only')).toThrow('Invalid start signature');
+  expect(() => pipeline.start('source', 'destination', { invalid: true })).toThrow(Exception);
+  expect(() => pipeline.start('source', 'destination', { invalid: true })).toThrow('Invalid start options object');
+  expect(() => pipeline.start('source', 'destination', 'invalid-options')).toThrow(Exception);
+  expect(() => pipeline.start('source', 'destination', 'invalid-options')).toThrow('Invalid start options');
 
 });
 

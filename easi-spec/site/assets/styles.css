@@ -135,6 +135,100 @@ pre {
     font-weight: 600;
 }
 
+.nav-group {
+    margin-bottom: 6px;
+}
+
+.nav-group-header {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.nav-group-root {
+    margin-bottom: 0;
+    flex: 1 1 auto;
+}
+
+.nav-group-toggle {
+    width: 34px;
+    min-width: 34px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+}
+
+.nav-group-toggle:hover {
+    background: rgba(0, 127, 122, 0.08);
+    border-color: rgba(0, 127, 122, 0.18);
+}
+
+.nav-group-toggle:focus-visible {
+    outline: 2px solid rgba(0, 127, 122, 0.35);
+    outline-offset: 2px;
+}
+
+.nav-group-chevron {
+    display: inline-block;
+    transition: transform 120ms ease-out;
+}
+
+.nav-group[data-expanded="true"] .nav-group-chevron {
+    transform: rotate(180deg);
+}
+
+.nav-submenu {
+    margin: 6px 0 0 16px;
+    padding: 2px 0 0 8px;
+    border-left: 1px solid rgba(0, 95, 99, 0.22);
+    display: none;
+}
+
+.nav-group[data-expanded="true"] .nav-submenu {
+    display: block;
+}
+
+.nav-sublink {
+    margin-bottom: 4px;
+    padding: 6px 8px;
+    font-size: 0.86rem;
+}
+
+.nav-group-label {
+    margin-top: 8px;
+    margin-bottom: 2px;
+    padding: 6px 8px 4px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-color: transparent;
+    background: transparent;
+    pointer-events: none;
+}
+
+.nav-group-label:hover {
+    text-decoration: none;
+    background: transparent;
+    border-color: transparent;
+}
+
+.nav-subsublink {
+    margin-bottom: 2px;
+    margin-left: 10px;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .badge {
     display: inline-block;
     font-size: 0.68rem;
@@ -238,6 +332,14 @@ pre {
 
 .grid.three {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.execution-mode-cards {
+    grid-template-columns: 1fr;
+}
+
+.execution-mode-cards .card {
+    min-height: 190px;
 }
 
 .card {
@@ -436,6 +538,30 @@ pre {
     min-width: 720px;
     width: 100%;
     height: auto;
+}
+
+.fluent-stage-diagram {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.uml-svg.fluent-stage-svg {
+    min-width: 0;
+    width: min(100%, 920px);
+    margin: 0 auto;
+}
+
+.fluent-stage-diagram .uml-node text {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.fluent-stage-diagram .uml-edge-label {
+    font-size: 14px;
+}
+
+.fluent-stage-diagram .uml-note {
+    font-size: 13px;
 }
 
 .uml-node rect {

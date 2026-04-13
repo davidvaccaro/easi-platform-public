@@ -18,16 +18,96 @@ const EXCLUDED_TYPE_NAMES = new Set([
 const NAV_HTML = `
             <div class="nav-section">
                 <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
                 <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
-                <a class="nav-link" data-nav-link href="../core-pipeline.html">Core Pipeline Model</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
                 <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
                 <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
-                <a class="nav-link" data-nav-link href="../stream-processing-model.html">Stream Processing Model</a>
-                <a class="nav-link" data-nav-link href="../lifecycle-status.html">Stream Lifecycle</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
                 <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
                 <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
                 <a class="nav-link" data-nav-link href="../dicom-profile-index.html">Profile Index</a>
-                <a class="nav-link" data-nav-link href="index.html">Model Types</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="index.html">Model Types</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Model Types section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
                 <a class="nav-link" data-nav-link href="diagram.html">Type Diagram</a>
                 <a class="nav-link" data-nav-link href="../error-catalog.html">Error Catalog</a>
                 <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
@@ -2087,7 +2167,7 @@ function renderTypePage(typeInfo) {
             <div class="brand">
                 <div class="brand-mark">E</div>
                 <div>
-                    <h1>EASI Standard</h1>
+                    <h1>EASI</h1>
                     <p>Technical Reference</p>
                 </div>
             </div>
@@ -2399,7 +2479,7 @@ function renderDiagramPage(typeInfos) {
             <div class="brand">
                 <div class="brand-mark">E</div>
                 <div>
-                    <h1>EASI Standard</h1>
+                    <h1>EASI</h1>
                     <p>Technical Reference</p>
                 </div>
             </div>
@@ -2516,30 +2596,13 @@ function renderIndexPage(typeInfos) {
             <div class="brand">
                 <div class="brand-mark">E</div>
                 <div>
-                    <h1>EASI Standard</h1>
+                    <h1>EASI</h1>
                     <p>Technical Reference</p>
                 </div>
             </div>
 
             <span class="badge normative">Normative</span>
-            <span class="badge informative">Informative</span>
-
-            <div class="nav-section">
-                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
-                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
-                <a class="nav-link" data-nav-link href="../core-pipeline.html">Core Pipeline Model</a>
-                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
-                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
-                <a class="nav-link" data-nav-link href="../stream-processing-model.html">Stream Processing Model</a>
-                <a class="nav-link" data-nav-link href="../lifecycle-status.html">Stream Lifecycle</a>
-                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
-                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
-                <a class="nav-link" data-nav-link href="../dicom-profile-index.html">Profile Index</a>
-                <a class="nav-link" data-nav-link href="index.html">Model Types</a>
-                <a class="nav-link" data-nav-link href="diagram.html">Type Diagram</a>
-                <a class="nav-link" data-nav-link href="../error-catalog.html">Error Catalog</a>
-                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
-            </div>
+            <span class="badge informative">Informative</span>${NAV_HTML}
 
             <div class="nav-section">
                 <span class="nav-label">Edition</span>
@@ -2596,8 +2659,15 @@ ${groupedTables}
 function patchTopLevelTerminology() {
   const topPages = [
     path.join(siteRoot, 'index.html'),
+    path.join(siteRoot, 'why-easi.html'),
+    path.join(siteRoot, 'why-expressive.html'),
     path.join(siteRoot, 'what-is-an-easi-pipeline.html'),
     path.join(siteRoot, 'core-pipeline.html'),
+    path.join(siteRoot, 'pipeline-mappings.html'),
+    path.join(siteRoot, 'pipeline-selection.html'),
+    path.join(siteRoot, 'pipeline-filtering.html'),
+    path.join(siteRoot, 'pipeline-writing.html'),
+    path.join(siteRoot, 'pipeline-results.html'),
     path.join(siteRoot, 'dimse-pipeline.html'),
     path.join(siteRoot, 'advanced-pipeline.html'),
     path.join(siteRoot, 'stream-processing-model.html'),
@@ -2629,11 +2699,25 @@ function patchTopLevelTerminology() {
     html = html.replace(/>DICOM&reg; Model Types</g, '>Model Types<');
     html = html.replace(/>DICOM&reg; Type Diagram</g, '>Type Diagram<');
     html = html.replace(/>DICOM&reg; Model Diagram</g, '>Type Diagram<');
-    html = html.replace(/>Lifecycle and Status</g, '>Stream Lifecycle<');
+    html = html.replace(/>Lifecycle and Status</g, '>Stream Lifecycle Events<');
+
+    if (/<a class="nav-link" data-nav-link href="why-easi\.html">Why (?:Adopt )?EASI\?<\/a>/.test(html) === false) {
+      html = html.replace(
+        /([ \t]*<a class="nav-link" data-nav-link href="index\.html">Overview<\/a>\r?\n)/,
+        '$1                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>\n'
+      );
+    }
+
+    if (/<a class="nav-link" data-nav-link href="why-expressive\.html">Why Expressive\?<\/a>/.test(html) === false) {
+      html = html.replace(
+        /([ \t]*<a class="nav-link" data-nav-link href="why-easi\.html">Why (?:Adopt )?EASI\?<\/a>\r?\n)/,
+        '$1                <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>\n'
+      );
+    }
 
     if (/<a class="nav-link" data-nav-link href="what-is-an-easi-pipeline\.html">What Is an EASI Pipeline\?<\/a>/.test(html) === false) {
       html = html.replace(
-        /([ \t]*<a class="nav-link" data-nav-link href="index\.html">Overview<\/a>\r?\n)/,
+        /([ \t]*<a class="nav-link" data-nav-link href="why-expressive\.html">Why Expressive\?<\/a>\r?\n)/,
         '$1                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>\n'
       );
     }
@@ -2652,7 +2736,7 @@ function patchTopLevelTerminology() {
       );
     }
 
-    if (/<a class="nav-link" data-nav-link href="stream-processing-model\.html">Stream Processing Model<\/a>/.test(html) === false) {
+    if (/href="stream-processing-model\.html">Stream Processing Model<\/a>/.test(html) === false) {
       html = html.replace(
         /([ \t]*<a class="nav-link" data-nav-link href="advanced-pipeline\.html">Advanced Pipeline Use Cases<\/a>\r?\n)/,
         '$1                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>\n'
@@ -2663,6 +2747,13 @@ function patchTopLevelTerminology() {
       html = html.replace(
         /([ \t]*<a class="nav-link" data-nav-link href="lifecycle-status\.html">Stream Lifecycle<\/a>\r?\n)/,
         '$1                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>\n'
+      );
+    }
+
+    if (/<a class="nav-link nav-sublink" data-nav-link href="pipeline-results\.html">Result Contract<\/a>/.test(html) === false) {
+      html = html.replace(
+        /([ \t]*<a class="nav-link nav-sublink" data-nav-link href="pipeline-writing\.html">Writing<\/a>\r?\n)/,
+        '$1                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>\n'
       );
     }
 
