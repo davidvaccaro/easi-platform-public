@@ -20,9 +20,6 @@
 import Exception, { GeneralErrorCodes } from "../../environment/Exception.js";
 import Configuration from "../../environment/Configuration.js";
 import ImagingDataUtils from "../../utils/ImagingDataUtils.js";
-import JpegDecoder from "../../codecs/decoders/JpegDecoder.js";
-import PngDecoder from "../../codecs/decoders/PngDecoder.js";
-import TiffDecoder from "../../codecs/decoders/TiffDecoder.js";
 import DicomDataParser from "../../parsers/DicomDataParser.js";
 import { Status } from "../../parsers/Status.js";
 import DicomInstanceHandler from "../terminals/DicomInstanceHandler.js";
@@ -492,15 +489,17 @@ export default class MixedImagingNormalizationFilter {
             );
         }
 
-        var decoded = null;
-        if (imageFormat == "jpeg") {
-            decoded = this.jpegDecoder.decodeImage(bytes, 0, bytes.length);
+        var imageDecoder = this.codecRegistry.getDecoderForImageFormat(imageFormat);
+        if ((imageDecoder == null) || (typeof imageDecoder.decodeImage != "function")) {
+            throw new Exception(
+                `No image decoder is registered for source format '${imageFormat}'.`,
+                GeneralErrorCodes.NotImplemented
+            );
         }
-        else if (imageFormat == "png") {
-            decoded = await this.pngDecoder.decodeImage(bytes, 0, bytes.length);
-        }
-        else {
-            decoded = this.tiffDecoder.decodeImage(bytes, 0, bytes.length);
+
+        var decoded = imageDecoder.decodeImage(bytes, 0, bytes.length);
+        if ((decoded != null) && (typeof decoded.then == "function")) {
+            decoded = await decoded;
         }
 
         return {
@@ -890,10 +889,6 @@ export default class MixedImagingNormalizationFilter {
         this.includeRgba = (this.options.includeRgba !== false);
         this.frameOutputFormat = this.normalizeFrameOutputFormat(this.options.format ?? this.options.outputFormat ?? "png");
         this.codecRegistry = this.options.codecRegistry ?? Configuration.global.codecRegistry;
-
-        this.jpegDecoder = new JpegDecoder();
-        this.pngDecoder = new PngDecoder();
-        this.tiffDecoder = new TiffDecoder();
 
         this.dicomParser = new DicomDataParser();
         this.dicomParserBulkDataPolicy = this.resolveDicomParserBulkDataPolicy();

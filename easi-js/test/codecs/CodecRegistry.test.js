@@ -6,6 +6,9 @@ import JpegLsDecoder from '../../src/codecs/decoders/JpegLsDecoder.js';
 import RleDecoder from '../../src/codecs/decoders/RleDecoder.js';
 import Htj2kDecoder from '../../src/codecs/decoders/Htj2kDecoder.js';
 import RleRgbaEncoder from '../../src/codecs/encoders/RleRgbaEncoder.js';
+import PngDecoder from '../../src/codecs/decoders/PngDecoder.js';
+import TiffDecoder from '../../src/codecs/decoders/TiffDecoder.js';
+import JpegDecoder from '../../src/codecs/decoders/JpegDecoder.js';
 
 class FakeDecoder {
     constructor(dicomObject) {
@@ -19,6 +22,20 @@ class FakeEncoder {
             bytes: new Uint8Array(0),
             mimeType: "application/octet-stream",
             format: "fake"
+        };
+    }
+}
+
+class FakeImageDecoder {
+    constructor(context) {
+        this.context = context;
+    }
+
+    decodeImage() {
+        return {
+            width: 1,
+            height: 1,
+            bytes: new Uint8Array([0, 0, 0, 255])
         };
     }
 }
@@ -51,6 +68,24 @@ test('Test: CodecRegistry registers and resolves format encoders case-insensitiv
 
 });
 
+test('Test: CodecRegistry registers and resolves image decoders by format/media-type case-insensitively', () => {
+
+    var registry = new CodecRegistry();
+    registry.setDecoderForImageFormat("PNG", FakeImageDecoder);
+
+    expect(registry.hasDecoderForImageFormat("png")).toBe(true);
+    expect(registry.hasDecoderForImageFormat("image/png")).toBe(true);
+
+    var decoder = registry.getDecoderForImageFormat("image/png", { id: "context" });
+    expect(decoder instanceof FakeImageDecoder).toBe(true);
+    expect(decoder.context.id).toBe("context");
+
+    registry.setDecoderForMediaType("image/tiff", FakeImageDecoder);
+    expect(registry.hasDecoderForImageFormat("tif")).toBe(true);
+    expect(registry.hasDecoderForMediaType("image/tiff")).toBe(true);
+
+});
+
 test('Test: Configuration seeds default codec registry with png/tiff/jpeg/jpeg2000 encoders', () => {
 
     var configuration = new Configuration();
@@ -64,6 +99,21 @@ test('Test: Configuration seeds default codec registry with png/tiff/jpeg/jpeg20
     expect(configuration.getEncoderFor('jpeg 2000')).toBeDefined();
     expect(configuration.getEncoderFor('jp2')).toBeDefined();
     expect(configuration.getEncoderFor('j2k')).toBeDefined();
+
+});
+
+test('Test: Configuration seeds default image decoders for JPEG/PNG/TIFF', () => {
+
+    var configuration = new Configuration();
+
+    expect(configuration.getImageDecoderFor('jpeg') instanceof JpegDecoder).toBe(true);
+    expect(configuration.getImageDecoderFor('jpg') instanceof JpegDecoder).toBe(true);
+    expect(configuration.getImageDecoderFor('image/jpeg') instanceof JpegDecoder).toBe(true);
+    expect(configuration.getImageDecoderFor('png') instanceof PngDecoder).toBe(true);
+    expect(configuration.getImageDecoderFor('image/png') instanceof PngDecoder).toBe(true);
+    expect(configuration.getImageDecoderFor('tiff') instanceof TiffDecoder).toBe(true);
+    expect(configuration.getImageDecoderFor('tif') instanceof TiffDecoder).toBe(true);
+    expect(configuration.getImageDecoderFor('image/tiff') instanceof TiffDecoder).toBe(true);
 
 });
 
@@ -145,15 +195,21 @@ test('Test: CodecRegistry clone creates independent registration maps', () => {
 
     var registry = new CodecRegistry();
     registry.setDecoderForTransferSyntax(TransferSyntax.NONE, FakeDecoder);
+    registry.setDecoderForImageFormat("png", FakeImageDecoder);
     registry.setEncoder('png', new FakeEncoder());
 
     var clone = registry.clone();
     clone.setEncoder('jpeg', new FakeEncoder());
+    clone.setDecoderForImageFormat("tiff", FakeImageDecoder);
 
     expect(clone.hasEncoder('jpeg')).toBe(true);
     expect(registry.hasEncoder('jpeg')).toBe(false);
     expect(clone.hasEncoder('png')).toBe(true);
     expect(registry.hasEncoder('png')).toBe(true);
+    expect(clone.hasDecoderForImageFormat("tiff")).toBe(true);
+    expect(registry.hasDecoderForImageFormat("tiff")).toBe(false);
+    expect(clone.hasDecoderForImageFormat("png")).toBe(true);
+    expect(registry.hasDecoderForImageFormat("png")).toBe(true);
 
 });
 

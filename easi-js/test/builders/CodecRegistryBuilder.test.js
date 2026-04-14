@@ -20,6 +20,16 @@ class FakeEncoder {
     }
 }
 
+class FakeImageDecoder {
+    decodeImage() {
+        return {
+            width: 1,
+            height: 1,
+            bytes: new Uint8Array([0, 0, 0, 255])
+        };
+    }
+}
+
 test("Test: CodecRegistryBuilder builds independent default codec registry and asserts valid", () => {
     const registry = new CodecRegistryBuilder()
         .withDefaultCodecs()
@@ -35,11 +45,13 @@ test("Test: CodecRegistryBuilder supports overriding and extending defaults", ()
     const registry = new CodecRegistryBuilder()
         .withDefaultCodecs()
         .withDecoderForTransferSyntax(TransferSyntax.NONE, FakeDecoder)
+        .withDecoderForImageFormat("image/png", FakeImageDecoder)
         .withEncoder("custom", new FakeEncoder())
         .build();
 
     const decoder = registry.getDecoderForTransferSyntax(TransferSyntax.NONE, { id: "x" });
     expect(decoder instanceof FakeDecoder).toBe(true);
+    expect(registry.getDecoderForImageFormat("png") instanceof FakeImageDecoder).toBe(true);
     expect(registry.hasEncoder("custom")).toBe(true);
 });
 

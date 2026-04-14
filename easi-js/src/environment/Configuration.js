@@ -25,6 +25,8 @@ import JpegLsDecoder from '../codecs/decoders/JpegLsDecoder.js';
 import Jpeg2000Decoder from '../codecs/decoders/Jpeg2000Decoder.js';
 import Htj2kDecoder from '../codecs/decoders/Htj2kDecoder.js';
 import RleDecoder from '../codecs/decoders/RleDecoder.js';
+import PngDecoder from '../codecs/decoders/PngDecoder.js';
+import TiffDecoder from '../codecs/decoders/TiffDecoder.js';
 import CodecRegistry from '../codecs/CodecRegistry.js';
 import PngRgbaEncoder from '../codecs/encoders/PngRgbaEncoder.js';
 import TiffRgbaEncoder from '../codecs/encoders/TiffRgbaEncoder.js';
@@ -58,6 +60,23 @@ export default class Configuration {
             { transferSyntax: TransferSyntax.HTJ2K, decoderType: Htj2kDecoder },
             { transferSyntax: TransferSyntax.RLELossless, decoderType: RleDecoder },
             { transferSyntax: TransferSyntax.NONE, decoderType: DicomNativePixelDataToRGBADecoder }
+        ];
+    }
+
+    /**
+     * Get default image decoder registrations.
+     * @returns {Array<{ format: string, decoderType: Function }>} Image decoder registrations.
+     */
+    static getDefaultImageDecoderRegistrations() {
+        return [
+            { format: 'jpeg', decoderType: JpegDecoder },
+            { format: 'jpg', decoderType: JpegDecoder },
+            { format: 'image/jpeg', decoderType: JpegDecoder },
+            { format: 'png', decoderType: PngDecoder },
+            { format: 'image/png', decoderType: PngDecoder },
+            { format: 'tiff', decoderType: TiffDecoder },
+            { format: 'tif', decoderType: TiffDecoder },
+            { format: 'image/tiff', decoderType: TiffDecoder }
         ];
     }
 
@@ -110,9 +129,18 @@ export default class Configuration {
             );
         }
 
+        var imageDecoderRegistrations = Configuration.getDefaultImageDecoderRegistrations();
+        for (var j = 0; j < imageDecoderRegistrations.length; j++) {
+            var imageDecoderRegistration = imageDecoderRegistrations[j];
+            codecRegistry.setDecoderForImageFormat(
+                imageDecoderRegistration.format,
+                new imageDecoderRegistration.decoderType()
+            );
+        }
+
         var encoderRegistrations = Configuration.getDefaultEncoderRegistrations();
-        for (var j = 0; j < encoderRegistrations.length; j++) {
-            var encoderRegistration = encoderRegistrations[j];
+        for (var k = 0; k < encoderRegistrations.length; k++) {
+            var encoderRegistration = encoderRegistrations[k];
             codecRegistry.setEncoder(
                 encoderRegistration.format,
                 new encoderRegistration.encoderType()
@@ -158,6 +186,16 @@ export default class Configuration {
     }
 
     /**
+     * Gets the decoder for a given image format/media-type.
+     * @param {string} formatOrMediaType The image format/media-type.
+     * @param {object | null} context Optional decoder context.
+     * @returns {object | null} A newly created/initialized decoder instance.
+     */
+    getImageDecoderFor(formatOrMediaType, context = null) {
+        return this.codecRegistry.getDecoderForImageFormat(formatOrMediaType, context);
+    }
+
+    /**
      * Sets the decoder for a given transfer-syntax.
      * @param {TransferSyntax} transferSyntax The specified transfer-syntax.
      * @param {object} decoderPrototype The prototype instance of the decoder to associated to the specified transfer-syntax.
@@ -165,6 +203,22 @@ export default class Configuration {
     setDecoderFor(transferSyntax, decoderPrototype) {
         this.codecRegistry.setDecoderForTransferSyntax(transferSyntax, decoderPrototype);
         this.decoderPrototypes[transferSyntax.ID] = decoderPrototype;
+    }
+
+    /**
+     * Sets the decoder for a given image format/media-type.
+     * @param {string} formatOrMediaType The image format/media-type.
+     * @param {object} decoderPrototype The prototype instance of the decoder to associate.
+     */
+    setImageDecoderFor(formatOrMediaType, decoderPrototype) {
+
+        this.codecRegistry.setDecoderForImageFormat(formatOrMediaType, decoderPrototype);
+
+        var format = this.codecRegistry.normalizeImageFormat(formatOrMediaType);
+        if (format != null) {
+            this.imageDecoderPrototypes[format] = decoderPrototype;
+        }
+
     }
 
     /**
@@ -199,6 +253,10 @@ export default class Configuration {
         this.decoderPrototypes = {
         };
 
+        // Initialize the DEFAULT image decoders
+        this.imageDecoderPrototypes = {
+        };
+
         // Initialize the codec registry
         this.codecRegistry = new CodecRegistry();
 
@@ -212,10 +270,20 @@ export default class Configuration {
             );
         }
 
+        // Populate default image decoders.
+        var imageDecoderRegistrations = Configuration.getDefaultImageDecoderRegistrations();
+        for (var j = 0; j < imageDecoderRegistrations.length; j++) {
+            var imageDecoderRegistration = imageDecoderRegistrations[j];
+            this.setImageDecoderFor(
+                imageDecoderRegistration.format,
+                new imageDecoderRegistration.decoderType()
+            );
+        }
+
         // Populate default output encoders.
         var encoderRegistrations = Configuration.getDefaultEncoderRegistrations();
-        for (var j = 0; j < encoderRegistrations.length; j++) {
-            var encoderRegistration = encoderRegistrations[j];
+        for (var k = 0; k < encoderRegistrations.length; k++) {
+            var encoderRegistration = encoderRegistrations[k];
             this.setEncoderFor(
                 encoderRegistration.format,
                 new encoderRegistration.encoderType()

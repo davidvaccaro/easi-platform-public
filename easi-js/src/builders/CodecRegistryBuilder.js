@@ -67,6 +67,30 @@ export default class CodecRegistryBuilder {
     }
 
     /**
+     * Register an image decoder to apply during build.
+     * @param {string} formatOrMediaType Image format/media-type identifier.
+     * @param {object | Function} decoderPrototypeOrConstructor Decoder prototype or constructor.
+     * @returns {CodecRegistryBuilder} The current builder.
+     */
+    withDecoderForImageFormat(formatOrMediaType, decoderPrototypeOrConstructor) {
+        this.imageDecoderRegistrations.push({
+            formatOrMediaType,
+            decoderPrototypeOrConstructor
+        });
+        return this;
+    }
+
+    /**
+     * Register an image decoder by media-type identifier to apply during build.
+     * @param {string} mediaType Media-type identifier.
+     * @param {object | Function} decoderPrototypeOrConstructor Decoder prototype or constructor.
+     * @returns {CodecRegistryBuilder} The current builder.
+     */
+    withDecoderForMediaType(mediaType, decoderPrototypeOrConstructor) {
+        return this.withDecoderForImageFormat(mediaType, decoderPrototypeOrConstructor);
+    }
+
+    /**
      * Register a named encoder to apply during build.
      * @param {string} format Encoder format identifier.
      * @param {object} encoder Encoder instance.
@@ -141,8 +165,16 @@ export default class CodecRegistryBuilder {
             );
         }
 
-        for (var j = 0; j < this.encoderRegistrations.length; j++) {
-            var encoderRegistration = this.encoderRegistrations[j];
+        for (var j = 0; j < this.imageDecoderRegistrations.length; j++) {
+            var imageDecoderRegistration = this.imageDecoderRegistrations[j];
+            codecRegistry.setDecoderForImageFormat(
+                imageDecoderRegistration.formatOrMediaType,
+                imageDecoderRegistration.decoderPrototypeOrConstructor
+            );
+        }
+
+        for (var k = 0; k < this.encoderRegistrations.length; k++) {
+            var encoderRegistration = this.encoderRegistrations[k];
             codecRegistry.setEncoder(
                 encoderRegistration.format,
                 encoderRegistration.encoder
@@ -165,6 +197,7 @@ export default class CodecRegistryBuilder {
         this.cloneBaseCodecRegistry = true;
         this.includeDefaultCodecs = false;
         this.decoderRegistrations = [];
+        this.imageDecoderRegistrations = [];
         this.encoderRegistrations = [];
         this.assertOnBuild = true;
         this.validationOptions = null;

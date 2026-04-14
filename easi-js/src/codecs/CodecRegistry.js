@@ -26,12 +26,14 @@ export default class CodecRegistry {
      * @param {{
      *   requireDefaultDecoder?: boolean,
      *   requiredTransferSyntaxes?: Array<TransferSyntax | string | null>,
-     *   requiredEncoders?: Array<string | null>
+     *   requiredEncoders?: Array<string | null>,
+     *   requiredImageDecoders?: Array<string | null>
      * } | null} options Validation options.
      * @returns {{
      *   requireDefaultDecoder: boolean,
      *   requiredTransferSyntaxes: Array<TransferSyntax | string | null>,
-     *   requiredEncoders: Array<string | null>
+     *   requiredEncoders: Array<string | null>,
+     *   requiredImageDecoders: Array<string | null>
      * }} Normalized options.
      */
     normalizeValidationOptions(options = null) {
@@ -40,7 +42,8 @@ export default class CodecRegistry {
             return {
                 requireDefaultDecoder: true,
                 requiredTransferSyntaxes: [],
-                requiredEncoders: []
+                requiredEncoders: [],
+                requiredImageDecoders: []
             };
         }
 
@@ -51,6 +54,9 @@ export default class CodecRegistry {
                 : [],
             requiredEncoders: Array.isArray(options.requiredEncoders)
                 ? options.requiredEncoders
+                : [],
+            requiredImageDecoders: Array.isArray(options.requiredImageDecoders)
+                ? options.requiredImageDecoders
                 : []
         };
 
@@ -139,6 +145,44 @@ export default class CodecRegistry {
 
         }
 
+        if ((this.imageDecoderConstructors == null) || (typeof this.imageDecoderConstructors !== "object")) {
+            report.errors.push(this.createValidationIssue(
+                "InvalidImageDecoderMap",
+                "CodecRegistry image-decoder map is missing or invalid."
+            ));
+        }
+        else {
+
+            var imageFormats = Object.keys(this.imageDecoderConstructors);
+            for (var k = 0; k < imageFormats.length; k++) {
+                var imageFormat = imageFormats[k];
+                var imageDecoderConstructor = this.imageDecoderConstructors[imageFormat];
+
+                if (typeof imageDecoderConstructor !== "function") {
+                    report.errors.push(this.createValidationIssue(
+                        "InvalidImageDecoderConstructor",
+                        `Image decoder registration for format '${imageFormat}' is invalid.`,
+                        { format: imageFormat }
+                    ));
+                }
+            }
+
+            for (var d = 0; d < normalizedOptions.requiredImageDecoders.length; d++) {
+                var requiredImageFormat = this.normalizeImageFormat(normalizedOptions.requiredImageDecoders[d]);
+                if (requiredImageFormat == null)
+                    continue;
+
+                if (typeof this.imageDecoderConstructors[requiredImageFormat] !== "function") {
+                    report.errors.push(this.createValidationIssue(
+                        "MissingRequiredImageDecoder",
+                        `CodecRegistry is missing image decoder for format '${requiredImageFormat}'.`,
+                        { format: requiredImageFormat }
+                    ));
+                }
+            }
+
+        }
+
         if ((this.encoders == null) || (typeof this.encoders !== "object")) {
             report.errors.push(this.createValidationIssue(
                 "InvalidEncoderMap",
@@ -214,6 +258,7 @@ export default class CodecRegistry {
 
         var registry = new CodecRegistry();
         registry.decoderConstructors = Object.assign({}, this.decoderConstructors ?? {});
+        registry.imageDecoderConstructors = Object.assign({}, this.imageDecoderConstructors ?? {});
         registry.encoders = Object.assign({}, this.encoders ?? {});
         return registry;
 
@@ -228,6 +273,43 @@ export default class CodecRegistry {
         if (format == null)
             return null;
         return String(format).trim().toLowerCase();
+    }
+
+    /**
+     * Normalize one image-format or media-type identifier.
+     * @param {string | null} formatOrMediaType Image-format or media-type.
+     * @returns {string | null} Normalized image-format key.
+     */
+    normalizeImageFormat(formatOrMediaType) {
+
+        if (formatOrMediaType == null)
+            return null;
+
+        var value = String(formatOrMediaType).trim().toLowerCase();
+        if (value.length == 0)
+            return null;
+
+        if (value == "jpg")
+            return "jpeg";
+
+        if (value == "tif")
+            return "tiff";
+
+        if (value.indexOf("/") > -1) {
+
+            if (value.indexOf("jpeg") > -1)
+                return "jpeg";
+
+            if (value.indexOf("png") > -1)
+                return "png";
+
+            if ((value.indexOf("tiff") > -1) || (value.indexOf("tif") > -1))
+                return "tiff";
+
+        }
+
+        return value;
+
     }
 
     /**
@@ -288,6 +370,88 @@ export default class CodecRegistry {
     }
 
     /**
+     * Register one image decoder constructor for a format/media-type key.
+     * @param {string} formatOrMediaType Image format or media-type.
+     * @param {object | Function} decoderPrototypeOrConstructor Decoder prototype or constructor.
+     */
+    setDecoderForImageFormat(formatOrMediaType, decoderPrototypeOrConstructor) {
+
+        var format = this.normalizeImageFormat(formatOrMediaType);
+        if (format == null)
+            return;
+
+        var constructor = (typeof decoderPrototypeOrConstructor === "function")
+            ? decoderPrototypeOrConstructor
+            : decoderPrototypeOrConstructor?.constructor;
+
+        if (constructor == null)
+            return;
+
+        this.imageDecoderConstructors[format] = constructor;
+
+    }
+
+    /**
+     * Register one image decoder constructor for media-type key.
+     * @param {string} mediaType Media-type key.
+     * @param {object | Function} decoderPrototypeOrConstructor Decoder prototype or constructor.
+     */
+    setDecoderForMediaType(mediaType, decoderPrototypeOrConstructor) {
+        this.setDecoderForImageFormat(mediaType, decoderPrototypeOrConstructor);
+    }
+
+    /**
+     * Resolve one image decoder instance by image format/media-type key.
+     * @param {string} formatOrMediaType Image format or media-type.
+     * @param {object | null} context Optional decoder context.
+     * @returns {object | null} Decoder instance, when available.
+     */
+    getDecoderForImageFormat(formatOrMediaType, context = null) {
+
+        var format = this.normalizeImageFormat(formatOrMediaType);
+        if (format == null)
+            return null;
+
+        var constructor = this.imageDecoderConstructors[format];
+        if (constructor == null)
+            return null;
+
+        return new constructor(context);
+
+    }
+
+    /**
+     * Resolve one image decoder instance by media-type key.
+     * @param {string} mediaType Media-type key.
+     * @param {object | null} context Optional decoder context.
+     * @returns {object | null} Decoder instance, when available.
+     */
+    getDecoderForMediaType(mediaType, context = null) {
+        return this.getDecoderForImageFormat(mediaType, context);
+    }
+
+    /**
+     * Determine if one image decoder registration exists.
+     * @param {string} formatOrMediaType Image format or media-type.
+     * @returns {boolean} TRUE when the image decoder exists.
+     */
+    hasDecoderForImageFormat(formatOrMediaType) {
+        var format = this.normalizeImageFormat(formatOrMediaType);
+        if (format == null)
+            return false;
+        return (typeof this.imageDecoderConstructors[format] === "function");
+    }
+
+    /**
+     * Determine if one media-type image decoder registration exists.
+     * @param {string} mediaType Media-type key.
+     * @returns {boolean} TRUE when the image decoder exists.
+     */
+    hasDecoderForMediaType(mediaType) {
+        return this.hasDecoderForImageFormat(mediaType);
+    }
+
+    /**
      * Determine if a decoder is explicitly registered for a transfer-syntax.
      * @param {TransferSyntax | string | null} transferSyntax The transfer-syntax.
      * @returns {boolean} TRUE when a specific decoder is registered.
@@ -338,6 +502,7 @@ export default class CodecRegistry {
      */
     constructor() {
         this.decoderConstructors = {};
+        this.imageDecoderConstructors = {};
         this.encoders = {};
     }
 
