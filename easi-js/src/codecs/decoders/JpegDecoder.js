@@ -1130,7 +1130,7 @@ export default class JpegDecoder {
 
     }
 
-    decode(source, sourceStart, sourceStop, destination, destinationStart) {
+    decodeImage(source, sourceStart = 0, sourceStop = null) {
         var defaultOpts = {
         // "undefined" means "Choose whether to transform colors based on the image’s color model."
         colorTransform: undefined,
@@ -1149,9 +1149,17 @@ export default class JpegDecoder {
         // Until then, treating as singleton limit is fine.
         JpegImage.resetMaxMemoryUsage(opts.maxMemoryUsageInMB * 1024 * 1024);
 
-        // Determine the start and stop of the next frame
+        if (sourceStop == null) {
+            sourceStop = source?.length ?? 0;
+        }
+
+        // Determine the start and stop of the next frame.
         var start = this.indexOf(source, sourceStart, JpegDecoder.getonStartSequence());
         var stop = this.indexOf(source, start, JpegDecoder.getEndSequence());
+
+        if ((start < 0) || (stop < 0) || (stop < start)) {
+            throw new Error("Failed decoding JPEG image. Missing JPEG frame boundaries.");
+        }
 
         // Extract the array
         source = source.subarray(start, stop + 2);
@@ -1161,36 +1169,62 @@ export default class JpegDecoder {
     
         var channels = (opts.formatAsRGBA) ? 4 : 3;
         var bytesNeeded = decoder.width * decoder.height * channels;
+        var destination = null;
         try {
-        JpegImage.requestMemoryAllocation(bytesNeeded);
+            JpegImage.requestMemoryAllocation(bytesNeeded);
+            destination = new Uint8Array(bytesNeeded);
+        } catch (err) {
+            if (err instanceof RangeError) {
+                throw new Error("Could not allocate enough memory for the image. " +
+                                "Required: " + bytesNeeded);
+            } 
+            
+            if (err instanceof ReferenceError) {
+                if (err.message === "Buffer is not defined") {
+                    throw new Error("Buffer is not globally defined in this environment. " +
+                                    "Consider setting useTArray to true");
+                }
+            }
+            throw err;
+        }
+
         var image = {
             width: decoder.width,
             height: decoder.height,
             exifBuffer: decoder.exifBuffer,
             data: destination,
-            start: destinationStart
+            start: 0
         };
+
         if(decoder.comments.length > 0) {
             image["comments"] = decoder.comments;
         }
-        } catch (err) {
-        if (err instanceof RangeError) {
-            throw new Error("Could not allocate enough memory for the image. " +
-                            "Required: " + bytesNeeded);
-        } 
-        
-        if (err instanceof ReferenceError) {
-            if (err.message === "Buffer is not defined") {
-            throw new Error("Buffer is not globally defined in this environment. " +
-                            "Consider setting useTArray to true");
-            }
-        }
-        throw err;
-        }
-    
+
         decoder.copyToImageData(image, opts.formatAsRGBA);
 
-        // Return success
+        return {
+            width: decoder.width,
+            height: decoder.height,
+            bytes: destination
+        };
+
+    }
+
+    decode(source, sourceStart, sourceStop, destination, destinationStart) {
+
+        var decoded = this.decodeImage(source, sourceStart, sourceStop);
+        var targetStart = destinationStart ?? 0;
+
+        if ((destination instanceof Uint8Array) == false) {
+            throw new Error("Failed decoding JPEG image. Destination must be Uint8Array.");
+        }
+
+        if ((targetStart < 0) || ((targetStart + decoded.bytes.length) > destination.length)) {
+            throw new Error("Failed decoding JPEG image. Destination buffer is too small.");
+        }
+
+        destination.set(decoded.bytes, targetStart);
+
         return true;
 
     }

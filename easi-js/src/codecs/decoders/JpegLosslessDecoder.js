@@ -1242,7 +1242,7 @@ jpeg.lossless.ScanHeader.prototype.read = function(data) {
 
 export default class JpegLosslessDecoder {
 
-    decode(source, sourceStart, sourceStop, destination, destinationStart) {
+    decode(source, sourceStart, sourceStop, destination, destinationStart, windowCenter = null, windowWidth = null) {
 
         // Create a buffer for the decode
         var decodedPixels = new Uint8Array(destination.length);
@@ -1274,23 +1274,127 @@ export default class JpegLosslessDecoder {
             return normalized;
         };
 
+        // Normalize one scalar potentially represented as a multi-valued DICOM string.
+        var toScalarNumber = (value, fallback = null) => {
+
+            if (Array.isArray(value) == true) {
+                if (value.length == 0)
+                    return fallback;
+                value = value[0];
+            }
+
+            if (typeof value == "string") {
+                var firstValue = value.split("\\")[0];
+                value = firstValue;
+            }
+
+            var numeric = Number(value);
+            if (Number.isFinite(numeric) == false)
+                return fallback;
+
+            return numeric;
+
+        };
+
         // Based on the number of components, translate the pixels to RGBA
         if (decoder.numComp == 1) {
+
+            var resolvedWindowCenter = toScalarNumber(windowCenter, null);
+            var resolvedWindowWidth = toScalarNumber(windowWidth, null);
+            var applyWindowLevel = ((resolvedWindowCenter != null) && (resolvedWindowWidth != null) && (resolvedWindowWidth > 0));
+
+            var rescaleIntercept = toScalarNumber(this.dicomObject?.modalityLookUpTableModule?.rescaleIntercept, null);
+            var rescaleSlope = toScalarNumber(this.dicomObject?.modalityLookUpTableModule?.rescaleSlope, null);
+            var applyRescale = ((rescaleIntercept != null) && (rescaleSlope != null));
+
+            var photometricInterpretation = String(this.dicomObject?.imagePixelModule?.photometricInterpretation ?? "").trim().toUpperCase();
+            var isMonochromeOne = (photometricInterpretation.includes("MONOCHROME1") == true);
+
             var numPixels = (decoder.xDim * decoder.yDim);
+            var lowValue = 0;
+            var highValue = 0;
+
+            if (applyWindowLevel == true) {
+                lowValue = (resolvedWindowCenter - (resolvedWindowWidth / 2));
+                highValue = (resolvedWindowCenter + (resolvedWindowWidth / 2));
+            }
+
+            if ((applyWindowLevel == false) && (numPixels > 0)) {
+
+                var minValue = Number.POSITIVE_INFINITY;
+                var maxValue = Number.NEGATIVE_INFINITY;
+
+                for (var rangeIndex = 0; rangeIndex < numPixels; rangeIndex++) {
+
+                    var sampleValue = 0;
+                    if (decoder.numBytes == 1) {
+                        sampleValue = (decodedPixels[rangeIndex] ?? 0);
+                    }
+                    else if (decoder.numBytes == 2) {
+                        var rangeByteIndex = (rangeIndex * 2);
+                        sampleValue = ((decodedPixels[rangeByteIndex] << 8) | (decodedPixels[rangeByteIndex + 1] ?? 0));
+                    }
+                    else {
+                        sampleValue = (decodedPixels[rangeIndex] ?? 0);
+                    }
+
+                    if (applyRescale == true) {
+                        sampleValue = (sampleValue * rescaleSlope) + rescaleIntercept;
+                    }
+
+                    minValue = Math.min(minValue, sampleValue);
+                    maxValue = Math.max(maxValue, sampleValue);
+
+                }
+
+                if ((Number.isFinite(minValue) == true) && (Number.isFinite(maxValue) == true) && (maxValue > minValue)) {
+                    resolvedWindowCenter = (minValue + ((maxValue - minValue) / 2));
+                    resolvedWindowWidth = (maxValue - minValue);
+                    lowValue = minValue;
+                    highValue = maxValue;
+                    applyWindowLevel = true;
+                }
+
+            }
+
             for (var i = 0; i < numPixels; i++) {
 
                 // Establish the pixel from 8-bit or 16-bit decoded sample.
-                var pixel = 0;
+                var rawPixel = 0;
                 if (decoder.numBytes == 1) {
-                    pixel = (decodedPixels[i] ?? 0);
+                    rawPixel = (decodedPixels[i] ?? 0);
                 }
                 else if (decoder.numBytes == 2) {
                     var byteIndex = (i * 2);
-                    var sample = ((decodedPixels[byteIndex] << 8) | (decodedPixels[byteIndex + 1] ?? 0));
-                    pixel = toByte(sample);
+                    rawPixel = ((decodedPixels[byteIndex] << 8) | (decodedPixels[byteIndex + 1] ?? 0));
                 }
                 else {
-                    pixel = (decodedPixels[i] ?? 0);
+                    rawPixel = (decodedPixels[i] ?? 0);
+                }
+
+                if (applyRescale == true) {
+                    rawPixel = (rawPixel * rescaleSlope) + rescaleIntercept;
+                }
+
+                var pixel = 0;
+                if (applyWindowLevel == true) {
+
+                    var clampedPixel = rawPixel;
+                    if (clampedPixel < lowValue)
+                        clampedPixel = lowValue;
+                    if (clampedPixel > highValue)
+                        clampedPixel = highValue;
+
+                    pixel = Math.floor(((clampedPixel - lowValue) / resolvedWindowWidth) * 255);
+                    pixel = toByte(pixel);
+
+                }
+                else {
+                    pixel = toByte(rawPixel);
+                }
+
+                if (isMonochromeOne == true) {
+                    pixel = (255 - pixel);
                 }
 
                 // Decode the Monochrome Pixel Data to thge RGBA destination

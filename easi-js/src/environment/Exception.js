@@ -68,6 +68,7 @@ export var BuilderErrorCodes = {
     IncompatibleValidationAndParser: 'IncompatibleValidationAndParser',
     IncompatibleTranscodingAndParser: 'IncompatibleTranscodingAndParser',
     IncompatibleBurnedInRedactionAndParser: 'IncompatibleBurnedInRedactionAndParser',
+    IncompatibleNormalizationAndParser: 'IncompatibleNormalizationAndParser',
     IncompatibleOnEmitAndReader: 'IncompatibleOnEmitAndReader',
     InvalidCodecRegistry: 'InvalidCodecRegistry',
     InvalidOnEmit: 'InvalidOnEmit',

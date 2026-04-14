@@ -6,18 +6,27 @@ import XmlDataParser from "../../src/parsers/XmlDataParser.js";
 import HttpStreamReader from "../../src/readers/HttpStreamReader.js";
 import ByteStreamReader from "../../src/readers/ByteStreamReader.js";
 import FileStreamReader from "../../src/readers/FileStreamReader.js";
+import FolderStreamReader from "../../src/readers/FolderStreamReader.js";
+import FolderWatchReader from "../../src/readers/FolderWatchReader.js";
 import WebSocketStreamReader from "../../src/readers/WebSocketStreamReader.js";
 import NodeStreamAdapterReader from "../../src/readers/NodeStreamAdapterReader.js";
 import DimseAssociationReader from "../../src/readers/DimseAssociationReader.js";
 import Pipeline from "../../src/pipelines/Pipeline.js";
+import ImageDataParser from "../../src/parsers/ImageDataParser.js";
+import MixedImagingDataParser from "../../src/parsers/MixedImagingDataParser.js";
 import DicomInstanceHandler from "../../src/handlers/terminals/DicomInstanceHandler.js";
 import DicomEntityHandler from "../../src/handlers/terminals/DicomEntityHandler.js";
 import DicomDocumentHandler from "../../src/handlers/terminals/DicomDocumentHandler.js";
 import DicomDocumentWrappingHandler from "../../src/handlers/terminals/DicomDocumentWrappingHandler.js";
+import ImageDataHandler from "../../src/handlers/terminals/ImageDataHandler.js";
+import MixedImagingDataHandler from "../../src/handlers/terminals/MixedImagingDataHandler.js";
+import ImagingRoutingHandler from "../../src/handlers/terminals/ImagingRoutingHandler.js";
 import DicomDeIdentificationFilter from "../../src/handlers/filters/DicomDeIdentificationFilter.js";
 import DicomValidationFilter, { ValidationGoals } from "../../src/handlers/filters/DicomValidationFilter.js";
 import DicomTranscodingFilter from "../../src/handlers/filters/DicomTranscodingFilter.js";
 import DicomBurnedInRedactionFilter from "../../src/handlers/filters/DicomBurnedInRedactionFilter.js";
+import ImageBurnedInRedactionFilter from "../../src/handlers/filters/ImageBurnedInRedactionFilter.js";
+import MixedImagingNormalizationFilter from "../../src/handlers/filters/MixedImagingNormalizationFilter.js";
 import DicomJsonMetadataAdapter from "../../src/handlers/adapters/DicomJsonMetadataAdapter.js";
 import DicomXmlMetadataAdapter from "../../src/handlers/adapters/DicomXmlMetadataAdapter.js";
 import DicomDataWriterHandler from "../../src/handlers/terminals/DicomDataWriterHandler.js";
@@ -51,6 +60,8 @@ function captureBuildError(builderOrAction) {
 test("Test: staged interfaces expose only legal methods per stage", () => {
   const source = new PipelineBuilder();
   expect(typeof source.fromPartStream).toBe("function");
+  expect(typeof source.fromFolderStream).toBe("function");
+  expect(typeof source.fromFolderWatchStream).toBe("function");
   expect(typeof source.fromDimseAssociation).toBe("function");
   expect(typeof source.ofDicomData).toBe("undefined");
   expect(typeof source.toInstances).toBe("undefined");
@@ -62,14 +73,20 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
   const format = source.fromPartStream();
   expect(typeof format.ofDicomData).toBe("function");
   expect(typeof format.ofByteData).toBe("function");
+  expect(typeof format.ofImageData).toBe("function");
+  expect(typeof format.ofMixedImagingData).toBe("function");
   expect(typeof format.toInstances).toBe("undefined");
   expect(typeof format.withDeIdentification).toBe("undefined");
 
   const target = format.ofDicomData();
   expect(typeof target.toInstances).toBe("function");
+  expect(typeof target.toImageData).toBe("function");
+  expect(typeof target.toImagingData).toBe("function");
+  expect(typeof target.withRouting).toBe("function");
   expect(typeof target.withDeIdentification).toBe("function");
   expect(typeof target.withTranscoding).toBe("function");
   expect(typeof target.withBurnedInRedaction).toBe("function");
+  expect(typeof target.withNormalization).toBe("function");
 
   const ready = target.withDeIdentification(new Map()).toInstances();
   expect(typeof ready.withDeIdentification).toBe("undefined");
@@ -81,6 +98,52 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
   expect(typeof ready.build).toBe("function");
   expect(ready._operations).toBeUndefined();
   expect(Object.isFrozen(ready)).toBe(true);
+});
+
+test("Test: fromFolderStream + ofImageData + toImageData wires folder/image pipeline", () => {
+  const pipeline = new PipelineBuilder().
+  fromFolderStream().
+  ofImageData().
+  toImageData().
+  build();
+
+  expect(pipeline.reader instanceof FolderStreamReader).toBe(true);
+  expect(pipeline.parser instanceof ImageDataParser).toBe(true);
+  expect(pipeline.handler instanceof ImageDataHandler).toBe(true);
+});
+
+test("Test: fromFolderWatchStream wires source-bound folder watcher reader", () => {
+  const pipeline = new PipelineBuilder().
+  fromFolderWatchStream("/tmp/inbox").
+  ofMixedImagingData().
+  toImagingData().
+  build();
+
+  expect(pipeline.reader instanceof FolderWatchReader).toBe(true);
+  expect(pipeline.reader.isSourceBound).toBe(true);
+});
+
+test("Test: ofMixedImagingData + toImagingData wires mixed imaging parser/handler", () => {
+  const pipeline = new PipelineBuilder().
+  fromByteStream().
+  ofMixedImagingData().
+  toImagingData().
+  build();
+
+  expect(pipeline.parser instanceof MixedImagingDataParser).toBe(true);
+  expect(pipeline.handler instanceof MixedImagingDataHandler).toBe(true);
+});
+
+test("Test: withRouting builds routing terminal with whenDicom/whenImage branches", () => {
+  const pipeline = new PipelineBuilder().
+  fromByteStream().
+  ofMixedImagingData().
+  withRouting((route) => route.
+  whenDicom((p) => p.ofDicomData().toInstances()).
+  whenImage((p) => p.ofImageData().toImageData())).
+  build();
+
+  expect(pipeline.handler instanceof ImagingRoutingHandler).toBe(true);
 });
 
 test("Test: output writer sink is invoked when into* is configured", async () => {
@@ -412,6 +475,19 @@ test("Test: build throws IncompatibleBurnedInRedactionAndParser", () => {
   expect(error.code).toBe(BuilderErrorCodes.IncompatibleBurnedInRedactionAndParser);
 });
 
+test("Test: build throws IncompatibleNormalizationAndParser", () => {
+  const error = captureBuildError(
+  new PipelineBuilder().
+  fromPartStream().
+  withParser(new JsonDataParser()).
+  withNormalization((normalize) => normalize.toFrames()).
+  withHandler({}));
+
+
+  expect(error instanceof Exception).toBe(true);
+  expect(error.code).toBe(BuilderErrorCodes.IncompatibleNormalizationAndParser);
+});
+
 test("Test: repeated build with masking preserves canonical semantic handler chain", () => {
   const ready = new PipelineBuilder().
   fromPartStream().ofDicomData().
@@ -654,6 +730,30 @@ test("Test: build composes burned-in redaction filter for native DICOM semantic 
 
   expect(pipeline.parser.handler instanceof DicomBurnedInRedactionFilter).toBe(true);
   expect(pipeline.parser.handler.nextHandler instanceof DicomDataWriterHandler).toBe(true);
+});
+
+test("Test: build composes burned-in redaction filter for standard image parser chain", () => {
+  const pipeline = new PipelineBuilder().
+  fromByteStream().ofImageData().
+  withBurnedInRedaction({
+    regions: [{ x: 0, y: 0, width: 1, height: 1 }]
+  }).
+  toImageData().
+  build();
+
+  expect(pipeline.parser.handler instanceof ImageBurnedInRedactionFilter).toBe(true);
+  expect(pipeline.parser.handler.nextHandler instanceof ImageDataHandler).toBe(true);
+});
+
+test("Test: build composes mixed imaging normalization filter for mixed parser chain", () => {
+  const pipeline = new PipelineBuilder().
+  fromByteStream().ofMixedImagingData().
+  withNormalization((normalize) => normalize.toDicom()).
+  toImagingData().
+  build();
+
+  expect(pipeline.parser.handler instanceof MixedImagingNormalizationFilter).toBe(true);
+  expect(pipeline.parser.handler.nextHandler instanceof MixedImagingDataHandler).toBe(true);
 });
 
 test("Test: build composes a single burned-in redaction filter when redaction and transcoding are both configured", () => {
@@ -996,6 +1096,29 @@ test("Test: withBulkDataPolicy applies parser bulk-data policy when parser suppo
   expect(pipeline.parser.bulkDataPolicy.mode).toBe("auto");
   expect(pipeline.parser.bulkDataPolicy.knownLengthThreshold).toBe(4096);
   expect(pipeline.parser.bulkDataPolicy.hardSafetyCap).toBe(8388608);
+});
+
+test("Test: withBulkDataPolicy applies internal DICOM normalization parser policy for mixed imaging pipelines", () => {
+  const pipeline = new PipelineBuilder().
+  fromByteStream().
+  ofMixedImagingData().
+  withBulkDataPolicy({
+    mode: "materialize",
+    knownLengthThreshold: 2048,
+    hardSafetyCap: 65536
+  }).
+  withNormalization((normalize) => normalize.toFrames()).
+  toImageData().
+  build();
+
+  expect(pipeline.parser instanceof MixedImagingDataParser).toBe(true);
+  expect(pipeline.parser.handler instanceof MixedImagingNormalizationFilter).toBe(true);
+
+  const normalizationFilter = pipeline.parser.handler;
+  expect(normalizationFilter.dicomParserBulkDataPolicy).toBeDefined();
+  expect(normalizationFilter.dicomParserBulkDataPolicy.mode).toBe("materialize");
+  expect(normalizationFilter.dicomParserBulkDataPolicy.knownLengthThreshold).toBe(2048);
+  expect(normalizationFilter.dicomParserBulkDataPolicy.hardSafetyCap).toBe(65536);
 });
 
 test("Test: build sets internal reader onPart from onEmit on configured custom reader when supported", () => {

@@ -21,6 +21,8 @@ import PartStreamReader from "../../readers/PartStreamReader.js";
 import HttpStreamReader from "../../readers/HttpStreamReader.js";
 import ByteStreamReader from "../../readers/ByteStreamReader.js";
 import FileStreamReader from "../../readers/FileStreamReader.js";
+import FolderStreamReader from "../../readers/FolderStreamReader.js";
+import FolderWatchReader from "../../readers/FolderWatchReader.js";
 import WebSocketStreamReader from "../../readers/WebSocketStreamReader.js";
 import NodeStreamAdapterReader from "../../readers/NodeStreamAdapterReader.js";
 import DimseAssociationReader from "../../readers/DimseAssociationReader.js";
@@ -68,6 +70,16 @@ export default class PipelineSourceStage extends PipelineBuilderStage {
     /** @returns {PipelineFormatStage} */
     fromFileStream(source = null, options = null) {
         return this.withReader(new FileStreamReader(new PartStreamReader()), source, options);
+    }
+
+    /** @returns {PipelineFormatStage} */
+    fromFolderStream(source = null, options = null) {
+        return this.withReader(new FolderStreamReader(new FileStreamReader(new PartStreamReader())), source, options);
+    }
+
+    /** @returns {PipelineFormatStage} */
+    fromFolderWatchStream(source = null, options = null) {
+        return this.withReader(new FolderWatchReader(source, new FileStreamReader(new PartStreamReader())), source, options);
     }
 
     /** @returns {PipelineFormatStage} */

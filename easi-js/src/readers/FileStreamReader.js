@@ -21,6 +21,7 @@ import Exception from '../environment/Exception.js';
 import { GeneralErrorCodes } from '../environment/Exception.js';
 import PartStreamReader from './PartStreamReader.js';
 import NodeStreamAdapterReader from './NodeStreamAdapterReader.js';
+import ImagingDataUtils from '../utils/ImagingDataUtils.js';
 
 export default class FileStreamReader {
 
@@ -59,6 +60,18 @@ export default class FileStreamReader {
 
         if (lower.endsWith('.json'))
             return 'application/dicom+json';
+
+        if (lower.endsWith('.jpg') || lower.endsWith('.jpeg'))
+            return 'image/jpeg';
+
+        if (lower.endsWith('.png'))
+            return 'image/png';
+
+        if (lower.endsWith('.tif') || lower.endsWith('.tiff'))
+            return 'image/tiff';
+
+        if (lower.endsWith('.gif'))
+            return 'image/gif';
 
         if (lower.endsWith('.pdf'))
             return 'application/pdf';
@@ -128,12 +141,19 @@ export default class FileStreamReader {
 
         var fs = await this.loadNodeModule('node:fs');
         var fsPromises = await this.loadNodeModule('node:fs/promises');
+        var path = await this.loadNodeModule('node:path');
 
         var stat = await fsPromises.stat(filePath);
         var stream = fs.createReadStream(filePath);
+        var inferredContentType = this.inferContentType(filePath);
+        var contentType = (options?.contentType != null) ? options.contentType : inferredContentType;
 
         var streamOptions = {
-            contentType: (options?.contentType != null) ? options.contentType : this.inferContentType(filePath),
+            contentType: ImagingDataUtils.buildContentType(
+                contentType,
+                filePath,
+                path.basename(filePath)
+            ),
             contentLength: (options?.contentLength != null) ? options.contentLength : stat.size
         };
 

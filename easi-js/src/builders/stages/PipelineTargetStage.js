@@ -33,10 +33,14 @@ import DicomSelectingHandler from "../../handlers/terminals/DicomSelectingHandle
 import DicomDataWriterHandler from "../../handlers/terminals/DicomDataWriterHandler.js";
 import DicomAssetsHandler from "../../handlers/terminals/DicomAssetsHandler.js";
 import DicomAssetArchiveHandler from "../../handlers/terminals/DicomAssetArchiveHandler.js";
+import ImageDataHandler from "../../handlers/terminals/ImageDataHandler.js";
+import MixedImagingDataHandler from "../../handlers/terminals/MixedImagingDataHandler.js";
+import ImagingRoutingHandler from "../../handlers/terminals/ImagingRoutingHandler.js";
 import DicomJsonMetadataAdapter from "../../handlers/adapters/DicomJsonMetadataAdapter.js";
 import DicomXmlMetadataAdapter from "../../handlers/adapters/DicomXmlMetadataAdapter.js";
 import JsonDataHandler from "../../handlers/terminals/syntax/JsonDataHandler.js";
 import XmlDataHandler from "../../handlers/terminals/syntax/XmlDataHandler.js";
+import ImagingRoutingBuilder from "../ImagingRoutingBuilder.js";
 
 import PipelineBuilderStage from "./PipelineBuilderStage.js";
 import PipelineOutputStage from "./PipelineOutputStage.js";
@@ -134,6 +138,31 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     withBurnedInRedaction(redaction = true) {
         return this.cloneCurrentStage(
             (session) => session.withBurnedInRedaction(redaction)
+        );
+    }
+
+    /**
+     * Enables/configures mixed-imaging normalization.
+     * @param {Function | object | import("../ImagingNormalizationBuilder.js").default | null | false} normalization
+     * Normalization configuration.
+     * @returns {PipelineTargetStage} A new target stage object.
+     */
+    withNormalization(normalization = null) {
+        return this.cloneCurrentStage(
+            (session) => session.withNormalization(normalization)
+        );
+    }
+
+    /**
+     * Enables mixed imaging routing branches.
+     * @param {import("../ImagingRoutingBuilder.js").default | Function | object} definition Routing definition.
+     * @returns {PipelineOutputStage} An output stage reference.
+     */
+    withRouting(definition) {
+        return this.withHandler(
+            new ImagingRoutingHandler(
+                ImagingRoutingBuilder.resolve(definition)
+            )
         );
     }
 
@@ -271,6 +300,21 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
         return this.withHandler(new JsonDataHandler());
 
+    }
+
+    /**
+     * @returns {PipelineOutputStage}
+     */
+    toImageData() {
+        return this.withHandler(new ImageDataHandler());
+    }
+
+    /**
+     * @param {{ failOnUnknown?: boolean } | null} options Mixed imaging options.
+     * @returns {PipelineOutputStage}
+     */
+    toImagingData(options = null) {
+        return this.withHandler(new MixedImagingDataHandler(options));
     }
 
     /**

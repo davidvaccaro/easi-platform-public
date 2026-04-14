@@ -22,6 +22,8 @@ import DimseAssociationReader from "../readers/DimseAssociationReader.js";
 
 import DicomDataParser from "../parsers/DicomDataParser.js";
 import ByteDataParser from "../parsers/ByteDataParser.js";
+import ImageDataParser from "../parsers/ImageDataParser.js";
+import MixedImagingDataParser from "../parsers/MixedImagingDataParser.js";
 import JsonDataParser from "../parsers/JsonDataParser.js";
 import XmlDataParser from "../parsers/XmlDataParser.js";
 
@@ -39,9 +41,15 @@ import DicomDeIdentificationFilter from "../handlers/filters/DicomDeIdentificati
 import DicomValidationFilter from "../handlers/filters/DicomValidationFilter.js";
 import DicomTranscodingFilter from "../handlers/filters/DicomTranscodingFilter.js";
 import DicomBurnedInRedactionFilter from "../handlers/filters/DicomBurnedInRedactionFilter.js";
+import ImageBurnedInRedactionFilter from "../handlers/filters/ImageBurnedInRedactionFilter.js";
+import MixedImagingNormalizationFilter from "../handlers/filters/MixedImagingNormalizationFilter.js";
 import DicomDataWriterHandler from "../handlers/terminals/DicomDataWriterHandler.js";
 import JsonDataHandler from "../handlers/terminals/syntax/JsonDataHandler.js";
 import XmlDataHandler from "../handlers/terminals/syntax/XmlDataHandler.js";
+import ImageDataHandler from "../handlers/terminals/ImageDataHandler.js";
+import MixedImagingDataHandler from "../handlers/terminals/MixedImagingDataHandler.js";
+import ImagingRoutingHandler from "../handlers/terminals/ImagingRoutingHandler.js";
+import ImagingNormalizationBuilder from "./ImagingNormalizationBuilder.js";
 import DimseAssociationWriter from "../writers/DimseAssociationWriter.js";
 
 import Exception from "../environment/Exception.js";
@@ -386,9 +394,35 @@ export default class PipelineBuildSession {
             );
         }
 
-        // Byte parser is currently intended for direct wrapped-document writing.
+        // Byte parser compatibility:
+        // - wrapped-document writing
+        // - image/mixed payload terminals
+        // - mixed imaging routing terminal
         if ((parser instanceof ByteDataParser)
-            && (handler instanceof DicomDocumentWrappingHandler == false)) {
+            && (handler instanceof DicomDocumentWrappingHandler == false)
+            && (handler instanceof ImageDataHandler == false)
+            && (handler instanceof MixedImagingDataHandler == false)
+            && (handler instanceof ImagingRoutingHandler == false)) {
+            throw new Exception(
+                `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
+                BuilderErrorCodes.IncompatibleParserAndHandler
+            );
+        }
+
+        if ((parser instanceof ImageDataParser)
+            && (handler instanceof ImageDataHandler == false)
+            && (handler instanceof ImagingRoutingHandler == false)
+            && (handler instanceof MixedImagingDataHandler == false)) {
+            throw new Exception(
+                `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
+                BuilderErrorCodes.IncompatibleParserAndHandler
+            );
+        }
+
+        if ((parser instanceof MixedImagingDataParser)
+            && (handler instanceof MixedImagingDataHandler == false)
+            && (handler instanceof ImagingRoutingHandler == false)
+            && (handler instanceof ImageDataHandler == false)) {
             throw new Exception(
                 `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
                 BuilderErrorCodes.IncompatibleParserAndHandler
@@ -522,7 +556,7 @@ export default class PipelineBuildSession {
 
     /**
      * Set the current parser.
-     * @param {DicomDataParser | ByteDataParser | JsonDataParser | XmlDataParser} parser The parser used to parse elements.
+     * @param {DicomDataParser | ByteDataParser | ImageDataParser | MixedImagingDataParser | JsonDataParser | XmlDataParser} parser The parser used to parse elements.
      * @returns {PipelineBuildSession} The current session.
      */
     withParser(parser) {
@@ -682,6 +716,28 @@ export default class PipelineBuildSession {
     }
 
     /**
+     * Enables/configures mixed-imaging normalization.
+     * Supported forms:
+     * - false/null: disabled
+     * - function: normalization builder callback
+     * - object: normalization definition
+     * - ImagingNormalizationBuilder: built/partially-built builder
+     * @param {Function | object | import("./ImagingNormalizationBuilder.js").default | null | false} normalization Normalization configuration.
+     * @returns {PipelineBuildSession} The current session.
+     */
+    withNormalization(normalization = null) {
+
+        if ((normalization == null) || (normalization === false)) {
+            this.normalization = null;
+            return this;
+        }
+
+        this.normalization = ImagingNormalizationBuilder.resolve(normalization);
+        return this;
+
+    }
+
+    /**
      * Set the outbound writer for restreaming pipeline output.
      * @param {object} writer The output writer.
      * @param {*} target Optional writer target.
@@ -712,7 +768,7 @@ export default class PipelineBuildSession {
         // Fail if no parser was configured.
         if (this.parser == null) {
             throw new Exception(
-                "PipelineBuilder.build requires a parser. Call ofDicomData(), ofByteData(), ofDicomMetadata(), ofDicomXmlMetadata(), or withParser(...).",
+                "PipelineBuilder.build requires a parser. Call ofDicomData(), ofByteData(), ofImageData(), ofMixedImagingData(), ofDicomMetadata(), ofDicomXmlMetadata(), or withParser(...).",
                 BuilderErrorCodes.MissingParser
             );
         }
@@ -720,7 +776,7 @@ export default class PipelineBuildSession {
         // Fail if no handler was configured.
         if (this.handler == null) {
             throw new Exception(
-                "PipelineBuilder.build requires a handler. Call toInstances(), toEntities(), toUnwrappedDocuments(...), toWrappedDocuments(...), toSelection(...), toMapping(...), toFHIRImagingStudy(), toDicomData(...), toStructuredValue(), toAssets(...), toAssetArchive(...), or withHandler(...).",
+                "PipelineBuilder.build requires a handler. Call toInstances(), toEntities(), toUnwrappedDocuments(...), toWrappedDocuments(...), toSelection(...), toMapping(...), toFHIRImagingStudy(), toDicomData(...), toStructuredValue(), toImageData(), toImagingData(...), toAssets(...), toAssetArchive(...), withRouting(...), or withHandler(...).",
                 BuilderErrorCodes.MissingHandler
             );
         }
@@ -802,15 +858,8 @@ export default class PipelineBuildSession {
             handler.codecRegistry = this.codecRegistry;
         }
 
-        // Compose transfer-syntax transcoding for native DICOM parse chains.
+        // Compose burned-in pixel redaction.
         if (this.burnedInRedaction != null) {
-
-            if ((parser instanceof DicomDataParser) == false) {
-                throw new Exception(
-                    "withBurnedInRedaction(...) currently requires native DICOM parser semantics.",
-                    BuilderErrorCodes.IncompatibleBurnedInRedactionAndParser
-                );
-            }
 
             var redaction = this.burnedInRedaction;
             if (redaction === true) {
@@ -831,29 +880,57 @@ export default class PipelineBuildSession {
                 );
             }
 
-            if (this.transcoding != null) {
-                var transcodingForRedaction = (typeof this.transcoding == "string")
-                    ? { targetTransferSyntax: this.transcoding }
-                    : Object.assign({}, this.transcoding);
+            if (parser instanceof DicomDataParser) {
 
-                var redactionTargetTransferSyntax = (
-                    redaction.targetTransferSyntax
-                    ?? transcodingForRedaction.targetTransferSyntax
-                    ?? null
+                if (this.transcoding != null) {
+                    var transcodingForRedaction = (typeof this.transcoding == "string")
+                        ? { targetTransferSyntax: this.transcoding }
+                        : Object.assign({}, this.transcoding);
+
+                    var redactionTargetTransferSyntax = (
+                        redaction.targetTransferSyntax
+                        ?? transcodingForRedaction.targetTransferSyntax
+                        ?? null
+                    );
+
+                    redaction = Object.assign({}, transcodingForRedaction, redaction, {
+                        targetTransferSyntax: redactionTargetTransferSyntax
+                    });
+                }
+
+                if ((this.codecRegistry != null) && (typeof redaction == "object") && (redaction != null)) {
+                    redaction = Object.assign({}, redaction, {
+                        codecRegistry: (redaction.codecRegistry ?? this.codecRegistry)
+                    });
+                }
+
+                handler = new DicomBurnedInRedactionFilter(handler, redaction);
+
+            }
+            else if (parser instanceof ImageDataParser) {
+
+                if (this.transcoding != null) {
+                    throw new Exception(
+                        "withTranscoding(...) currently requires native DICOM parser semantics.",
+                        BuilderErrorCodes.IncompatibleTranscodingAndParser
+                    );
+                }
+
+                if ((this.codecRegistry != null) && (typeof redaction == "object") && (redaction != null)) {
+                    redaction = Object.assign({}, redaction, {
+                        codecRegistry: (redaction.codecRegistry ?? this.codecRegistry)
+                    });
+                }
+
+                handler = new ImageBurnedInRedactionFilter(handler, redaction);
+
+            }
+            else {
+                throw new Exception(
+                    "withBurnedInRedaction(...) currently requires native DICOM or standard image parser semantics.",
+                    BuilderErrorCodes.IncompatibleBurnedInRedactionAndParser
                 );
-
-                redaction = Object.assign({}, transcodingForRedaction, redaction, {
-                    targetTransferSyntax: redactionTargetTransferSyntax
-                });
             }
-
-            if ((this.codecRegistry != null) && (typeof redaction == "object") && (redaction != null)) {
-                redaction = Object.assign({}, redaction, {
-                    codecRegistry: (redaction.codecRegistry ?? this.codecRegistry)
-                });
-            }
-
-            handler = new DicomBurnedInRedactionFilter(handler, redaction);
 
         }
         else if (this.transcoding != null) {
@@ -875,6 +952,28 @@ export default class PipelineBuildSession {
             }
 
             handler = new DicomTranscodingFilter(handler, transcoding);
+
+        }
+
+        // Compose de-identification in the canonical DICOM semantic handler chain.
+        if (this.normalization != null) {
+
+            if ((parser instanceof MixedImagingDataParser) == false) {
+                throw new Exception(
+                    "withNormalization(...) currently requires mixed imaging parser semantics.",
+                    BuilderErrorCodes.IncompatibleNormalizationAndParser
+                );
+            }
+
+            var normalization = Object.assign({}, this.normalization);
+            if ((this.codecRegistry != null) && (typeof normalization == "object")) {
+                normalization.codecRegistry = (normalization.codecRegistry ?? this.codecRegistry);
+            }
+            if ((this.bulkDataPolicy != null) && (typeof normalization == "object")) {
+                normalization.dicomBulkDataPolicy = (normalization.dicomBulkDataPolicy ?? this.bulkDataPolicy);
+            }
+
+            handler = new MixedImagingNormalizationFilter(handler, normalization);
 
         }
 
@@ -985,6 +1084,7 @@ export default class PipelineBuildSession {
         this.onEmit = null;
         this.bulkDataPolicy = null;
         this.burnedInRedaction = null;
+        this.normalization = null;
         this.writer = null;
         this.writerTarget = null;
         this.writerOptions = null;

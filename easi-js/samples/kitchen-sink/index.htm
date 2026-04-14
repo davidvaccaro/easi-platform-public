@@ -368,6 +368,29 @@
         </div>
         <br>
         <hr>
+        <div>
+            <h4>Folder Imaging Normalize to TIFF</h4>
+        </div>
+        <hr>
+        <div>
+            <button id="selectFolderNormalizeInput">Select Input Folder</button>
+            <span id="folderNormalizeInputLabel" style="margin-left:8px;">Input: (not selected)</span>
+        </div>
+        <div style="margin-top:8px;">
+            <button id="selectFolderNormalizeOutput">Select Output Folder</button>
+            <span id="folderNormalizeOutputLabel" style="margin-left:8px;">Output: (not selected)</span>
+        </div>
+        <div style="margin-top:6px;font-size:12px;color:#555;">
+            Recursively scans PNG, TIFF, JPEG, and DICOM files from the input folder, then normalizes each to TIFF in one output directory.
+        </div>
+        <div style="margin-top:8px;">
+            <button id="runFolderNormalizeToTiff">Normalize Folder to TIFF</button>
+        </div>
+        <div style="margin-top:8px;">
+            <textarea id="folderNormalizeOutput" rows="14" cols="110" placeholder="Folder normalization output..."></textarea>
+        </div>
+        <br>
+        <hr>
         <h4>Asset Extraction Related Actions</h4>
         <hr>
         <br>
@@ -779,6 +802,8 @@
             }
 
             var imageListObjectUrls = [];
+            var folderNormalizeInputHandle = null;
+            var folderNormalizeOutputHandle = null;
 
             function clearImageList() {
 
@@ -1560,6 +1585,629 @@
                 }, 0);
 
             }
+
+            function isFolderPickerSupported() {
+                return (typeof window.showDirectoryPicker === 'function');
+            }
+
+            function updateFolderNormalizeLabels() {
+
+                var inputLabel = 'Input: (not selected)';
+                var outputLabel = 'Output: (not selected)';
+
+                if (folderNormalizeInputHandle != null) {
+                    inputLabel = 'Input: ' + String(folderNormalizeInputHandle.name ?? '(selected)');
+                }
+
+                if (folderNormalizeOutputHandle != null) {
+                    outputLabel = 'Output: ' + String(folderNormalizeOutputHandle.name ?? '(selected)');
+                }
+
+                $('#folderNormalizeInputLabel').text(inputLabel);
+                $('#folderNormalizeOutputLabel').text(outputLabel);
+
+            }
+
+            function normalizeFolderFileExtension(fileName) {
+
+                var value = String(fileName ?? '').trim().toLowerCase();
+                if (value.length == 0)
+                    return '';
+
+                var lastDotIndex = value.lastIndexOf('.');
+                if ((lastDotIndex < 0) || (lastDotIndex == (value.length - 1)))
+                    return '';
+
+                return value.substring(lastDotIndex);
+
+            }
+
+            function isFolderNormalizeSupportedFile(fileName) {
+
+                var extension = normalizeFolderFileExtension(fileName);
+                return (
+                    (extension == '.png')
+                    || (extension == '.tif')
+                    || (extension == '.tiff')
+                    || (extension == '.jpg')
+                    || (extension == '.jpeg')
+                    || (extension == '.jepg')
+                    || (extension == '.dcm')
+                    || (extension == '.dicom')
+                    || (extension == '.ima')
+                );
+
+            }
+
+            function inferFolderNormalizeContentType(fileName) {
+
+                var extension = normalizeFolderFileExtension(fileName);
+
+                if ((extension == '.jpg') || (extension == '.jpeg') || (extension == '.jepg'))
+                    return 'image/jpeg';
+
+                if (extension == '.png')
+                    return 'image/png';
+
+                if ((extension == '.tif') || (extension == '.tiff'))
+                    return 'image/tiff';
+
+                if ((extension == '.dcm') || (extension == '.dicom'))
+                    return 'application/dicom';
+
+                if (extension == '.ima')
+                    return 'application/dicom';
+
+                return null;
+
+            }
+
+            function isFolderNormalizeDicomExtension(fileName) {
+
+                var extension = normalizeFolderFileExtension(fileName);
+                return (
+                    (extension == '.dcm')
+                    || (extension == '.dicom')
+                    || (extension == '.ima')
+                );
+
+            }
+
+            function describeFolderNormalizeError(error) {
+
+                var messages = [];
+                var current = error;
+                var depth = 0;
+
+                while ((current != null) && (depth < 8)) {
+
+                    var message = (current?.message != null)
+                        ? String(current.message)
+                        : String(current);
+                    message = message.trim();
+
+                    if ((message.length > 0) && (messages.includes(message) == false)) {
+                        messages.push(message);
+                    }
+
+                    var next = (current?.error ?? current?.cause ?? null);
+                    if (next === current)
+                        break;
+
+                    current = next;
+                    depth += 1;
+
+                }
+
+                if (messages.length == 0)
+                    return 'Unknown error.';
+
+                return messages.join(' -> ');
+
+            }
+
+            function sanitizeFolderOutputSegment(segment) {
+
+                var value = String(segment ?? '').trim();
+                if (value.length == 0)
+                    return 'file';
+
+                var sanitized = value
+                    .replace(/[<>:"/\\|?*\u0000-\u001F]/g, '_')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+                if (sanitized.length == 0)
+                    return 'file';
+
+                return sanitized;
+
+            }
+
+            function buildFolderNormalizeOutputName(relativePath) {
+
+                var normalizedPath = String(relativePath ?? '').replace(/\\/g, '/');
+                var segments = normalizedPath.split('/').filter(function (segment) {
+                    return String(segment).trim().length > 0;
+                }).map(sanitizeFolderOutputSegment);
+
+                if (segments.length == 0)
+                    segments = ['image'];
+
+                var flattened = segments.join('__');
+                var extensionIndex = flattened.lastIndexOf('.');
+                var baseName = (extensionIndex > 0)
+                    ? flattened.substring(0, extensionIndex)
+                    : flattened;
+
+                if (baseName.length == 0)
+                    baseName = 'image';
+
+                return baseName + '.tiff';
+
+            }
+
+            function buildUniqueFolderNormalizeOutputName(candidateName, usedNames) {
+
+                var normalizedCandidate = String(candidateName ?? 'image.tiff');
+                var key = normalizedCandidate.toLowerCase();
+
+                if (usedNames.has(key) == false) {
+                    usedNames.add(key);
+                    return normalizedCandidate;
+                }
+
+                var extensionIndex = normalizedCandidate.lastIndexOf('.');
+                var baseName = (extensionIndex > 0)
+                    ? normalizedCandidate.substring(0, extensionIndex)
+                    : normalizedCandidate;
+                var extension = (extensionIndex > 0)
+                    ? normalizedCandidate.substring(extensionIndex)
+                    : '';
+
+                var suffix = 2;
+                while (true) {
+
+                    var nextName = baseName + '__' + String(suffix) + extension;
+                    var nextKey = nextName.toLowerCase();
+                    if (usedNames.has(nextKey) == false) {
+                        usedNames.add(nextKey);
+                        return nextName;
+                    }
+
+                    suffix += 1;
+
+                }
+
+            }
+
+            async function ensureDirectoryPermission(handle, mode = 'read') {
+
+                if (handle == null)
+                    return;
+
+                if (typeof handle.queryPermission === 'function') {
+                    var permission = await handle.queryPermission({ mode: mode });
+                    if (permission === 'granted')
+                        return;
+                }
+
+                if (typeof handle.requestPermission === 'function') {
+                    var requested = await handle.requestPermission({ mode: mode });
+                    if (requested !== 'granted') {
+                        throw new Error('Permission denied for folder access (' + String(mode) + ').');
+                    }
+                }
+
+            }
+
+            async function collectFolderNormalizeCandidates(rootDirectoryHandle) {
+
+                var files = [];
+
+                async function walk(directoryHandle, relativePrefix) {
+
+                    for await (var entry of directoryHandle.entries()) {
+
+                        var name = entry[0];
+                        var handle = entry[1];
+                        var relativePath = (relativePrefix.length > 0)
+                            ? (relativePrefix + '/' + name)
+                            : name;
+
+                        if (handle?.kind === 'directory') {
+                            await walk(handle, relativePath);
+                            continue;
+                        }
+
+                        if (handle?.kind !== 'file')
+                            continue;
+
+                        if (isFolderNormalizeSupportedFile(name) != true)
+                            continue;
+
+                        files.push({
+                            fileHandle: handle,
+                            fileName: name,
+                            relativePath: relativePath
+                        });
+
+                    }
+
+                }
+
+                await walk(rootDirectoryHandle, '');
+                files.sort(function (left, right) {
+                    return String(left?.relativePath ?? '').localeCompare(String(right?.relativePath ?? ''));
+                });
+
+                return files;
+
+            }
+
+            async function writeBytesToBrowserFileHandle(fileHandle, bytes) {
+
+                var writable = await fileHandle.createWritable();
+
+                try {
+                    await writable.write(bytes);
+                }
+                finally {
+                    await writable.close();
+                }
+
+            }
+
+            function createFolderNormalizePipeline() {
+
+                return EASI.pipelineBuilder()
+                    .fromFileStream()
+                    .ofMixedImagingData()
+                    .withBulkDataPolicy({
+                        mode: 'materialize',
+                        knownLengthThreshold: Number.MAX_SAFE_INTEGER,
+                        hardSafetyCap: Number.MAX_SAFE_INTEGER
+                    })
+                    .withNormalization(function (normalize) {
+                        return normalize.toFrames({
+                            format: 'tiff',
+                            includeRgba: false
+                        });
+                    })
+                    .toImageData()
+                    .build();
+
+            }
+
+            async function ensureFolderNormalizeDicomRuntime(file, ensuredTransferSyntaxes) {
+
+                var transferSyntaxID = null;
+
+                try {
+                    var probeBytes = new Uint8Array(await file.arrayBuffer());
+                    transferSyntaxID = await inspectTransferSyntaxFromBytes(probeBytes);
+                }
+                catch {
+                    transferSyntaxID = null;
+                }
+
+                if ((transferSyntaxID != null) && (ensuredTransferSyntaxes.has(transferSyntaxID) == false)) {
+                    await ensureSourceDecoderRuntimes(transferSyntaxID);
+                    ensuredTransferSyntaxes.add(transferSyntaxID);
+                }
+
+                return transferSyntaxID;
+
+            }
+
+            $('#selectFolderNormalizeInput').on('click', async function () {
+
+                if (isFolderPickerSupported() != true) {
+                    alert('This browser does not support folder picking (showDirectoryPicker).');
+                    return;
+                }
+
+                try {
+
+                    folderNormalizeInputHandle = await window.showDirectoryPicker({
+                        id: 'easi-folder-normalize-input',
+                        mode: 'read'
+                    });
+                    updateFolderNormalizeLabels();
+
+                }
+                catch (error) {
+
+                    if (error?.name === 'AbortError')
+                        return;
+
+                    console.error(error);
+                    alert('Failed selecting input folder: ' + String(error?.message ?? error));
+
+                }
+
+            });
+
+            $('#selectFolderNormalizeOutput').on('click', async function () {
+
+                if (isFolderPickerSupported() != true) {
+                    alert('This browser does not support folder picking (showDirectoryPicker).');
+                    return;
+                }
+
+                try {
+
+                    folderNormalizeOutputHandle = await window.showDirectoryPicker({
+                        id: 'easi-folder-normalize-output',
+                        mode: 'readwrite'
+                    });
+                    updateFolderNormalizeLabels();
+
+                }
+                catch (error) {
+
+                    if (error?.name === 'AbortError')
+                        return;
+
+                    console.error(error);
+                    alert('Failed selecting output folder: ' + String(error?.message ?? error));
+
+                }
+
+            });
+
+            $('#runFolderNormalizeToTiff').on('click', async function () {
+
+                console.clear();
+                $('#folderNormalizeOutput').val('');
+
+                if (isFolderPickerSupported() != true) {
+                    $('#folderNormalizeOutput').val('Folder normalization is unavailable in this browser. showDirectoryPicker is required.');
+                    return;
+                }
+
+                if (folderNormalizeInputHandle == null) {
+                    alert('Please select an input folder first.');
+                    return;
+                }
+
+                if (folderNormalizeOutputHandle == null) {
+                    alert('Please select an output folder first.');
+                    return;
+                }
+
+                var started = new Date().getTime();
+                var candidates = [];
+                var processedCount = 0;
+                var successCount = 0;
+                var errorCount = 0;
+                var totalBytesWritten = 0;
+                var errorLines = [];
+                var progressLines = [];
+                var usedOutputNames = new Set();
+                var ensuredTransferSyntaxes = new Set();
+
+                try {
+
+                    $('#folderNormalizeOutput').val('Resolving folder permissions...');
+
+                    await ensureDirectoryPermission(folderNormalizeInputHandle, 'read');
+                    await ensureDirectoryPermission(folderNormalizeOutputHandle, 'readwrite');
+
+                    $('#folderNormalizeOutput').val('Scanning input folder recursively...');
+
+                    candidates = await collectFolderNormalizeCandidates(folderNormalizeInputHandle);
+
+                    if (candidates.length == 0) {
+                        $('#folderNormalizeOutput').val(
+                            'No supported files found.\n'
+                            + 'Supported extensions: .png, .tif, .tiff, .jpg, .jpeg, .jepg, .dcm, .dicom, .ima'
+                        );
+                        return;
+                    }
+
+                    for (var index = 0; index < candidates.length; index++) {
+
+                        var candidate = candidates[index];
+                        var displayIndex = index + 1;
+                        var pipeline = createFolderNormalizePipeline();
+
+                        $('#folderNormalizeOutput').val(
+                            'Running folder normalization...\n'
+                            + 'Input Folder: ' + String(folderNormalizeInputHandle?.name ?? '(selected)') + '\n'
+                            + 'Output Folder: ' + String(folderNormalizeOutputHandle?.name ?? '(selected)') + '\n'
+                            + 'Candidates: ' + String(candidates.length) + '\n'
+                            + 'Processed: ' + String(processedCount) + '\n'
+                            + 'Succeeded: ' + String(successCount) + '\n'
+                            + 'Failed: ' + String(errorCount) + '\n'
+                            + 'Bytes Written: ' + String(totalBytesWritten) + '\n'
+                            + '\nCurrent [' + String(displayIndex) + '/' + String(candidates.length) + ']: '
+                            + String(candidate?.relativePath ?? '(unknown)')
+                            + ((progressLines.length > 0)
+                                ? ('\n\nRecent Activity:\n' + progressLines.slice(-20).join('\n'))
+                                : '')
+                        );
+                        await yieldToBrowserFrame();
+
+                        try {
+
+                            var file = await candidate.fileHandle.getFile();
+                            var isDicomExtension = isFolderNormalizeDicomExtension(candidate.fileName);
+                            var contentType = inferFolderNormalizeContentType(candidate.fileName);
+
+                            if (isDicomExtension == true) {
+                                try {
+                                    await ensureFolderNormalizeDicomRuntime(file, ensuredTransferSyntaxes);
+                                }
+                                catch (runtimeError) {
+                                    progressLines.push(
+                                        '[WARN] ' + String(candidate?.relativePath ?? '(unknown file)')
+                                        + ' runtime preflight: '
+                                        + describeFolderNormalizeError(runtimeError)
+                                    );
+                                }
+                            }
+
+                            var invocation = {
+                                source: file
+                            };
+
+                            if (contentType != null) {
+                                invocation.sourceOptions = {
+                                    contentType: contentType
+                                };
+                            }
+
+                            var normalizedResult = null;
+                            var usedFallbackInvocation = false;
+
+                            try {
+                                normalizedResult = await pipeline.process(invocation);
+                            }
+                            catch (primaryError) {
+
+                                if ((contentType == 'application/dicom') || (isDicomExtension == true)) {
+
+                                    // Fallback: do not force DICOM media-type; allow byte sniffing.
+                                    var fallbackInvocation = {
+                                        source: file
+                                    };
+
+                                    normalizedResult = await pipeline.process(fallbackInvocation);
+                                    usedFallbackInvocation = true;
+
+                                    progressLines.push(
+                                        '[WARN] ' + String(candidate?.relativePath ?? '(unknown file)')
+                                        + ' primary DICOM parse failed; fallback parse path succeeded.'
+                                    );
+
+                                }
+                                else {
+                                    throw primaryError;
+                                }
+
+                            }
+
+                            normalizedResult = unwrapPipelineResult(normalizedResult);
+                            if (Array.isArray(normalizedResult) == true) {
+                                normalizedResult = normalizedResult[0] ?? null;
+                            }
+
+                            var outputBytes = normalizedResult?.bytes ?? null;
+                            if ((outputBytes instanceof Uint8Array) == false) {
+                                throw new Error('Normalization did not produce TIFF bytes.');
+                            }
+
+                            var suggestedOutputName = buildFolderNormalizeOutputName(candidate.relativePath);
+                            var outputFileName = buildUniqueFolderNormalizeOutputName(suggestedOutputName, usedOutputNames);
+                            var outputFileHandle = await folderNormalizeOutputHandle.getFileHandle(outputFileName, {
+                                create: true
+                            });
+
+                            await writeBytesToBrowserFileHandle(outputFileHandle, outputBytes);
+
+                            processedCount += 1;
+                            successCount += 1;
+                            totalBytesWritten += outputBytes.length;
+                            progressLines.push(
+                                '[OK] ' + String(candidate?.relativePath ?? '(unknown)')
+                                + ' -> ' + String(outputFileName)
+                                + ' (' + String(outputBytes.length) + ' bytes)'
+                                + (usedFallbackInvocation ? ' [fallback parse]' : '')
+                            );
+
+                        }
+                        catch (fileError) {
+
+                            var fileErrorMessage = describeFolderNormalizeError(fileError);
+
+                            processedCount += 1;
+                            errorCount += 1;
+                            errorLines.push(
+                                '[' + String(displayIndex) + '/' + String(candidates.length) + '] '
+                                + String(candidate?.relativePath ?? '(unknown file)')
+                                + ' :: '
+                                + fileErrorMessage
+                            );
+                            progressLines.push(
+                                '[FAIL] ' + String(candidate?.relativePath ?? '(unknown file)')
+                                + ' :: '
+                                + fileErrorMessage
+                            );
+                            console.error('[Folder Normalize to TIFF]', {
+                                file: candidate?.relativePath ?? null,
+                                error: fileError
+                            });
+
+                        }
+                        await yieldToBrowserFrame();
+
+                    }
+
+                    var elapsed = (new Date().getTime() - started);
+                    var lines = [
+                        'Folder normalization complete.',
+                        'Elapsed: ' + String(elapsed) + ' ms',
+                        'Input Folder: ' + String(folderNormalizeInputHandle?.name ?? '(selected)'),
+                        'Output Folder: ' + String(folderNormalizeOutputHandle?.name ?? '(selected)'),
+                        'Candidates: ' + String(candidates.length),
+                        'Processed: ' + String(processedCount),
+                        'Succeeded: ' + String(successCount),
+                        'Failed: ' + String(errorCount),
+                        'Bytes Written: ' + String(totalBytesWritten)
+                    ];
+
+                    if (errorLines.length > 0) {
+
+                        lines.push('');
+                        lines.push('Errors (first ' + String(Math.min(errorLines.length, 25)) + '):');
+
+                        for (var errorIndex = 0; errorIndex < errorLines.length; errorIndex++) {
+                            if (errorIndex >= 25)
+                                break;
+                            lines.push(errorLines[errorIndex]);
+                        }
+
+                        if (errorLines.length > 25) {
+                            lines.push('... ' + String(errorLines.length - 25) + ' additional error(s) omitted.');
+                        }
+
+                    }
+
+                    if (progressLines.length > 0) {
+                        lines.push('');
+                        lines.push('Recent Activity:');
+                        lines.push(progressLines.slice(-25).join('\n'));
+                    }
+
+                    $('#folderNormalizeOutput').val(lines.join('\n'));
+
+                    console.log({
+                        scenario: 'Folder Normalize to TIFF',
+                        elapsedMs: elapsed,
+                        candidates: candidates.length,
+                        processed: processedCount,
+                        succeeded: successCount,
+                        failed: errorCount,
+                        bytesWritten: totalBytesWritten,
+                        errors: errorLines
+                    });
+
+                }
+                catch (error) {
+
+                    $('#folderNormalizeOutput').val(
+                        'Folder normalization failed.\n'
+                        + String(error?.message ?? error)
+                        + '\n\n'
+                        + String(error?.stack ?? '')
+                    );
+
+                    console.error(error);
+
+                }
+
+            });
 
             $('#dicomFile').on('change', function () {
 

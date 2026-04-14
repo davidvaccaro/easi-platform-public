@@ -19,6 +19,8 @@
 
 import DicomDataParser from "../../parsers/DicomDataParser.js";
 import ByteDataParser from "../../parsers/ByteDataParser.js";
+import ImageDataParser from "../../parsers/ImageDataParser.js";
+import MixedImagingDataParser from "../../parsers/MixedImagingDataParser.js";
 import JsonDataParser from "../../parsers/JsonDataParser.js";
 import XmlDataParser from "../../parsers/XmlDataParser.js";
 
@@ -34,7 +36,7 @@ export default class PipelineFormatStage extends PipelineBuilderStage {
 
     /**
      * Set the current parser.
-     * @param {DicomDataParser | ByteDataParser | JsonDataParser | XmlDataParser} parser The parser used to parse source content.
+     * @param {DicomDataParser | ByteDataParser | ImageDataParser | MixedImagingDataParser | JsonDataParser | XmlDataParser} parser The parser used to parse source content.
      * @returns {PipelineTargetStage} A target stage reference.
      */
     withParser(parser) {
@@ -56,6 +58,16 @@ export default class PipelineFormatStage extends PipelineBuilderStage {
     /** @returns {PipelineTargetStage} */
     ofByteData() {
         return this.withParser(new ByteDataParser());
+    }
+
+    /** @returns {PipelineTargetStage} */
+    ofImageData() {
+        return this.withParser(new ImageDataParser());
+    }
+
+    /** @returns {PipelineTargetStage} */
+    ofMixedImagingData() {
+        return this.withParser(new MixedImagingDataParser());
     }
 
     /** @returns {PipelineTargetStage} */
