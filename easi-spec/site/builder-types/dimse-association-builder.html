@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Comprehensive API reference for DimseAssociationBuilder including options and examples.">
+    <title>EASI | DimseAssociationBuilder</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>DimseAssociationBuilder</h2>
+                <p>Builds validated DIMSE association descriptors, including endpoint identity, query options, TLS, move-store behavior, and timeout policy.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Builder Identity</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Builder Type</td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                            </tr>
+                            <tr>
+                                <td>Primary Purpose</td>
+                                <td>Builds validated DIMSE association descriptors, including endpoint identity, query options, TLS, move-store behavior, and timeout policy.</td>
+                            </tr>
+                            <tr>
+                                <td>Build Output</td>
+                                <td><code>DIMSE association options object</code></td>
+                            </tr>
+                            <tr>
+                                <td>Factory Entry Point</td>
+                                <td>`EASI.dimseAssociationBuilder()`</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Builder API Method Summary</h3>
+                <p>
+                    Exposed methods for DimseAssociationBuilder in this stage/group.
+                </p>
+
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Signature</th>
+                                <th>Returns</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>withBaseAssociation</code></td>
+                                <td><code>withBaseAssociation(association, clone = true)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure a base association object.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withHost</code></td>
+                                <td><code>withHost(host)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure association host.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withPort</code></td>
+                                <td><code>withPort(port)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure association port.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withCallingAeTitle</code></td>
+                                <td><code>withCallingAeTitle(aeTitle)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure association calling AE-title.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withCalledAeTitle</code></td>
+                                <td><code>withCalledAeTitle(aeTitle)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure association called AE-title.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withQuery</code></td>
+                                <td><code>withQuery(query = {})</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure association query descriptor.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withQueryOption</code></td>
+                                <td><code>withQueryOption(name, value)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure one query option.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withMoveDestinationAeTitle</code></td>
+                                <td><code>withMoveDestinationAeTitle(aeTitle)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure C-MOVE destination AE-title.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withMoveStoreCalledAeTitle</code></td>
+                                <td><code>withMoveStoreCalledAeTitle(aeTitle)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure local move-store listener called AE-title.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withTransportTls</code></td>
+                                <td><code>withTransportTls(tlsConfig = true)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure outbound DIMSE transport TLS.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withTransportTlsOption</code></td>
+                                <td><code>withTransportTlsOption(name, value)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure one transport TLS option.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withTransportMutualTls</code></td>
+                                <td><code>withTransportMutualTls(tlsOptions = null)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure outbound mTLS transport settings.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withMoveStoreTls</code></td>
+                                <td><code>withMoveStoreTls(tlsConfig = true)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure C-MOVE store-listener TLS.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withMoveStoreTlsOption</code></td>
+                                <td><code>withMoveStoreTlsOption(name, value)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure one move-store TLS option.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withMoveStoreMutualTls</code></td>
+                                <td><code>withMoveStoreMutualTls(tlsOptions = null)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure move-store listener mTLS settings.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withAssociationTimeoutMs</code></td>
+                                <td><code>withAssociationTimeoutMs(timeoutMs)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure DIMSE association timeout (ms).</td>
+                            </tr>
+                            <tr>
+                                <td><code>withMoveStorePolicy</code></td>
+                                <td><code>withMoveStorePolicy(policy = {})</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure move-store policy object.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withMoveStorePolicyOption</code></td>
+                                <td><code>withMoveStorePolicyOption(name, value)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure one move-store policy option.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withMoveStoreAssociationTimeoutMs</code></td>
+                                <td><code>withMoveStoreAssociationTimeoutMs(timeoutMs)</code></td>
+                                <td><code>DimseAssociationBuilder</code></td>
+                                <td>Configure move-store association timeout policy (ms).</td>
+                            </tr>
+                            <tr>
+                                <td><code>build</code></td>
+                                <td><code>build()</code></td>
+                                <td><code>object</code></td>
+                                <td>Build one DIMSE association object from configured builder state.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Builder API Method Details</h3>
+
+            <article class="member-doc">
+                <h6><code>withBaseAssociation(association, clone = true)</code></h6>
+                <p>Configure a base association object.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>association</code></td>
+                                <td><code>object | null</code></td>
+                                <td>Base association.</td>
+                            </tr>
+                            <tr>
+                                <td><code>clone</code></td>
+                                <td><code>boolean</code></td>
+                                <td>Indicates if base association should be cloned during build.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withHost(host)</code></h6>
+                <p>Configure association host.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>host</code></td>
+                                <td><code>string</code></td>
+                                <td>Association host.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withPort(port)</code></h6>
+                <p>Configure association port.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>port</code></td>
+                                <td><code>number</code></td>
+                                <td>Association TCP port.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withCallingAeTitle(aeTitle)</code></h6>
+                <p>Configure association calling AE-title.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>aeTitle</code></td>
+                                <td><code>string</code></td>
+                                <td>Calling AE-title.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withCalledAeTitle(aeTitle)</code></h6>
+                <p>Configure association called AE-title.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>aeTitle</code></td>
+                                <td><code>string</code></td>
+                                <td>Called AE-title.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withQuery(query = {})</code></h6>
+                <p>Configure association query descriptor.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>query</code></td>
+                                <td><code>object</code></td>
+                                <td>Query descriptor.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withQueryOption(name, value)</code></h6>
+                <p>Configure one query option.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>name</code></td>
+                                <td><code>string</code></td>
+                                <td>Query option name.</td>
+                            </tr>
+                            <tr>
+                                <td><code>value</code></td>
+                                <td><code>unknown</code></td>
+                                <td>Query option value.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withMoveDestinationAeTitle(aeTitle)</code></h6>
+                <p>Configure C-MOVE destination AE-title.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>aeTitle</code></td>
+                                <td><code>string</code></td>
+                                <td>Destination AE-title.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withMoveStoreCalledAeTitle(aeTitle)</code></h6>
+                <p>Configure local move-store listener called AE-title.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>aeTitle</code></td>
+                                <td><code>string</code></td>
+                                <td>Listener called AE-title.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withTransportTls(tlsConfig = true)</code></h6>
+                <p>Configure outbound DIMSE transport TLS.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>tlsConfig</code></td>
+                                <td><code>boolean | object | null</code></td>
+                                <td>TLS config (`true` =&gt; default object, `false` =&gt; disabled).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withTransportTlsOption(name, value)</code></h6>
+                <p>Configure one transport TLS option.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>name</code></td>
+                                <td><code>string</code></td>
+                                <td>Option key.</td>
+                            </tr>
+                            <tr>
+                                <td><code>value</code></td>
+                                <td><code>unknown</code></td>
+                                <td>Option value.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withTransportMutualTls(tlsOptions = null)</code></h6>
+                <p>Configure outbound mTLS transport settings.</p>
+                <p class="member-doc-label">Parameters</p>
+                <p><em>No parameters.</em></p>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withMoveStoreTls(tlsConfig = true)</code></h6>
+                <p>Configure C-MOVE store-listener TLS.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>tlsConfig</code></td>
+                                <td><code>boolean | object | null</code></td>
+                                <td>TLS config (`true` =&gt; default object, `false` =&gt; disabled).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withMoveStoreTlsOption(name, value)</code></h6>
+                <p>Configure one move-store TLS option.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>name</code></td>
+                                <td><code>string</code></td>
+                                <td>Option key.</td>
+                            </tr>
+                            <tr>
+                                <td><code>value</code></td>
+                                <td><code>unknown</code></td>
+                                <td>Option value.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withMoveStoreMutualTls(tlsOptions = null)</code></h6>
+                <p>Configure move-store listener mTLS settings.</p>
+                <p class="member-doc-label">Parameters</p>
+                <p><em>No parameters.</em></p>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withAssociationTimeoutMs(timeoutMs)</code></h6>
+                <p>Configure DIMSE association timeout (ms).</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>timeoutMs</code></td>
+                                <td><code>number</code></td>
+                                <td>Timeout in milliseconds.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withMoveStorePolicy(policy = {})</code></h6>
+                <p>Configure move-store policy object.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>policy</code></td>
+                                <td><code>object</code></td>
+                                <td>Move-store policy.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withMoveStorePolicyOption(name, value)</code></h6>
+                <p>Configure one move-store policy option.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>name</code></td>
+                                <td><code>string</code></td>
+                                <td>Policy option name.</td>
+                            </tr>
+                            <tr>
+                                <td><code>value</code></td>
+                                <td><code>unknown</code></td>
+                                <td>Policy option value.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withMoveStoreAssociationTimeoutMs(timeoutMs)</code></h6>
+                <p>Configure move-store association timeout policy (ms).</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>timeoutMs</code></td>
+                                <td><code>number</code></td>
+                                <td>Timeout in milliseconds.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DimseAssociationBuilder</code> - The current builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>build()</code></h6>
+                <p>Build one DIMSE association object from configured builder state.</p>
+                <p class="member-doc-label">Parameters</p>
+                <p><em>No parameters.</em></p>
+                <p><strong>Returns:</strong> <code>object</code> - DIMSE association options object.</p>
+            </article>
+            </section>
+            <section class="section reveal">
+                <h3>Usage Examples</h3>
+                <p>
+                    The following examples demonstrate language-neutral semantics and language-specific usage forms.
+                </p>
+
+                <article class="member-doc">
+                    <h6>Create a Basic DIMSE Association</h6>
+                    <p>Define the minimum host/port/AE-title descriptor for query/retrieve transport.</p>
+
+                    <div class="doc-tabset" data-tabset data-tabset-id="builder-example-1">
+                        <div class="doc-tablist" role="tablist" aria-label="Create a Basic DIMSE Association language tabs">
+                            <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        </div>
+
+                        <div class="doc-tab-panel active" data-tab-panel="neutral">
+                            <pre><code class="language-text">association := EASI.dimseAssociationBuilder()
+  .withHost(&quot;127.0.0.1&quot;)
+  .withPort(4242)
+  .withCallingAeTitle(&quot;EASI_JS&quot;)
+  .withCalledAeTitle(&quot;ORTHANC&quot;)
+  .build()</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="javascript">
+                            <pre><code class="language-javascript">const association = EASI.dimseAssociationBuilder()
+  .withHost(&quot;127.0.0.1&quot;)
+  .withPort(4242)
+  .withCallingAeTitle(&quot;EASI_JS&quot;)
+  .withCalledAeTitle(&quot;ORTHANC&quot;)
+  .build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="csharp">
+                            <pre><code class="language-csharp">var association = EASI.DimseAssociationBuilder()
+    .WithHost(&quot;127.0.0.1&quot;)
+    .WithPort(4242)
+    .WithCallingAeTitle(&quot;EASI_JS&quot;)
+    .WithCalledAeTitle(&quot;ORTHANC&quot;)
+    .Build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="java">
+                            <pre><code class="language-java">var association = EASI.dimseAssociationBuilder()
+    .withHost(&quot;127.0.0.1&quot;)
+    .withPort(4242)
+    .withCallingAeTitle(&quot;EASI_JS&quot;)
+    .withCalledAeTitle(&quot;ORTHANC&quot;)
+    .build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="python">
+                            <pre><code class="language-python">association = (
+    EASI.dimse_association_builder()
+    .with_host(&quot;127.0.0.1&quot;)
+    .with_port(4242)
+    .with_calling_ae_title(&quot;EASI_JS&quot;)
+    .with_called_ae_title(&quot;ORTHANC&quot;)
+    .build()
+)</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="member-doc">
+                    <h6>Configure Query, TLS, and Move-Store Policy</h6>
+                    <p>Add DIMSE query options, outbound TLS, move-store policy, and timeout controls.</p>
+
+                    <div class="doc-tabset" data-tabset data-tabset-id="builder-example-2">
+                        <div class="doc-tablist" role="tablist" aria-label="Configure Query, TLS, and Move-Store Policy language tabs">
+                            <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        </div>
+
+                        <div class="doc-tab-panel active" data-tab-panel="neutral">
+                            <pre><code class="language-text">association := EASI.dimseAssociationBuilder()
+  .withBaseAssociation(baseAssociation)
+  .withQueryOption(&quot;operation&quot;, &quot;cmove&quot;)
+  .withMoveDestinationAeTitle(&quot;EASI_DEST&quot;)
+  .withTransportTls({ rejectUnauthorized: true, servername: &quot;pacs.local&quot; })
+  .withMoveStorePolicyOption(&quot;associationTimeoutMs&quot;, 45000)
+  .withAssociationTimeoutMs(30000)
+  .build()</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="javascript">
+                            <pre><code class="language-javascript">const association = EASI.dimseAssociationBuilder()
+  .withBaseAssociation(baseAssociation)
+  .withQueryOption(&quot;operation&quot;, &quot;cmove&quot;)
+  .withMoveDestinationAeTitle(&quot;EASI_DEST&quot;)
+  .withTransportTls({ rejectUnauthorized: true, servername: &quot;pacs.local&quot; })
+  .withMoveStorePolicyOption(&quot;associationTimeoutMs&quot;, 45000)
+  .withAssociationTimeoutMs(30000)
+  .build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="csharp">
+                            <pre><code class="language-csharp">var association = EASI.DimseAssociationBuilder()
+    .WithBaseAssociation(baseAssociation)
+    .WithQueryOption(&quot;operation&quot;, &quot;cmove&quot;)
+    .WithMoveDestinationAeTitle(&quot;EASI_DEST&quot;)
+    .WithTransportTls(new { rejectUnauthorized = true, servername = &quot;pacs.local&quot; })
+    .WithMoveStorePolicyOption(&quot;associationTimeoutMs&quot;, 45000)
+    .WithAssociationTimeoutMs(30000)
+    .Build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="java">
+                            <pre><code class="language-java">var association = EASI.dimseAssociationBuilder()
+    .withBaseAssociation(baseAssociation)
+    .withQueryOption(&quot;operation&quot;, &quot;cmove&quot;)
+    .withMoveDestinationAeTitle(&quot;EASI_DEST&quot;)
+    .withTransportTls(Map.of(&quot;rejectUnauthorized&quot;, true, &quot;servername&quot;, &quot;pacs.local&quot;))
+    .withMoveStorePolicyOption(&quot;associationTimeoutMs&quot;, 45000)
+    .withAssociationTimeoutMs(30000)
+    .build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="python">
+                            <pre><code class="language-python">association = (
+    EASI.dimse_association_builder()
+    .with_base_association(base_association)
+    .with_query_option(&quot;operation&quot;, &quot;cmove&quot;)
+    .with_move_destination_ae_title(&quot;EASI_DEST&quot;)
+    .with_transport_tls({&quot;rejectUnauthorized&quot;: True, &quot;servername&quot;: &quot;pacs.local&quot;})
+    .with_move_store_policy_option(&quot;associationTimeoutMs&quot;, 45000)
+    .with_association_timeout_ms(30000)
+    .build()
+)</code></pre>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <p class="footer-note">
+                Informative page: comprehensive builder reference for DimseAssociationBuilder.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

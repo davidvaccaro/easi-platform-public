@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Adoption pitch for EASI: why teams choose an expressive, staged DICOM pipeline model for real-world imaging workflows.">
-    <title>EASI | Rationale and Advantages of EASI</title>
+    <title>EASI | Advantages of EASI</title>
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="./assets/app.js"></script>
 </head>
@@ -19,10 +19,7 @@
                 </div>
             </div>
 
-            <span class="badge normative">Normative</span>
-            <span class="badge informative">Informative</span>
-
-            <div class="nav-section">
+<div class="nav-section">
                 <a class="nav-link" data-nav-link href="index.html">Overview</a>
                 <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
                 <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
@@ -56,16 +53,34 @@
                     </div>
                 </div>
                 <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
-                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
-                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dicom-model/index.html">Model Types</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Model Types section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
                     <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
                         <span class="nav-link nav-sublink nav-group-label">Core</span>
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute.html" title="Attribute">Attribute</a>
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
@@ -114,22 +129,24 @@
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
-                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Errors</a>
                 <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
             </div>
 
             <div class="nav-section">
                 <span class="nav-label">Edition</span>
                 <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
             </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
         </aside>
 
         <main class="page">
             <section class="page-hero reveal">
-                <h2>Rationale and Advantages of EASI</h2>
+                <h2>Advantages of EASI</h2>
                 <p>
-                    EASI gives developers a practical way to orchastrate modern DICOM&reg; workflows without absorbing the full
+                    EASI gives developers a practical way of orchestrating modern DICOM&reg; workflows without absorbing the full
                     complexity of native DICOM&reg; data processing and communications.
                     It abstracts dense DICOM protocol-stack details (DIMSE/DICOMweb&trade; transport plus DICOM&reg; encoding/parsing semantics) behind a fluent, language-neutral DSL that is easier to compose, verify, automate, and maintain.
                 </p>
@@ -139,7 +156,7 @@
                 <div class="callout informative">
                     <h4>Adoption Pitch</h4>
                     <p>
-                        If your project touches medical imaging data, an EASI approach reduces delivery friction immediately: clearer composition,
+                        If your project touches medical imaging information, an EASI approach reduces development friction immediately: clearer composition,
                         reusable contracts, deterministic event-driven stream processing semantics, and stronger AI agentic fluency for implementation and maintenance.
                         EASI is not a cosmetic API layer, it is an operational model for building and generating more reliable and maintainable modern DICOM&reg; workflows.
                     </p>
@@ -208,20 +225,35 @@
                         <h4>1) Read one instance for immediate business logic</h4>
                         <pre><code class="language-text">sourcePath := "/ingest/inbox/ct/CT-001.dcm"
 
+// Compose an EASI pipeline that reads from a file source, 
+// parses native-DICOM and produces a result EASI "Instance"
+
 readerPipeline := EASI.pipelineBuilder()
   .fromFileStream()
   .ofDicomData()
   .toInstances()
   .build()
 
+// Process the source DICOM file
 resultCollection := readerPipeline.process(sourcePath)
+
+// Access the result Instance
 instance := resultCollection.first()
+
+// Use the Instance to read the DICOM Study Instance UID attribute value
 studyUid := instance.dataSet.value(Tag.StudyInstanceUID)</code></pre>
 
                         <br />
 
                         <h4>2) Apply de-identification and produce compliant outbound DICOM&reg;</h4>
-                        <pre><code class="language-text">destinationPath := "/egress/deidentified/CT-001.dcm"
+                        <pre><code class="language-text">sourcePath := "/ingest/inbox/ct/CT-001.dcm"
+destinationPath := "/egress/deidentified/CT-001.dcm"
+
+// Compose an EASI pipeline that reads from a file source,
+// parses native-DICOM, de-identifies "in-flight" using 
+// the standard de-identification mask, then serializes 
+// to native-DICOM and stream writes the result bytes out 
+// to a destination file
 
 deIdPipeline := EASI.pipelineBuilder()
   .fromFileStream()
@@ -231,7 +263,10 @@ deIdPipeline := EASI.pipelineBuilder()
   .intoFileStream()
   .build()
 
+// Process the source DICOM file into a destination DICOM file
 writeResults := deIdPipeline.process(sourcePath, destinationPath)
+
+// Access the result of the operation and check the conversion status
 writeResult := writeResults.first()
 if (writeResult.bytesWritten <= 0):
   fail("Expected de-identified output bytes")</code></pre>
@@ -241,19 +276,32 @@ if (writeResult.bytesWritten <= 0):
                         <h4>3) Convert DICOMweb&trade; metadata retrieval into FHIR&reg; ImagingStudy resources</h4>
                         <pre><code class="language-text">studyMetadataUrl := "https://pacs.example.org/dicom-web/studies/{studyUID}/metadata"
 
+// Compose an EASI pipeline that reads from an DICOMweb host,
+// parses DICOM JSON metadata and produces a FHIR ImagingStudy resource
+
 imagingStudyPipeline := EASI.pipelineBuilder()
   .fromHttpStream()
   .ofDicomMetadata()
-  .toMapping(new DicomToFHIRImagingStudyMapping({ profile: "full" }))
+  .toFHIRImagingStudy("full")
   .build()
 
+// Process the source DICOMweb metadata
 imagingStudyResults := imagingStudyPipeline.process(studyMetadataUrl)
-imagingStudy := imagingStudyResults.first()</code></pre>
+
+// Access the result FHIR Imaging Study
+imagingStudy := imagingStudyResults.first()
+</code></pre>
 
                         <br />
 
                         <h4>4) Run an inbound DIMSE C-STORE listener and relay normalized output</h4>
-                        <pre><code class="language-text">listenerPipeline := EASI.pipelineBuilder()
+                        <pre><code class="language-text">// Compose an EASI pipeline that listens for inbound C-STORE requests, 
+// parses native-DICOM, de-identifies "in-flight" using 
+// the standard de-identification mask, then serializes 
+// to native-DICOM and HTTP POSTs the result bytes as a STOW-RS transaction 
+// to a remote DICOMweb or bespoke cloud host.
+
+listenerPipeline := EASI.pipelineBuilder()
   .fromDimseAssociation({
     role: "scp",
     host: "0.0.0.0",
@@ -269,9 +317,12 @@ imagingStudy := imagingStudyResults.first()</code></pre>
   })
   .build()
 
+// Start the pipeline listening for inbound requests
 run := listenerPipeline.start()
 
-... service runs continuously ...
+// ... pipeline runs continuously ...
+
+// Stop the pipeline 
 run.stop()</code></pre>
                     </div>
 
@@ -279,20 +330,35 @@ run.stop()</code></pre>
                         <h4>1) Read one instance for immediate business logic</h4>
                         <pre><code class="language-javascript">const sourcePath = "/ingest/inbox/ct/CT-001.dcm";
 
+// Compose an EASI pipeline that reads from a file source,
+// parses native-DICOM and produces a result EASI "Instance"
+
 const readerPipeline = EASI.pipelineBuilder()
   .fromFileStream()
   .ofDicomData()
   .toInstances()
   .build();
 
+// Process the source DICOM file
 const resultCollection = await readerPipeline.process(sourcePath);
+
+// Access the result Instance
 const instance = resultCollection.first();
+
+// Use the Instance to read the DICOM Study Instance UID attribute value
 const studyUid = instance.dataSet.value(Tag.StudyInstanceUID);</code></pre>
 
                         <br />
 
                         <h4>2) Apply de-identification and produce compliant outbound DICOM&reg;</h4>
-                        <pre><code class="language-javascript">const destinationPath = "/egress/deidentified/CT-001.dcm";
+                        <pre><code class="language-javascript">const sourcePath = "/ingest/inbox/ct/CT-001.dcm";
+const destinationPath = "/egress/deidentified/CT-001.dcm";
+
+// Compose an EASI pipeline that reads from a file source,
+// parses native-DICOM, de-identifies "in-flight" using
+// the standard de-identification mask, then serializes
+// to native-DICOM and stream writes the result bytes out
+// to a destination file
 
 const deIdPipeline = EASI.pipelineBuilder()
   .fromFileStream()
@@ -302,7 +368,10 @@ const deIdPipeline = EASI.pipelineBuilder()
   .intoFileStream()
   .build();
 
+// Process the source DICOM file into a destination DICOM file
 const writeResults = await deIdPipeline.process(sourcePath, destinationPath);
+
+// Access the result of the operation and check the conversion status
 const writeResult = writeResults.first();
 if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
   throw new Error("Expected de-identified output bytes.");
@@ -313,19 +382,31 @@ if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
                         <h4>3) Convert DICOMweb&trade; metadata retrieval into FHIR&reg; ImagingStudy resources</h4>
                         <pre><code class="language-javascript">const studyMetadataUrl = "https://pacs.example.org/dicom-web/studies/{studyUID}/metadata";
 
+// Compose an EASI pipeline that reads from a DICOMweb host,
+// parses DICOM JSON metadata and produces a FHIR ImagingStudy resource
+
 const imagingStudyPipeline = EASI.pipelineBuilder()
   .fromHttpStream()
   .ofDicomMetadata()
-  .toMapping(new DicomToFHIRImagingStudyMapping({ profile: "full" }))
+  .toFHIRImagingStudy("full")
   .build();
 
+// Process the source DICOMweb metadata
 const imagingStudyResults = await imagingStudyPipeline.process(studyMetadataUrl);
+
+// Access the result FHIR Imaging Study
 const imagingStudy = imagingStudyResults.first();</code></pre>
 
                         <br />
 
                         <h4>4) Run an inbound DIMSE C-STORE listener and relay normalized output</h4>
-                        <pre><code class="language-javascript">const listenerPipeline = EASI.pipelineBuilder()
+                        <pre><code class="language-javascript">// Compose an EASI pipeline that listens for inbound C-STORE requests,
+// parses native-DICOM, de-identifies "in-flight" using
+// the standard de-identification mask, then serializes
+// to native-DICOM and HTTP POSTs the result bytes as a STOW-RS transaction
+// to a remote DICOMweb or bespoke cloud host.
+
+const listenerPipeline = EASI.pipelineBuilder()
   .fromDimseAssociation({
     role: "scp",
     host: "0.0.0.0",
@@ -341,9 +422,11 @@ const imagingStudy = imagingStudyResults.first();</code></pre>
   })
   .build();
 
+// Start the pipeline listening for inbound requests
 const run = await listenerPipeline.start();
 
-// ... service runs continuously ...
+// ... pipeline runs continuously ...
+// Stop the pipeline
 await run.stop();</code></pre>
                     </div>
 
@@ -351,20 +434,35 @@ await run.stop();</code></pre>
                         <h4>1) Read one instance for immediate business logic</h4>
                         <pre><code class="language-csharp">var sourcePath = "/ingest/inbox/ct/CT-001.dcm";
 
+// Compose an EASI pipeline that reads from a file source,
+// parses native-DICOM and produces a result EASI "Instance"
+
 var readerPipeline = EASI.PipelineBuilder()
     .FromFileStream()
     .OfDicomData()
     .ToInstances()
     .Build();
 
+// Process the source DICOM file
 var resultCollection = await readerPipeline.Process(sourcePath);
+
+// Access the result Instance
 var instance = resultCollection.First();
+
+// Use the Instance to read the DICOM Study Instance UID attribute value
 var studyUid = instance.dataSet.Value(Tag.StudyInstanceUID);</code></pre>
 
                         <br />
 
                         <h4>2) Apply de-identification and produce compliant outbound DICOM&reg;</h4>
-                        <pre><code class="language-csharp">var destinationPath = "/egress/deidentified/CT-001.dcm";
+                        <pre><code class="language-csharp">var sourcePath = "/ingest/inbox/ct/CT-001.dcm";
+var destinationPath = "/egress/deidentified/CT-001.dcm";
+
+// Compose an EASI pipeline that reads from a file source,
+// parses native-DICOM, de-identifies "in-flight" using
+// the standard de-identification mask, then serializes
+// to native-DICOM and stream writes the result bytes out
+// to a destination file
 
 var deIdPipeline = EASI.PipelineBuilder()
     .FromFileStream()
@@ -374,7 +472,10 @@ var deIdPipeline = EASI.PipelineBuilder()
     .IntoFileStream()
     .Build();
 
+// Process the source DICOM file into a destination DICOM file
 var writeResults = await deIdPipeline.Process(sourcePath, destinationPath);
+
+// Access the result of the operation and check the conversion status
 var writeResult = writeResults.First();
 if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
     throw new InvalidOperationException("Expected de-identified output bytes.");
@@ -385,19 +486,31 @@ if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
                         <h4>3) Convert DICOMweb&trade; metadata retrieval into FHIR&reg; ImagingStudy resources</h4>
                         <pre><code class="language-csharp">var studyMetadataUrl = "https://pacs.example.org/dicom-web/studies/{studyUID}/metadata";
 
+// Compose an EASI pipeline that reads from a DICOMweb host,
+// parses DICOM JSON metadata and produces a FHIR ImagingStudy resource
+
 var imagingStudyPipeline = EASI.PipelineBuilder()
     .FromHttpStream()
     .OfDicomMetadata()
-    .ToMapping(new DicomToFHIRImagingStudyMapping(new { profile = "full" }))
+    .ToFHIRImagingStudy("full")
     .Build();
 
+// Process the source DICOMweb metadata
 var imagingStudyResults = await imagingStudyPipeline.Process(studyMetadataUrl);
+
+// Access the result FHIR Imaging Study
 var imagingStudy = imagingStudyResults.First();</code></pre>
 
                         <br />
 
                         <h4>4) Run an inbound DIMSE C-STORE listener and relay normalized output</h4>
-                        <pre><code class="language-csharp">var listenerPipeline = EASI.PipelineBuilder()
+                        <pre><code class="language-csharp">// Compose an EASI pipeline that listens for inbound C-STORE requests,
+// parses native-DICOM, de-identifies "in-flight" using
+// the standard de-identification mask, then serializes
+// to native-DICOM and HTTP POSTs the result bytes as a STOW-RS transaction
+// to a remote DICOMweb or bespoke cloud host.
+
+var listenerPipeline = EASI.PipelineBuilder()
     .FromDimseAssociation(new {
         role = "scp",
         host = "0.0.0.0",
@@ -413,9 +526,11 @@ var imagingStudy = imagingStudyResults.First();</code></pre>
     })
     .Build();
 
+// Start the pipeline listening for inbound requests
 var run = await listenerPipeline.Start();
 
-// ... service runs continuously ...
+// ... pipeline runs continuously ...
+// Stop the pipeline
 await run.Stop();</code></pre>
                     </div>
 
@@ -423,20 +538,35 @@ await run.Stop();</code></pre>
                         <h4>1) Read one instance for immediate business logic</h4>
                         <pre><code class="language-java">var sourcePath = "/ingest/inbox/ct/CT-001.dcm";
 
+// Compose an EASI pipeline that reads from a file source,
+// parses native-DICOM and produces a result EASI "Instance"
+
 var readerPipeline = EASI.pipelineBuilder()
     .fromFileStream()
     .ofDicomData()
     .toInstances()
     .build();
 
+// Process the source DICOM file
 var resultCollection = readerPipeline.process(sourcePath);
+
+// Access the result Instance
 var instance = resultCollection.first();
+
+// Use the Instance to read the DICOM Study Instance UID attribute value
 var studyUid = instance.dataSet().value(Tag.StudyInstanceUID);</code></pre>
 
                         <br />
 
                         <h4>2) Apply de-identification and produce compliant outbound DICOM&reg;</h4>
-                        <pre><code class="language-java">var destinationPath = "/egress/deidentified/CT-001.dcm";
+                        <pre><code class="language-java">var sourcePath = "/ingest/inbox/ct/CT-001.dcm";
+var destinationPath = "/egress/deidentified/CT-001.dcm";
+
+// Compose an EASI pipeline that reads from a file source,
+// parses native-DICOM, de-identifies "in-flight" using
+// the standard de-identification mask, then serializes
+// to native-DICOM and stream writes the result bytes out
+// to a destination file
 
 var deIdPipeline = EASI.pipelineBuilder()
     .fromFileStream()
@@ -446,7 +576,10 @@ var deIdPipeline = EASI.pipelineBuilder()
     .intoFileStream()
     .build();
 
+// Process the source DICOM file into a destination DICOM file
 var writeResults = deIdPipeline.process(sourcePath, destinationPath);
+
+// Access the result of the operation and check the conversion status
 var writeResult = writeResults.first();
 if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
     throw new RuntimeException("Expected de-identified output bytes.");
@@ -457,19 +590,31 @@ if ((writeResult == null) || (writeResult.bytesWritten <= 0)) {
                         <h4>3) Convert DICOMweb&trade; metadata retrieval into FHIR&reg; ImagingStudy resources</h4>
                         <pre><code class="language-java">var studyMetadataUrl = "https://pacs.example.org/dicom-web/studies/{studyUID}/metadata";
 
+// Compose an EASI pipeline that reads from a DICOMweb host,
+// parses DICOM JSON metadata and produces a FHIR ImagingStudy resource
+
 var imagingStudyPipeline = EASI.pipelineBuilder()
     .fromHttpStream()
     .ofDicomMetadata()
-    .toMapping(new DicomToFHIRImagingStudyMapping(Map.of("profile", "full")))
+    .toFHIRImagingStudy("full")
     .build();
 
+// Process the source DICOMweb metadata
 var imagingStudyResults = imagingStudyPipeline.process(studyMetadataUrl);
+
+// Access the result FHIR Imaging Study
 var imagingStudy = imagingStudyResults.first();</code></pre>
 
                         <br />
 
                         <h4>4) Run an inbound DIMSE C-STORE listener and relay normalized output</h4>
-                        <pre><code class="language-java">var listenerPipeline = EASI.pipelineBuilder()
+                        <pre><code class="language-java">// Compose an EASI pipeline that listens for inbound C-STORE requests,
+// parses native-DICOM, de-identifies "in-flight" using
+// the standard de-identification mask, then serializes
+// to native-DICOM and HTTP POSTs the result bytes as a STOW-RS transaction
+// to a remote DICOMweb or bespoke cloud host.
+
+var listenerPipeline = EASI.pipelineBuilder()
     .fromDimseAssociation(Map.of(
         "role", "scp",
         "host", "0.0.0.0",
@@ -488,15 +633,20 @@ var imagingStudy = imagingStudyResults.first();</code></pre>
     )
     .build();
 
+// Start the pipeline listening for inbound requests
 var run = listenerPipeline.start();
 
-// ... service runs continuously ...
+// ... pipeline runs continuously ...
+// Stop the pipeline
 run.stop();</code></pre>
                     </div>
 
                     <div class="doc-tab-panel" data-tab-panel="python">
                         <h4>1) Read one instance for immediate business logic</h4>
                         <pre><code class="language-python">source_path = "/ingest/inbox/ct/CT-001.dcm"
+
+# Compose an EASI pipeline that reads from a file source,
+# parses native-DICOM and produces a result EASI "Instance"
 
 reader_pipeline = (
     EASI.pipeline_builder()
@@ -506,14 +656,26 @@ reader_pipeline = (
     .build()
 )
 
+# Process the source DICOM file
 result_collection = reader_pipeline.process(source_path)
+
+# Access the result Instance
 instance = result_collection.first()
+
+# Use the Instance to read the DICOM Study Instance UID attribute value
 study_uid = instance.data_set.value(Tag.study_instance_uid)</code></pre>
 
                         <br />
 
                         <h4>2) Apply de-identification and produce compliant outbound DICOM&reg;</h4>
-                        <pre><code class="language-python">destination_path = "/egress/deidentified/CT-001.dcm"
+                        <pre><code class="language-python">source_path = "/ingest/inbox/ct/CT-001.dcm"
+destination_path = "/egress/deidentified/CT-001.dcm"
+
+# Compose an EASI pipeline that reads from a file source,
+# parses native-DICOM, de-identifies "in-flight" using
+# the standard de-identification mask, then serializes
+# to native-DICOM and stream writes the result bytes out
+# to a destination file
 
 deid_pipeline = (
     EASI.pipeline_builder()
@@ -525,7 +687,10 @@ deid_pipeline = (
     .build()
 )
 
+# Process the source DICOM file into a destination DICOM file
 write_results = deid_pipeline.process(source_path, destination_path)
+
+# Access the result of the operation and check the conversion status
 write_result = write_results.first()
 if (write_result is None) or (write_result.bytesWritten <= 0):
     raise RuntimeError("Expected de-identified output bytes.")</code></pre>
@@ -535,21 +700,33 @@ if (write_result is None) or (write_result.bytesWritten <= 0):
                         <h4>3) Convert DICOMweb&trade; metadata retrieval into FHIR&reg; ImagingStudy resources</h4>
                         <pre><code class="language-python">study_metadata_url = "https://pacs.example.org/dicom-web/studies/{studyUID}/metadata"
 
+# Compose an EASI pipeline that reads from a DICOMweb host,
+# parses DICOM JSON metadata and produces a FHIR ImagingStudy resource
+
 imaging_study_pipeline = (
     EASI.pipeline_builder()
     .from_http_stream()
     .of_dicom_metadata()
-    .to_mapping(DicomToFHIRImagingStudyMapping({"profile": "full"}))
+    .to_fhir_imaging_study("full")
     .build()
 )
 
+# Process the source DICOMweb metadata
 imaging_study_results = imaging_study_pipeline.process(study_metadata_url)
+
+# Access the result FHIR Imaging Study
 imaging_study = imaging_study_results.first()</code></pre>
 
                         <br />
 
                         <h4>4) Run an inbound DIMSE C-STORE listener and relay normalized output</h4>
-                        <pre><code class="language-python">listener_pipeline = (
+                        <pre><code class="language-python"># Compose an EASI pipeline that listens for inbound C-STORE requests,
+# parses native-DICOM, de-identifies "in-flight" using
+# the standard de-identification mask, then serializes
+# to native-DICOM and HTTP POSTs the result bytes as a STOW-RS transaction
+# to a remote DICOMweb or bespoke cloud host.
+
+listener_pipeline = (
     EASI.pipeline_builder()
     .from_dimse_association({
         "role": "scp",
@@ -570,18 +747,20 @@ imaging_study = imaging_study_results.first()</code></pre>
     .build()
 )
 
+# Start the pipeline listening for inbound requests
 run = listener_pipeline.start()
 
-# ... service runs continuously ...
+# ... pipeline runs continuously ...
+# Stop the pipeline
 run.stop()</code></pre>
                     </div>
                 </div>
             </section>
 
             <section class="section reveal">
-                <h3>Why This Is A Meaningful Shift For DICOM&reg; Orchastration</h3>
+                <h3>Why This Is A Meaningful Shift For DICOM&reg; Orchestration</h3>
                 <p>
-                    EASI keeps DICOM&reg; at the core while making sophisticated workflow orchastration much simpler to compose, understand, and maintain thereby reducing friction and expanding where DICOM&reg; workflows are practical in modern application architectures.
+                    EASI keeps DICOM&reg; at the core while making sophisticated workflow orchestration much simpler to compose, understand, and maintain thereby reducing friction and expanding where DICOM&reg; workflows are practical in modern application architectures.
                 </p>
             </section>
 

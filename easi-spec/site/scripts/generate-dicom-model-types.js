@@ -50,16 +50,34 @@ const NAV_HTML = `
                     </div>
                 </div>
                 <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
-                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
-                <a class="nav-link" data-nav-link href="../dicom-profile-index.html">Profile Index</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="index.html">Model Types</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Model Types section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
                     <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="diagram.html">Type Diagram</a>
                         <span class="nav-link nav-sublink nav-group-label">Core</span>
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="attribute.html" title="Attribute">Attribute</a>
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
@@ -108,9 +126,9 @@ const NAV_HTML = `
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="waveform-module.html" title="WaveformModule">WaveformModule</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="diagram.html">Type Diagram</a>
-                <a class="nav-link" data-nav-link href="../error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
                 <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
             </div>`;
 
 function escapeHtml(value) {
@@ -2172,13 +2190,14 @@ function renderTypePage(typeInfo) {
                 </div>
             </div>
 
-            <span class="badge normative">Normative</span>
-            <span class="badge informative">Informative</span>${NAV_HTML}
+${NAV_HTML}
 
             <div class="nav-section">
                 <span class="nav-label">Edition</span>
                 <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
             </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
         </aside>
 
         <main class="page">
@@ -2484,13 +2503,14 @@ function renderDiagramPage(typeInfos) {
                 </div>
             </div>
 
-            <span class="badge normative">Normative</span>
-            <span class="badge informative">Informative</span>${NAV_HTML}
+${NAV_HTML}
 
             <div class="nav-section">
                 <span class="nav-label">Edition</span>
                 <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
             </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
         </aside>
 
         <main class="page">
@@ -2601,13 +2621,14 @@ function renderIndexPage(typeInfos) {
                 </div>
             </div>
 
-            <span class="badge normative">Normative</span>
-            <span class="badge informative">Informative</span>${NAV_HTML}
+${NAV_HTML}
 
             <div class="nav-section">
                 <span class="nav-label">Edition</span>
                 <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
             </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
         </aside>
 
         <main class="page">
@@ -2674,7 +2695,6 @@ function patchTopLevelTerminology() {
     path.join(siteRoot, 'lifecycle-status.html'),
     path.join(siteRoot, 'materialization-model.html'),
     path.join(siteRoot, 'conformance.html'),
-    path.join(siteRoot, 'dicom-profile-index.html'),
     path.join(siteRoot, 'error-catalog.html'),
     path.join(siteRoot, 'implementation-boundary.html')
   ];
@@ -2695,8 +2715,7 @@ function patchTopLevelTerminology() {
     html = html.replace(/Data Model Class Catalog/g, 'Data Model Type Catalog');
     html = html.replace(/class references/g, 'type references');
     html = html.replace(/class pages/g, 'type pages');
-    html = html.replace(/>DICOM&reg; Profile Index</g, '>Profile Index<');
-    html = html.replace(/>DICOM&reg; Model Types</g, '>Model Types<');
+    html = html.replace(/>DICOM&reg; Model Types</g, '>Models<');
     html = html.replace(/>DICOM&reg; Type Diagram</g, '>Type Diagram<');
     html = html.replace(/>DICOM&reg; Model Diagram</g, '>Type Diagram<');
     html = html.replace(/>Lifecycle and Status</g, '>Stream Lifecycle Events<');
@@ -2757,16 +2776,16 @@ function patchTopLevelTerminology() {
       );
     }
 
-    if (/href="dicom-model\/diagram\.html"/.test(html) === false) {
+    if (/<a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model\/diagram\.html">Type Diagram<\/a>/.test(html) === false) {
       html = html.replace(
-        /([ \t]*<a class="nav-link" data-nav-link href="dicom-model\/index\.html">(?:DICOM&reg;\s*)?Model Types<\/a>\r?\n)/,
-        '$1                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>\n'
+        /([ \t]*<div class="nav-submenu" data-nav-submenu>\r?\n)([ \t]*<span class="nav-link nav-sublink nav-group-label">Core<\/span>\r?\n)/,
+        '$1                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>\n$2'
       );
     }
 
     html = html.replace(
-      /\n\s*<a class="nav-link" data-nav-link href="dicom-model\/diagram\.html">Type Diagram<\/a>\r?\n\s*<a class="nav-link" data-nav-link href="error-catalog\.html">Error Catalog<\/a>/g,
-      '\n                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>\n                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>'
+      /\n\s*<a class="nav-link" data-nav-link href="dicom-model\/diagram\.html">Type Diagram<\/a>/g,
+      ''
     );
 
     fs.writeFileSync(pagePath, html, 'utf8');

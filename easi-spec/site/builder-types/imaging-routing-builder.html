@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Comprehensive API reference for ImagingRoutingBuilder including options and examples.">
+    <title>EASI | ImagingRoutingBuilder</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>ImagingRoutingBuilder</h2>
+                <p>Builds route-branch definitions for mixed-imaging workloads, including DICOM branch, image branch, fallback behavior, and unknown-item policy.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Builder Identity</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Builder Type</td>
+                                <td><code>ImagingRoutingBuilder</code></td>
+                            </tr>
+                            <tr>
+                                <td>Primary Purpose</td>
+                                <td>Builds route-branch definitions for mixed-imaging workloads, including DICOM branch, image branch, fallback behavior, and unknown-item policy.</td>
+                            </tr>
+                            <tr>
+                                <td>Build Output</td>
+                                <td><code>Routing configuration object</code></td>
+                            </tr>
+                            <tr>
+                                <td>Factory Entry Point</td>
+                                <td>`EASI.pipelineBuilder().withRouting((builder) => ...)`</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Builder API Method Summary</h3>
+                <p>
+                    Exposed methods for ImagingRoutingBuilder in this stage/group.
+                </p>
+
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Signature</th>
+                                <th>Returns</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>whenDicom</code></td>
+                                <td><code>whenDicom(definition)</code></td>
+                                <td><code>ImagingRoutingBuilder</code></td>
+                                <td>Configure DICOM route branch.</td>
+                            </tr>
+                            <tr>
+                                <td><code>whenImage</code></td>
+                                <td><code>whenImage(definition)</code></td>
+                                <td><code>ImagingRoutingBuilder</code></td>
+                                <td>Configure standard image route branch.</td>
+                            </tr>
+                            <tr>
+                                <td><code>otherwise</code></td>
+                                <td><code>otherwise(definition)</code></td>
+                                <td><code>ImagingRoutingBuilder</code></td>
+                                <td>Configure fallback route branch.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withUnknownMode</code></td>
+                                <td><code>withUnknownMode(mode = &quot;skip&quot;)</code></td>
+                                <td><code>ImagingRoutingBuilder</code></td>
+                                <td>Configure unknown-item routing behavior.</td>
+                            </tr>
+                            <tr>
+                                <td><code>build</code></td>
+                                <td><code>build()</code></td>
+                                <td><code>{ dicomPipeline: object | null, imagePipeline: object | null, otherwisePipeline: object | null, unknownMode: &quot;skip&quot; | &quot;fail&quot;</code></td>
+                                <td>Build immutable routing configuration.</td>
+                            </tr>
+                            <tr>
+                                <td><code>resolve</code></td>
+                                <td><code>static resolve(definition = null)</code></td>
+                                <td><code>{ dicomPipeline: object | null, imagePipeline: object | null, otherwisePipeline: object | null, unknownMode: &quot;skip&quot; | &quot;fail&quot;</code></td>
+                                <td>Resolve one public routing definition to immutable routing config.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Builder API Method Details</h3>
+
+            <article class="member-doc">
+                <h6><code>whenDicom(definition)</code></h6>
+                <p>Configure DICOM route branch.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>definition</code></td>
+                                <td><code>*</code></td>
+                                <td>Route branch definition.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>ImagingRoutingBuilder</code> - Current routing builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>whenImage(definition)</code></h6>
+                <p>Configure standard image route branch.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>definition</code></td>
+                                <td><code>*</code></td>
+                                <td>Route branch definition.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>ImagingRoutingBuilder</code> - Current routing builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>otherwise(definition)</code></h6>
+                <p>Configure fallback route branch.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>definition</code></td>
+                                <td><code>*</code></td>
+                                <td>Route branch definition.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>ImagingRoutingBuilder</code> - Current routing builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withUnknownMode(mode = &quot;skip&quot;)</code></h6>
+                <p>Configure unknown-item routing behavior.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>mode</code></td>
+                                <td><code>&quot;skip&quot; | &quot;fail&quot;</code></td>
+                                <td>Unknown mode.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>ImagingRoutingBuilder</code> - Current routing builder.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>build()</code></h6>
+                <p>Build immutable routing configuration.</p>
+                <p class="member-doc-label">Parameters</p>
+                <p><em>No parameters.</em></p>
+                <p><strong>Returns:</strong> <code>{ dicomPipeline: object | null, imagePipeline: object | null, otherwisePipeline: object | null, unknownMode: &quot;skip&quot; | &quot;fail&quot;</code> - } Routing config.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>static resolve(definition = null)</code></h6>
+                <p>Resolve one public routing definition to immutable routing config.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>definition</code></td>
+                                <td><code>ImagingRoutingBuilder | Function | object | null</code></td>
+                                <td>Routing definition.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>{ dicomPipeline: object | null, imagePipeline: object | null, otherwisePipeline: object | null, unknownMode: &quot;skip&quot; | &quot;fail&quot;</code> - } Routing config.</p>
+            </article>
+            </section>
+            <section class="section reveal">
+                <h3>Usage Examples</h3>
+                <p>
+                    The following examples demonstrate language-neutral semantics and language-specific usage forms.
+                </p>
+
+                <article class="member-doc">
+                    <h6>Route DICOM and Image Branches</h6>
+                    <p>Define dedicated branch pipelines for DICOM content and standard image payloads.</p>
+
+                    <div class="doc-tabset" data-tabset data-tabset-id="builder-example-1">
+                        <div class="doc-tablist" role="tablist" aria-label="Route DICOM and Image Branches language tabs">
+                            <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        </div>
+
+                        <div class="doc-tab-panel active" data-tab-panel="neutral">
+                            <pre><code class="language-text">routing := ImagingRoutingBuilder.resolve((builder) =&gt;
+  builder
+    .whenDicom((pipeline) =&gt; pipeline.ofDicomData().toInstances())
+    .whenImage((pipeline) =&gt; pipeline.ofImageData().toImageData())
+    .otherwise((pipeline) =&gt; pipeline.ofByteData().toStructuredValue())
+)</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="javascript">
+                            <pre><code class="language-javascript">const routing = ImagingRoutingBuilder.resolve((builder) =&gt;
+  builder
+    .whenDicom((pipeline) =&gt; pipeline.ofDicomData().toInstances())
+    .whenImage((pipeline) =&gt; pipeline.ofImageData().toImageData())
+    .otherwise((pipeline) =&gt; pipeline.ofByteData().toStructuredValue())
+);</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="csharp">
+                            <pre><code class="language-csharp">var routing = ImagingRoutingBuilder.Resolve((builder) =&gt;
+    builder
+        .WhenDicom((pipeline) =&gt; pipeline.OfDicomData().ToInstances())
+        .WhenImage((pipeline) =&gt; pipeline.OfImageData().ToImageData())
+        .Otherwise((pipeline) =&gt; pipeline.OfByteData().ToStructuredValue())
+);</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="java">
+                            <pre><code class="language-java">var routing = ImagingRoutingBuilder.resolve((builder) -&gt;
+    builder
+        .whenDicom((pipeline) -&gt; pipeline.ofDicomData().toInstances())
+        .whenImage((pipeline) -&gt; pipeline.ofImageData().toImageData())
+        .otherwise((pipeline) -&gt; pipeline.ofByteData().toStructuredValue())
+);</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="python">
+                            <pre><code class="language-python">routing = ImagingRoutingBuilder.resolve(
+    lambda builder: builder
+        .when_dicom(lambda pipeline: pipeline.of_dicom_data().to_instances())
+        .when_image(lambda pipeline: pipeline.of_image_data().to_image_data())
+        .otherwise(lambda pipeline: pipeline.of_byte_data().to_structured_value())
+)</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="member-doc">
+                    <h6>Fail Unknown Modes Explicitly</h6>
+                    <p>Use strict unknown-mode behavior in workflows where unclassified payloads should fail fast.</p>
+
+                    <div class="doc-tabset" data-tabset data-tabset-id="builder-example-2">
+                        <div class="doc-tablist" role="tablist" aria-label="Fail Unknown Modes Explicitly language tabs">
+                            <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        </div>
+
+                        <div class="doc-tab-panel active" data-tab-panel="neutral">
+                            <pre><code class="language-text">routing := ImagingRoutingBuilder.resolve((builder) =&gt;
+  builder
+    .whenDicom(dicomPipeline)
+    .whenImage(imagePipeline)
+    .withUnknownMode(&quot;fail&quot;)
+)</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="javascript">
+                            <pre><code class="language-javascript">const routing = ImagingRoutingBuilder.resolve((builder) =&gt;
+  builder
+    .whenDicom(dicomPipeline)
+    .whenImage(imagePipeline)
+    .withUnknownMode(&quot;fail&quot;)
+);</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="csharp">
+                            <pre><code class="language-csharp">var routing = ImagingRoutingBuilder.Resolve((builder) =&gt;
+    builder
+        .WhenDicom(dicomPipeline)
+        .WhenImage(imagePipeline)
+        .WithUnknownMode(&quot;fail&quot;)
+);</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="java">
+                            <pre><code class="language-java">var routing = ImagingRoutingBuilder.resolve((builder) -&gt;
+    builder
+        .whenDicom(dicomPipeline)
+        .whenImage(imagePipeline)
+        .withUnknownMode(&quot;fail&quot;)
+);</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="python">
+                            <pre><code class="language-python">routing = ImagingRoutingBuilder.resolve(
+    lambda builder: builder
+        .when_dicom(dicom_pipeline)
+        .when_image(image_pipeline)
+        .with_unknown_mode(&quot;fail&quot;)
+)</code></pre>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <p class="footer-note">
+                Informative page: comprehensive builder reference for ImagingRoutingBuilder.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

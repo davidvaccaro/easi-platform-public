@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Comprehensive API reference for DicomMappingBuilder including options and examples.">
+    <title>EASI | DicomMappingBuilder</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
+                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing Model</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>DicomMappingBuilder</h2>
+                <p>Builds DICOM tag-to-domain mapping definitions for `toMapping(...)` terminals, including direct mappings, template properties, and computed expressions.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Builder Identity</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Builder Type</td>
+                                <td><code>DicomMappingBuilder</code></td>
+                            </tr>
+                            <tr>
+                                <td>Primary Purpose</td>
+                                <td>Builds DICOM tag-to-domain mapping definitions for `toMapping(...)` terminals, including direct mappings, template properties, and computed expressions.</td>
+                            </tr>
+                            <tr>
+                                <td>Build Output</td>
+                                <td><code>DicomMapping</code></td>
+                            </tr>
+                            <tr>
+                                <td>Factory Entry Point</td>
+                                <td>`EASI.mappingBuilder()`</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Builder API Method Summary</h3>
+                <p>
+                    Exposed methods for DicomMappingBuilder in this stage/group.
+                </p>
+
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Signature</th>
+                                <th>Returns</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>withMapping</code></td>
+                                <td><code>withMapping(mapping)</code></td>
+                                <td><code>DicomMappingBuilder</code></td>
+                                <td>Set one base mapping instance.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withTemplatePolicy</code></td>
+                                <td><code>withTemplatePolicy(policy)</code></td>
+                                <td><code>DicomMappingBuilder</code></td>
+                                <td>Set mapping template policy.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withProperty</code></td>
+                                <td><code>withProperty(name, value)</code></td>
+                                <td><code>DicomMappingBuilder</code></td>
+                                <td>Set one scalar mapping property for template resolution.</td>
+                            </tr>
+                            <tr>
+                                <td><code>withProperties</code></td>
+                                <td><code>withProperties(properties)</code></td>
+                                <td><code>DicomMappingBuilder</code></td>
+                                <td>Set multiple scalar mapping properties for template resolution.</td>
+                            </tr>
+                            <tr>
+                                <td><code>mapTag</code></td>
+                                <td><code>mapTag(tag, property, options = null)</code></td>
+                                <td><code>DicomMappingBuilder</code></td>
+                                <td>Add one direct DICOM tag mapping rule.</td>
+                            </tr>
+                            <tr>
+                                <td><code>map</code></td>
+                                <td><code>map(tag, property = undefined, options = null)</code></td>
+                                <td><code>DicomMappingBuilder | { to: Function</code></td>
+                                <td>Add one direct DICOM tag mapping rule. Overload 1: map(tag, property, options) Overload 2: map(tag).to(property, options)</td>
+                            </tr>
+                            <tr>
+                                <td><code>withComputed</code></td>
+                                <td><code>withComputed(property, options = null)</code></td>
+                                <td><code>DicomMappingBuilder</code></td>
+                                <td>Add one computed mapping rule.</td>
+                            </tr>
+                            <tr>
+                                <td><code>build</code></td>
+                                <td><code>build()</code></td>
+                                <td><code>DicomMapping</code></td>
+                                <td>Build one DICOM mapping instance.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Builder API Method Details</h3>
+
+            <article class="member-doc">
+                <h6><code>withMapping(mapping)</code></h6>
+                <p>Set one base mapping instance.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>mapping</code></td>
+                                <td><code>DicomMapping</code></td>
+                                <td>Base mapping instance.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DicomMappingBuilder</code> - Current builder instance.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withTemplatePolicy(policy)</code></h6>
+                <p>Set mapping template policy.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>policy</code></td>
+                                <td><code>&#39;omit&#39; | &#39;blank&#39; | &#39;error&#39;</code></td>
+                                <td>The template policy.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DicomMappingBuilder</code> - Current builder instance.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withProperty(name, value)</code></h6>
+                <p>Set one scalar mapping property for template resolution.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>name</code></td>
+                                <td><code>string</code></td>
+                                <td>Property name.</td>
+                            </tr>
+                            <tr>
+                                <td><code>value</code></td>
+                                <td><code>string | number | boolean | bigint | Date | null</code></td>
+                                <td>Property value.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DicomMappingBuilder</code> - Current builder instance.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withProperties(properties)</code></h6>
+                <p>Set multiple scalar mapping properties for template resolution.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>properties</code></td>
+                                <td><code>object</code></td>
+                                <td>Property bag.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DicomMappingBuilder</code> - Current builder instance.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>mapTag(tag, property, options = null)</code></h6>
+                <p>Add one direct DICOM tag mapping rule.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>tag</code></td>
+                                <td><code>import(&quot;../dicom/Tag.js&quot;).default | string</code></td>
+                                <td>DICOM tag object or identifier.</td>
+                            </tr>
+                            <tr>
+                                <td><code>property</code></td>
+                                <td><code>string</code></td>
+                                <td>Destination property path.</td>
+                            </tr>
+                            <tr>
+                                <td><code>options</code></td>
+                                <td><code>object | null</code></td>
+                                <td>Mapping options.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DicomMappingBuilder</code> - Current builder instance.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>map(tag, property = undefined, options = null)</code></h6>
+                <p>Add one direct DICOM tag mapping rule. Overload 1: map(tag, property, options) Overload 2: map(tag).to(property, options)</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>tag</code></td>
+                                <td><code>import(&quot;../dicom/Tag.js&quot;).default | string</code></td>
+                                <td>DICOM tag object or identifier.</td>
+                            </tr>
+                            <tr>
+                                <td><code>property</code></td>
+                                <td><code>string | undefined</code></td>
+                                <td>Destination property path.</td>
+                            </tr>
+                            <tr>
+                                <td><code>options</code></td>
+                                <td><code>object | null</code></td>
+                                <td>Mapping options.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DicomMappingBuilder | { to: Function</code> - } Builder or mapping entry stage.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>withComputed(property, options = null)</code></h6>
+                <p>Add one computed mapping rule.</p>
+                <p class="member-doc-label">Parameters</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>property</code></td>
+                                <td><code>string</code></td>
+                                <td>Destination property path.</td>
+                            </tr>
+                            <tr>
+                                <td><code>options</code></td>
+                                <td><code>object | string | Function | null</code></td>
+                                <td>Computed mapping options.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Returns:</strong> <code>DicomMappingBuilder</code> - Current builder instance.</p>
+            </article>
+
+            <article class="member-doc">
+                <h6><code>build()</code></h6>
+                <p>Build one DICOM mapping instance.</p>
+                <p class="member-doc-label">Parameters</p>
+                <p><em>No parameters.</em></p>
+                <p><strong>Returns:</strong> <code>DicomMapping</code> - The built mapping.</p>
+            </article>
+            </section>
+            <section class="section reveal">
+                <h3>Usage Examples</h3>
+                <p>
+                    The following examples demonstrate language-neutral semantics and language-specific usage forms.
+                </p>
+
+                <article class="member-doc">
+                    <h6>Direct Tag Mapping with Properties</h6>
+                    <p>Map key DICOM attributes to an application model and include template properties.</p>
+
+                    <div class="doc-tabset" data-tabset data-tabset-id="builder-example-1">
+                        <div class="doc-tablist" role="tablist" aria-label="Direct Tag Mapping with Properties language tabs">
+                            <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        </div>
+
+                        <div class="doc-tab-panel active" data-tab-panel="neutral">
+                            <pre><code class="language-text">mapping := EASI.mappingBuilder()
+  .withTemplatePolicy(&quot;omit&quot;)
+  .withProperty(&quot;sourceSystem&quot;, &quot;pacs-a&quot;)
+  .map(&quot;StudyInstanceUID&quot;, &quot;study.uid&quot;)
+  .map(&quot;SeriesInstanceUID&quot;, &quot;series.uid&quot;)
+  .build()</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="javascript">
+                            <pre><code class="language-javascript">const mapping = EASI.mappingBuilder()
+  .withTemplatePolicy(&quot;omit&quot;)
+  .withProperty(&quot;sourceSystem&quot;, &quot;pacs-a&quot;)
+  .map(&quot;StudyInstanceUID&quot;, &quot;study.uid&quot;)
+  .map(&quot;SeriesInstanceUID&quot;, &quot;series.uid&quot;)
+  .build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="csharp">
+                            <pre><code class="language-csharp">var mapping = EASI.MappingBuilder()
+    .WithTemplatePolicy(&quot;omit&quot;)
+    .WithProperty(&quot;sourceSystem&quot;, &quot;pacs-a&quot;)
+    .Map(&quot;StudyInstanceUID&quot;, &quot;study.uid&quot;)
+    .Map(&quot;SeriesInstanceUID&quot;, &quot;series.uid&quot;)
+    .Build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="java">
+                            <pre><code class="language-java">var mapping = EASI.mappingBuilder()
+    .withTemplatePolicy(&quot;omit&quot;)
+    .withProperty(&quot;sourceSystem&quot;, &quot;pacs-a&quot;)
+    .map(&quot;StudyInstanceUID&quot;, &quot;study.uid&quot;)
+    .map(&quot;SeriesInstanceUID&quot;, &quot;series.uid&quot;)
+    .build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="python">
+                            <pre><code class="language-python">mapping = (
+    EASI.mapping_builder()
+    .with_template_policy(&quot;omit&quot;)
+    .with_property(&quot;sourceSystem&quot;, &quot;pacs-a&quot;)
+    .map(&quot;StudyInstanceUID&quot;, &quot;study.uid&quot;)
+    .map(&quot;SeriesInstanceUID&quot;, &quot;series.uid&quot;)
+    .build()
+)</code></pre>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="member-doc">
+                    <h6>Fluent `map(...).to(...)` + Computed Rule</h6>
+                    <p>Use two-step mapping syntax and computed values for derived properties.</p>
+
+                    <div class="doc-tabset" data-tabset data-tabset-id="builder-example-2">
+                        <div class="doc-tablist" role="tablist" aria-label="Fluent `map(...).to(...)` + Computed Rule language tabs">
+                            <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                            <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                        </div>
+
+                        <div class="doc-tab-panel active" data-tab-panel="neutral">
+                            <pre><code class="language-text">mapping := EASI.mappingBuilder()
+  .map(&quot;PatientID&quot;).to(&quot;patient.identifier&quot;)
+  .withComputed(&quot;study.isLongitudinal&quot;, {
+    from: [&quot;StudyDate&quot;, &quot;StudyTime&quot;],
+    expression: &quot;hasPriorExam == true&quot;
+  })
+  .build()</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="javascript">
+                            <pre><code class="language-javascript">const mapping = EASI.mappingBuilder()
+  .map(&quot;PatientID&quot;).to(&quot;patient.identifier&quot;)
+  .withComputed(&quot;study.isLongitudinal&quot;, {
+    from: [&quot;StudyDate&quot;, &quot;StudyTime&quot;],
+    expression: &quot;hasPriorExam == true&quot;
+  })
+  .build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="csharp">
+                            <pre><code class="language-csharp">var mapping = EASI.MappingBuilder()
+    .Map(&quot;PatientID&quot;).To(&quot;patient.identifier&quot;)
+    .WithComputed(&quot;study.isLongitudinal&quot;, new {
+        from = new[] { &quot;StudyDate&quot;, &quot;StudyTime&quot; },
+        expression = &quot;hasPriorExam == true&quot;
+    })
+    .Build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="java">
+                            <pre><code class="language-java">var mapping = EASI.mappingBuilder()
+    .map(&quot;PatientID&quot;).to(&quot;patient.identifier&quot;)
+    .withComputed(&quot;study.isLongitudinal&quot;, Map.of(
+        &quot;from&quot;, java.util.List.of(&quot;StudyDate&quot;, &quot;StudyTime&quot;),
+        &quot;expression&quot;, &quot;hasPriorExam == true&quot;
+    ))
+    .build();</code></pre>
+                        </div>
+
+                        <div class="doc-tab-panel" data-tab-panel="python">
+                            <pre><code class="language-python">mapping = (
+    EASI.mapping_builder()
+    .map(&quot;PatientID&quot;).to(&quot;patient.identifier&quot;)
+    .with_computed(&quot;study.isLongitudinal&quot;, {
+        &quot;from&quot;: [&quot;StudyDate&quot;, &quot;StudyTime&quot;],
+        &quot;expression&quot;: &quot;hasPriorExam == true&quot;
+    })
+    .build()
+)</code></pre>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <p class="footer-note">
+                Informative page: comprehensive builder reference for DicomMappingBuilder.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

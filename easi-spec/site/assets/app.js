@@ -135,9 +135,15 @@
                     item.style.display = haystack.indexOf(query) !== -1 ? '' : 'none';
                 });
                 updateGroupVisibility();
+                if (typeof window.__refreshExpandableSections === 'function') {
+                    window.__refreshExpandableSections();
+                }
             });
 
             updateGroupVisibility();
+            if (typeof window.__refreshExpandableSections === 'function') {
+                window.__refreshExpandableSections();
+            }
         });
     }
 
@@ -193,6 +199,10 @@
                     panel.classList.toggle('active', isActive);
                     panel.hidden = !isActive;
                 });
+
+                if (typeof window.__refreshExpandableSections === 'function') {
+                    window.__refreshExpandableSections();
+                }
             }
 
             var activeKey = String(buttons[0].getAttribute('data-tab-button') || '');
@@ -236,12 +246,226 @@
         });
     }
 
+    function wireExpandableSections() {
+        var trackedTargets = [];
+        var buttonByTarget = new WeakMap();
+        var refreshScheduled = false;
+        var modal = null;
+        var modalBody = null;
+        var modalTitle = null;
+        var modalCloseButton = null;
+        var activeTrigger = null;
+
+        function isElementVisible(element) {
+            if (!element || element.isConnected !== true) {
+                return false;
+            }
+
+            if (element.offsetParent != null) {
+                return true;
+            }
+
+            var style = window.getComputedStyle(element);
+            return (style.display !== 'none')
+                && (style.visibility !== 'hidden')
+                && (style.position === 'fixed');
+        }
+
+        function hasScrollableOverflow(element) {
+            var style = window.getComputedStyle(element);
+            var canScrollX = (style.overflowX === 'auto') || (style.overflowX === 'scroll');
+            var canScrollY = (style.overflowY === 'auto') || (style.overflowY === 'scroll');
+            var overflowX = (element.scrollWidth - element.clientWidth) > 1;
+            var overflowY = (element.scrollHeight - element.clientHeight) > 1;
+            return (canScrollX && overflowX) || (canScrollY && overflowY);
+        }
+
+        function resolveExpandedTitle(target) {
+            var section = target.closest('section');
+            if (section != null) {
+                var heading = section.querySelector('h2, h3, h4');
+                if (heading && heading.textContent) {
+                    var headingText = String(heading.textContent).trim();
+                    if (headingText.length > 0) {
+                        return headingText + ' (Expanded)';
+                    }
+                }
+            }
+
+            return 'Expanded Content';
+        }
+
+        function closeExpandedView() {
+            if (!modal || modal.hasAttribute('hidden')) {
+                return;
+            }
+
+            modal.setAttribute('hidden', '');
+            document.documentElement.classList.remove('content-expand-open');
+
+            if (modalBody) {
+                modalBody.innerHTML = '';
+            }
+
+            if (activeTrigger && (typeof activeTrigger.focus === 'function')) {
+                activeTrigger.focus();
+            }
+            activeTrigger = null;
+        }
+
+        function ensureModal() {
+            if (modal != null) {
+                return;
+            }
+
+            modal = document.createElement('div');
+            modal.className = 'content-expand-modal';
+            modal.setAttribute('hidden', '');
+            modal.innerHTML = ''
+                + '<button type="button" class="content-expand-modal__backdrop" data-content-expand-close aria-label="Close expanded content"></button>'
+                + '<div class="content-expand-modal__dialog" role="dialog" aria-modal="true" aria-label="Expanded content">'
+                + '  <div class="content-expand-modal__toolbar">'
+                + '    <p class="content-expand-modal__title">Expanded Content</p>'
+                + '    <button type="button" class="content-expand-modal__close" data-content-expand-close>Close</button>'
+                + '  </div>'
+                + '  <div class="content-expand-modal__body" data-content-expand-body></div>'
+                + '</div>';
+            document.body.appendChild(modal);
+
+            modalBody = modal.querySelector('[data-content-expand-body]');
+            modalTitle = modal.querySelector('.content-expand-modal__title');
+            modalCloseButton = modal.querySelector('.content-expand-modal__close');
+
+            modal.addEventListener('click', function (event) {
+                var target = event.target;
+                if ((target instanceof Element)
+                    && (target.hasAttribute('data-content-expand-close'))) {
+                    closeExpandedView();
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key !== 'Escape') {
+                    return;
+                }
+
+                if ((modal != null) && (modal.hasAttribute('hidden') === false)) {
+                    event.preventDefault();
+                    closeExpandedView();
+                }
+            });
+        }
+
+        function openExpandedView(source, trigger) {
+            ensureModal();
+
+            if (!modal || !modalBody) {
+                return;
+            }
+
+            var clone = source.cloneNode(true);
+            var nestedButtons = clone.querySelectorAll('.content-expand-trigger');
+            nestedButtons.forEach(function (button) {
+                button.remove();
+            });
+
+            modalBody.innerHTML = '';
+            modalBody.appendChild(clone);
+            modalBody.scrollTop = 0;
+            modalBody.scrollLeft = 0;
+
+            if (modalTitle) {
+                modalTitle.textContent = resolveExpandedTitle(source);
+            }
+
+            activeTrigger = trigger || null;
+            modal.removeAttribute('hidden');
+            document.documentElement.classList.add('content-expand-open');
+
+            if (modalCloseButton && (typeof modalCloseButton.focus === 'function')) {
+                modalCloseButton.focus();
+            }
+        }
+
+        function bindTarget(target) {
+            if (buttonByTarget.has(target)) {
+                return;
+            }
+
+            var shell = target.parentElement;
+            if ((shell == null) || (shell.classList.contains('content-expand-shell') === false)) {
+                shell = document.createElement('div');
+                shell.className = 'content-expand-shell';
+                target.parentNode.insertBefore(shell, target);
+                shell.appendChild(target);
+            }
+
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'content-expand-trigger';
+            button.textContent = 'Expand';
+            button.setAttribute('aria-label', 'Expand this section');
+            button.hidden = true;
+            button.addEventListener('click', function () {
+                openExpandedView(target, button);
+            });
+
+            shell.appendChild(button);
+            buttonByTarget.set(target, button);
+            trackedTargets.push(target);
+        }
+
+        function collectTargets() {
+            var targets = document.querySelectorAll('.page .table-scroll, .page .uml-diagram, .page .model-diagram, .page pre');
+            targets.forEach(function (target) {
+                bindTarget(target);
+            });
+        }
+
+        function refreshExpandableSections() {
+            collectTargets();
+
+            trackedTargets = trackedTargets.filter(function (target) {
+                if (!target || target.isConnected !== true) {
+                    return false;
+                }
+
+                var button = buttonByTarget.get(target);
+                if (!button || button.isConnected !== true) {
+                    return false;
+                }
+
+                var expandable = isElementVisible(target) && hasScrollableOverflow(target);
+                button.hidden = !expandable;
+                return true;
+            });
+        }
+
+        function scheduleRefresh() {
+            if (refreshScheduled === true) {
+                return;
+            }
+            refreshScheduled = true;
+            window.requestAnimationFrame(function () {
+                refreshScheduled = false;
+                refreshExpandableSections();
+            });
+        }
+
+        window.__refreshExpandableSections = scheduleRefresh;
+        window.addEventListener('resize', scheduleRefresh);
+        window.addEventListener('orientationchange', scheduleRefresh);
+
+        scheduleRefresh();
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         setActiveNav();
         wireNavGroups();
         applyRevealDelays();
         wireFilters();
         wireDocTabs();
+        wireExpandableSections();
         document.documentElement.classList.add('ready');
     });
 })();

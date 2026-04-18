@@ -19,10 +19,7 @@
                 </div>
             </div>
 
-            <span class="badge normative">Normative</span>
-            <span class="badge informative">Informative</span>
-
-            <div class="nav-section">
+<div class="nav-section">
                 <a class="nav-link" data-nav-link href="index.html">Overview</a>
                 <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
                 <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
@@ -56,16 +53,34 @@
                     </div>
                 </div>
                 <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
-                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
-                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dicom-model/index.html">Model Types</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Model Types section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
                     <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
                         <span class="nav-link nav-sublink nav-group-label">Core</span>
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute.html" title="Attribute">Attribute</a>
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
@@ -114,22 +129,24 @@
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
-                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Errors</a>
                 <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
             </div>
 
             <div class="nav-section">
                 <span class="nav-label">Edition</span>
                 <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
             </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
         </aside>
 
         <main class="page">
             <section class="page-hero reveal">
                 <h2>What Is an EASI Pipeline?</h2>
                 <p>
-                    An EASI pipeline is an expressive, staged data-processing contract for the orchastration of complex DICOM&reg; workflows.
+                    An EASI pipeline is an expressive, staged data-processing contract for the orchestration of complex DICOM&reg; workflows.
                     It lets a developer compose source, parse mode, transformations, output form, and destination
                     as one readable flow with deterministic execution semantics.
                 </p>
@@ -247,9 +264,19 @@
                                 <td>Read native DICOM&reg; into typed instance objects.</td>
                             </tr>
                             <tr>
+                                <td>Folder Stream and Watch</td>
+                                <td><code>fromFolderStream</code>/<code>fromFolderWatchStream</code> + <code>ofDicomData</code> + terminal + <code>process(...)</code> or <code>start()</code></td>
+                                <td>Process directory-backed DICOM&reg; workloads in batch or continuously watch for newly landed files.</td>
+                            </tr>
+                            <tr>
                                 <td>Focused Data Access</td>
                                 <td><code>toSelection</code> or <code>toMapping</code></td>
                                 <td>Extract only needed tags or convert to domain/FHIR&reg; views.</td>
+                            </tr>
+                            <tr>
+                                <td>Wrapped Document Conversion</td>
+                                <td><code>ofJsonData</code>/<code>ofByteData</code> + <code>toWrappedDocuments</code> or <code>ofDicomData</code> + <code>toUnwrappedDocuments</code></td>
+                                <td>Wrap external document payloads into DICOM&reg; encapsulated instances or unwrap encapsulated DICOM&reg; documents back to native payload bytes/metadata.</td>
                             </tr>
                             <tr>
                                 <td>Privacy Processing</td>

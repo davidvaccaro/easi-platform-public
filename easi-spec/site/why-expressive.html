@@ -19,10 +19,7 @@
                 </div>
             </div>
 
-            <span class="badge normative">Normative</span>
-            <span class="badge informative">Informative</span>
-
-            <div class="nav-section">
+<div class="nav-section">
                 <a class="nav-link" data-nav-link href="index.html">Overview</a>
                 <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
                 <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
@@ -56,16 +53,34 @@
                     </div>
                 </div>
                 <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
-                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
-                <a class="nav-link" data-nav-link href="dicom-profile-index.html">Profile Index</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dicom-model/index.html">Model Types</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Model Types section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
                     <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
                         <span class="nav-link nav-sublink nav-group-label">Core</span>
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute.html" title="Attribute">Attribute</a>
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
@@ -114,24 +129,26 @@
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
-                <a class="nav-link" data-nav-link href="error-catalog.html">Error Catalog</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Errors</a>
                 <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
             </div>
 
             <div class="nav-section">
                 <span class="nav-label">Edition</span>
                 <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
             </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
         </aside>
 
         <main class="page">
             <section class="page-hero reveal">
                 <h2>Why Expressive?</h2>
                 <p>
-                    EASI utilizes an expressive design pattern that makes the intent of complex DICOM&reg; orchestrations clear and intuitive. 
-                    The EASI fluent builder is more than a style choice; it is a staged design requirement that enforces compositional guardrails. This structure 
-                    ensures high reliability, making sophisticated imaging workflows accessible to both general developers and agentic coding environments.
+                    EASI utilizes an expressive design pattern that makes the intent of complex DICOM&reg; orchestrations clear and intuitive.
+                    Far from being a mere stylistic choice, the EASI fluent builder scheme employs a staged design that enforces strict compositional guardrails.
+                    This architecture ensures high reliability, making sophisticated imaging workflows accessible to general developers and agentic coding environments alike.                    
                 </p>
             </section>
 
@@ -139,13 +156,13 @@
                 <div class="callout informative">
                     <h4>Core Advantage</h4>
                     <p>
-                        Expressiveness allows a developer to consolidate five distinct processing primitives into a single, cohesive declaration. In one clear statement, EASI defines the entire lifecycle of a complex orchastration:
+                        Expressiveness allows a developer to consolidate five distinct processing primitives into a single, cohesive declaration. In one clear statement, EASI defines the entire lifecycle of a complex orchestration:
                         <ul>
-                            <li><strong>Ingestion:</strong> Where the data originates.</li>
-                            <li><strong>Parsing:</strong> How the data is interpreted.</li>
-                            <li><strong>Policy:</strong> Which logic and constraints apply.</li>
-                            <li><strong>Contract:</strong> What the expected output format must be.</li>
-                            <li><strong>Delivery:</strong> Where the final results are routed.</li>
+                            <li><strong>FROM:</strong> (<i>Ingestion</i>)  Where the data originates?</li>
+                            <li><strong>OF:</strong> (<i>Parsing</i>) How the data is interpreted?</li>
+                            <li><strong>WITH:</strong> (<i>Policy</i>) Which logic and constraints apply?</li>
+                            <li><strong>TO:</strong> (<i>Contract</i>) What the expected output format must be?</li>
+                            <li><strong>INTO:</strong> (<i>Delivery</i>) Where the final results are routed?</li>
                         </ul>                        
                     </p>
                 </div>
@@ -280,7 +297,7 @@
             </section>
 
             <section class="section reveal">
-                <h3>Expressive DICOM&reg; orchastration with clear, understandable intent</h3>
+                <h3>Expressive DICOM&reg; orchestration with clear, understandable intent</h3>
                 <div class="doc-tabset" data-tabset>
                     <div class="doc-tablist" role="tablist" aria-label="Why expressive example tabs">
                         <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
