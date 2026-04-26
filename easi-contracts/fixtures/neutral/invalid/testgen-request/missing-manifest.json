@@ -1,0 +1,6 @@
+{
+  "kind": "EASI.TestgenRequest",
+  "version": "1.0.0",
+  "targetLanguage": "javascript",
+  "testType": "unit"
+}

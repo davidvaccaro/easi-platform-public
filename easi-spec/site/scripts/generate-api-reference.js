@@ -8,7 +8,7 @@ const siteRoot = path.resolve(__dirname, '..');
 const repoRoot = path.resolve(siteRoot, '..', '..');
 const apiRoot = path.join(siteRoot, 'api');
 const topIndexPath = path.join(siteRoot, 'index.html');
-const contractPath = path.join(repoRoot, 'easi-js', 'doc', 'contracts', 'easi-api.contract.json');
+const contractPath = path.join(repoRoot, 'easi-contracts', 'schemas', 'implementation', 'javascript', 'easi-api.contract.json');
 
 function escapeHtml(value) {
   return String(value ?? '')

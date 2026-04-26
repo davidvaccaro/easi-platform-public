@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(scriptDirectory, '..', '..');
 const sourceRoot = path.join(projectRoot, 'src');
-const outputDirectory = path.join(projectRoot, 'doc', 'contracts');
+const outputDirectory = path.resolve(projectRoot, '..', 'easi-contracts', 'schemas', 'implementation', 'javascript');
 const outputFilePath = path.join(outputDirectory, 'easi-api.contract.json');
 const schemaFileName = 'easi-api.contract.schema.json';
 const schemaFilePath = path.join(outputDirectory, schemaFileName);

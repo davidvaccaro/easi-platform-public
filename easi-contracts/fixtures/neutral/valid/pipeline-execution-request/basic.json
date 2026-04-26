@@ -1,0 +1,14 @@
+{
+  "kind": "EASI.PipelineExecutionRequest",
+  "version": "1.0.0",
+  "mode": "process",
+  "manifest": {
+    "ref": "urn:manifest:basic-dicom-read"
+  },
+  "source": {
+    "type": "dicomweb-url",
+    "value": "https://pacs.example.org/dicom-web/studies/1.2/metadata"
+  },
+  "trace": true,
+  "traceDetail": "basic"
+}

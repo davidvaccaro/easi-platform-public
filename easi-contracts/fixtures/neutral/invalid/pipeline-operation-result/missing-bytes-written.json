@@ -1,0 +1,7 @@
+{
+  "kind": "EASI.PipelineOperationResult",
+  "version": "1.0.0",
+  "operation": "into",
+  "category": "writer",
+  "materialized": false
+}

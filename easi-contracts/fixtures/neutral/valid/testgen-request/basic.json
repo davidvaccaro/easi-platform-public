@@ -1,0 +1,26 @@
+{
+  "kind": "EASI.TestgenRequest",
+  "version": "1.0.0",
+  "targetLanguage": "javascript",
+  "manifest": {
+    "ref": "urn:manifest:basic-dicom-read"
+  },
+  "testType": "integration",
+  "framework": "jest",
+  "fixtures": [
+    {
+      "id": "sample-ct",
+      "source": {
+        "type": "file-path",
+        "value": "/fixtures/ct-001.dcm"
+      },
+      "description": "Simple CT file fixture"
+    }
+  ],
+  "baseline": {
+    "expectedStatus": "success",
+    "expectedMinResults": 1,
+    "assertNoDiagnostics": true
+  },
+  "includeNegativeCases": false
+}

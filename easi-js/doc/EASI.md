@@ -23,8 +23,8 @@ EASI empowers developers to build scalable, high-performance imaging workflows a
 
 EASI now includes a generated machine-readable master interface contract:
 
-- `doc/contracts/easi-api.contract.json`
-- `doc/contracts/easi-api.contract.schema.json`
+- `../../easi-contracts/schemas/implementation/javascript/easi-api.contract.json`
+- `../../easi-contracts/schemas/implementation/javascript/easi-api.contract.schema.json`
 
 Generate and validate sync from `easi-js`:
 

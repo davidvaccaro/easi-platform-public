@@ -1,0 +1,24 @@
+{
+  "kind": "EASI.PipelineManifest",
+  "version": "1.0.0",
+  "metadata": {
+    "name": "Basic DICOM Read"
+  },
+  "composition": {
+    "source": {
+      "reader": {
+        "operation": "fromFileStream"
+      },
+      "binding": {
+        "mode": "late",
+        "endpoint": null
+      }
+    },
+    "parser": {
+      "operation": "ofDicomData"
+    },
+    "terminal": {
+      "operation": "toInstances"
+    }
+  }
+}

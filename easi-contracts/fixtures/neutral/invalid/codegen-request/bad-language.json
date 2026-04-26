@@ -1,0 +1,8 @@
+{
+  "kind": "EASI.CodegenRequest",
+  "version": "1.0.0",
+  "targetLanguage": "go",
+  "manifest": {
+    "ref": "urn:manifest:basic-dicom-read"
+  }
+}

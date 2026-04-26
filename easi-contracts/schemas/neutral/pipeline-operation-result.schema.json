@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://easi.dev/schemas/neutral/pipeline-operation-result.schema.json",
+  "title": "EASI Neutral Pipeline Operation Result Schema",
+  "description": "Language-neutral operation result envelope for writer and non-materialized terminal output.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "version",
+    "operation",
+    "category",
+    "materialized",
+    "bytesWritten"
+  ],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "const": "EASI.PipelineOperationResult"
+    },
+    "version": {
+      "$ref": "./common.schema.json#/$defs/semanticVersion"
+    },
+    "operation": {
+      "$ref": "./common.schema.json#/$defs/nonEmptyString"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "terminal",
+        "writer"
+      ]
+    },
+    "writer": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "materialized": {
+      "type": "boolean"
+    },
+    "bytesWritten": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "payload": {
+      "oneOf": [
+        {
+          "$ref": "./common.schema.json#/$defs/payloadEnvelope"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "output": {
+      "$ref": "./common.schema.json#/$defs/jsonValue"
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "./common.schema.json#/$defs/diagnostic"
+      }
+    },
+    "extensions": {
+      "$ref": "./common.schema.json#/$defs/jsonObject"
+    }
+  }
+}
