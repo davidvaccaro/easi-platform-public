@@ -1,7 +1,7 @@
 {
   "$schema": "./easi-api.contract.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-04-26T16:35:43.947Z",
+  "generatedAt": "2026-04-26T17:16:02.378Z",
   "generator": {
     "name": "easi-js/tools/contracts/generateApiContract.js",
     "mode": "write"
@@ -189829,7 +189829,7 @@
         {
           "id": "src/transports/dimse/NodeDimseQueryRetrieveSourceTransport.js:NodeDimseQueryRetrieveSourceTransport",
           "name": "NodeDimseQueryRetrieveSourceTransport",
-          "line": 899,
+          "line": 931,
           "exported": true,
           "defaultExport": true,
           "extends": "DimseSourceTransport",
@@ -189857,7 +189857,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 905,
+              "line": 937,
               "description": "Resolve Node socket modules lazily so browser bundles can load this file safely.",
               "deprecated": null,
               "parameters": [],
@@ -189873,7 +189873,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 947,
+              "line": 979,
               "description": "Resolve one association option from read-call, instance config, and default.",
               "deprecated": null,
               "parameters": [
@@ -189923,7 +189923,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 969,
+              "line": 1001,
               "description": "Validate required DIMSE association fields.",
               "deprecated": null,
               "parameters": [
@@ -189948,7 +189948,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 999,
+              "line": 1031,
               "description": "Resolve query/retrieve model UIDs.",
               "deprecated": null,
               "parameters": [
@@ -189976,7 +189976,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1025,
+              "line": 1057,
               "description": "Resolve read/query options.",
               "deprecated": null,
               "parameters": [
@@ -190015,7 +190015,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1110,
+              "line": 1142,
               "description": "Resolve DIMSE C-ECHO options.",
               "deprecated": null,
               "parameters": [
@@ -190054,7 +190054,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1136,
+              "line": 1168,
               "description": "Create one socket for the specified association.",
               "deprecated": null,
               "parameters": [
@@ -190082,7 +190082,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1191,
+              "line": 1223,
               "description": "Create one PDU reader queue for a socket.",
               "deprecated": null,
               "parameters": [
@@ -190110,7 +190110,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1258,
+              "line": 1290,
               "description": "Write one PDU to the socket.",
               "deprecated": null,
               "parameters": [
@@ -190146,7 +190146,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1279,
+              "line": 1311,
               "description": "Build association request and requested presentation-context descriptors.",
               "deprecated": null,
               "parameters": [
@@ -190196,7 +190196,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1392,
+              "line": 1424,
               "description": "Build C-ECHO association request and echo presentation-context descriptors.",
               "deprecated": null,
               "parameters": [
@@ -190235,7 +190235,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1464,
+              "line": 1496,
               "description": "Parse association accept and map accepted contexts.",
               "deprecated": null,
               "parameters": [
@@ -190274,7 +190274,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1553,
+              "line": 1585,
               "description": "Resolve accepted context by kind.",
               "deprecated": null,
               "parameters": [
@@ -190313,7 +190313,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1575,
+              "line": 1607,
               "description": "Resolve accepted storage context by SOP class UID.",
               "deprecated": null,
               "parameters": [
@@ -190352,7 +190352,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1607,
+              "line": 1639,
               "description": "Build one P-DATA-TF PDU with one PDV fragment.",
               "deprecated": null,
               "parameters": [
@@ -190413,7 +190413,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1639,
+              "line": 1671,
               "description": "Send one DIMSE request command and optional identifier dataset.",
               "deprecated": null,
               "parameters": [
@@ -190482,7 +190482,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1663,
+              "line": 1695,
               "description": "Build and queue complete PDV events.",
               "deprecated": null,
               "parameters": [
@@ -190518,7 +190518,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1711,
+              "line": 1743,
               "description": "Read the next normalized DIMSE event from the incoming PDU queue.",
               "deprecated": null,
               "parameters": [
@@ -190557,7 +190557,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1747,
+              "line": 1779,
               "description": "Receive one C-FIND identifier data-set that follows a pending response.",
               "deprecated": null,
               "parameters": [
@@ -190607,7 +190607,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1787,
+              "line": 1819,
               "description": "Read one C-FIND response sequence until final status.",
               "deprecated": null,
               "parameters": [
@@ -190668,7 +190668,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1851,
+              "line": 1883,
               "description": "Receive one C-GET sequence while handling C-STORE sub-operations.",
               "deprecated": null,
               "parameters": [
@@ -190751,7 +190751,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1977,
+              "line": 2009,
               "description": "Evaluate inbound C-STORE association policy.",
               "deprecated": null,
               "parameters": [
@@ -190812,7 +190812,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 2027,
+              "line": 2059,
               "description": "Emit one DIMSE concern callback (best-effort).",
               "deprecated": null,
               "parameters": [
@@ -190848,7 +190848,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 2050,
+              "line": 2082,
               "description": "Reject one inbound association request using A-ASSOCIATE-RJ (or immediate socket close).",
               "deprecated": null,
               "parameters": [
@@ -190884,7 +190884,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 2071,
+              "line": 2103,
               "description": "Start a temporary C-STORE SCP server for C-MOVE retrieval.",
               "deprecated": null,
               "parameters": [
@@ -190923,7 +190923,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 2204,
+              "line": 2236,
               "description": "Handle one incoming C-STORE association during C-MOVE.",
               "deprecated": null,
               "parameters": [
@@ -190970,7 +190970,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 2426,
+              "line": 2458,
               "description": "Wait for temporary C-STORE server to quiesce after C-MOVE final status.",
               "deprecated": null,
               "parameters": [
@@ -191006,7 +191006,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 2466,
+              "line": 2498,
               "description": "Receive C-MOVE responses until final status.",
               "deprecated": null,
               "parameters": [
@@ -191056,7 +191056,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 2514,
+              "line": 2546,
               "description": "Receive C-ECHO response and return final status.",
               "deprecated": null,
               "parameters": [
@@ -191106,7 +191106,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 2554,
+              "line": 2586,
               "description": "Send A-RELEASE-RQ and wait for A-RELEASE-RP.",
               "deprecated": null,
               "parameters": [
@@ -191153,7 +191153,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 2578,
+              "line": 2610,
               "description": "Build one DIMSE read envelope from retrieved instances.",
               "deprecated": null,
               "parameters": [
@@ -191214,7 +191214,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 2620,
+              "line": 2652,
               "description": "Execute DIMSE C-ECHO (Verification SOP Class) against one association.",
               "deprecated": null,
               "parameters": [
@@ -191253,7 +191253,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 2690,
+              "line": 2722,
               "description": "Read one DIMSE Query/Retrieve source payload.",
               "deprecated": null,
               "parameters": [
@@ -191292,7 +191292,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 2874,
+              "line": 2906,
               "description": "Construct one Node DIMSE Query/Retrieve source transport.",
               "deprecated": null,
               "parameters": [

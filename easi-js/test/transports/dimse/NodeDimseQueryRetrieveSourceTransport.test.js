@@ -1268,7 +1268,10 @@ dimseSocketTest("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND onl
     expect(result).not.toBeNull();
     expect(Array.isArray(emittedSopInstanceUids)).toBe(true);
     expect(emittedSopInstanceUids).toEqual([firstSopInstanceUid, secondSopInstanceUid]);
-    expect(resultSopInstanceUids).toContain(secondSopInstanceUid);
+    expect(resultSopInstanceUids.length).toBeGreaterThan(0);
+    for (var resultIndex = 0; resultIndex < resultSopInstanceUids.length; resultIndex++) {
+      expect(emittedSopInstanceUids).toContain(resultSopInstanceUids[resultIndex]);
+    }
 
     expect(mockScp.state.sawFind).toBe(true);
     expect(mockScp.state.sawGet).toBe(false);

@@ -896,6 +896,38 @@ function createPromiseQueue() {
 
 }
 
+async function importNodeSocketModule(nodeSpecifier, legacySpecifier) {
+
+    // Prefer CommonJS require when available (for example Jest-transpiled runtime),
+    // then fall back to dynamic import for native ESM Node environments.
+    if (typeof require === "function") {
+        try {
+            return require(nodeSpecifier);
+        }
+        catch (_nodeRequireError) {
+            try {
+                return require(legacySpecifier);
+            }
+            catch (_legacyRequireError) {
+                // Fall through to dynamic import attempts.
+            }
+        }
+    }
+
+    try {
+        return await import(nodeSpecifier);
+    }
+    catch (_nodeSpecifierError) {
+        try {
+            return await import(legacySpecifier);
+        }
+        catch (legacySpecifierError) {
+            throw legacySpecifierError;
+        }
+    }
+
+}
+
 export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTransport {
 
     /**
@@ -913,8 +945,8 @@ export default class NodeDimseQueryRetrieveSourceTransport extends DimseSourceTr
 
         if (PendingSocketModuleLoad == null) {
             PendingSocketModuleLoad = Promise.all([
-                import("node:net"),
-                import("node:tls")
+                importNodeSocketModule("node:net", "net"),
+                importNodeSocketModule("node:tls", "tls")
             ]).then(([netModule, tlsModule]) => {
                 CachedNetModule = netModule?.default || netModule;
                 CachedTlsModule = tlsModule?.default || tlsModule;
