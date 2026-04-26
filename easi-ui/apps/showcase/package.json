@@ -1,0 +1,16 @@
+{
+  "name": "@easi-ui/showcase",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/dev-server.js",
+    "test": "node -e \"console.log('showcase: no tests yet')\""
+  },
+  "dependencies": {
+    "@easi-ui/core": "file:../../packages/core",
+    "@easi-ui/dicom": "file:../../packages/dicom",
+    "@easi-ui/fhir": "file:../../packages/fhir",
+    "@easi-ui/pipeline": "file:../../packages/pipeline"
+  }
+}

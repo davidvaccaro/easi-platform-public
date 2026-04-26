@@ -1,0 +1,21 @@
+{
+  "name": "@easi-ui/angular-adapter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=17"
+  },
+  "peerDependenciesMeta": {
+    "@angular/core": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@easi-ui/core": "file:../core"
+  }
+}

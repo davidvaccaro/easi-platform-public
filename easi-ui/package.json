@@ -1,0 +1,19 @@
+{
+  "name": "easi-ui",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Source-available UI component toolkit for EASI",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "dev": "npm run dev --workspace @easi-ui/showcase"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

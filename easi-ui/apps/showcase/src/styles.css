@@ -1,0 +1,65 @@
+:root {
+    color-scheme: light;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background:
+        radial-gradient(circle at 10% -10%, rgba(11, 99, 206, 0.15), transparent 42%),
+        radial-gradient(circle at 95% 10%, rgba(10, 143, 103, 0.12), transparent 35%),
+        #edf2f8;
+}
+
+body {
+    padding: 24px;
+}
+
+.showcase-root {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.showcase-header {
+    margin-bottom: 18px;
+}
+
+.showcase-header h1 {
+    margin: 0;
+    font-size: 32px;
+    line-height: 1.2;
+}
+
+.showcase-header p {
+    margin: 8px 0 0;
+    color: var(--easi-ui-color-muted);
+    font-size: 15px;
+}
+
+.showcase-section-title {
+    margin: 0 0 8px;
+    font-size: 18px;
+}
+
+.showcase-theme-switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.showcase-button {
+    border: 1px solid var(--easi-ui-color-border);
+    border-radius: 8px;
+    padding: 7px 11px;
+    font-size: 13px;
+    cursor: pointer;
+    background: var(--easi-ui-color-surface);
+    color: var(--easi-ui-color-text);
+}
+
+.showcase-button:hover {
+    background: var(--easi-ui-color-surface-alt);
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@easi-ui/react-adapter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@easi-ui/core": "file:../core"
+  }
+}
