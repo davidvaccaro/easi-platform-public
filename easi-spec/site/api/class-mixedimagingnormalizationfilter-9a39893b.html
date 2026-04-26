@@ -1,0 +1,1749 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for MixedImagingNormalizationFilter.">
+    <title>EASI | MixedImagingNormalizationFilter</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>MixedImagingNormalizationFilter</h2>
+                <p>This class provides mixed imaging normalization filter behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><strong>MixedImagingNormalizationFilter</strong></p>
+                <p class="page-meta">
+                    This class declares <code>34</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><span class="page-meta">none</span></td></tr>
+                        <tr><td>Declared Members</td><td>34</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>9</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="codecRegistry" data-lang-kind="property-name">codecRegistry</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="dicomParser" data-lang-kind="property-name">dicomParser</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="dicomParserBulkDataPolicy" data-lang-kind="property-name">dicomParserBulkDataPolicy</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="frameOutputFormat" data-lang-kind="property-name">frameOutputFormat</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="includeRgba" data-lang-kind="property-name">includeRgba</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="mode" data-lang-kind="property-name">mode</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="nextHandler" data-lang-kind="property-name">nextHandler</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="property-name">options</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="unknownMode" data-lang-kind="property-name">unknownMode</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="forward method Forward one handler event to the next handler.">
+                                <td><a href="#declared-member-60813d56"><code data-lang-source="forward" data-lang-kind="member-name">forward</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Forward one handler event to the next handler.</td>
+                            </tr>
+                            <tr data-filter-item="toNumber method Normalize one scalar number.">
+                                <td><a href="#declared-member-817ad59c"><code data-lang-source="toNumber" data-lang-kind="member-name">toNumber</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one scalar number.</td>
+                            </tr>
+                            <tr data-filter-item="clamp method Clamp one number into bounds.">
+                                <td><a href="#declared-member-1589f1bc"><code data-lang-source="clamp" data-lang-kind="member-name">clamp</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Clamp one number into bounds.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeFrameOutputFormat method Normalize frame output format alias.">
+                                <td><a href="#declared-member-5e0833ae"><code data-lang-source="normalizeFrameOutputFormat" data-lang-kind="member-name">normalizeFrameOutputFormat</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize frame output format alias.</td>
+                            </tr>
+                            <tr data-filter-item="toText method Normalize one scalar text.">
+                                <td><a href="#declared-member-7b69a255"><code data-lang-source="toText" data-lang-kind="member-name">toText</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one scalar text.</td>
+                            </tr>
+                            <tr data-filter-item="resolveSourceFileName method Resolve source file name from payload content-type metadata.">
+                                <td><a href="#declared-member-0159ee64"><code data-lang-source="resolveSourceFileName" data-lang-kind="member-name">resolveSourceFileName</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve source file name from payload content-type metadata.</td>
+                            </tr>
+                            <tr data-filter-item="resolveSourcePath method Resolve source path metadata from payload.">
+                                <td><a href="#declared-member-3c6bbb69"><code data-lang-source="resolveSourcePath" data-lang-kind="member-name">resolveSourcePath</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve source path metadata from payload.</td>
+                            </tr>
+                            <tr data-filter-item="resolveSourceKind method Resolve high-level source kind for one payload.">
+                                <td><a href="#declared-member-75894142"><code data-lang-source="resolveSourceKind" data-lang-kind="member-name">resolveSourceKind</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve high-level source kind for one payload.</td>
+                            </tr>
+                            <tr data-filter-item="resolveDicomParserBulkDataPolicy method Resolve bulk-data policy used by the internal DICOM parser. Normalization requires full PixelData materialization to decode frames.">
+                                <td><a href="#declared-member-f5ed5dbf"><code data-lang-source="resolveDicomParserBulkDataPolicy" data-lang-kind="member-name">resolveDicomParserBulkDataPolicy</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve bulk-data policy used by the internal DICOM parser.<br>Normalization requires full PixelData materialization to decode frames.</td>
+                            </tr>
+                            <tr data-filter-item="toDA method Format one Date to DICOM DA value.">
+                                <td><a href="#declared-member-d9dd1d04"><code data-lang-source="toDA" data-lang-kind="member-name">toDA</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Format one Date to DICOM DA value.</td>
+                            </tr>
+                            <tr data-filter-item="toTM method Format one Date to DICOM TM value.">
+                                <td><a href="#declared-member-37174f83"><code data-lang-source="toTM" data-lang-kind="member-name">toTM</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Format one Date to DICOM TM value.</td>
+                            </tr>
+                            <tr data-filter-item="rgbaToRgb method Convert RGBA bytes to packed RGB bytes.">
+                                <td><a href="#declared-member-2e3b893b"><code data-lang-source="rgbaToRgb" data-lang-kind="member-name">rgbaToRgb</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Convert RGBA bytes to packed RGB bytes.</td>
+                            </tr>
+                            <tr data-filter-item="stretchMonochromeRgba method Stretch one decoded monochrome frame when dynamic range is too narrow.">
+                                <td><a href="#declared-member-0f9cd3d2"><code data-lang-source="stretchMonochromeRgba" data-lang-kind="member-name">stretchMonochromeRgba</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Stretch one decoded monochrome frame when dynamic range is too narrow.</td>
+                            </tr>
+                            <tr data-filter-item="createAttribute method Build one attribute with explicit value override.">
+                                <td><a href="#declared-member-a192922c"><code data-lang-source="createAttribute" data-lang-kind="member-name">createAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build one attribute with explicit value override.</td>
+                            </tr>
+                            <tr data-filter-item="createMetaAttribute method Build one meta-set attribute.">
+                                <td><a href="#declared-member-3150a7e7"><code data-lang-source="createMetaAttribute" data-lang-kind="member-name">createMetaAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build one meta-set attribute.</td>
+                            </tr>
+                            <tr data-filter-item="createDataAttribute method Build one data-set attribute.">
+                                <td><a href="#declared-member-f9c51504"><code data-lang-source="createDataAttribute" data-lang-kind="member-name">createDataAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build one data-set attribute.</td>
+                            </tr>
+                            <tr data-filter-item="sortAttributes method Sort attributes by group/element.">
+                                <td><a href="#declared-member-5c895a7a"><code data-lang-source="sortAttributes" data-lang-kind="member-name">sortAttributes</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Sort attributes by group/element.</td>
+                            </tr>
+                            <tr data-filter-item="computeMetaGroupLength method Compute File Meta Information Group Length.">
+                                <td><a href="#declared-member-6058ebd3"><code data-lang-source="computeMetaGroupLength" data-lang-kind="member-name">computeMetaGroupLength</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Compute File Meta Information Group Length.</td>
+                            </tr>
+                            <tr data-filter-item="serializeInstance method Serialize one DICOM instance to byte output.">
+                                <td><a href="#declared-member-53a56e60"><code data-lang-source="serializeInstance" data-lang-kind="member-name">serializeInstance</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Serialize one DICOM instance to byte output.</td>
+                            </tr>
+                            <tr data-filter-item="parseDicomInstance method Parse one DICOM byte payload to an Instance model.">
+                                <td><a href="#declared-member-2738e36d"><code data-lang-source="parseDicomInstance" data-lang-kind="member-name">parseDicomInstance</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parse one DICOM byte payload to an Instance model.</td>
+                            </tr>
+                            <tr data-filter-item="decodeImagePayload method Decode one source image payload to RGBA.">
+                                <td><a href="#declared-member-6a5073c2"><code data-lang-source="decodeImagePayload" data-lang-kind="member-name">decodeImagePayload</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Decode one source image payload to RGBA.</td>
+                            </tr>
+                            <tr data-filter-item="decodeDicomPayload method Decode one DICOM payload to RGBA frame output.">
+                                <td><a href="#declared-member-977ac27d"><code data-lang-source="decodeDicomPayload" data-lang-kind="member-name">decodeDicomPayload</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Decode one DICOM payload to RGBA frame output.</td>
+                            </tr>
+                            <tr data-filter-item="encodeNormalizedFrame method Encode normalized frame bytes using configured output format.">
+                                <td><a href="#declared-member-78baa8f9"><code data-lang-source="encodeNormalizedFrame" data-lang-kind="member-name">encodeNormalizedFrame</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Encode normalized frame bytes using configured output format.</td>
+                            </tr>
+                            <tr data-filter-item="buildDicomInstanceFromFrame method Build one normalized secondary-capture DICOM instance from RGBA frame payload.">
+                                <td><a href="#declared-member-4ee765df"><code data-lang-source="buildDicomInstanceFromFrame" data-lang-kind="member-name">buildDicomInstanceFromFrame</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build one normalized secondary-capture DICOM instance from RGBA frame payload.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeToDicom method Normalize one mixed payload to DICOM bytes when needed.">
+                                <td><a href="#declared-member-b808fe93"><code data-lang-source="normalizeToDicom" data-lang-kind="member-name">normalizeToDicom</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one mixed payload to DICOM bytes when needed.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeToFrames method Normalize one mixed payload to one frame representation.">
+                                <td><a href="#declared-member-e8fa4757"><code data-lang-source="normalizeToFrames" data-lang-kind="member-name">normalizeToFrames</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one mixed payload to one frame representation.</td>
+                            </tr>
+                            <tr data-filter-item="normalizePayload method Normalize one payload according to configured mode.">
+                                <td><a href="#declared-member-62378d98"><code data-lang-source="normalizePayload" data-lang-kind="member-name">normalizePayload</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one payload according to configured mode.</td>
+                            </tr>
+                            <tr data-filter-item="onReset method ">
+                                <td><a href="#declared-member-35afd732"><code data-lang-source="onReset" data-lang-kind="member-name">onReset</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStart method ">
+                                <td><a href="#declared-member-9a7359e0"><code data-lang-source="onStart" data-lang-kind="member-name">onStart</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onData method ">
+                                <td><a href="#declared-member-894868ae"><code data-lang-source="onData" data-lang-kind="member-name">onData</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEnd method Normalize one mixed payload before forwarding to the next handler.">
+                                <td><a href="#declared-member-6514b6c8"><code data-lang-source="onEnd" data-lang-kind="member-name">onEnd</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one mixed payload before forwarding to the next handler.</td>
+                            </tr>
+                            <tr data-filter-item="onError method ">
+                                <td><a href="#declared-member-6fe5c002"><code data-lang-source="onError" data-lang-kind="member-name">onError</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onProgress method ">
+                                <td><a href="#declared-member-68d46613"><code data-lang-source="onProgress" data-lang-kind="member-name">onProgress</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="normalizeOptions method Normalize incoming options.">
+                                <td><a href="#declared-member-72beab4b"><code data-lang-source="normalizeOptions" data-lang-kind="member-name">normalizeOptions</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize incoming options.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-60813d56" data-filter-item="forward method Forward one handler event to the next handler.">
+                    <h4><code data-lang-source="forward(name, context, param)" data-lang-kind="signature">forward(name, context, param)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Forward one handler event to the next handler. It provides forward behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Event name. It provides the name input used by forward. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Current context. It provides the context input used by forward.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="param" data-lang-kind="parameter-name">param</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Event payload. It provides the param input used by forward.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;*&gt;" data-lang-kind="type-token">Promise&lt;*&gt;</code><br><span class="page-meta">Forwarded result.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-817ad59c" data-filter-item="toNumber method Normalize one scalar number.">
+                    <h4><code data-lang-source="toNumber(value, fallback)" data-lang-kind="signature">toNumber(value, fallback)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize one scalar number. It defines terminal output contract as number.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Candidate scalar. It provides the value input used by toNumber.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="fallback" data-lang-kind="parameter-name">fallback</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Optional - 0)</span> Fallback value. It provides the fallback input used by toNumber. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">Number value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1589f1bc" data-filter-item="clamp method Clamp one number into bounds.">
+                    <h4><code data-lang-source="clamp(value, minimum, maximum)" data-lang-kind="signature">clamp(value, minimum, maximum)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Clamp one number into bounds. It provides clamp behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Source value. It provides the value input used by clamp. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="minimum" data-lang-kind="parameter-name">minimum</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Minimum bound. It provides the minimum input used by clamp. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="maximum" data-lang-kind="parameter-name">maximum</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Maximum bound. It provides the maximum input used by clamp. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">Clamped value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5e0833ae" data-filter-item="normalizeFrameOutputFormat method Normalize frame output format alias.">
+                    <h4><code data-lang-source="normalizeFrameOutputFormat(format)" data-lang-kind="signature">normalizeFrameOutputFormat(format)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize frame output format alias. It provides normalize frame output format behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="format" data-lang-kind="parameter-name">format</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Source format. It provides the format input used by normalizeFrameOutputFormat. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">Normalized format.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7b69a255" data-filter-item="toText method Normalize one scalar text.">
+                    <h4><code data-lang-source="toText(value, fallback)" data-lang-kind="signature">toText(value, fallback)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize one scalar text. It defines terminal output contract as text.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Source scalar. It provides the value input used by toText.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="fallback" data-lang-kind="parameter-name">fallback</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Fallback value. It provides the fallback input used by toText. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">Normalized text.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0159ee64" data-filter-item="resolveSourceFileName method Resolve source file name from payload content-type metadata.">
+                    <h4><code data-lang-source="resolveSourceFileName(payload)" data-lang-kind="signature">resolveSourceFileName(payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve source file name from payload content-type metadata. It provides resolve source file name behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Source payload. It provides the payload input used by resolveSourceFileName. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">Source file name.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3c6bbb69" data-filter-item="resolveSourcePath method Resolve source path metadata from payload.">
+                    <h4><code data-lang-source="resolveSourcePath(payload)" data-lang-kind="signature">resolveSourcePath(payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve source path metadata from payload. It provides resolve source path behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Source payload. It provides the payload input used by resolveSourcePath. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">Source path.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-75894142" data-filter-item="resolveSourceKind method Resolve high-level source kind for one payload.">
+                    <h4><code data-lang-source="resolveSourceKind(payload)" data-lang-kind="signature">resolveSourceKind(payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve high-level source kind for one payload. It provides resolve source kind behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Source payload. It provides the payload input used by resolveSourceKind. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="&quot;dicom&quot;" data-lang-kind="type-token">&quot;dicom&quot;</code><br /><code data-lang-source="&quot;image&quot;" data-lang-kind="type-token">&quot;image&quot;</code><br /><code data-lang-source="&quot;unknown&quot;" data-lang-kind="type-token">&quot;unknown&quot;</code><br><span class="page-meta">Source kind.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f5ed5dbf" data-filter-item="resolveDicomParserBulkDataPolicy method Resolve bulk-data policy used by the internal DICOM parser. Normalization requires full PixelData materialization to decode frames.">
+                    <h4><code data-lang-source="resolveDicomParserBulkDataPolicy()" data-lang-kind="signature">resolveDicomParserBulkDataPolicy()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve bulk-data policy used by the internal DICOM parser. Normalization requires full PixelData materialization to decode frames. It provides resolve dicom parser bulk data policy behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ mode: string, knownLengthThreshold: number, hardSafetyCap: number }" data-lang-kind="type-token">{ mode: string, knownLengthThreshold: number, hardSafetyCap: number }</code><br><span class="page-meta">Bulk-data policy.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d9dd1d04" data-filter-item="toDA method Format one Date to DICOM DA value.">
+                    <h4><code data-lang-source="toDA(date)" data-lang-kind="signature">toDA(date)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Format one Date to DICOM DA value. It defines terminal output contract as da.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="date" data-lang-kind="parameter-name">date</code></td>
+                                <td class="member-param-type"><code data-lang-source="Date" data-lang-kind="type-token">Date</code></td>
+                                <td><span class="page-meta">(Required)</span> Source date. It provides the date input used by toDA.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">DA value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-37174f83" data-filter-item="toTM method Format one Date to DICOM TM value.">
+                    <h4><code data-lang-source="toTM(date)" data-lang-kind="signature">toTM(date)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Format one Date to DICOM TM value. It defines terminal output contract as tm.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="date" data-lang-kind="parameter-name">date</code></td>
+                                <td class="member-param-type"><code data-lang-source="Date" data-lang-kind="type-token">Date</code></td>
+                                <td><span class="page-meta">(Required)</span> Source date. It provides the date input used by toTM.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">TM value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2e3b893b" data-filter-item="rgbaToRgb method Convert RGBA bytes to packed RGB bytes.">
+                    <h4><code data-lang-source="rgbaToRgb(rgba)" data-lang-kind="signature">rgbaToRgb(rgba)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Convert RGBA bytes to packed RGB bytes. It provides rgba to rgb behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="rgba" data-lang-kind="parameter-name">rgba</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> Source RGBA bytes. It provides the rgba input used by rgbaToRgb.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">Packed RGB bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0f9cd3d2" data-filter-item="stretchMonochromeRgba method Stretch one decoded monochrome frame when dynamic range is too narrow.">
+                    <h4><code data-lang-source="stretchMonochromeRgba(rgba)" data-lang-kind="signature">stretchMonochromeRgba(rgba)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Stretch one decoded monochrome frame when dynamic range is too narrow. It provides stretch monochrome rgba behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="rgba" data-lang-kind="parameter-name">rgba</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> Decoded RGBA bytes. It provides the rgba input used by stretchMonochromeRgba.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">Contrast-adjusted RGBA bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a192922c" data-filter-item="createAttribute method Build one attribute with explicit value override.">
+                    <h4><code data-lang-source="createAttribute(tag, value, transferSyntax)" data-lang-kind="signature">createAttribute(tag, value, transferSyntax)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build one attribute with explicit value override. It provides create attribute behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tag" data-lang-kind="parameter-name">tag</code></td>
+                                <td class="member-param-type"><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a></td>
+                                <td><span class="page-meta">(Required)</span> DICOM tag. It provides the tag input used by createAttribute.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Attribute value. It provides the value input used by createAttribute.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a></td>
+                                <td><span class="page-meta">(Required)</span> Transfer syntax. It provides the transfer syntax input used by createAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a><br><span class="page-meta">The attribute.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3150a7e7" data-filter-item="createMetaAttribute method Build one meta-set attribute.">
+                    <h4><code data-lang-source="createMetaAttribute(tag, value)" data-lang-kind="signature">createMetaAttribute(tag, value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build one meta-set attribute. It provides create meta attribute behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tag" data-lang-kind="parameter-name">tag</code></td>
+                                <td class="member-param-type"><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a></td>
+                                <td><span class="page-meta">(Required)</span> DICOM tag. It provides the tag input used by createMetaAttribute.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Attribute value. It provides the value input used by createMetaAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a><br><span class="page-meta">Meta attribute.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f9c51504" data-filter-item="createDataAttribute method Build one data-set attribute.">
+                    <h4><code data-lang-source="createDataAttribute(tag, value, transferSyntax)" data-lang-kind="signature">createDataAttribute(tag, value, transferSyntax)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build one data-set attribute. It provides create data attribute behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tag" data-lang-kind="parameter-name">tag</code></td>
+                                <td class="member-param-type"><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a></td>
+                                <td><span class="page-meta">(Required)</span> DICOM tag. It provides the tag input used by createDataAttribute.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Attribute value. It provides the value input used by createDataAttribute.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a></td>
+                                <td><span class="page-meta">(Required)</span> Transfer syntax. It provides the transfer syntax input used by createDataAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a><br><span class="page-meta">Data attribute.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5c895a7a" data-filter-item="sortAttributes method Sort attributes by group/element.">
+                    <h4><code data-lang-source="sortAttributes(attributes)" data-lang-kind="signature">sortAttributes(attributes)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Sort attributes by group/element. It provides sort attributes behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attributes" data-lang-kind="parameter-name">attributes</code></td>
+                                <td class="member-param-type"><code data-lang-source="Array" data-lang-kind="type-token">Array</code><code data-lang-source="&lt;" data-lang-kind="type-token">&lt;</code><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a><code data-lang-source="&gt;" data-lang-kind="type-token">&gt;</code></td>
+                                <td><span class="page-meta">(Required)</span> Source attributes. It provides the attributes input used by sortAttributes.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Array" data-lang-kind="type-token">Array</code><code data-lang-source="&lt;" data-lang-kind="type-token">&lt;</code><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a><code data-lang-source="&gt;" data-lang-kind="type-token">&gt;</code><br><span class="page-meta">Sorted attributes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6058ebd3" data-filter-item="computeMetaGroupLength method Compute File Meta Information Group Length.">
+                    <h4><code data-lang-source="computeMetaGroupLength(attributes)" data-lang-kind="signature">computeMetaGroupLength(attributes)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Compute File Meta Information Group Length. It provides compute meta group length behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attributes" data-lang-kind="parameter-name">attributes</code></td>
+                                <td class="member-param-type"><code data-lang-source="Array" data-lang-kind="type-token">Array</code><code data-lang-source="&lt;" data-lang-kind="type-token">&lt;</code><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a><code data-lang-source="&gt;" data-lang-kind="type-token">&gt;</code></td>
+                                <td><span class="page-meta">(Required)</span> Meta attributes excluding group-length. It provides the attributes input used by computeMetaGroupLength.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">Group length value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-53a56e60" data-filter-item="serializeInstance method Serialize one DICOM instance to byte output.">
+                    <h4><code data-lang-source="serializeInstance(instance)" data-lang-kind="signature">serializeInstance(instance)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Serialize one DICOM instance to byte output. It provides serialize instance behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="instance" data-lang-kind="parameter-name">instance</code></td>
+                                <td class="member-param-type"><a href="class-instance-21af06b0.html"><code data-lang-source="Instance" data-lang-kind="type-token">Instance</code></a></td>
+                                <td><span class="page-meta">(Required)</span> Source instance. It provides the instance input used by serializeInstance.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;Uint8Array&gt;" data-lang-kind="type-token">Promise&lt;Uint8Array&gt;</code><br><span class="page-meta">DICOM byte output.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2738e36d" data-filter-item="parseDicomInstance method Parse one DICOM byte payload to an Instance model.">
+                    <h4><code data-lang-source="parseDicomInstance(payload)" data-lang-kind="signature">parseDicomInstance(payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Parse one DICOM byte payload to an Instance model. It provides parse dicom instance behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Source payload. It provides the payload input used by parseDicomInstance. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise" data-lang-kind="type-token">Promise</code><code data-lang-source="&lt;" data-lang-kind="type-token">&lt;</code><a href="class-instance-21af06b0.html"><code data-lang-source="Instance" data-lang-kind="type-token">Instance</code></a><code data-lang-source="&gt;" data-lang-kind="type-token">&gt;</code><br><span class="page-meta">Parsed instance.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6a5073c2" data-filter-item="decodeImagePayload method Decode one source image payload to RGBA.">
+                    <h4><code data-lang-source="decodeImagePayload(payload)" data-lang-kind="signature">decodeImagePayload(payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Decode one source image payload to RGBA. It provides decode image payload behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Source payload. It provides the payload input used by decodeImagePayload. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;{ width: number, height: number, rgba: Uint8Array, imageFormat: string }&gt;" data-lang-kind="type-token">Promise&lt;{ width: number, height: number, rgba: Uint8Array, imageFormat: string }&gt;</code><br><span class="page-meta">Decoded frame payload.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-977ac27d" data-filter-item="decodeDicomPayload method Decode one DICOM payload to RGBA frame output.">
+                    <h4><code data-lang-source="decodeDicomPayload(payload)" data-lang-kind="signature">decodeDicomPayload(payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Decode one DICOM payload to RGBA frame output. It provides decode dicom payload behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Source payload. It provides the payload input used by decodeDicomPayload. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;{ width: number, height: number, rgba: Uint8Array, frameIndex: number, frameCount: number }&gt;" data-lang-kind="type-token">Promise&lt;{ width: number, height: number, rgba: Uint8Array, frameIndex: number, frameCount: number }&gt;</code><br><span class="page-meta">Decoded frame payload.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-78baa8f9" data-filter-item="encodeNormalizedFrame method Encode normalized frame bytes using configured output format.">
+                    <h4><code data-lang-source="encodeNormalizedFrame(rgba, width, height)" data-lang-kind="signature">encodeNormalizedFrame(rgba, width, height)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Encode normalized frame bytes using configured output format. It provides encode normalized frame behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="rgba" data-lang-kind="parameter-name">rgba</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> RGBA bytes. It provides the rgba input used by encodeNormalizedFrame.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="width" data-lang-kind="parameter-name">width</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Frame width. It provides the width input used by encodeNormalizedFrame. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="height" data-lang-kind="parameter-name">height</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Frame height. It provides the height input used by encodeNormalizedFrame. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;{ bytes: Uint8Array, imageFormat: string, mediaType: string }&gt;" data-lang-kind="type-token">Promise&lt;{ bytes: Uint8Array, imageFormat: string, mediaType: string }&gt;</code><br><span class="page-meta">Encoded output.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4ee765df" data-filter-item="buildDicomInstanceFromFrame method Build one normalized secondary-capture DICOM instance from RGBA frame payload.">
+                    <h4><code data-lang-source="buildDicomInstanceFromFrame(frame)" data-lang-kind="signature">buildDicomInstanceFromFrame(frame)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build one normalized secondary-capture DICOM instance from RGBA frame payload. It finalizes and returns the built MixedImagingNormalizationFilter artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="frame" data-lang-kind="parameter-name">frame</code></td>
+                                <td class="member-param-type"><code data-lang-source="{ width: number, height: number, rgba: Uint8Array }" data-lang-kind="type-token">{ width: number, height: number, rgba: Uint8Array }</code></td>
+                                <td><span class="page-meta">(Required)</span> Frame payload. It provides the frame input used by buildDicomInstanceFromFrame. <span class="page-meta">See <a href="#option-builddicominstancefromframe-frame-7eccde40-shape-1">Option Contract</a>.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-instance-21af06b0.html"><code data-lang-source="Instance" data-lang-kind="type-token">Instance</code></a><br><span class="page-meta">DICOM secondary-capture instance.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b808fe93" data-filter-item="normalizeToDicom method Normalize one mixed payload to DICOM bytes when needed.">
+                    <h4><code data-lang-source="normalizeToDicom(payload)" data-lang-kind="signature">normalizeToDicom(payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Normalize one mixed payload to DICOM bytes when needed. It provides normalize to dicom behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Source payload. It provides the payload input used by normalizeToDicom. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">Normalized payload.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e8fa4757" data-filter-item="normalizeToFrames method Normalize one mixed payload to one frame representation.">
+                    <h4><code data-lang-source="normalizeToFrames(payload)" data-lang-kind="signature">normalizeToFrames(payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Normalize one mixed payload to one frame representation. It provides normalize to frames behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Source payload. It provides the payload input used by normalizeToFrames. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">Normalized payload.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-62378d98" data-filter-item="normalizePayload method Normalize one payload according to configured mode.">
+                    <h4><code data-lang-source="normalizePayload(payload)" data-lang-kind="signature">normalizePayload(payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Normalize one payload according to configured mode. It provides normalize payload behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Source payload. It provides the payload input used by normalizePayload. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">Normalized payload.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-35afd732" data-filter-item="onReset method ">
+                    <h4><code data-lang-source="onReset(context, payload)" data-lang-kind="signature">onReset(context, payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to reset conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onReset.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the payload input used by onReset.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-9a7359e0" data-filter-item="onStart method ">
+                    <h4><code data-lang-source="onStart(context, payload)" data-lang-kind="signature">onStart(context, payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStart.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the payload input used by onStart.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-894868ae" data-filter-item="onData method ">
+                    <h4><code data-lang-source="onData(context, payload)" data-lang-kind="signature">onData(context, payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to data conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onData.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the payload input used by onData.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6514b6c8" data-filter-item="onEnd method Normalize one mixed payload before forwarding to the next handler.">
+                    <h4><code data-lang-source="onEnd(context, payload)" data-lang-kind="signature">onEnd(context, payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Normalize one mixed payload before forwarding to the next handler. It scopes handling to end conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Handler context. It provides the context input used by onEnd.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Source payload. It provides the payload input used by onEnd. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;*&gt;" data-lang-kind="type-token">Promise&lt;*&gt;</code><br><span class="page-meta">Forwarded result.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6fe5c002" data-filter-item="onError method ">
+                    <h4><code data-lang-source="onError(context, payload)" data-lang-kind="signature">onError(context, payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to error conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onError.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the payload input used by onError.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-68d46613" data-filter-item="onProgress method ">
+                    <h4><code data-lang-source="onProgress(context, payload)" data-lang-kind="signature">onProgress(context, payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to progress conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onProgress.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the payload input used by onProgress.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-72beab4b" data-filter-item="normalizeOptions method Normalize incoming options.">
+                    <h4><code data-lang-source="normalizeOptions(options)" data-lang-kind="signature">normalizeOptions(options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize incoming options. It provides normalize options behavior on MixedImagingNormalizationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Raw options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Normalized options.</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<div class="grid one">
+                <article class="card reveal" id="option-builddicominstancefromframe-frame-7eccde40" data-filter-item="buildDicomInstanceFromFrame frame option object">
+                    <h4><code data-lang-source="buildDicomInstanceFromFrame(frame)" data-lang-kind="signature">buildDicomInstanceFromFrame(frame)</code> &middot; <code data-lang-source="frame" data-lang-kind="parameter-name">frame</code></h4>
+
+                            <div class="table-scroll" id="option-builddicominstancefromframe-frame-7eccde40-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">width Profile</span><span class="option-shape-description"> - Use this shape to configure frame via width, height, rgba.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="width" data-lang-kind="property-name">width</code></td>
+                                        <td><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls width behavior for buildDicomInstanceFromFrame.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="height" data-lang-kind="property-name">height</code></td>
+                                        <td><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls height behavior for buildDicomInstanceFromFrame.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="rgba" data-lang-kind="property-name">rgba</code></td>
+                                        <td><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls rgba behavior for buildDicomInstanceFromFrame.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-normalizeoptions-options-d6966612" data-filter-item="normalizeOptions options option object">
+                    <h4><code data-lang-source="normalizeOptions(options)" data-lang-kind="signature">normalizeOptions(options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-normalizeoptions-options-d6966612-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article></div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

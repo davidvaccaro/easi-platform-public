@@ -18,30 +18,31 @@ const EXCLUDED_TYPE_NAMES = new Set([
 const NAV_HTML = `
             <div class="nav-section">
                 <a class="nav-link" data-nav-link href="../index.html">Overview</a>
-                <a class="nav-link" data-nav-link href="../why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
                 <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
                 <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
                     <div class="nav-submenu" data-nav-submenu>
-                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
                         <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
                         <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
-                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
                         <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="../dimse-pipeline.html">DIMSE Pipeline Model</a>
-                <a class="nav-link" data-nav-link href="../advanced-pipeline.html">Advanced Pipeline Use Cases</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
@@ -49,7 +50,19 @@ const NAV_HTML = `
                         <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
                         <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
@@ -126,6 +139,7 @@ const NAV_HTML = `
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="waveform-module.html" title="WaveformModule">WaveformModule</a>
                     </div>
                 </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
                 <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
                 <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
                 <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
@@ -2684,9 +2698,12 @@ function patchTopLevelTerminology() {
     path.join(siteRoot, 'why-expressive.html'),
     path.join(siteRoot, 'what-is-an-easi-pipeline.html'),
     path.join(siteRoot, 'core-pipeline.html'),
+    path.join(siteRoot, 'pipeline-reader.html'),
+    path.join(siteRoot, 'pipeline-parser.html'),
     path.join(siteRoot, 'pipeline-mappings.html'),
     path.join(siteRoot, 'pipeline-selection.html'),
     path.join(siteRoot, 'pipeline-filtering.html'),
+    path.join(siteRoot, 'pipeline-terminal.html'),
     path.join(siteRoot, 'pipeline-writing.html'),
     path.join(siteRoot, 'pipeline-results.html'),
     path.join(siteRoot, 'dimse-pipeline.html'),
@@ -2719,11 +2736,21 @@ function patchTopLevelTerminology() {
     html = html.replace(/>DICOM&reg; Type Diagram</g, '>Type Diagram<');
     html = html.replace(/>DICOM&reg; Model Diagram</g, '>Type Diagram<');
     html = html.replace(/>Lifecycle and Status</g, '>Stream Lifecycle Events<');
+    html = html.replace(/href="core-pipeline\.html">Core Pipeline Model<\/a>/g, 'href="core-pipeline.html">Core Pipeline</a>');
+    html = html.replace(/Toggle Core Pipeline Model section/g, 'Toggle Core Pipeline section');
+    html = html.replace(/href="pipeline-mappings\.html">Mappings<\/a>/g, 'href="pipeline-mappings.html">Mapping</a>');
+    html = html.replace(/href="pipeline-writing\.html">Writing<\/a>/g, 'href="pipeline-writing.html">Writer</a>');
+    html = html.replace(/href="stream-processing-model\.html">Stream Processing Model<\/a>/g, 'href="stream-processing-model.html">Stream Processing</a>');
+    html = html.replace(/Toggle Stream Processing Model section/g, 'Toggle Stream Processing section');
+    html = html.replace(
+      /<a class="nav-link" data-nav-link href="materialization-model\.html">Materialization Model<\/a>/g,
+      '<a class="nav-link" data-nav-link href="materialization-model.html">Materialization</a>'
+    );
 
     if (/<a class="nav-link" data-nav-link href="why-easi\.html">Why (?:Adopt )?EASI\?<\/a>/.test(html) === false) {
       html = html.replace(
         /([ \t]*<a class="nav-link" data-nav-link href="index\.html">Overview<\/a>\r?\n)/,
-        '$1                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>\n'
+        '$1                <a class="nav-link" data-nav-link href="why-easi.html">The EASI Advantage</a>\n'
       );
     }
 
@@ -2741,37 +2768,62 @@ function patchTopLevelTerminology() {
       );
     }
 
-    if (/<a class="nav-link" data-nav-link href="dimse-pipeline\.html">DIMSE Pipeline Model<\/a>/.test(html) === false) {
+    html = html.replace(/href="dimse-pipeline\.html">Use Cases<\/a>/g, 'href="dimse-pipeline.html">Common Use Cases</a>');
+    html = html.replace(/Toggle Use Cases section/g, 'Toggle Common Use Cases section');
+
+    const useCasesGroup = [
+      '                <div class="nav-group" data-nav-group data-expanded="false">',
+      '                    <div class="nav-group-header">',
+      '                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dimse-pipeline.html">Common Use Cases</a>',
+      '                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">',
+      '                            <span class="nav-group-chevron">&#9662;</span>',
+      '                        </button>',
+      '                    </div>',
+      '                    <div class="nav-submenu" data-nav-submenu>',
+      '                        <a class="nav-link nav-sublink" data-nav-link href="dimse-pipeline.html">DIMSE Pipelines</a>',
+      '                        <a class="nav-link nav-sublink" data-nav-link href="advanced-pipeline.html">Advanced Pipelines</a>',
+      '                    </div>',
+      '                </div>'
+    ].join('\n');
+
+    if (/data-nav-group-root href="dimse-pipeline\.html">Common Use Cases<\/a>/.test(html) === false) {
       html = html.replace(
-        /([ \t]*<a class="nav-link" data-nav-link href="core-pipeline\.html">Core Pipeline Model<\/a>\r?\n)/,
-        '$1                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>\n'
+        /[ \t]*<a class="nav-link" data-nav-link href="dimse-pipeline\.html">(?:DIMSE Pipeline Model|DIMSE Pipelines)<\/a>\r?\n[ \t]*<a class="nav-link" data-nav-link href="advanced-pipeline\.html">(?:Advanced Pipeline Use Cases|Advanced Pipelines)<\/a>\r?\n?/,
+        `${useCasesGroup}\n`
       );
     }
 
-    if (/<a class="nav-link" data-nav-link href="advanced-pipeline\.html">Advanced Pipeline Use Cases<\/a>/.test(html) === false) {
+    if (/href="stream-processing-model\.html">(?:Stream Processing Model|Stream Processing)<\/a>/.test(html) === false) {
       html = html.replace(
-        /([ \t]*<a class="nav-link" data-nav-link href="dimse-pipeline\.html">DIMSE Pipeline Model<\/a>\r?\n)/,
-        '$1                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>\n'
+        /([ \t]*<div class="nav-group" data-nav-group data-expanded="false">\r?\n[ \t]*<div class="nav-group-header">\r?\n[ \t]*<a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dimse-pipeline\.html">(?:Use Cases|Common Use Cases)<\/a>[\s\S]*?<\/div>\r?\n[ \t]*<\/div>\r?\n)/,
+        '$1                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing</a>\n'
       );
     }
 
-    if (/href="stream-processing-model\.html">Stream Processing Model<\/a>/.test(html) === false) {
-      html = html.replace(
-        /([ \t]*<a class="nav-link" data-nav-link href="advanced-pipeline\.html">Advanced Pipeline Use Cases<\/a>\r?\n)/,
-        '$1                <a class="nav-link" data-nav-link href="stream-processing-model.html">Stream Processing Model</a>\n'
-      );
-    }
-
-    if (/<a class="nav-link" data-nav-link href="materialization-model\.html">Materialization Model<\/a>/.test(html) === false) {
+    if (/<a class="nav-link" data-nav-link href="materialization-model\.html">(?:Materialization Model|Materialization)<\/a>/.test(html) === false) {
       html = html.replace(
         /([ \t]*<a class="nav-link" data-nav-link href="lifecycle-status\.html">Stream Lifecycle<\/a>\r?\n)/,
-        '$1                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>\n'
+        '$1                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization</a>\n'
+      );
+    }
+
+    const useCasesGroupPattern = /[ \t]*<div class="nav-group" data-nav-group data-expanded="false">\r?\n[ \t]*<div class="nav-group-header">\r?\n[ \t]*<a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dimse-pipeline\.html">Common Use Cases<\/a>[\s\S]*?<\/div>\r?\n[ \t]*<\/div>\r?\n?/;
+    const useCasesGroupMatch = html.match(useCasesGroupPattern);
+    if (
+      useCasesGroupMatch &&
+      /<a class="nav-link" data-nav-link href="materialization-model\.html">(?:Materialization Model|Materialization)<\/a>/.test(html)
+    ) {
+      const useCasesGroupBlock = useCasesGroupMatch[0].endsWith('\n') ? useCasesGroupMatch[0] : `${useCasesGroupMatch[0]}\n`;
+      html = html.replace(useCasesGroupPattern, '');
+      html = html.replace(
+        /([ \t]*<a class="nav-link" data-nav-link href="materialization-model\.html">(?:Materialization Model|Materialization)<\/a>\r?\n)/,
+        `$1${useCasesGroupBlock}`
       );
     }
 
     if (/<a class="nav-link nav-sublink" data-nav-link href="pipeline-results\.html">Result Contract<\/a>/.test(html) === false) {
       html = html.replace(
-        /([ \t]*<a class="nav-link nav-sublink" data-nav-link href="pipeline-writing\.html">Writing<\/a>\r?\n)/,
+        /([ \t]*<a class="nav-link nav-sublink" data-nav-link href="pipeline-writing\.html">(?:Writing|Writer)<\/a>\r?\n)/,
         '$1                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>\n'
       );
     }

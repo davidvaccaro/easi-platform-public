@@ -40,9 +40,9 @@ export default class PipelineSourceStage extends PipelineBuilderStage {
 
     /**
      * Set the current reader.
-     * @param {object} reader The reader used to process source input.
-     * @param {*} source Optional default source bound at build-time.
-     * @param {object | null} options Optional default source options bound at build-time.
+     * @param {PartStreamReader | HttpStreamReader | ByteStreamReader | FileStreamReader | FolderStreamReader | FolderWatchReader | WebSocketStreamReader | NodeStreamAdapterReader | DimseAssociationReader | object} reader The reader used to process source input.
+     * @param {string | ReadableStream | ReadableStreamDefaultReader<Uint8Array> | Uint8Array | ArrayBuffer | DataView | Array<number> | object | null} source Optional default source bound at build-time.
+     * @param {(RequestInit & { onEmit?: Function | null }) | { contentType?: Response | Headers | string | object, contentLength?: number | string | null, onEmit?: Function | null } | { recursive?: boolean, includeHidden?: boolean, extensions?: Array<string> | string | null, maxFiles?: number, sort?: "name" | "mtime" | "none", continueOnError?: boolean, processExistingOnStart?: boolean, settleMs?: number, stableChecks?: number, dedupeWindowMs?: number, reconcileIntervalMs?: number, maxQueue?: number, overflow?: "fail" | "drop-oldest" | "drop-newest" } | { transport?: object } | object | null} options Optional default source options bound at build-time.
      * @returns {PipelineFormatStage} A format stage reference.
      */
     withReader(reader, source = null, options = null) {
@@ -52,42 +52,82 @@ export default class PipelineSourceStage extends PipelineBuilderStage {
         );
     }
 
-    /** @returns {PipelineFormatStage} */
+    /**
+     * Use part stream ingestion for direct stream/byte payloads.
+     * @param {ReadableStream | ReadableStreamDefaultReader<Uint8Array> | Uint8Array | ArrayBuffer | DataView | Array<number> | null} source Optional default source.
+     * @param {{ contentType?: Response | Headers | string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} options Optional stream metadata options.
+     * @returns {PipelineFormatStage}
+     */
     fromPartStream(source = null, options = null) {
         return this.withReader(new PartStreamReader(), source, options);
     }
 
-    /** @returns {PipelineFormatStage} */
+    /**
+     * Use HTTP ingestion for URL sources (with fallback to part-stream source handling).
+     * @param {string | ReadableStream | ReadableStreamDefaultReader<Uint8Array> | Uint8Array | ArrayBuffer | DataView | Array<number> | null} source Optional default source.
+     * @param {(RequestInit & { onEmit?: Function | null }) | { contentType?: Response | Headers | string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} options Optional request or stream metadata options.
+     * @returns {PipelineFormatStage}
+     */
     fromHttpStream(source = null, options = null) {
         return this.withReader(new HttpStreamReader(new PartStreamReader()), source, options);
     }
 
-    /** @returns {PipelineFormatStage} */
+    /**
+     * Use byte ingestion for in-memory byte payload sources.
+     * @param {Uint8Array | ArrayBuffer | DataView | Array<number> | null} source Optional default source.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} options Optional content metadata options.
+     * @returns {PipelineFormatStage}
+     */
     fromByteStream(source = null, options = null) {
         return this.withReader(new ByteStreamReader(new PartStreamReader()), source, options);
     }
 
-    /** @returns {PipelineFormatStage} */
+    /**
+     * Use file ingestion for Node file-path sources or browser File/Blob sources.
+     * @param {string | object | null} source Optional default source.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} options Optional read options.
+     * @returns {PipelineFormatStage}
+     */
     fromFileStream(source = null, options = null) {
         return this.withReader(new FileStreamReader(new PartStreamReader()), source, options);
     }
 
-    /** @returns {PipelineFormatStage} */
+    /**
+     * Use folder ingestion for directory enumeration and per-file reading.
+     * @param {string | null} source Optional default source.
+     * @param {{ recursive?: boolean, includeHidden?: boolean, extensions?: Array<string> | string | null, maxFiles?: number, sort?: "name" | "mtime" | "none", continueOnError?: boolean, onEmit?: Function | null } | null} options Optional folder read options.
+     * @returns {PipelineFormatStage}
+     */
     fromFolderStream(source = null, options = null) {
         return this.withReader(new FolderStreamReader(new FileStreamReader(new PartStreamReader())), source, options);
     }
 
-    /** @returns {PipelineFormatStage} */
+    /**
+     * Use folder-watcher ingestion for source-bound watch lifecycles.
+     * @param {string | null} source Optional default watched folder path.
+     * @param {{ recursive?: boolean, includeHidden?: boolean, extensions?: Array<string> | string | null, processExistingOnStart?: boolean, settleMs?: number, stableChecks?: number, dedupeWindowMs?: number, reconcileIntervalMs?: number, maxQueue?: number, overflow?: "fail" | "drop-oldest" | "drop-newest", onEmit?: Function | null } | null} options Optional watch/read options.
+     * @returns {PipelineFormatStage}
+     */
     fromFolderWatchStream(source = null, options = null) {
         return this.withReader(new FolderWatchReader(source, new FileStreamReader(new PartStreamReader())), source, options);
     }
 
-    /** @returns {PipelineFormatStage} */
+    /**
+     * Use WebSocket ingestion for socket stream payloads.
+     * @param {object | null} source Optional default source socket.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, maxMessages?: number | null, onEmit?: Function | null } | null} options Optional read options.
+     * @returns {PipelineFormatStage}
+     */
     fromWebSocketStream(source = null, options = null) {
         return this.withReader(new WebSocketStreamReader(new PartStreamReader()), source, options);
     }
 
-    /** @returns {PipelineFormatStage} */
+    /**
+     * Use Node stream adapter ingestion for async-iterable/readable stream sources.
+     * @param {object | null} source Optional default source stream.
+     * @param {{ contentType?: string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} options Optional content metadata.
+     * @returns {PipelineFormatStage}
+     */
     fromNodeStreamAdapter(source = null, options = null) {
         return this.withReader(new NodeStreamAdapterReader(new PartStreamReader()), source, options);
     }

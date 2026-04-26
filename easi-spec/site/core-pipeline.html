@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Normative EASI core pipeline model and component contracts.">
-    <title>EASI | Core Pipeline Model</title>
+    <title>EASI | Core Pipeline</title>
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="./assets/app.js"></script>
 </head>
@@ -21,30 +21,31 @@
 
 <div class="nav-section">
                 <a class="nav-link" data-nav-link href="index.html">Overview</a>
-                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="why-easi.html">The EASI Advantage</a>
                 <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
                 <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
                     <div class="nav-submenu" data-nav-submenu>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mapping</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-selection.html">Selection</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-filtering.html">Filtering</a>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writer</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
-                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
@@ -52,7 +53,19 @@
                         <a class="nav-link nav-sublink" data-nav-link href="lifecycle-status.html">Stream Lifecycle Events</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
                         <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="builder-types/index.html">Builders</a>
@@ -129,6 +142,7 @@
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
                     </div>
                 </div>
+                <a class="nav-link" data-nav-link href="api/index.html">API Reference</a>
                 <a class="nav-link" data-nav-link href="error-catalog.html">Errors</a>
                 <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
                 <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
@@ -144,7 +158,7 @@
 
         <main class="page">
             <section class="page-hero reveal">
-                <h2>Core Pipeline Model</h2>
+                <h2>Core Pipeline</h2>
                 <p>
                     This page defines the normative execution model for EASI pipelines. All conforming implementations
                     must preserve these semantics even when language syntax differs.
@@ -153,7 +167,7 @@
 
             <section class="section reveal">
                 <h3>Canonical Topology</h3>
-                <pre><code>Reader -> Parser -> [Adapter] -> [Filter ...] -> Terminal -> [Writer]</code></pre>
+                <pre><code class="language-text">Reader -> Parser -> [Adapter] -> [Filter ...] -> Terminal -> [Writer]</code></pre>
                 <div class="callout normative">
                     <h4>Normative Requirement</h4>
                     <p>
@@ -855,7 +869,7 @@ content_count = len(assets.content)</code></pre>
             <section class="section reveal">
                 <h3>Filter Composition Order</h3>
                 <p>Default canonical ordering when multiple semantic filters are enabled:</p>
-                <pre><code>Validation -> De-Identification -> Burned-In Redaction / Transcoding -> Terminal</code></pre>
+                <pre><code class="language-text">Validation -> De-Identification -> Burned-In Redaction / Transcoding -> Terminal</code></pre>
                 <p>
                     Implementations MUST document any ordering differences and their behavioral impact.
                     If a profile claims conformance with this order, the runtime behavior MUST match.
@@ -866,7 +880,21 @@ content_count = len(assets.content)</code></pre>
                 <h3>Extension Points</h3>
                 <div class="grid two">
                     <article class="card">
-                        <h4><a href="pipeline-mappings.html">Custom Mapping</a></h4>
+                        <h4><a href="pipeline-reader.html">Reader</a></h4>
+                        <p>
+                            Reader contracts define source ingress, framing, and binding semantics for file, stream,
+                            HTTP, and folder-based processing.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h4><a href="pipeline-parser.html">Parser</a></h4>
+                        <p>
+                            Parser contracts define lifecycle status flow and semantic interpretation boundaries for
+                            canonical DICOM&reg; processing.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h4><a href="pipeline-mappings.html">Mapping</a></h4>
                         <p>
                             Mappings may define domain-specific projection behavior if they consume canonical semantic events
                             and preserve lifecycle boundaries.
@@ -885,7 +913,14 @@ content_count = len(assets.content)</code></pre>
                         </p>
                     </article>
                     <article class="card">
-                        <h4><a href="pipeline-writing.html">Custom Writer</a></h4>
+                        <h4><a href="pipeline-terminal.html">Terminal</a></h4>
+                        <p>
+                            Terminal contracts define output shape and materialization boundaries before optional
+                            delivery packaging is applied.
+                        </p>
+                    </article>
+                    <article class="card">
+                        <h4><a href="pipeline-writing.html">Writer</a></h4>
                         <p>
                             Writers MAY package output for local files, HTTP, DIMSE, or stream adapters without redefining terminal semantics.
                         </p>

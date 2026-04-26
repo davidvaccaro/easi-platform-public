@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="EASI pipeline parser model for staged semantic interpretation and lifecycle event boundaries.">
+    <title>EASI | Pipeline Parser</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script defer src="./assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Pipeline Parser</h2>
+                <p>
+                    Parsers convert ingress byte streams into deterministic lifecycle semantics that drive
+                    terminals, filters, mappings, and selection contracts.
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Purpose</h3>
+                <p>
+                    The parser stage defines <em>how</em> data is interpreted after reader ingress. It materializes
+                    state progressively (meta, data, attributes, values) and emits canonical events used by
+                    downstream contracts.
+                </p>
+                <div class="callout normative">
+                    <h4>Normative Requirement</h4>
+                    <p>
+                        Parser implementations MUST preserve lifecycle ordering and MUST expose stable status
+                        transitions for a given byte sequence and parser profile.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Core Concepts</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Concept</th>
+                            <th>Core EASI Semantics</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Parser Profile</td>
+                            <td>
+                                Profile selection (for example DICOM data vs metadata) controls which semantic
+                                structures are emitted downstream.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Lifecycle Events</td>
+                            <td>
+                                Canonical event boundaries (container, attribute, value) provide deterministic
+                                extension points for handlers and terminals.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Status Flow</td>
+                            <td>
+                                Parsers expose status progression so routing, filtering, and completion logic can
+                                stay stage-safe and predictable.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Progressive Materialization</td>
+                            <td>
+                                Semantic state can be consumed incrementally without requiring full object graph
+                                materialization up front.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Custom Parsing</td>
+                            <td>
+                                Custom parser implementations may be attached with <a href="api/class-pipelineformatstage-2f4f69d2.html#declared-member-a19ed5e4"><code>withParser(...)</code></a>
+                                while preserving canonical lifecycle expectations.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Builder Surface</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Builder Surface</th>
+                            <th>Parser Focus</th>
+                            <th>Typical Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="api/class-pipelineformatstage-2f4f69d2.html#declared-member-e07fbfd1"><code>ofDicomData()</code></a></td>
+                            <td>MetaSet + DataSet semantics</td>
+                            <td>Full semantic interpretation for processing and writing flows.</td>
+                        </tr>
+                        <tr>
+                            <td><a href="api/class-pipelineformatstage-2f4f69d2.html#declared-member-3304cb58"><code>ofDicomMetadata()</code></a></td>
+                            <td>Metadata-focused parse profile</td>
+                            <td>Metadata-first indexing, validation, and routing workloads.</td>
+                        </tr>
+                        <tr>
+                            <td><a href="api/class-pipelineformatstage-2f4f69d2.html#declared-member-750d7fb4"><code>ofDicomXmlMetadata()</code></a></td>
+                            <td>DICOM XML metadata representation</td>
+                            <td>XML profile interoperability and metadata transformation flows.</td>
+                        </tr>
+                        <tr>
+                            <td><a href="api/class-pipelineformatstage-2f4f69d2.html#declared-member-a19ed5e4"><code>withParser(customParser)</code></a></td>
+                            <td>Explicit parser override</td>
+                            <td>Custom or profile-specific parse behavior with standard terminal contracts.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Usage</h3>
+                <p class="page-meta">
+                    Parser stage declarations define semantic interpretation boundaries; downstream terminal
+                    choice defines materialization and output contracts.
+                </p>
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Pipeline parser examples">
+                        <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="neutral">
+                        <h4>Language-Neutral Examples</h4>
+                        <p>Metadata-first parsing with selection terminal output.</p>
+                        <pre><code class="language-text">selection := EASI.selectionBuilder()
+  .include([Tag.StudyInstanceUID, Tag.SeriesInstanceUID, Tag.Modality])
+  .build()
+
+pipeline := EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomMetadata()
+  .toSelection(selection)
+  .build()
+
+selectionResults := pipeline.process(source)
+metadata := selectionResults.first()</code></pre>
+
+                        <br />
+
+                        <p>Custom parser attachment using explicit parser surface.</p>
+                        <pre><code class="language-text">pipeline := EASI.pipelineBuilder()
+  .fromHttpStream()
+  .withParser(customParser)
+  .toMapping(customMapping)
+  .build()</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="javascript">
+                        <h4>JavaScript Examples</h4>
+                        <p>Metadata-first parsing with selection terminal output.</p>
+                        <pre><code class="language-javascript">const selection = EASI.selectionBuilder()
+  .include([Tag.StudyInstanceUID, Tag.SeriesInstanceUID, Tag.Modality])
+  .build();
+
+const pipeline = EASI.pipelineBuilder()
+  .fromPartStream()
+  .ofDicomMetadata()
+  .toSelection(selection)
+  .build();
+
+const selectionResults = await pipeline.process(source);
+const metadata = selectionResults.first();</code></pre>
+
+                        <br />
+
+                        <p>Custom parser attachment using explicit parser surface.</p>
+                        <pre><code class="language-javascript">const pipeline = EASI.pipelineBuilder()
+  .fromHttpStream()
+  .withParser(customParser)
+  .toMapping(customMapping)
+  .build();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="csharp">
+                        <h4>C# Examples</h4>
+                        <p>Metadata-first parsing with selection terminal output.</p>
+                        <pre><code class="language-csharp">var selection = EASI.SelectionBuilder()
+    .Include(new[] { Tag.StudyInstanceUID, Tag.SeriesInstanceUID, Tag.Modality })
+    .Build();
+
+var pipeline = EASI.PipelineBuilder()
+    .FromPartStream()
+    .OfDicomMetadata()
+    .ToSelection(selection)
+    .Build();
+
+var selectionResults = await pipeline.Process(source);
+var metadata = selectionResults.First();</code></pre>
+
+                        <br />
+
+                        <p>Custom parser attachment using explicit parser surface.</p>
+                        <pre><code class="language-csharp">var pipeline = EASI.PipelineBuilder()
+    .FromHttpStream()
+    .WithParser(customParser)
+    .ToMapping(customMapping)
+    .Build();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="java">
+                        <h4>Java Examples</h4>
+                        <p>Metadata-first parsing with selection terminal output.</p>
+                        <pre><code class="language-java">var selection = EASI.selectionBuilder()
+    .include(List.of(Tag.StudyInstanceUID, Tag.SeriesInstanceUID, Tag.Modality))
+    .build();
+
+var pipeline = EASI.pipelineBuilder()
+    .fromPartStream()
+    .ofDicomMetadata()
+    .toSelection(selection)
+    .build();
+
+var selectionResults = pipeline.process(source);
+var metadata = selectionResults.first();</code></pre>
+
+                        <br />
+
+                        <p>Custom parser attachment using explicit parser surface.</p>
+                        <pre><code class="language-java">var pipeline = EASI.pipelineBuilder()
+    .fromHttpStream()
+    .withParser(customParser)
+    .toMapping(customMapping)
+    .build();</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="python">
+                        <h4>Python Examples</h4>
+                        <p>Metadata-first parsing with selection terminal output.</p>
+                        <pre><code class="language-python">selection = (
+    EASI.selection_builder()
+    .include([Tag.study_instance_uid, Tag.series_instance_uid, Tag.modality])
+    .build()
+)
+
+pipeline = (
+    EASI.pipeline_builder()
+    .from_part_stream()
+    .of_dicom_metadata()
+    .to_selection(selection)
+    .build()
+)
+
+selection_results = pipeline.process(source)
+metadata = selection_results.first()</code></pre>
+
+                        <br />
+
+                        <p>Custom parser attachment using explicit parser surface.</p>
+                        <pre><code class="language-python">pipeline = (
+    EASI.pipeline_builder()
+    .from_http_stream()
+    .with_parser(custom_parser)
+    .to_mapping(custom_mapping)
+    .build()
+)
+</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Parser Design Notes</h3>
+                <ul>
+                    <li>Choose the narrowest parser profile that still satisfies downstream contract needs.</li>
+                    <li>Keep parser responsibilities focused on interpretation, not destination delivery.</li>
+                    <li>Document parser status/event assumptions when introducing custom parser profiles.</li>
+                    <li>Align routing predicates with the stage where required semantic state is available.</li>
+                </ul>
+            </section>
+
+            <p class="footer-note">
+                Informative page: semantic interpretation boundaries and parser lifecycle model.
+            </p>
+        </main>
+    </div>
+</body>
+</html>

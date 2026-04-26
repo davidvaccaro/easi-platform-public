@@ -1,0 +1,1992 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for NodeDimseQueryRetrieveSourceTransport.">
+    <title>EASI | NodeDimseQueryRetrieveSourceTransport</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>NodeDimseQueryRetrieveSourceTransport</h2>
+                <p>This class provides node dimse query retrieve source transport behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><a href="class-dimsesourcetransport-5ff22091.html"><code>DimseSourceTransport</code></a> &rarr; <strong>NodeDimseQueryRetrieveSourceTransport</strong></p>
+                <p class="page-meta">
+                    This class declares <code>33</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><code>DimseSourceTransport</code></td></tr>
+                        <tr><td>Declared Members</td><td>33</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>2</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="_defaultAssociation" data-lang-kind="property-name">_defaultAssociation</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="_options" data-lang-kind="property-name">_options</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="resolveNodeSocketModules method Resolve Node socket modules lazily so browser bundles can load this file safely.">
+                                <td><a href="#declared-member-9c3f4f60"><code data-lang-source="resolveNodeSocketModules" data-lang-kind="member-name">resolveNodeSocketModules</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve Node socket modules lazily so browser bundles can load this file safely.</td>
+                            </tr>
+                            <tr data-filter-item="resolveAssociationValue method Resolve one association option from read-call, instance config, and default.">
+                                <td><a href="#declared-member-795acaa5"><code data-lang-source="resolveAssociationValue" data-lang-kind="member-name">resolveAssociationValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve one association option from read-call, instance config, and default.</td>
+                            </tr>
+                            <tr data-filter-item="validateAssociation method Validate required DIMSE association fields.">
+                                <td><a href="#declared-member-86436a41"><code data-lang-source="validateAssociation" data-lang-kind="member-name">validateAssociation</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Validate required DIMSE association fields.</td>
+                            </tr>
+                            <tr data-filter-item="resolveQueryModel method Resolve query/retrieve model UIDs.">
+                                <td><a href="#declared-member-87039a7e"><code data-lang-source="resolveQueryModel" data-lang-kind="member-name">resolveQueryModel</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve query/retrieve model UIDs.</td>
+                            </tr>
+                            <tr data-filter-item="resolveQueryOptions method Resolve read/query options.">
+                                <td><a href="#declared-member-2a5f51a5"><code data-lang-source="resolveQueryOptions" data-lang-kind="member-name">resolveQueryOptions</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve read/query options.</td>
+                            </tr>
+                            <tr data-filter-item="resolveEchoOptions method Resolve DIMSE C-ECHO options.">
+                                <td><a href="#declared-member-34d222bd"><code data-lang-source="resolveEchoOptions" data-lang-kind="member-name">resolveEchoOptions</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve DIMSE C-ECHO options.</td>
+                            </tr>
+                            <tr data-filter-item="connectSocket method Create one socket for the specified association.">
+                                <td><a href="#declared-member-a0b58112"><code data-lang-source="connectSocket" data-lang-kind="member-name">connectSocket</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Create one socket for the specified association.</td>
+                            </tr>
+                            <tr data-filter-item="createPduReader method Create one PDU reader queue for a socket.">
+                                <td><a href="#declared-member-f61f1838"><code data-lang-source="createPduReader" data-lang-kind="member-name">createPduReader</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Create one PDU reader queue for a socket.</td>
+                            </tr>
+                            <tr data-filter-item="writePdu method Write one PDU to the socket.">
+                                <td><a href="#declared-member-5738c354"><code data-lang-source="writePdu" data-lang-kind="member-name">writePdu</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Write one PDU to the socket.</td>
+                            </tr>
+                            <tr data-filter-item="buildAssociateRq method Build association request and requested presentation-context descriptors.">
+                                <td><a href="#declared-member-1d40e91d"><code data-lang-source="buildAssociateRq" data-lang-kind="member-name">buildAssociateRq</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build association request and requested presentation-context descriptors.</td>
+                            </tr>
+                            <tr data-filter-item="buildEchoAssociateRq method Build C-ECHO association request and echo presentation-context descriptors.">
+                                <td><a href="#declared-member-10e6f736"><code data-lang-source="buildEchoAssociateRq" data-lang-kind="member-name">buildEchoAssociateRq</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build C-ECHO association request and echo presentation-context descriptors.</td>
+                            </tr>
+                            <tr data-filter-item="parseAssociateAc method Parse association accept and map accepted contexts.">
+                                <td><a href="#declared-member-c87946d5"><code data-lang-source="parseAssociateAc" data-lang-kind="member-name">parseAssociateAc</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parse association accept and map accepted contexts.</td>
+                            </tr>
+                            <tr data-filter-item="resolveAcceptedContextByKind method Resolve accepted context by kind.">
+                                <td><a href="#declared-member-5d925f2e"><code data-lang-source="resolveAcceptedContextByKind" data-lang-kind="member-name">resolveAcceptedContextByKind</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve accepted context by kind.</td>
+                            </tr>
+                            <tr data-filter-item="resolveAcceptedStorageContext method Resolve accepted storage context by SOP class UID.">
+                                <td><a href="#declared-member-068bcbf1"><code data-lang-source="resolveAcceptedStorageContext" data-lang-kind="member-name">resolveAcceptedStorageContext</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve accepted storage context by SOP class UID.</td>
+                            </tr>
+                            <tr data-filter-item="buildPDataPdu method Build one P-DATA-TF PDU with one PDV fragment.">
+                                <td><a href="#declared-member-cc73fe3d"><code data-lang-source="buildPDataPdu" data-lang-kind="member-name">buildPDataPdu</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build one P-DATA-TF PDU with one PDV fragment.</td>
+                            </tr>
+                            <tr data-filter-item="sendDimseRequest method Send one DIMSE request command and optional identifier dataset.">
+                                <td><a href="#declared-member-12dc6ae9"><code data-lang-source="sendDimseRequest" data-lang-kind="member-name">sendDimseRequest</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Send one DIMSE request command and optional identifier dataset.</td>
+                            </tr>
+                            <tr data-filter-item="pushPDataEvents method Build and queue complete PDV events.">
+                                <td><a href="#declared-member-2cb48e48"><code data-lang-source="pushPDataEvents" data-lang-kind="member-name">pushPDataEvents</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build and queue complete PDV events.</td>
+                            </tr>
+                            <tr data-filter-item="nextDimseEvent method Read the next normalized DIMSE event from the incoming PDU queue.">
+                                <td><a href="#declared-member-40f68683"><code data-lang-source="nextDimseEvent" data-lang-kind="member-name">nextDimseEvent</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Read the next normalized DIMSE event from the incoming PDU queue.</td>
+                            </tr>
+                            <tr data-filter-item="receiveFindIdentifierDataSet method Receive one C-FIND identifier data-set that follows a pending response.">
+                                <td><a href="#declared-member-1c9c3bbc"><code data-lang-source="receiveFindIdentifierDataSet" data-lang-kind="member-name">receiveFindIdentifierDataSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Receive one C-FIND identifier data-set that follows a pending response.</td>
+                            </tr>
+                            <tr data-filter-item="receiveFindResponses method Read one C-FIND response sequence until final status.">
+                                <td><a href="#declared-member-d0a4a1a6"><code data-lang-source="receiveFindResponses" data-lang-kind="member-name">receiveFindResponses</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Read one C-FIND response sequence until final status.</td>
+                            </tr>
+                            <tr data-filter-item="receiveGetResponses method Receive one C-GET sequence while handling C-STORE sub-operations.">
+                                <td><a href="#declared-member-2d90cc85"><code data-lang-source="receiveGetResponses" data-lang-kind="member-name">receiveGetResponses</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Receive one C-GET sequence while handling C-STORE sub-operations.</td>
+                            </tr>
+                            <tr data-filter-item="evaluateStoreAssociationPolicy method Evaluate inbound C-STORE association policy.">
+                                <td><a href="#declared-member-941dfb05"><code data-lang-source="evaluateStoreAssociationPolicy" data-lang-kind="member-name">evaluateStoreAssociationPolicy</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Evaluate inbound C-STORE association policy.</td>
+                            </tr>
+                            <tr data-filter-item="emitConcern method Emit one DIMSE concern callback (best-effort).">
+                                <td><a href="#declared-member-b3877f71"><code data-lang-source="emitConcern" data-lang-kind="member-name">emitConcern</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Emit one DIMSE concern callback (best-effort).</td>
+                            </tr>
+                            <tr data-filter-item="rejectStoreAssociation method Reject one inbound association request using A-ASSOCIATE-RJ (or immediate socket close).">
+                                <td><a href="#declared-member-7019cbc5"><code data-lang-source="rejectStoreAssociation" data-lang-kind="member-name">rejectStoreAssociation</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Reject one inbound association request using A-ASSOCIATE-RJ (or immediate socket close).</td>
+                            </tr>
+                            <tr data-filter-item="startMoveStoreServer method Start a temporary C-STORE SCP server for C-MOVE retrieval.">
+                                <td><a href="#declared-member-14ca401d"><code data-lang-source="startMoveStoreServer" data-lang-kind="member-name">startMoveStoreServer</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Start a temporary C-STORE SCP server for C-MOVE retrieval.</td>
+                            </tr>
+                            <tr data-filter-item="handleMoveStoreAssociation method Handle one incoming C-STORE association during C-MOVE.">
+                                <td><a href="#declared-member-b76cabeb"><code data-lang-source="handleMoveStoreAssociation" data-lang-kind="member-name">handleMoveStoreAssociation</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Handle one incoming C-STORE association during C-MOVE.</td>
+                            </tr>
+                            <tr data-filter-item="waitForMoveStoreCompletion method Wait for temporary C-STORE server to quiesce after C-MOVE final status.">
+                                <td><a href="#declared-member-e08588df"><code data-lang-source="waitForMoveStoreCompletion" data-lang-kind="member-name">waitForMoveStoreCompletion</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Wait for temporary C-STORE server to quiesce after C-MOVE final status.</td>
+                            </tr>
+                            <tr data-filter-item="receiveMoveResponses method Receive C-MOVE responses until final status.">
+                                <td><a href="#declared-member-14a80c28"><code data-lang-source="receiveMoveResponses" data-lang-kind="member-name">receiveMoveResponses</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Receive C-MOVE responses until final status.</td>
+                            </tr>
+                            <tr data-filter-item="receiveEchoResponse method Receive C-ECHO response and return final status.">
+                                <td><a href="#declared-member-0a406f92"><code data-lang-source="receiveEchoResponse" data-lang-kind="member-name">receiveEchoResponse</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Receive C-ECHO response and return final status.</td>
+                            </tr>
+                            <tr data-filter-item="releaseAssociation method Send A-RELEASE-RQ and wait for A-RELEASE-RP.">
+                                <td><a href="#declared-member-79c89846"><code data-lang-source="releaseAssociation" data-lang-kind="member-name">releaseAssociation</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Send A-RELEASE-RQ and wait for A-RELEASE-RP.</td>
+                            </tr>
+                            <tr data-filter-item="buildReadEnvelope method Build one DIMSE read envelope from retrieved instances.">
+                                <td><a href="#declared-member-ef91aa6f"><code data-lang-source="buildReadEnvelope" data-lang-kind="member-name">buildReadEnvelope</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build one DIMSE read envelope from retrieved instances.</td>
+                            </tr>
+                            <tr data-filter-item="echo method Execute DIMSE C-ECHO (Verification SOP Class) against one association.">
+                                <td><a href="#declared-member-3b22ba51"><code data-lang-source="echo" data-lang-kind="member-name">echo</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Execute DIMSE C-ECHO (Verification SOP Class) against one association.</td>
+                            </tr>
+                            <tr data-filter-item="read method Read one DIMSE Query/Retrieve source payload.">
+                                <td><a href="#declared-member-ca9664c1"><code data-lang-source="read" data-lang-kind="member-name">read</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Read one DIMSE Query/Retrieve source payload.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-9c3f4f60" data-filter-item="resolveNodeSocketModules method Resolve Node socket modules lazily so browser bundles can load this file safely.">
+                    <h4><code data-lang-source="resolveNodeSocketModules()" data-lang-kind="signature">resolveNodeSocketModules()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Resolve Node socket modules lazily so browser bundles can load this file safely. It provides resolve node socket modules behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;{ net: object, tls: object }&gt;" data-lang-kind="type-token">Promise&lt;{ net: object, tls: object }&gt;</code><br><span class="page-meta">Loaded Node socket modules.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-795acaa5" data-filter-item="resolveAssociationValue method Resolve one association option from read-call, instance config, and default.">
+                    <h4><code data-lang-source="resolveAssociationValue(association, name, fallback)" data-lang-kind="signature">resolveAssociationValue(association, name, fallback)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve one association option from read-call, instance config, and default. It provides resolve association value behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Read-call association object. It provides the association input used by resolveAssociationValue.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Option property name. It provides the name input used by resolveAssociationValue. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="fallback" data-lang-kind="parameter-name">fallback</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Fallback value. It provides the fallback input used by resolveAssociationValue.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">Resolved option value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-86436a41" data-filter-item="validateAssociation method Validate required DIMSE association fields.">
+                    <h4><code data-lang-source="validateAssociation(association)" data-lang-kind="signature">validateAssociation(association)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Validate required DIMSE association fields. It provides validate association behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Association options. It provides the association input used by validateAssociation.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-87039a7e" data-filter-item="resolveQueryModel method Resolve query/retrieve model UIDs.">
+                    <h4><code data-lang-source="resolveQueryModel(queryOptions)" data-lang-kind="signature">resolveQueryModel(queryOptions)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve query/retrieve model UIDs. It provides resolve query model behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="queryOptions" data-lang-kind="parameter-name">queryOptions</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Query options. It provides the query options input used by resolveQueryModel. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ findSopClassUid: string, getSopClassUid: string }" data-lang-kind="type-token">{ findSopClassUid: string, getSopClassUid: string }</code><br><span class="page-meta">Model SOP class UIDs.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2a5f51a5" data-filter-item="resolveQueryOptions method Resolve read/query options.">
+                    <h4><code data-lang-source="resolveQueryOptions(association, options)" data-lang-kind="signature">resolveQueryOptions(association, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve read/query options. It provides resolve query options behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Association input. It provides the association input used by resolveQueryOptions.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Read options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Normalized query options.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-34d222bd" data-filter-item="resolveEchoOptions method Resolve DIMSE C-ECHO options.">
+                    <h4><code data-lang-source="resolveEchoOptions(association, options)" data-lang-kind="signature">resolveEchoOptions(association, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve DIMSE C-ECHO options. It provides resolve echo options behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Association input. It provides the association input used by resolveEchoOptions.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Echo options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Normalized echo options.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a0b58112" data-filter-item="connectSocket method Create one socket for the specified association.">
+                    <h4><code data-lang-source="connectSocket(association)" data-lang-kind="signature">connectSocket(association)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Create one socket for the specified association. It provides connect socket behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Association options. It provides the association input used by connectSocket.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">Connected socket.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f61f1838" data-filter-item="createPduReader method Create one PDU reader queue for a socket.">
+                    <h4><code data-lang-source="createPduReader(socket)" data-lang-kind="signature">createPduReader(socket)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Create one PDU reader queue for a socket. It provides create pdu reader behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="socket" data-lang-kind="parameter-name">socket</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Socket instance. It provides the socket input used by createPduReader. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ queue: object, cleanup: Function }" data-lang-kind="type-token">{ queue: object, cleanup: Function }</code><br><span class="page-meta">Queue and cleanup callback.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5738c354" data-filter-item="writePdu method Write one PDU to the socket.">
+                    <h4><code data-lang-source="writePdu(socket, bytes)" data-lang-kind="signature">writePdu(socket, bytes)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Write one PDU to the socket. It provides write pdu behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="socket" data-lang-kind="parameter-name">socket</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Socket instance. It provides the socket input used by writePdu. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="bytes" data-lang-kind="parameter-name">bytes</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> PDU bytes. It provides the bytes input used by writePdu.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1d40e91d" data-filter-item="buildAssociateRq method Build association request and requested presentation-context descriptors.">
+                    <h4><code data-lang-source="buildAssociateRq(association, model, queryOptions)" data-lang-kind="signature">buildAssociateRq(association, model, queryOptions)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build association request and requested presentation-context descriptors. It finalizes and returns the built NodeDimseQueryRetrieveSourceTransport artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Association options. It provides the association input used by buildAssociateRq.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="model" data-lang-kind="parameter-name">model</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Query model UIDs. It provides the model input used by buildAssociateRq. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="queryOptions" data-lang-kind="parameter-name">queryOptions</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Query options. It provides the query options input used by buildAssociateRq. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ pdu: Uint8Array, contexts: Array&lt;object&gt; }" data-lang-kind="type-token">{ pdu: Uint8Array, contexts: Array&lt;object&gt; }</code><br><span class="page-meta">Request PDU and context descriptors.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-10e6f736" data-filter-item="buildEchoAssociateRq method Build C-ECHO association request and echo presentation-context descriptors.">
+                    <h4><code data-lang-source="buildEchoAssociateRq(association, echoOptions)" data-lang-kind="signature">buildEchoAssociateRq(association, echoOptions)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build C-ECHO association request and echo presentation-context descriptors. It finalizes and returns the built NodeDimseQueryRetrieveSourceTransport artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Association options. It provides the association input used by buildEchoAssociateRq.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="echoOptions" data-lang-kind="parameter-name">echoOptions</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> C-ECHO options. It provides the echo options input used by buildEchoAssociateRq. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ pdu: Uint8Array, contexts: Array&lt;object&gt; }" data-lang-kind="type-token">{ pdu: Uint8Array, contexts: Array&lt;object&gt; }</code><br><span class="page-meta">Request PDU and context descriptors.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c87946d5" data-filter-item="parseAssociateAc method Parse association accept and map accepted contexts.">
+                    <h4><code data-lang-source="parseAssociateAc(payload, requestedContexts)" data-lang-kind="signature">parseAssociateAc(payload, requestedContexts)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Parse association accept and map accepted contexts. It provides parse associate ac behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> Association AC payload. It provides the payload input used by parseAssociateAc.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="requestedContexts" data-lang-kind="parameter-name">requestedContexts</code></td>
+                                <td class="member-param-type"><code data-lang-source="Array&lt;object&gt;" data-lang-kind="type-token">Array&lt;object&gt;</code></td>
+                                <td><span class="page-meta">(Required)</span> Requested context descriptors. It provides the requested contexts input used by parseAssociateAc.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ maxPduLength: number, contexts: Map&lt;number, object&gt; }" data-lang-kind="type-token">{ maxPduLength: number, contexts: Map&lt;number, object&gt; }</code><br><span class="page-meta">Parsed accept details.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5d925f2e" data-filter-item="resolveAcceptedContextByKind method Resolve accepted context by kind.">
+                    <h4><code data-lang-source="resolveAcceptedContextByKind(acceptedContexts, kind)" data-lang-kind="signature">resolveAcceptedContextByKind(acceptedContexts, kind)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve accepted context by kind. It provides resolve accepted context by kind behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="acceptedContexts" data-lang-kind="parameter-name">acceptedContexts</code></td>
+                                <td class="member-param-type"><code data-lang-source="Map&lt;number, object&gt;" data-lang-kind="type-token">Map&lt;number, object&gt;</code></td>
+                                <td><span class="page-meta">(Required)</span> Accepted contexts. It provides the accepted contexts input used by resolveAcceptedContextByKind.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="kind" data-lang-kind="parameter-name">kind</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Context kind to find. It provides the kind input used by resolveAcceptedContextByKind. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Accepted context descriptor.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-068bcbf1" data-filter-item="resolveAcceptedStorageContext method Resolve accepted storage context by SOP class UID.">
+                    <h4><code data-lang-source="resolveAcceptedStorageContext(acceptedContexts, sopClassUid)" data-lang-kind="signature">resolveAcceptedStorageContext(acceptedContexts, sopClassUid)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve accepted storage context by SOP class UID. It provides resolve accepted storage context behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="acceptedContexts" data-lang-kind="parameter-name">acceptedContexts</code></td>
+                                <td class="member-param-type"><code data-lang-source="Map&lt;number, object&gt;" data-lang-kind="type-token">Map&lt;number, object&gt;</code></td>
+                                <td><span class="page-meta">(Required)</span> Accepted contexts. It provides the accepted contexts input used by resolveAcceptedStorageContext.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="sopClassUid" data-lang-kind="parameter-name">sopClassUid</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Affected SOP class UID. It provides the sop class uid input used by resolveAcceptedStorageContext. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">Accepted storage context.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-cc73fe3d" data-filter-item="buildPDataPdu method Build one P-DATA-TF PDU with one PDV fragment.">
+                    <h4><code data-lang-source="buildPDataPdu(presentationContextId, fragment, isCommand, isLast)" data-lang-kind="signature">buildPDataPdu(presentationContextId, fragment, isCommand, isLast)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build one P-DATA-TF PDU with one PDV fragment. It finalizes and returns the built NodeDimseQueryRetrieveSourceTransport artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="presentationContextId" data-lang-kind="parameter-name">presentationContextId</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Presentation context id. It provides the presentation context id input used by buildPDataPdu. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="fragment" data-lang-kind="parameter-name">fragment</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> Fragment bytes. It provides the fragment input used by buildPDataPdu.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="isCommand" data-lang-kind="parameter-name">isCommand</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                <td><span class="page-meta">(Required)</span> True for command PDV. It provides the is command input used by buildPDataPdu. Type detail: expects a boolean flag value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="isLast" data-lang-kind="parameter-name">isLast</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                <td><span class="page-meta">(Required)</span> True for last fragment. It provides the is last input used by buildPDataPdu. Type detail: expects a boolean flag value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">PDU bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-12dc6ae9" data-filter-item="sendDimseRequest method Send one DIMSE request command and optional identifier dataset.">
+                    <h4><code data-lang-source="sendDimseRequest(socket, contextId, maxPduLength, commandBytes, dataSetBytes)" data-lang-kind="signature">sendDimseRequest(socket, contextId, maxPduLength, commandBytes, dataSetBytes)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Send one DIMSE request command and optional identifier dataset. It provides send dimse request behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="socket" data-lang-kind="parameter-name">socket</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Connected socket. It provides the socket input used by sendDimseRequest. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="contextId" data-lang-kind="parameter-name">contextId</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Presentation context id. It provides the context id input used by sendDimseRequest. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="maxPduLength" data-lang-kind="parameter-name">maxPduLength</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Max PDU length. It provides the max pdu length input used by sendDimseRequest. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="commandBytes" data-lang-kind="parameter-name">commandBytes</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> Request command bytes. It provides the command bytes input used by sendDimseRequest.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="dataSetBytes" data-lang-kind="parameter-name">dataSetBytes</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Identifier data set bytes. It provides the data set bytes input used by sendDimseRequest.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2cb48e48" data-filter-item="pushPDataEvents method Build and queue complete PDV events.">
+                    <h4><code data-lang-source="pushPDataEvents(state, payload)" data-lang-kind="signature">pushPDataEvents(state, payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build and queue complete PDV events. It provides push pdata events behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDV parsing state. It provides the state input used by pushPDataEvents. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> P-DATA payload. It provides the payload input used by pushPDataEvents.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-40f68683" data-filter-item="nextDimseEvent method Read the next normalized DIMSE event from the incoming PDU queue.">
+                    <h4><code data-lang-source="nextDimseEvent(queue, state)" data-lang-kind="signature">nextDimseEvent(queue, state)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Read the next normalized DIMSE event from the incoming PDU queue. It provides next dimse event behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="queue" data-lang-kind="parameter-name">queue</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDU queue. It provides the queue input used by nextDimseEvent. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDV event state. It provides the state input used by nextDimseEvent. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">Next event.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1c9c3bbc" data-filter-item="receiveFindIdentifierDataSet method Receive one C-FIND identifier data-set that follows a pending response.">
+                    <h4><code data-lang-source="receiveFindIdentifierDataSet(queue, state, findContextId)" data-lang-kind="signature">receiveFindIdentifierDataSet(queue, state, findContextId)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Receive one C-FIND identifier data-set that follows a pending response. It provides receive find identifier data set behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="queue" data-lang-kind="parameter-name">queue</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDU queue. It provides the queue input used by receiveFindIdentifierDataSet. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDV event state. It provides the state input used by receiveFindIdentifierDataSet. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="findContextId" data-lang-kind="parameter-name">findContextId</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> FIND presentation context ID. It provides the find context id input used by receiveFindIdentifierDataSet. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;Uint8Array&gt;" data-lang-kind="type-token">Promise&lt;Uint8Array&gt;</code><br><span class="page-meta">Identifier data-set bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d0a4a1a6" data-filter-item="receiveFindResponses method Read one C-FIND response sequence until final status.">
+                    <h4><code data-lang-source="receiveFindResponses(queue, state, findContextId, options)" data-lang-kind="signature">receiveFindResponses(queue, state, findContextId, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Read one C-FIND response sequence until final status. It provides receive find responses behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="queue" data-lang-kind="parameter-name">queue</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDU queue. It provides the queue input used by receiveFindResponses. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDV event state. It provides the state input used by receiveFindResponses. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="findContextId" data-lang-kind="parameter-name">findContextId</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> FIND presentation context ID. It provides the find context id input used by receiveFindResponses. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional receive options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;Array&lt;Uint8Array&gt;&gt;" data-lang-kind="type-token">Promise&lt;Array&lt;Uint8Array&gt;&gt;</code><br><span class="page-meta">Collected Part-10 C-FIND identifier payloads.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2d90cc85" data-filter-item="receiveGetResponses method Receive one C-GET sequence while handling C-STORE sub-operations.">
+                    <h4><code data-lang-source="receiveGetResponses(socket, queue, state, acceptedContexts, maxPduLength, getContextId)" data-lang-kind="signature">receiveGetResponses(socket, queue, state, acceptedContexts, maxPduLength, getContextId)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Receive one C-GET sequence while handling C-STORE sub-operations. It provides receive get responses behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="socket" data-lang-kind="parameter-name">socket</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Connected socket. It provides the socket input used by receiveGetResponses. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="queue" data-lang-kind="parameter-name">queue</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDU queue. It provides the queue input used by receiveGetResponses. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDV event state. It provides the state input used by receiveGetResponses. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="acceptedContexts" data-lang-kind="parameter-name">acceptedContexts</code></td>
+                                <td class="member-param-type"><code data-lang-source="Map&lt;number, object&gt;" data-lang-kind="type-token">Map&lt;number, object&gt;</code></td>
+                                <td><span class="page-meta">(Required)</span> Accepted context map. It provides the accepted contexts input used by receiveGetResponses.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="maxPduLength" data-lang-kind="parameter-name">maxPduLength</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Max PDU length. It provides the max pdu length input used by receiveGetResponses. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="getContextId" data-lang-kind="parameter-name">getContextId</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> GET presentation context ID. It provides the get context id input used by receiveGetResponses. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;Array&lt;Uint8Array&gt;&gt;" data-lang-kind="type-token">Promise&lt;Array&lt;Uint8Array&gt;&gt;</code><br><span class="page-meta">Retrieved Part-10 DICOM instances.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-941dfb05" data-filter-item="evaluateStoreAssociationPolicy method Evaluate inbound C-STORE association policy.">
+                    <h4><code data-lang-source="evaluateStoreAssociationPolicy(request, socket, state, options)" data-lang-kind="signature">evaluateStoreAssociationPolicy(request, socket, state, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Evaluate inbound C-STORE association policy. It provides evaluate store association policy behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="request" data-lang-kind="parameter-name">request</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Parsed associate-rq details. It provides the request input used by evaluateStoreAssociationPolicy. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="socket" data-lang-kind="parameter-name">socket</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Incoming socket. It provides the socket input used by evaluateStoreAssociationPolicy. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Move-store state object. It provides the state input used by evaluateStoreAssociationPolicy. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Required)</span> Store SCP options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ accepted: boolean, reason?: string }" data-lang-kind="type-token">{ accepted: boolean, reason?: string }</code><br><span class="page-meta">Decision.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b3877f71" data-filter-item="emitConcern method Emit one DIMSE concern callback (best-effort).">
+                    <h4><code data-lang-source="emitConcern(options, concern)" data-lang-kind="signature">emitConcern(options, concern)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Emit one DIMSE concern callback (best-effort). It provides emit concern behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Required)</span> Store/query options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="concern" data-lang-kind="parameter-name">concern</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Concern payload. It provides the concern input used by emitConcern. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7019cbc5" data-filter-item="rejectStoreAssociation method Reject one inbound association request using A-ASSOCIATE-RJ (or immediate socket close).">
+                    <h4><code data-lang-source="rejectStoreAssociation(socket, options)" data-lang-kind="signature">rejectStoreAssociation(socket, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Reject one inbound association request using A-ASSOCIATE-RJ (or immediate socket close). It provides reject store association behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="socket" data-lang-kind="parameter-name">socket</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Incoming socket. It provides the socket input used by rejectStoreAssociation. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Store SCP options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-14ca401d" data-filter-item="startMoveStoreServer method Start a temporary C-STORE SCP server for C-MOVE retrieval.">
+                    <h4><code data-lang-source="startMoveStoreServer(association, queryOptions)" data-lang-kind="signature">startMoveStoreServer(association, queryOptions)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Start a temporary C-STORE SCP server for C-MOVE retrieval. It provides start move store server behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Association options. It provides the association input used by startMoveStoreServer.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="queryOptions" data-lang-kind="parameter-name">queryOptions</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Query options. It provides the query options input used by startMoveStoreServer. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">Move store server state.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b76cabeb" data-filter-item="handleMoveStoreAssociation method Handle one incoming C-STORE association during C-MOVE.">
+                    <h4><code data-lang-source="handleMoveStoreAssociation(socket, state, options)" data-lang-kind="signature">handleMoveStoreAssociation(socket, state, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Handle one incoming C-STORE association during C-MOVE. It provides handle move store association behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="socket" data-lang-kind="parameter-name">socket</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Connected incoming socket. It provides the socket input used by handleMoveStoreAssociation. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Move store state. It provides the state input used by handleMoveStoreAssociation. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Required)</span> Store SCP options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e08588df" data-filter-item="waitForMoveStoreCompletion method Wait for temporary C-STORE server to quiesce after C-MOVE final status.">
+                    <h4><code data-lang-source="waitForMoveStoreCompletion(moveStore, queryOptions)" data-lang-kind="signature">waitForMoveStoreCompletion(moveStore, queryOptions)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Wait for temporary C-STORE server to quiesce after C-MOVE final status. It provides wait for move store completion behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="moveStore" data-lang-kind="parameter-name">moveStore</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Move store server. It provides the move store input used by waitForMoveStoreCompletion. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="queryOptions" data-lang-kind="parameter-name">queryOptions</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Query options. It provides the query options input used by waitForMoveStoreCompletion. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-14a80c28" data-filter-item="receiveMoveResponses method Receive C-MOVE responses until final status.">
+                    <h4><code data-lang-source="receiveMoveResponses(queue, state, moveContextId)" data-lang-kind="signature">receiveMoveResponses(queue, state, moveContextId)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Receive C-MOVE responses until final status. It provides receive move responses behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="queue" data-lang-kind="parameter-name">queue</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDU queue. It provides the queue input used by receiveMoveResponses. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDV event state. It provides the state input used by receiveMoveResponses. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="moveContextId" data-lang-kind="parameter-name">moveContextId</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> MOVE presentation context ID. It provides the move context id input used by receiveMoveResponses. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">Final C-MOVE status details.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0a406f92" data-filter-item="receiveEchoResponse method Receive C-ECHO response and return final status.">
+                    <h4><code data-lang-source="receiveEchoResponse(queue, state, echoContextId)" data-lang-kind="signature">receiveEchoResponse(queue, state, echoContextId)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Receive C-ECHO response and return final status. It provides receive echo response behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="queue" data-lang-kind="parameter-name">queue</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDU queue. It provides the queue input used by receiveEchoResponse. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDV event state. It provides the state input used by receiveEchoResponse. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="echoContextId" data-lang-kind="parameter-name">echoContextId</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> ECHO presentation context ID. It provides the echo context id input used by receiveEchoResponse. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">C-ECHO response details.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-79c89846" data-filter-item="releaseAssociation method Send A-RELEASE-RQ and wait for A-RELEASE-RP.">
+                    <h4><code data-lang-source="releaseAssociation(socket, queue, state)" data-lang-kind="signature">releaseAssociation(socket, queue, state)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Send A-RELEASE-RQ and wait for A-RELEASE-RP. It provides release association behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="socket" data-lang-kind="parameter-name">socket</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Connected socket. It provides the socket input used by releaseAssociation. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="queue" data-lang-kind="parameter-name">queue</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDU queue. It provides the queue input used by releaseAssociation. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> PDV event state. It provides the state input used by releaseAssociation. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ef91aa6f" data-filter-item="buildReadEnvelope method Build one DIMSE read envelope from retrieved instances.">
+                    <h4><code data-lang-source="buildReadEnvelope(instances, queryOptions, association, diagnostics)" data-lang-kind="signature">buildReadEnvelope(instances, queryOptions, association, diagnostics)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build one DIMSE read envelope from retrieved instances. It finalizes and returns the built NodeDimseQueryRetrieveSourceTransport artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="instances" data-lang-kind="parameter-name">instances</code></td>
+                                <td class="member-param-type"><code data-lang-source="Array&lt;Uint8Array&gt;" data-lang-kind="type-token">Array&lt;Uint8Array&gt;</code></td>
+                                <td><span class="page-meta">(Required)</span> Retrieved Part-10 instance byte arrays. It provides the instances input used by buildReadEnvelope.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="queryOptions" data-lang-kind="parameter-name">queryOptions</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Query options. It provides the query options input used by buildReadEnvelope. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Association metadata. It provides the association input used by buildReadEnvelope.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="diagnostics" data-lang-kind="parameter-name">diagnostics</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> DIMSE diagnostics metadata. It provides the diagnostics input used by buildReadEnvelope. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Read envelope.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3b22ba51" data-filter-item="echo method Execute DIMSE C-ECHO (Verification SOP Class) against one association.">
+                    <h4><code data-lang-source="echo(association, options)" data-lang-kind="signature">echo(association, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Execute DIMSE C-ECHO (Verification SOP Class) against one association. It provides echo behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> DIMSE association/source options. It provides the association input used by echo.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional C-ECHO options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">C-ECHO result.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ca9664c1" data-filter-item="read method Read one DIMSE Query/Retrieve source payload.">
+                    <h4><code data-lang-source="read(association, options)" data-lang-kind="signature">read(association, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Read one DIMSE Query/Retrieve source payload. It provides read behavior on NodeDimseQueryRetrieveSourceTransport.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> DIMSE association/source options. It provides the association input used by read.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional read options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">Source payload envelope.</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<div class="grid one">
+                <article class="card reveal" id="option-resolvequeryoptions-options-a409ac27" data-filter-item="resolveQueryOptions options option object">
+                    <h4><code data-lang-source="resolveQueryOptions(association, options)" data-lang-kind="signature">resolveQueryOptions(association, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-resolvequeryoptions-options-a409ac27-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-resolveechooptions-options-52b132e4" data-filter-item="resolveEchoOptions options option object">
+                    <h4><code data-lang-source="resolveEchoOptions(association, options)" data-lang-kind="signature">resolveEchoOptions(association, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-resolveechooptions-options-52b132e4-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-receivefindresponses-options-39db9b9e" data-filter-item="receiveFindResponses options option object">
+                    <h4><code data-lang-source="receiveFindResponses(queue, state, findContextId, options)" data-lang-kind="signature">receiveFindResponses(queue, state, findContextId, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-receivefindresponses-options-39db9b9e-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">collectIdentifiers Profile</span><span class="option-shape-description"> - Use this shape to configure options via collectIdentifiers, transferSyntaxUid, sopClassUid.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="collectIdentifiers" data-lang-kind="property-name">collectIdentifiers</code></td>
+                                        <td><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls collect identifiers behavior for receiveFindResponses.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="transferSyntaxUid" data-lang-kind="property-name">transferSyntaxUid</code></td>
+                                        <td><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls transfer syntax uid behavior for receiveFindResponses.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="sopClassUid" data-lang-kind="property-name">sopClassUid</code></td>
+                                        <td><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls sop class uid behavior for receiveFindResponses.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-evaluatestoreassociationpolicy-options-a2e7373e" data-filter-item="evaluateStoreAssociationPolicy options option object">
+                    <h4><code data-lang-source="evaluateStoreAssociationPolicy(request, socket, state, options)" data-lang-kind="signature">evaluateStoreAssociationPolicy(request, socket, state, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-evaluatestoreassociationpolicy-options-a2e7373e-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-emitconcern-options-bf0a1645" data-filter-item="emitConcern options option object">
+                    <h4><code data-lang-source="emitConcern(options, concern)" data-lang-kind="signature">emitConcern(options, concern)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-emitconcern-options-bf0a1645-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-rejectstoreassociation-options-f39f68c0" data-filter-item="rejectStoreAssociation options option object">
+                    <h4><code data-lang-source="rejectStoreAssociation(socket, options)" data-lang-kind="signature">rejectStoreAssociation(socket, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-rejectstoreassociation-options-f39f68c0-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-handlemovestoreassociation-options-b408075e" data-filter-item="handleMoveStoreAssociation options option object">
+                    <h4><code data-lang-source="handleMoveStoreAssociation(socket, state, options)" data-lang-kind="signature">handleMoveStoreAssociation(socket, state, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-handlemovestoreassociation-options-b408075e-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-echo-options-d934e481" data-filter-item="echo options option object">
+                    <h4><code data-lang-source="echo(association, options)" data-lang-kind="signature">echo(association, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-echo-options-d934e481-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-read-options-6c69f20f" data-filter-item="read options option object">
+                    <h4><code data-lang-source="read(association, options)" data-lang-kind="signature">read(association, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-read-options-6c69f20f-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article></div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

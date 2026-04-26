@@ -1,0 +1,1239 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for DicomXmlMetadataAdapter.">
+    <title>EASI | DicomXmlMetadataAdapter</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>DicomXmlMetadataAdapter</h2>
+                <p>This class provides dicom xml metadata adapter behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><a href="class-dicomjsonmetadataadapter-23033cea.html"><code>DicomJsonMetadataAdapter</code></a> &rarr; <strong>DicomXmlMetadataAdapter</strong></p>
+                <p class="page-meta">
+                    This class declares <code>16</code> member(s) and inherits
+                    <code>39</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><code>DicomJsonMetadataAdapter</code></td></tr>
+                        <tr><td>Declared Members</td><td>16</td></tr>
+                        <tr><td>Inherited Members</td><td>39</td></tr>
+                        <tr><td>Properties</td><td>0</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4"><span class="page-meta">No documented properties.</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="emitAttribute method Emit a DICOM attribute through the canonical downstream handler interface. For sequences, emit a shell sequence and stream nested items/attributes from a snapshot so downstream handlers do not mutate the source XML-materialized sequence object.">
+                                <td><a href="#declared-member-89c54da7"><code data-lang-source="emitAttribute" data-lang-kind="member-name">emitAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Emit a DICOM attribute through the canonical downstream handler interface.<br>For sequences, emit a shell sequence and stream nested items/attributes from a snapshot<br>so downstream handlers do not mutate the source XML-materialized sequence object.</td>
+                            </tr>
+                            <tr data-filter-item="getXmlAttribute method Resolve an XML attribute value ignoring case.">
+                                <td><a href="#declared-member-306c32de"><code data-lang-source="getXmlAttribute" data-lang-kind="member-name">getXmlAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve an XML attribute value ignoring case.</td>
+                            </tr>
+                            <tr data-filter-item="resolveXmlTag method Resolve a DICOM tag for XML metadata, creating a tolerant fallback tag when the local dictionary does not contain the specified standard tag identifier.">
+                                <td><a href="#declared-member-1ea6735a"><code data-lang-source="resolveXmlTag" data-lang-kind="member-name">resolveXmlTag</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve a DICOM tag for XML metadata, creating a tolerant fallback tag when the<br>local dictionary does not contain the specified standard tag identifier.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeXmlTagID method Normalize a DICOM tag identifier from XML (supports &quot;(gggg,eeee)&quot; and &quot;ggggeeee&quot;).">
+                                <td><a href="#declared-member-bc5b4ad7"><code data-lang-source="normalizeXmlTagID" data-lang-kind="member-name">normalizeXmlTagID</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize a DICOM tag identifier from XML (supports &quot;(gggg,eeee)&quot; and &quot;ggggeeee&quot;).</td>
+                            </tr>
+                            <tr data-filter-item="findXmlFrame method Find the nearest XML frame of the given kind.">
+                                <td><a href="#declared-member-164dd05d"><code data-lang-source="findXmlFrame" data-lang-kind="member-name">findXmlFrame</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Find the nearest XML frame of the given kind.</td>
+                            </tr>
+                            <tr data-filter-item="shouldCaptureText method Determine if text should be captured for the current XML frame.">
+                                <td><a href="#declared-member-ba8ac4bb"><code data-lang-source="shouldCaptureText" data-lang-kind="member-name">shouldCaptureText</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if text should be captured for the current XML frame.</td>
+                            </tr>
+                            <tr data-filter-item="convertXmlValue method Convert a textual XML value to a JavaScript primitive for selected DICOM VRs.">
+                                <td><a href="#declared-member-4af98270"><code data-lang-source="convertXmlValue" data-lang-kind="member-name">convertXmlValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Convert a textual XML value to a JavaScript primitive for selected DICOM VRs.</td>
+                            </tr>
+                            <tr data-filter-item="buildPersonNameRepresentation method Build a DICOM person-name representation string from parsed XML parts.">
+                                <td><a href="#declared-member-e0f6a27a"><code data-lang-source="buildPersonNameRepresentation" data-lang-kind="member-name">buildPersonNameRepresentation</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build a DICOM person-name representation string from parsed XML parts.</td>
+                            </tr>
+                            <tr data-filter-item="addTopLevelAttribute method Add a top-level attribute to the current instance meta-set or data-set.">
+                                <td><a href="#declared-member-294da729"><code data-lang-source="addTopLevelAttribute" data-lang-kind="member-name">addTopLevelAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Add a top-level attribute to the current instance meta-set or data-set.</td>
+                            </tr>
+                            <tr data-filter-item="buildDataElement method Materialize a DICOM data element from an XML DicomAttribute frame.">
+                                <td><a href="#declared-member-e27cb20d"><code data-lang-source="buildDataElement" data-lang-kind="member-name">buildDataElement</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Materialize a DICOM data element from an XML DicomAttribute frame.</td>
+                            </tr>
+                            <tr data-filter-item="onStart method Reset and prepare XML-specific adapter state.">
+                                <td><a href="#declared-member-1d545f82"><code data-lang-source="onStart" data-lang-kind="member-name">onStart</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Reset and prepare XML-specific adapter state.</td>
+                            </tr>
+                            <tr data-filter-item="onStartDocument method ">
+                                <td><a href="#declared-member-b4ac7db7"><code data-lang-source="onStartDocument" data-lang-kind="member-name">onStartDocument</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartElement method Consume XML start-element events and build Native DICOM Model parse state.">
+                                <td><a href="#declared-member-b34a049a"><code data-lang-source="onStartElement" data-lang-kind="member-name">onStartElement</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Consume XML start-element events and build Native DICOM Model parse state.</td>
+                            </tr>
+                            <tr data-filter-item="onText method Accumulate XML text for the active value-bearing parse frame.">
+                                <td><a href="#declared-member-36f29652"><code data-lang-source="onText" data-lang-kind="member-name">onText</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Accumulate XML text for the active value-bearing parse frame.</td>
+                            </tr>
+                            <tr data-filter-item="onEndElement method Finalize XML elements and materialize DICOM values/attributes/instances.">
+                                <td><a href="#declared-member-b3933eb6"><code data-lang-source="onEndElement" data-lang-kind="member-name">onEndElement</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Finalize XML elements and materialize DICOM values/attributes/instances.</td>
+                            </tr>
+                            <tr data-filter-item="onEndDocument method ">
+                                <td><a href="#declared-member-cd86be09"><code data-lang-source="onEndDocument" data-lang-kind="member-name">onEndDocument</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-89c54da7" data-filter-item="emitAttribute method Emit a DICOM attribute through the canonical downstream handler interface. For sequences, emit a shell sequence and stream nested items/attributes from a snapshot so downstream handlers do not mutate the source XML-materialized sequence object.">
+                    <h4><code data-lang-source="emitAttribute(context, attribute)" data-lang-kind="signature">emitAttribute(context, attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Emit a DICOM attribute through the canonical downstream handler interface. For sequences, emit a shell sequence and stream nested items/attributes from a snapshot so downstream handlers do not mutate the source XML-materialized sequence object. It provides emit attribute behavior on DicomXmlMetadataAdapter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The adapter context. It provides the context input used by emitAttribute. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a><br /><a href="class-attributesequence-fdcc7f33.html"><code data-lang-source="AttributeSequence" data-lang-kind="type-token">AttributeSequence</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The attribute to emit. It provides the attribute input used by emitAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="*" data-lang-kind="type-token">*</code><br><span class="page-meta">The downstream status.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-306c32de" data-filter-item="getXmlAttribute method Resolve an XML attribute value ignoring case.">
+                    <h4><code data-lang-source="getXmlAttribute(attributes, name)" data-lang-kind="signature">getXmlAttribute(attributes, name)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve an XML attribute value ignoring case. It retrieves xml attribute state from DicomXmlMetadataAdapter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attributes" data-lang-kind="parameter-name">attributes</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The XML attributes object. It provides the attributes input used by getXmlAttribute. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The attribute name. It provides the name input used by getXmlAttribute. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The attribute value or null.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1ea6735a" data-filter-item="resolveXmlTag method Resolve a DICOM tag for XML metadata, creating a tolerant fallback tag when the local dictionary does not contain the specified standard tag identifier.">
+                    <h4><code data-lang-source="resolveXmlTag(tagID, vr, keyword)" data-lang-kind="signature">resolveXmlTag(tagID, vr, keyword)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve a DICOM tag for XML metadata, creating a tolerant fallback tag when the local dictionary does not contain the specified standard tag identifier. It provides resolve xml tag behavior on DicomXmlMetadataAdapter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tagID" data-lang-kind="parameter-name">tagID</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The normalized DICOM tag identifier (ggggeeee). It provides the tag id input used by resolveXmlTag. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="vr" data-lang-kind="parameter-name">vr</code></td>
+                                <td class="member-param-type"><a href="class-valuerepresentation-2c36f9f9.html"><code data-lang-source="ValueRepresentation" data-lang-kind="type-token">ValueRepresentation</code></a><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The parsed XML VR (if any). It provides the vr input used by resolveXmlTag.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="keyword" data-lang-kind="parameter-name">keyword</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> The XML keyword attribute (if any). It provides the keyword input used by resolveXmlTag. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The resolved or synthesized tag.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-bc5b4ad7" data-filter-item="normalizeXmlTagID method Normalize a DICOM tag identifier from XML (supports &quot;(gggg,eeee)&quot; and &quot;ggggeeee&quot;).">
+                    <h4><code data-lang-source="normalizeXmlTagID(value)" data-lang-kind="signature">normalizeXmlTagID(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize a DICOM tag identifier from XML (supports &quot;(gggg,eeee)&quot; and &quot;ggggeeee&quot;). It provides normalize xml tag id behavior on DicomXmlMetadataAdapter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The XML tag value. It provides the value input used by normalizeXmlTagID. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The normalized DICOM tag identifier or null.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-164dd05d" data-filter-item="findXmlFrame method Find the nearest XML frame of the given kind.">
+                    <h4><code data-lang-source="findXmlFrame(context, kind)" data-lang-kind="signature">findXmlFrame(context, kind)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Find the nearest XML frame of the given kind. It provides find xml frame behavior on DicomXmlMetadataAdapter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The adapter context. It provides the context input used by findXmlFrame. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="kind" data-lang-kind="parameter-name">kind</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The frame kind. It provides the kind input used by findXmlFrame. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The matching frame.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ba8ac4bb" data-filter-item="shouldCaptureText method Determine if text should be captured for the current XML frame.">
+                    <h4><code data-lang-source="shouldCaptureText(frame)" data-lang-kind="signature">shouldCaptureText(frame)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if text should be captured for the current XML frame. It provides should capture text behavior on DicomXmlMetadataAdapter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="frame" data-lang-kind="parameter-name">frame</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The XML frame. It provides the frame input used by shouldCaptureText.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when text should be accumulated.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4af98270" data-filter-item="convertXmlValue method Convert a textual XML value to a JavaScript primitive for selected DICOM VRs.">
+                    <h4><code data-lang-source="convertXmlValue(vr, value)" data-lang-kind="signature">convertXmlValue(vr, value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Convert a textual XML value to a JavaScript primitive for selected DICOM VRs. It provides convert xml value behavior on DicomXmlMetadataAdapter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="vr" data-lang-kind="parameter-name">vr</code></td>
+                                <td class="member-param-type"><a href="class-valuerepresentation-2c36f9f9.html"><code data-lang-source="ValueRepresentation" data-lang-kind="type-token">ValueRepresentation</code></a><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The DICOM VR. It provides the vr input used by convertXmlValue.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The XML text value. It provides the value input used by convertXmlValue. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="*" data-lang-kind="type-token">*</code><br><span class="page-meta">The converted value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e0f6a27a" data-filter-item="buildPersonNameRepresentation method Build a DICOM person-name representation string from parsed XML parts.">
+                    <h4><code data-lang-source="buildPersonNameRepresentation(frame)" data-lang-kind="signature">buildPersonNameRepresentation(frame)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build a DICOM person-name representation string from parsed XML parts. It finalizes and returns the built DicomXmlMetadataAdapter artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="frame" data-lang-kind="parameter-name">frame</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The PN representation frame. It provides the frame input used by buildPersonNameRepresentation. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">The PN representation string.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-294da729" data-filter-item="addTopLevelAttribute method Add a top-level attribute to the current instance meta-set or data-set.">
+                    <h4><code data-lang-source="addTopLevelAttribute(context, dataElement)" data-lang-kind="signature">addTopLevelAttribute(context, dataElement)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Add a top-level attribute to the current instance meta-set or data-set. It provides add top level attribute behavior on DicomXmlMetadataAdapter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The adapter context. It provides the context input used by addTopLevelAttribute. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="dataElement" data-lang-kind="parameter-name">dataElement</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a><br /><a href="class-attributesequence-fdcc7f33.html"><code data-lang-source="AttributeSequence" data-lang-kind="type-token">AttributeSequence</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The DICOM data element. It provides the data element input used by addTopLevelAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e27cb20d" data-filter-item="buildDataElement method Materialize a DICOM data element from an XML DicomAttribute frame.">
+                    <h4><code data-lang-source="buildDataElement(frame)" data-lang-kind="signature">buildDataElement(frame)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Materialize a DICOM data element from an XML DicomAttribute frame. It finalizes and returns the built DicomXmlMetadataAdapter artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="frame" data-lang-kind="parameter-name">frame</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The XML DicomAttribute frame. It provides the frame input used by buildDataElement. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a><br /><a href="class-attributesequence-fdcc7f33.html"><code data-lang-source="AttributeSequence" data-lang-kind="type-token">AttributeSequence</code></a><br><span class="page-meta">The materialized data element.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1d545f82" data-filter-item="onStart method Reset and prepare XML-specific adapter state.">
+                    <h4><code data-lang-source="onStart(context)" data-lang-kind="signature">onStart(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Reset and prepare XML-specific adapter state. It scopes handling to start conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The previous adapter context. It provides the context input used by onStart.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">The new adapter context.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b4ac7db7" data-filter-item="onStartDocument method ">
+                    <h4><code data-lang-source="onStartDocument(context)" data-lang-kind="signature">onStartDocument(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start document conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartDocument.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b34a049a" data-filter-item="onStartElement method Consume XML start-element events and build Native DICOM Model parse state.">
+                    <h4><code data-lang-source="onStartElement(context, element)" data-lang-kind="signature">onStartElement(context, element)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Consume XML start-element events and build Native DICOM Model parse state. It scopes handling to start element conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The adapter context. It provides the context input used by onStartElement. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="element" data-lang-kind="parameter-name">element</code></td>
+                                <td class="member-param-type"><code data-lang-source="{localName:string,name:string,attributes:object,isSelfClosing:boolean}" data-lang-kind="type-token">{localName:string,name:string,attributes:object,isSelfClosing:boolean}</code></td>
+                                <td><span class="page-meta">(Required)</span> The XML element. It provides the element input used by onStartElement. <span class="page-meta">See <a href="#option-onstartelement-element-d19a3bc1-shape-1">Option Contract</a>.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-36f29652" data-filter-item="onText method Accumulate XML text for the active value-bearing parse frame.">
+                    <h4><code data-lang-source="onText(context, text)" data-lang-kind="signature">onText(context, text)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Accumulate XML text for the active value-bearing parse frame. It scopes handling to text conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The adapter context. It provides the context input used by onText. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="text" data-lang-kind="parameter-name">text</code></td>
+                                <td class="member-param-type"><code data-lang-source="{text:string}" data-lang-kind="type-token">{text:string}</code></td>
+                                <td><span class="page-meta">(Required)</span> The XML text event payload. It provides the text input used by onText. <span class="page-meta">See <a href="#option-ontext-text-f2bc1c6a-shape-1">Option Contract</a>.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b3933eb6" data-filter-item="onEndElement method Finalize XML elements and materialize DICOM values/attributes/instances.">
+                    <h4><code data-lang-source="onEndElement(context, element)" data-lang-kind="signature">onEndElement(context, element)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Finalize XML elements and materialize DICOM values/attributes/instances. It scopes handling to end element conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The adapter context. It provides the context input used by onEndElement. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="element" data-lang-kind="parameter-name">element</code></td>
+                                <td class="member-param-type"><code data-lang-source="{localName:string,name:string}" data-lang-kind="type-token">{localName:string,name:string}</code></td>
+                                <td><span class="page-meta">(Required)</span> The XML end-element payload. It provides the element input used by onEndElement. <span class="page-meta">See <a href="#option-onendelement-element-a27d5228-shape-1">Option Contract</a>.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="*" data-lang-kind="type-token">*</code><br /><code data-lang-source="void" data-lang-kind="type-token">void</code><br><span class="page-meta">Optional downstream status.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-cd86be09" data-filter-item="onEndDocument method ">
+                    <h4><code data-lang-source="onEndDocument(context)" data-lang-kind="signature">onEndDocument(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end document conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndDocument.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<div class="grid one">
+                <article class="card reveal" id="option-onstartelement-element-d19a3bc1" data-filter-item="onStartElement element option object">
+                    <h4><code data-lang-source="onStartElement(context, element)" data-lang-kind="signature">onStartElement(context, element)</code> &middot; <code data-lang-source="element" data-lang-kind="parameter-name">element</code></h4>
+
+                            <div class="table-scroll" id="option-onstartelement-element-d19a3bc1-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">localName Profile</span><span class="option-shape-description"> - Use this shape to configure element via localName, name, attributes, isSelfClosing.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="localName" data-lang-kind="property-name">localName</code></td>
+                                        <td><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls local name behavior for onStartElement.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="name" data-lang-kind="property-name">name</code></td>
+                                        <td><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls name behavior for onStartElement.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="attributes" data-lang-kind="property-name">attributes</code></td>
+                                        <td><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls attributes behavior for onStartElement.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="isSelfClosing" data-lang-kind="property-name">isSelfClosing</code></td>
+                                        <td><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls is self closing behavior for onStartElement.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-ontext-text-f2bc1c6a" data-filter-item="onText text option object">
+                    <h4><code data-lang-source="onText(context, text)" data-lang-kind="signature">onText(context, text)</code> &middot; <code data-lang-source="text" data-lang-kind="parameter-name">text</code></h4>
+
+                            <div class="table-scroll" id="option-ontext-text-f2bc1c6a-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">text Profile</span><span class="option-shape-description"> - Use this shape to configure text via text.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="text" data-lang-kind="property-name">text</code></td>
+                                        <td><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls text behavior for onText.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-onendelement-element-a27d5228" data-filter-item="onEndElement element option object">
+                    <h4><code data-lang-source="onEndElement(context, element)" data-lang-kind="signature">onEndElement(context, element)</code> &middot; <code data-lang-source="element" data-lang-kind="parameter-name">element</code></h4>
+
+                            <div class="table-scroll" id="option-onendelement-element-a27d5228-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">localName Profile</span><span class="option-shape-description"> - Use this shape to configure element via localName, name.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="localName" data-lang-kind="property-name">localName</code></td>
+                                        <td><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls local name behavior for onEndElement.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="name" data-lang-kind="property-name">name</code></td>
+                                        <td><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls name behavior for onEndElement.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article></div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+
+            <section class="section reveal">
+                <h4>
+                    Inherited From
+                    <a href="class-dicomjsonmetadataadapter-23033cea.html"><code>DicomJsonMetadataAdapter</code></a>
+                    <span class="page-meta">(src/handlers/adapters/DicomJsonMetadataAdapter.js)</span>
+                </h4>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr data-filter-item="deferInstanceStatus method Defer downstream terminal control-flow statuses until the current metadata instance closes. JSON parser control-flow should not be driven directly by downstream DICOM semantic handlers.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-33581aa2"><code data-lang-source="deferInstanceStatus" data-lang-kind="member-name">deferInstanceStatus</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Defer downstream terminal control-flow statuses until the current metadata instance closes. JSON parser control-flow should not be driven directly by downstream DICOM semantic handlers. It provides defer instance status behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="forward method Forward an event to the next handler when supported.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-ef120f56"><code data-lang-source="forward" data-lang-kind="member-name">forward</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Forward an event to the next handler when supported. It provides forward behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeStatus method Normalize a handler status return to CONTINUE when omitted.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-bf55d5af"><code data-lang-source="normalizeStatus" data-lang-kind="member-name">normalizeStatus</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize a handler status return to CONTINUE when omitted. It provides normalize status behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="shouldDecodeInlineBinary method Determine if the current attribute should decode InlineBinary payloads.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-794a5a45"><code data-lang-source="shouldDecodeInlineBinary" data-lang-kind="member-name">shouldDecodeInlineBinary</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if the current attribute should decode InlineBinary payloads. It provides should decode inline binary behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="decodeInlineBinary method Decode one base64 text payload into bytes.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-d1062bae"><code data-lang-source="decodeInlineBinary" data-lang-kind="member-name">decodeInlineBinary</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Decode one base64 text payload into bytes. It provides decode inline binary behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="decodeAttributeValue method Decode one DICOM JSON metadata value according to the current attribute details.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-46ba4fbb"><code data-lang-source="decodeAttributeValue" data-lang-kind="member-name">decodeAttributeValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Decode one DICOM JSON metadata value according to the current attribute details. It provides decode attribute value behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="emitStatusEvent method Emit a canonical DICOM lifecycle event to the downstream handler.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-4c14d48a"><code data-lang-source="emitStatusEvent" data-lang-kind="member-name">emitStatusEvent</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Emit a canonical DICOM lifecycle event to the downstream handler. It provides emit status event behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="emitAttributeSet method Emit all attributes from the given attribute-set.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-bc7927a5"><code data-lang-source="emitAttributeSet" data-lang-kind="member-name">emitAttributeSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Emit all attributes from the given attribute-set. It provides emit attribute set behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="emitInstance method Emit the supplied instance through the canonical DICOM downstream handler interface.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-d079a656"><code data-lang-source="emitInstance" data-lang-kind="member-name">emitInstance</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Emit the supplied instance through the canonical DICOM downstream handler interface. It provides emit instance behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="startIncrementalInstance method Begin incremental canonical DICOM semantic emission for a metadata instance.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-21cc3e22"><code data-lang-source="startIncrementalInstance" data-lang-kind="member-name">startIncrementalInstance</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Begin incremental canonical DICOM semantic emission for a metadata instance. It provides start incremental instance behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="ensureTopLevelAttributeSet method Ensure the appropriate top-level attribute-set lifecycle has been started for the current attribute.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-f9c93709"><code data-lang-source="ensureTopLevelAttributeSet" data-lang-kind="member-name">ensureTopLevelAttributeSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Ensure the appropriate top-level attribute-set lifecycle has been started for the current attribute. It provides ensure top level attribute set behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="emitTopLevelAttribute method Emit a completed top-level metadata attribute incrementally through the canonical DICOM handler chain.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-d943c983"><code data-lang-source="emitTopLevelAttribute" data-lang-kind="member-name">emitTopLevelAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Emit a completed top-level metadata attribute incrementally through the canonical DICOM handler chain. It provides emit top level attribute behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="endIncrementalInstance method Finalize incremental canonical DICOM semantic emission for the current metadata instance.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-dd98b2f0"><code data-lang-source="endIncrementalInstance" data-lang-kind="member-name">endIncrementalInstance</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Finalize incremental canonical DICOM semantic emission for the current metadata instance. It provides end incremental instance behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="getStackParent method Get the parent metadata parse node for the current attribute/object stack frame.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-0b024224"><code data-lang-source="getStackParent" data-lang-kind="member-name">getStackParent</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Get the parent metadata parse node for the current attribute/object stack frame. It retrieves stack parent state from DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="getCurrentAttributeState method Get the current metadata attribute parse state from the adapter stack. This is safer than using context.attribute directly because nested attribute parsing can overwrite the pointer while parent attribute objects are still open.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-459d144f"><code data-lang-source="getCurrentAttributeState" data-lang-kind="member-name">getCurrentAttributeState</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Get the current metadata attribute parse state from the adapter stack. This is safer than using context.attribute directly because nested attribute parsing can overwrite the pointer while parent attribute objects are still open. It retrieves current attribute state state from DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="beginSequenceSemantic method Begin canonical DICOM semantic emission for a sequence attribute in streaming mode.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-4fe1771b"><code data-lang-source="beginSequenceSemantic" data-lang-kind="member-name">beginSequenceSemantic</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Begin canonical DICOM semantic emission for a sequence attribute in streaming mode. It provides begin sequence semantic behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="endSequenceSemantic method End canonical DICOM semantic emission for a sequence attribute in streaming mode.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-b67ca961"><code data-lang-source="endSequenceSemantic" data-lang-kind="member-name">endSequenceSemantic</code></a></td>
+                                <td><code>method</code></td>
+                                <td>End canonical DICOM semantic emission for a sequence attribute in streaming mode. It provides end sequence semantic behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="beginItemSemantic method Begin canonical DICOM semantic emission for a sequence item.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-0e45ab6d"><code data-lang-source="beginItemSemantic" data-lang-kind="member-name">beginItemSemantic</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Begin canonical DICOM semantic emission for a sequence item. It provides begin item semantic behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="endItemSemantic method End canonical DICOM semantic emission for a sequence item.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-1ebcca5b"><code data-lang-source="endItemSemantic" data-lang-kind="member-name">endItemSemantic</code></a></td>
+                                <td><code>method</code></td>
+                                <td>End canonical DICOM semantic emission for a sequence item. It provides end item semantic behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="emitNestedAttributeSemantic method Emit a completed non-top-level DICOM attribute through the canonical semantic handler chain.">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-5d85688f"><code data-lang-source="emitNestedAttributeSemantic" data-lang-kind="member-name">emitNestedAttributeSemantic</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Emit a completed non-top-level DICOM attribute through the canonical semantic handler chain. It provides emit nested attribute semantic behavior on DicomJsonMetadataAdapter.</td>
+                            </tr>
+                            <tr data-filter-item="onReset method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-5c84249b"><code data-lang-source="onReset" data-lang-kind="member-name">onReset</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to reset conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onStartObject method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-f138815a"><code data-lang-source="onStartObject" data-lang-kind="member-name">onStartObject</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to start object conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onStartArray method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-f3f51ea9"><code data-lang-source="onStartArray" data-lang-kind="member-name">onStartArray</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to start array conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onEndArray method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-708a0120"><code data-lang-source="onEndArray" data-lang-kind="member-name">onEndArray</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to end array conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onStartAttribute method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-34973182"><code data-lang-source="onStartAttribute" data-lang-kind="member-name">onStartAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to start attribute conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onStartNumber method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-7e807bf5"><code data-lang-source="onStartNumber" data-lang-kind="member-name">onStartNumber</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to start number conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onStartBoolean method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-553114c8"><code data-lang-source="onStartBoolean" data-lang-kind="member-name">onStartBoolean</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to start boolean conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onStartNull method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-85b7f554"><code data-lang-source="onStartNull" data-lang-kind="member-name">onStartNull</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to start null conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onStartString method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-6f29e78f"><code data-lang-source="onStartString" data-lang-kind="member-name">onStartString</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to start string conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onAppendString method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-4fc6373a"><code data-lang-source="onAppendString" data-lang-kind="member-name">onAppendString</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to append string conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onEndString method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-b2a140f5"><code data-lang-source="onEndString" data-lang-kind="member-name">onEndString</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to end string conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onEndObject method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-a411bf4c"><code data-lang-source="onEndObject" data-lang-kind="member-name">onEndObject</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to end object conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onEndAttribute method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-a60c685e"><code data-lang-source="onEndAttribute" data-lang-kind="member-name">onEndAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to end attribute conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onEndNumber method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-0c88bc0b"><code data-lang-source="onEndNumber" data-lang-kind="member-name">onEndNumber</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to end number conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onEndBoolean method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-d50956f0"><code data-lang-source="onEndBoolean" data-lang-kind="member-name">onEndBoolean</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to end boolean conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onEndNull method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-1e27162e"><code data-lang-source="onEndNull" data-lang-kind="member-name">onEndNull</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to end null conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onEnd method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-810f77d7"><code data-lang-source="onEnd" data-lang-kind="member-name">onEnd</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to end conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onError method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-babde8c9"><code data-lang-source="onError" data-lang-kind="member-name">onError</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to error conditions.</td>
+                            </tr>
+                            <tr data-filter-item="onProgress method ">
+                                <td><a href="class-dicomjsonmetadataadapter-23033cea.html#declared-member-d74deecb"><code data-lang-source="onProgress" data-lang-kind="member-name">onProgress</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Inherited member from the base class. It scopes handling to progress conditions.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

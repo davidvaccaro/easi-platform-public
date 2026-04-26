@@ -19,6 +19,7 @@ The workflow is intentionally split into separate lanes (jobs) so fast determini
 - Purpose:
   - Required correctness gate for normal development/PRs.
   - Runs unit + deterministic integration tests.
+  - Includes API contract synchronization coverage via `test/contracts/ApiContractSync.test.js`.
 
 ### 2) DIMSE Socket Tests
 
@@ -86,6 +87,9 @@ The workflow uploads artifacts for inspection:
 
 - DIMSE/Orthanc tests are intentionally gated in test code via environment variables.
 - This allows `npm test` to stay deterministic in constrained CI environments.
+- Public API contract generation and drift check commands:
+  - `npm run docs:api-contract`
+  - `npm run docs:api-contract:check`
 
 ## Governance
 

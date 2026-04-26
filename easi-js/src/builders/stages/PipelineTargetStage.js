@@ -154,7 +154,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
-     * Enables mixed imaging routing branches.
+     * Enables staged routing branches.
      * @param {import("../ImagingRoutingBuilder.js").default | Function | object} definition Routing definition.
      * @returns {PipelineOutputStage} An output stage reference.
      */
@@ -197,7 +197,10 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     }
 
-    /** @returns {PipelineOutputStage} */
+    /**
+     * Materialize parser output as DICOM instance objects.
+     * @returns {PipelineOutputStage}
+     */
     toInstances() {
 
         if (this.isParserType(DicomDataParser) === true) {
@@ -216,7 +219,10 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     }
 
-    /** @returns {PipelineOutputStage} */
+    /**
+     * Materialize parser output as normalized entity objects.
+     * @returns {PipelineOutputStage}
+     */
     toEntities() {
 
         if (this.isParserType(DicomDataParser) === true) {
@@ -236,6 +242,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Materialize parser output as unwrapped document entities.
      * @param {object | null} options Document unwrap options.
      * @returns {PipelineOutputStage}
      */
@@ -244,6 +251,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Materialize parser output as wrapped DICOM document entities.
      * @param {object | null} options Document wrapping options.
      * @returns {PipelineOutputStage}
      */
@@ -252,6 +260,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Materialize parser output using a custom mapping strategy.
      * @param {object} mapping Mapping strategy.
      * @returns {PipelineOutputStage}
      */
@@ -262,6 +271,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Materialize parser output using a custom selection strategy.
      * @param {object} selection Selection strategy.
      * @returns {PipelineOutputStage}
      */
@@ -272,6 +282,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Materialize parser output as FHIR ImagingStudy resources.
      * @param {'full' | 'study-summary'} [profile='full'] ImagingStudy mapping profile.
      * @returns {PipelineOutputStage}
      */
@@ -282,6 +293,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Materialize parser output as encoded native DICOM byte streams.
      * @param {{ onChunk?: Function, collectOutput?: boolean } | null} options Writer options.
      * @returns {PipelineOutputStage}
      */
@@ -291,7 +303,10 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
         ));
     }
 
-    /** @returns {PipelineOutputStage} */
+    /**
+     * Materialize parser output as structured JSON or XML syntax values.
+     * @returns {PipelineOutputStage}
+     */
     toStructuredValue() {
 
         if (this.isParserType(XmlDataParser) === true) {
@@ -303,6 +318,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Materialize parser output as normalized single imaging data values.
      * @returns {PipelineOutputStage}
      */
     toImageData() {
@@ -310,6 +326,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Materialize parser output as mixed imaging data values.
      * @param {{ failOnUnknown?: boolean } | null} options Mixed imaging options.
      * @returns {PipelineOutputStage}
      */
@@ -318,6 +335,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Materialize parser output as extracted imaging assets.
      * @param {object | null} options Asset extraction options.
      * @returns {PipelineOutputStage}
      */
@@ -326,6 +344,7 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
+     * Materialize parser output as packaged imaging asset archives.
      * @param {object | null} options Asset archive options.
      * @returns {PipelineOutputStage}
      */

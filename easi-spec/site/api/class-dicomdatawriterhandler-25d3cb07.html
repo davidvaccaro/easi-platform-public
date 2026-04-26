@@ -1,0 +1,1774 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for DicomDataWriterHandler.">
+    <title>EASI | DicomDataWriterHandler</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>DicomDataWriterHandler</h2>
+                <p>This class provides dicom data writer handler behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><strong>DicomDataWriterHandler</strong></p>
+                <p class="page-meta">
+                    This class declares <code>37</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><span class="page-meta">none</span></td></tr>
+                        <tr><td>Declared Members</td><td>37</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>2</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="collectOutput" data-lang-kind="property-name">collectOutput</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="onChunk" data-lang-kind="property-name">onChunk</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="resolveValueRepresentation method Resolve the effective value-representation for a tag/data-element.">
+                                <td><a href="#declared-member-fe4adb80"><code data-lang-source="resolveValueRepresentation" data-lang-kind="member-name">resolveValueRepresentation</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve the effective value-representation for a tag/data-element.</td>
+                            </tr>
+                            <tr data-filter-item="emit method Emit a chunk to the configured output callback and/or in-memory collection.">
+                                <td><a href="#declared-member-2b9aa1d1"><code data-lang-source="emit" data-lang-kind="member-name">emit</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Emit a chunk to the configured output callback and/or in-memory collection.</td>
+                            </tr>
+                            <tr data-filter-item="toOutputBytes method Build one contiguous output array from collected output chunks.">
+                                <td><a href="#declared-member-04a73fd7"><code data-lang-source="toOutputBytes" data-lang-kind="member-name">toOutputBytes</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build one contiguous output array from collected output chunks.</td>
+                            </tr>
+                            <tr data-filter-item="isExplicit method Determine if the current transfer-syntax should write explicit VR.">
+                                <td><a href="#declared-member-d2729b54"><code data-lang-source="isExplicit" data-lang-kind="member-name">isExplicit</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if the current transfer-syntax should write explicit VR.</td>
+                            </tr>
+                            <tr data-filter-item="isLittleEndian method Determine if the current transfer-syntax is little endian.">
+                                <td><a href="#declared-member-efd01ca1"><code data-lang-source="isLittleEndian" data-lang-kind="member-name">isLittleEndian</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if the current transfer-syntax is little endian.</td>
+                            </tr>
+                            <tr data-filter-item="encodeTag method Convert a DICOM tag to 4 raw bytes in the active transfer-syntax endian order.">
+                                <td><a href="#declared-member-fd8e5dd9"><code data-lang-source="encodeTag" data-lang-kind="member-name">encodeTag</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Convert a DICOM tag to 4 raw bytes in the active transfer-syntax endian order.</td>
+                            </tr>
+                            <tr data-filter-item="encodeUInt16 method Encode an unsigned 16-bit value in the active transfer-syntax endian order.">
+                                <td><a href="#declared-member-b8dd79de"><code data-lang-source="encodeUInt16" data-lang-kind="member-name">encodeUInt16</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Encode an unsigned 16-bit value in the active transfer-syntax endian order.</td>
+                            </tr>
+                            <tr data-filter-item="encodeUInt32 method Encode an unsigned 32-bit value in the active transfer-syntax endian order.">
+                                <td><a href="#declared-member-282f2f16"><code data-lang-source="encodeUInt32" data-lang-kind="member-name">encodeUInt32</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Encode an unsigned 32-bit value in the active transfer-syntax endian order.</td>
+                            </tr>
+                            <tr data-filter-item="padValueBytes method Pad a value byte array to even length as required by DICOM.">
+                                <td><a href="#declared-member-8fccaf1c"><code data-lang-source="padValueBytes" data-lang-kind="member-name">padValueBytes</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Pad a value byte array to even length as required by DICOM.</td>
+                            </tr>
+                            <tr data-filter-item="encodeNumericValue method Encode one numeric value for a numeric VR.">
+                                <td><a href="#declared-member-e6e89fb5"><code data-lang-source="encodeNumericValue" data-lang-kind="member-name">encodeNumericValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Encode one numeric value for a numeric VR.</td>
+                            </tr>
+                            <tr data-filter-item="formatDateValue method Format a Date value as a DA, DT or TM DICOM string.">
+                                <td><a href="#declared-member-0ed9d6d2"><code data-lang-source="formatDateValue" data-lang-kind="member-name">formatDateValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Format a Date value as a DA, DT or TM DICOM string.</td>
+                            </tr>
+                            <tr data-filter-item="resolveAttributeValueBytes method Resolve serialized value bytes for an attribute.">
+                                <td><a href="#declared-member-5d43fabd"><code data-lang-source="resolveAttributeValueBytes" data-lang-kind="member-name">resolveAttributeValueBytes</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve serialized value bytes for an attribute.</td>
+                            </tr>
+                            <tr data-filter-item="serializeHeader method Serialize a DICOM data-element header.">
+                                <td><a href="#declared-member-069bde7f"><code data-lang-source="serializeHeader" data-lang-kind="member-name">serializeHeader</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Serialize a DICOM data-element header.</td>
+                            </tr>
+                            <tr data-filter-item="emitAttribute method Serialize one full attribute payload (header + value + optional delimiter).">
+                                <td><a href="#declared-member-c4dd6d9a"><code data-lang-source="emitAttribute" data-lang-kind="member-name">emitAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Serialize one full attribute payload (header + value + optional delimiter).</td>
+                            </tr>
+                            <tr data-filter-item="ensureStreamAttributeHeader method Ensure one streamed attribute header is emitted once before streamed chunks.">
+                                <td><a href="#declared-member-c4203297"><code data-lang-source="ensureStreamAttributeHeader" data-lang-kind="member-name">ensureStreamAttributeHeader</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Ensure one streamed attribute header is emitted once before streamed chunks.</td>
+                            </tr>
+                            <tr data-filter-item="resetInstanceState method Reset one streaming instance output state.">
+                                <td><a href="#declared-member-b702195e"><code data-lang-source="resetInstanceState" data-lang-kind="member-name">resetInstanceState</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Reset one streaming instance output state.</td>
+                            </tr>
+                            <tr data-filter-item="onReset method ">
+                                <td><a href="#declared-member-5e12145f"><code data-lang-source="onReset" data-lang-kind="member-name">onReset</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartInstance method ">
+                                <td><a href="#declared-member-ac2fd2b9"><code data-lang-source="onStartInstance" data-lang-kind="member-name">onStartInstance</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartPreamble method ">
+                                <td><a href="#declared-member-848fb923"><code data-lang-source="onStartPreamble" data-lang-kind="member-name">onStartPreamble</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartPrefix method ">
+                                <td><a href="#declared-member-e0d54aeb"><code data-lang-source="onStartPrefix" data-lang-kind="member-name">onStartPrefix</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartMetaSet method ">
+                                <td><a href="#declared-member-8893795e"><code data-lang-source="onStartMetaSet" data-lang-kind="member-name">onStartMetaSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartDataSet method ">
+                                <td><a href="#declared-member-0a55fcdb"><code data-lang-source="onStartDataSet" data-lang-kind="member-name">onStartDataSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartAttribute method ">
+                                <td><a href="#declared-member-bbfaffc7"><code data-lang-source="onStartAttribute" data-lang-kind="member-name">onStartAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartSequence method ">
+                                <td><a href="#declared-member-dfe477c8"><code data-lang-source="onStartSequence" data-lang-kind="member-name">onStartSequence</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartItem method ">
+                                <td><a href="#declared-member-24bda2dd"><code data-lang-source="onStartItem" data-lang-kind="member-name">onStartItem</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onAppendAttribute method ">
+                                <td><a href="#declared-member-dd4d3d7f"><code data-lang-source="onAppendAttribute" data-lang-kind="member-name">onAppendAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onAttributeChunk method Stream raw value chunks for bulk-streamed attributes.">
+                                <td><a href="#declared-member-5fc9c03f"><code data-lang-source="onAttributeChunk" data-lang-kind="member-name">onAttributeChunk</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Stream raw value chunks for bulk-streamed attributes.</td>
+                            </tr>
+                            <tr data-filter-item="onEndPreamble method ">
+                                <td><a href="#declared-member-67403140"><code data-lang-source="onEndPreamble" data-lang-kind="member-name">onEndPreamble</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndPrefix method ">
+                                <td><a href="#declared-member-bd98bf4f"><code data-lang-source="onEndPrefix" data-lang-kind="member-name">onEndPrefix</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndAttribute method ">
+                                <td><a href="#declared-member-d330e5bf"><code data-lang-source="onEndAttribute" data-lang-kind="member-name">onEndAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndSequence method ">
+                                <td><a href="#declared-member-c9a31da7"><code data-lang-source="onEndSequence" data-lang-kind="member-name">onEndSequence</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndItem method ">
+                                <td><a href="#declared-member-03d2bdac"><code data-lang-source="onEndItem" data-lang-kind="member-name">onEndItem</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndMetaSet method ">
+                                <td><a href="#declared-member-23b9595a"><code data-lang-source="onEndMetaSet" data-lang-kind="member-name">onEndMetaSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndDataSet method ">
+                                <td><a href="#declared-member-81417607"><code data-lang-source="onEndDataSet" data-lang-kind="member-name">onEndDataSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndInstance method ">
+                                <td><a href="#declared-member-1958fb2c"><code data-lang-source="onEndInstance" data-lang-kind="member-name">onEndInstance</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onError method ">
+                                <td><a href="#declared-member-e36d5e34"><code data-lang-source="onError" data-lang-kind="member-name">onError</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onProgress method ">
+                                <td><a href="#declared-member-7f284e0e"><code data-lang-source="onProgress" data-lang-kind="member-name">onProgress</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-fe4adb80" data-filter-item="resolveValueRepresentation method Resolve the effective value-representation for a tag/data-element.">
+                    <h4><code data-lang-source="resolveValueRepresentation(source)" data-lang-kind="signature">resolveValueRepresentation(source)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve the effective value-representation for a tag/data-element. It provides resolve value representation behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="source" data-lang-kind="parameter-name">source</code></td>
+                                <td class="member-param-type"><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a><br /><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a><br /><a href="class-attributesequence-fdcc7f33.html"><code data-lang-source="AttributeSequence" data-lang-kind="type-token">AttributeSequence</code></a><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The source object. It identifies the input source consumed by this member.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-valuerepresentation-2c36f9f9.html"><code data-lang-source="ValueRepresentation" data-lang-kind="type-token">ValueRepresentation</code></a><br><span class="page-meta">The resolved value-representation.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2b9aa1d1" data-filter-item="emit method Emit a chunk to the configured output callback and/or in-memory collection.">
+                    <h4><code data-lang-source="emit(chunk)" data-lang-kind="signature">emit(chunk)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Emit a chunk to the configured output callback and/or in-memory collection. It provides emit behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="chunk" data-lang-kind="parameter-name">chunk</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> The data chunk to emit. It provides the chunk input used by emit.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-04a73fd7" data-filter-item="toOutputBytes method Build one contiguous output array from collected output chunks.">
+                    <h4><code data-lang-source="toOutputBytes()" data-lang-kind="signature">toOutputBytes()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build one contiguous output array from collected output chunks. It defines terminal output contract as output bytes.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The combined output bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d2729b54" data-filter-item="isExplicit method Determine if the current transfer-syntax should write explicit VR.">
+                    <h4><code data-lang-source="isExplicit(transferSyntax)" data-lang-kind="signature">isExplicit(transferSyntax)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if the current transfer-syntax should write explicit VR. It provides is explicit behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The active transfer-syntax. It provides the transfer syntax input used by isExplicit.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when explicit VR should be written.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-efd01ca1" data-filter-item="isLittleEndian method Determine if the current transfer-syntax is little endian.">
+                    <h4><code data-lang-source="isLittleEndian(transferSyntax)" data-lang-kind="signature">isLittleEndian(transferSyntax)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if the current transfer-syntax is little endian. It provides is little endian behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The active transfer-syntax. It provides the transfer syntax input used by isLittleEndian.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when little endian should be written.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-fd8e5dd9" data-filter-item="encodeTag method Convert a DICOM tag to 4 raw bytes in the active transfer-syntax endian order.">
+                    <h4><code data-lang-source="encodeTag(tag, transferSyntax)" data-lang-kind="signature">encodeTag(tag, transferSyntax)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Convert a DICOM tag to 4 raw bytes in the active transfer-syntax endian order. It provides encode tag behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tag" data-lang-kind="parameter-name">tag</code></td>
+                                <td class="member-param-type"><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The DICOM tag. It provides the tag input used by encodeTag.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The active transfer-syntax. It provides the transfer syntax input used by encodeTag.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The encoded tag bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b8dd79de" data-filter-item="encodeUInt16 method Encode an unsigned 16-bit value in the active transfer-syntax endian order.">
+                    <h4><code data-lang-source="encodeUInt16(value, transferSyntax)" data-lang-kind="signature">encodeUInt16(value, transferSyntax)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Encode an unsigned 16-bit value in the active transfer-syntax endian order. It provides encode uint16 behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> The value to encode. It provides the value input used by encodeUInt16. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The active transfer-syntax. It provides the transfer syntax input used by encodeUInt16.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The encoded bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-282f2f16" data-filter-item="encodeUInt32 method Encode an unsigned 32-bit value in the active transfer-syntax endian order.">
+                    <h4><code data-lang-source="encodeUInt32(value, transferSyntax)" data-lang-kind="signature">encodeUInt32(value, transferSyntax)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Encode an unsigned 32-bit value in the active transfer-syntax endian order. It provides encode uint32 behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> The value to encode. It provides the value input used by encodeUInt32. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The active transfer-syntax. It provides the transfer syntax input used by encodeUInt32.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The encoded bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8fccaf1c" data-filter-item="padValueBytes method Pad a value byte array to even length as required by DICOM.">
+                    <h4><code data-lang-source="padValueBytes(bytes, vrID)" data-lang-kind="signature">padValueBytes(bytes, vrID)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Pad a value byte array to even length as required by DICOM. It provides pad value bytes behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="bytes" data-lang-kind="parameter-name">bytes</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> The input bytes. It provides the bytes input used by padValueBytes.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="vrID" data-lang-kind="parameter-name">vrID</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> The DICOM VR identifier. It provides the vr id input used by padValueBytes. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The padded bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e6e89fb5" data-filter-item="encodeNumericValue method Encode one numeric value for a numeric VR.">
+                    <h4><code data-lang-source="encodeNumericValue(vrID, value, transferSyntax)" data-lang-kind="signature">encodeNumericValue(vrID, value, transferSyntax)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Encode one numeric value for a numeric VR. It provides encode numeric value behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="vrID" data-lang-kind="parameter-name">vrID</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The VR identifier. It provides the vr id input used by encodeNumericValue. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code><br /><code data-lang-source="bigint" data-lang-kind="type-token">bigint</code></td>
+                                <td><span class="page-meta">(Required)</span> The value to encode. It provides the value input used by encodeNumericValue.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The active transfer-syntax. It provides the transfer syntax input used by encodeNumericValue.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The encoded bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0ed9d6d2" data-filter-item="formatDateValue method Format a Date value as a DA, DT or TM DICOM string.">
+                    <h4><code data-lang-source="formatDateValue(value, vrID)" data-lang-kind="signature">formatDateValue(value, vrID)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Format a Date value as a DA, DT or TM DICOM string. It provides format date value behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="Date" data-lang-kind="type-token">Date</code></td>
+                                <td><span class="page-meta">(Required)</span> The date value. It provides the value input used by formatDateValue.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="vrID" data-lang-kind="parameter-name">vrID</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The target VR. It provides the vr id input used by formatDateValue. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">The formatted value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5d43fabd" data-filter-item="resolveAttributeValueBytes method Resolve serialized value bytes for an attribute.">
+                    <h4><code data-lang-source="resolveAttributeValueBytes(attribute)" data-lang-kind="signature">resolveAttributeValueBytes(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve serialized value bytes for an attribute. It provides resolve attribute value bytes behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The attribute to serialize. It provides the attribute input used by resolveAttributeValueBytes.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The serialized value bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-069bde7f" data-filter-item="serializeHeader method Serialize a DICOM data-element header.">
+                    <h4><code data-lang-source="serializeHeader(tag, valueRepresentation, valueLength, transferSyntax)" data-lang-kind="signature">serializeHeader(tag, valueRepresentation, valueLength, transferSyntax)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Serialize a DICOM data-element header. It provides serialize header behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tag" data-lang-kind="parameter-name">tag</code></td>
+                                <td class="member-param-type"><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The data-element tag. It provides the tag input used by serializeHeader.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="valueRepresentation" data-lang-kind="parameter-name">valueRepresentation</code></td>
+                                <td class="member-param-type"><a href="class-valuerepresentation-2c36f9f9.html"><code data-lang-source="ValueRepresentation" data-lang-kind="type-token">ValueRepresentation</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The value representation. It provides the value representation input used by serializeHeader.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="valueLength" data-lang-kind="parameter-name">valueLength</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> The value length. It provides the value length input used by serializeHeader. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The active transfer-syntax. It provides the transfer syntax input used by serializeHeader.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The serialized header.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c4dd6d9a" data-filter-item="emitAttribute method Serialize one full attribute payload (header + value + optional delimiter).">
+                    <h4><code data-lang-source="emitAttribute(attribute)" data-lang-kind="signature">emitAttribute(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Serialize one full attribute payload (header + value + optional delimiter). It provides emit attribute behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The attribute to serialize. It provides the attribute input used by emitAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c4203297" data-filter-item="ensureStreamAttributeHeader method Ensure one streamed attribute header is emitted once before streamed chunks.">
+                    <h4><code data-lang-source="ensureStreamAttributeHeader(attribute)" data-lang-kind="signature">ensureStreamAttributeHeader(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Ensure one streamed attribute header is emitted once before streamed chunks. It provides ensure stream attribute header behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The streamed attribute. It provides the attribute input used by ensureStreamAttributeHeader.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b702195e" data-filter-item="resetInstanceState method Reset one streaming instance output state.">
+                    <h4><code data-lang-source="resetInstanceState()" data-lang-kind="signature">resetInstanceState()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Reset one streaming instance output state. It provides reset instance state behavior on DicomDataWriterHandler.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5e12145f" data-filter-item="onReset method ">
+                    <h4><code data-lang-source="onReset()" data-lang-kind="signature">onReset()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to reset conditions.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ac2fd2b9" data-filter-item="onStartInstance method ">
+                    <h4><code data-lang-source="onStartInstance(context)" data-lang-kind="signature">onStartInstance(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start instance conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartInstance.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-848fb923" data-filter-item="onStartPreamble method ">
+                    <h4><code data-lang-source="onStartPreamble(context, preamble)" data-lang-kind="signature">onStartPreamble(context, preamble)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start preamble conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartPreamble.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="preamble" data-lang-kind="parameter-name">preamble</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the preamble input used by onStartPreamble.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e0d54aeb" data-filter-item="onStartPrefix method ">
+                    <h4><code data-lang-source="onStartPrefix(context, prefix)" data-lang-kind="signature">onStartPrefix(context, prefix)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start prefix conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartPrefix.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="prefix" data-lang-kind="parameter-name">prefix</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the prefix input used by onStartPrefix.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8893795e" data-filter-item="onStartMetaSet method ">
+                    <h4><code data-lang-source="onStartMetaSet(context)" data-lang-kind="signature">onStartMetaSet(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start meta set conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartMetaSet.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0a55fcdb" data-filter-item="onStartDataSet method ">
+                    <h4><code data-lang-source="onStartDataSet(context)" data-lang-kind="signature">onStartDataSet(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start data set conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartDataSet.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-bbfaffc7" data-filter-item="onStartAttribute method ">
+                    <h4><code data-lang-source="onStartAttribute(context, attribute)" data-lang-kind="signature">onStartAttribute(context, attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start attribute conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartAttribute.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the attribute input used by onStartAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-dfe477c8" data-filter-item="onStartSequence method ">
+                    <h4><code data-lang-source="onStartSequence(context, sequence)" data-lang-kind="signature">onStartSequence(context, sequence)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start sequence conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartSequence.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="sequence" data-lang-kind="parameter-name">sequence</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the sequence input used by onStartSequence.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-24bda2dd" data-filter-item="onStartItem method ">
+                    <h4><code data-lang-source="onStartItem(context)" data-lang-kind="signature">onStartItem(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start item conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartItem.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-dd4d3d7f" data-filter-item="onAppendAttribute method ">
+                    <h4><code data-lang-source="onAppendAttribute(context, attribute)" data-lang-kind="signature">onAppendAttribute(context, attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to append attribute conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onAppendAttribute.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the attribute input used by onAppendAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5fc9c03f" data-filter-item="onAttributeChunk method Stream raw value chunks for bulk-streamed attributes.">
+                    <h4><code data-lang-source="onAttributeChunk(context, payload)" data-lang-kind="signature">onAttributeChunk(context, payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Stream raw value chunks for bulk-streamed attributes. It scopes handling to attribute chunk conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Handler context. It provides the context input used by onAttributeChunk. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><code data-lang-source="{ " data-lang-kind="type-token">{ </code><code data-lang-source="attribute" data-lang-kind="type-token">attribute</code><code data-lang-source=": " data-lang-kind="type-token">: </code><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a><code data-lang-source=", " data-lang-kind="type-token">, </code><code data-lang-source="chunk" data-lang-kind="type-token">chunk</code><code data-lang-source=": " data-lang-kind="type-token">: </code><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><code data-lang-source=", " data-lang-kind="type-token">, </code><code data-lang-source="isFinalChunk" data-lang-kind="type-token">isFinalChunk</code><code data-lang-source=": " data-lang-kind="type-token">: </code><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><code data-lang-source=" }" data-lang-kind="type-token"> }</code></td>
+                                <td><span class="page-meta">(Required)</span> Chunk payload. It provides the payload input used by onAttributeChunk. <span class="page-meta">See <a href="#option-onattributechunk-payload-f6238a35-shape-1">Option Contract</a>.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-67403140" data-filter-item="onEndPreamble method ">
+                    <h4><code data-lang-source="onEndPreamble(context, preamble)" data-lang-kind="signature">onEndPreamble(context, preamble)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end preamble conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndPreamble.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="preamble" data-lang-kind="parameter-name">preamble</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the preamble input used by onEndPreamble.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-bd98bf4f" data-filter-item="onEndPrefix method ">
+                    <h4><code data-lang-source="onEndPrefix(context, prefix)" data-lang-kind="signature">onEndPrefix(context, prefix)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end prefix conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndPrefix.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="prefix" data-lang-kind="parameter-name">prefix</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the prefix input used by onEndPrefix.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d330e5bf" data-filter-item="onEndAttribute method ">
+                    <h4><code data-lang-source="onEndAttribute(context, attribute)" data-lang-kind="signature">onEndAttribute(context, attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end attribute conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndAttribute.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the attribute input used by onEndAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c9a31da7" data-filter-item="onEndSequence method ">
+                    <h4><code data-lang-source="onEndSequence(context, sequence)" data-lang-kind="signature">onEndSequence(context, sequence)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end sequence conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndSequence.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="sequence" data-lang-kind="parameter-name">sequence</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the sequence input used by onEndSequence.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-03d2bdac" data-filter-item="onEndItem method ">
+                    <h4><code data-lang-source="onEndItem(context)" data-lang-kind="signature">onEndItem(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end item conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndItem.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-23b9595a" data-filter-item="onEndMetaSet method ">
+                    <h4><code data-lang-source="onEndMetaSet(context)" data-lang-kind="signature">onEndMetaSet(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end meta set conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndMetaSet.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-81417607" data-filter-item="onEndDataSet method ">
+                    <h4><code data-lang-source="onEndDataSet(context)" data-lang-kind="signature">onEndDataSet(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end data set conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndDataSet.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1958fb2c" data-filter-item="onEndInstance method ">
+                    <h4><code data-lang-source="onEndInstance(context)" data-lang-kind="signature">onEndInstance(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end instance conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndInstance.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e36d5e34" data-filter-item="onError method ">
+                    <h4><code data-lang-source="onError(context, error)" data-lang-kind="signature">onError(context, error)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to error conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onError.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="error" data-lang-kind="parameter-name">error</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the error input used by onError.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7f284e0e" data-filter-item="onProgress method ">
+                    <h4><code data-lang-source="onProgress(context, progress)" data-lang-kind="signature">onProgress(context, progress)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to progress conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onProgress.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="progress" data-lang-kind="parameter-name">progress</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the progress input used by onProgress.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<div class="grid one">
+                <article class="card reveal" id="option-onattributechunk-payload-f6238a35" data-filter-item="onAttributeChunk payload option object">
+                    <h4><code data-lang-source="onAttributeChunk(context, payload)" data-lang-kind="signature">onAttributeChunk(context, payload)</code> &middot; <code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></h4>
+
+                            <div class="table-scroll" id="option-onattributechunk-payload-f6238a35-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">attribute Profile</span><span class="option-shape-description"> - Use this shape to configure payload via attribute, chunk, isFinalChunk.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="attribute" data-lang-kind="property-name">attribute</code></td>
+                                        <td><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls attribute behavior for onAttributeChunk.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="chunk" data-lang-kind="property-name">chunk</code></td>
+                                        <td><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls chunk behavior for onAttributeChunk.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="isFinalChunk" data-lang-kind="property-name">isFinalChunk</code></td>
+                                        <td><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls is final chunk behavior for onAttributeChunk.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article></div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,2014 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for DicomDeIdentificationFilter.">
+    <title>EASI | DicomDeIdentificationFilter</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>DicomDeIdentificationFilter</h2>
+                <p>This class provides dicom de identification filter behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><strong>DicomDeIdentificationFilter</strong></p>
+                <p class="page-meta">
+                    This class declares <code>44</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><span class="page-meta">none</span></td></tr>
+                        <tr><td>Declared Members</td><td>44</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>3</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="_tagMask" data-lang-kind="property-name">_tagMask</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="deIdentificationMask" data-lang-kind="property-name">deIdentificationMask</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="nextHandler" data-lang-kind="property-name">nextHandler</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="forward method Forward an event call to the next handler when supported.">
+                                <td><a href="#declared-member-ec4eec42"><code data-lang-source="forward" data-lang-kind="member-name">forward</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Forward an event call to the next handler when supported.</td>
+                            </tr>
+                            <tr data-filter-item="ensureState method Ensure the de-identification context state exists.">
+                                <td><a href="#declared-member-ec877a46"><code data-lang-source="ensureState" data-lang-kind="member-name">ensureState</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Ensure the de-identification context state exists.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeTagMaskKey method Normalize a Tag-like key to an 8-char uppercase DICOM identifier.">
+                                <td><a href="#declared-member-8b864ca6"><code data-lang-source="normalizeTagMaskKey" data-lang-kind="member-name">normalizeTagMaskKey</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize a Tag-like key to an 8-char uppercase DICOM identifier.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeTagMaskItem method Normalize one mask action input to a normalized mask item.">
+                                <td><a href="#declared-member-8548e7fb"><code data-lang-source="normalizeTagMaskItem" data-lang-kind="member-name">normalizeTagMaskItem</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one mask action input to a normalized mask item.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeTagMask method Normalize the caller-provided mask into a map keyed by DICOM tag identifiers.">
+                                <td><a href="#declared-member-11bae129"><code data-lang-source="normalizeTagMask" data-lang-kind="member-name">normalizeTagMask</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize the caller-provided mask into a map keyed by DICOM tag identifiers.</td>
+                            </tr>
+                            <tr data-filter-item="resolveAttributeMaskItem method Resolve the configured mask item for the current attribute.">
+                                <td><a href="#declared-member-b93dbd58"><code data-lang-source="resolveAttributeMaskItem" data-lang-kind="member-name">resolveAttributeMaskItem</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve the configured mask item for the current attribute.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeMaskActionCode method Normalize a value to a standard DICOM de-identification action code.">
+                                <td><a href="#declared-member-f27a4ab8"><code data-lang-source="normalizeMaskActionCode" data-lang-kind="member-name">normalizeMaskActionCode</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize a value to a standard DICOM de-identification action code.</td>
+                            </tr>
+                            <tr data-filter-item="resolveZeroLengthMaskValue method Resolve a DICOM-compatible &quot;zero-length&quot; replacement value based on VR.">
+                                <td><a href="#declared-member-1087915c"><code data-lang-source="resolveZeroLengthMaskValue" data-lang-kind="member-name">resolveZeroLengthMaskValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve a DICOM-compatible &quot;zero-length&quot; replacement value based on VR.</td>
+                            </tr>
+                            <tr data-filter-item="resolveDummyMaskValue method Resolve a DICOM-compatible &quot;dummy&quot; replacement value based on VR.">
+                                <td><a href="#declared-member-4b5f667c"><code data-lang-source="resolveDummyMaskValue" data-lang-kind="member-name">resolveDummyMaskValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve a DICOM-compatible &quot;dummy&quot; replacement value based on VR.</td>
+                            </tr>
+                            <tr data-filter-item="resolveCleanMaskValue method Resolve a DICOM-compatible &quot;cleaned&quot; replacement value based on VR.">
+                                <td><a href="#declared-member-57b3bacc"><code data-lang-source="resolveCleanMaskValue" data-lang-kind="member-name">resolveCleanMaskValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve a DICOM-compatible &quot;cleaned&quot; replacement value based on VR.</td>
+                            </tr>
+                            <tr data-filter-item="resolveUIDMaskValue method Resolve a deterministic replacement UID for a masked UID attribute.">
+                                <td><a href="#declared-member-61164661"><code data-lang-source="resolveUIDMaskValue" data-lang-kind="member-name">resolveUIDMaskValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve a deterministic replacement UID for a masked UID attribute.</td>
+                            </tr>
+                            <tr data-filter-item="resolveMaskActionValue method Resolve a configured mask action to a replacement value.">
+                                <td><a href="#declared-member-d4090347"><code data-lang-source="resolveMaskActionValue" data-lang-kind="member-name">resolveMaskActionValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve a configured mask action to a replacement value.</td>
+                            </tr>
+                            <tr data-filter-item="shouldDeferMaskAction method Determine whether a mask action should be deferred until the full attribute value is available.">
+                                <td><a href="#declared-member-12c05735"><code data-lang-source="shouldDeferMaskAction" data-lang-kind="member-name">shouldDeferMaskAction</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine whether a mask action should be deferred until the full attribute value is available.</td>
+                            </tr>
+                            <tr data-filter-item="shouldSuppressMaskedAttribute method Determine whether the mask action should suppress forwarding the current attribute/sequence.">
+                                <td><a href="#declared-member-665b99da"><code data-lang-source="shouldSuppressMaskedAttribute" data-lang-kind="member-name">shouldSuppressMaskedAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine whether the mask action should suppress forwarding the current attribute/sequence.</td>
+                            </tr>
+                            <tr data-filter-item="resolveAttributeMaskValue method Resolve the configured mask value for the current attribute potentially following the &quot;Basic Application Level Confidentiality Profile&quot; defined in: https://dicom.nema.org/medical/dicom/current/output/chtml/part15/chapter_E.html#table_E.1-1a">
+                                <td><a href="#declared-member-2279ab18"><code data-lang-source="resolveAttributeMaskValue" data-lang-kind="member-name">resolveAttributeMaskValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve the configured mask value for the current attribute potentially following<br>the &quot;Basic Application Level Confidentiality Profile&quot; defined in:<br>https://dicom.nema.org/medical/dicom/current/output/chtml/part15/chapter_E.html#table_E.1-1a</td>
+                            </tr>
+                            <tr data-filter-item="shouldMaskAttribute method Determine if the current attribute should be masked.">
+                                <td><a href="#declared-member-b5f6c968"><code data-lang-source="shouldMaskAttribute" data-lang-kind="member-name">shouldMaskAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if the current attribute should be masked.</td>
+                            </tr>
+                            <tr data-filter-item="applyMask method Apply masking to the current attribute when required.">
+                                <td><a href="#declared-member-87d9ef06"><code data-lang-source="applyMask" data-lang-kind="member-name">applyMask</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Apply masking to the current attribute when required.</td>
+                            </tr>
+                            <tr data-filter-item="onReset method ">
+                                <td><a href="#declared-member-dd7976da"><code data-lang-source="onReset" data-lang-kind="member-name">onReset</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartInstance method ">
+                                <td><a href="#declared-member-9fe14c8f"><code data-lang-source="onStartInstance" data-lang-kind="member-name">onStartInstance</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartPreamble method ">
+                                <td><a href="#declared-member-dc35462b"><code data-lang-source="onStartPreamble" data-lang-kind="member-name">onStartPreamble</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartPrefix method ">
+                                <td><a href="#declared-member-ef1d9179"><code data-lang-source="onStartPrefix" data-lang-kind="member-name">onStartPrefix</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartMetaSet method ">
+                                <td><a href="#declared-member-3ab7cd3e"><code data-lang-source="onStartMetaSet" data-lang-kind="member-name">onStartMetaSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartDataSet method ">
+                                <td><a href="#declared-member-61d4c1c3"><code data-lang-source="onStartDataSet" data-lang-kind="member-name">onStartDataSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartAttribute method ">
+                                <td><a href="#declared-member-0a3836cf"><code data-lang-source="onStartAttribute" data-lang-kind="member-name">onStartAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartSequence method ">
+                                <td><a href="#declared-member-acc85ef9"><code data-lang-source="onStartSequence" data-lang-kind="member-name">onStartSequence</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onStartItem method ">
+                                <td><a href="#declared-member-29732c94"><code data-lang-source="onStartItem" data-lang-kind="member-name">onStartItem</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onAppendAttribute method ">
+                                <td><a href="#declared-member-04a064dc"><code data-lang-source="onAppendAttribute" data-lang-kind="member-name">onAppendAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onAttributeChunk method ">
+                                <td><a href="#declared-member-d834103f"><code data-lang-source="onAttributeChunk" data-lang-kind="member-name">onAttributeChunk</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndPreamble method ">
+                                <td><a href="#declared-member-12abde49"><code data-lang-source="onEndPreamble" data-lang-kind="member-name">onEndPreamble</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndPrefix method ">
+                                <td><a href="#declared-member-bfe65cac"><code data-lang-source="onEndPrefix" data-lang-kind="member-name">onEndPrefix</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndAttribute method ">
+                                <td><a href="#declared-member-54e61115"><code data-lang-source="onEndAttribute" data-lang-kind="member-name">onEndAttribute</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndSequence method ">
+                                <td><a href="#declared-member-8510b0f3"><code data-lang-source="onEndSequence" data-lang-kind="member-name">onEndSequence</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndItem method ">
+                                <td><a href="#declared-member-c4c21c06"><code data-lang-source="onEndItem" data-lang-kind="member-name">onEndItem</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndMetaSet method ">
+                                <td><a href="#declared-member-99463232"><code data-lang-source="onEndMetaSet" data-lang-kind="member-name">onEndMetaSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndDataSet method ">
+                                <td><a href="#declared-member-1c2e2d4c"><code data-lang-source="onEndDataSet" data-lang-kind="member-name">onEndDataSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onEndInstance method ">
+                                <td><a href="#declared-member-eb13ff75"><code data-lang-source="onEndInstance" data-lang-kind="member-name">onEndInstance</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onError method ">
+                                <td><a href="#declared-member-f3f93ce1"><code data-lang-source="onError" data-lang-kind="member-name">onError</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onProgress method ">
+                                <td><a href="#declared-member-dd05a703"><code data-lang-source="onProgress" data-lang-kind="member-name">onProgress</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="tagMask setter Sets the current attribute tag mask map.">
+                                <td><a href="#declared-member-2ada52b3"><code data-lang-source="tagMask" data-lang-kind="member-name">tagMask</code></a></td>
+                                <td><code>setter</code></td>
+                                <td>Sets the current attribute tag mask map.</td>
+                            </tr>
+                            <tr data-filter-item="tagMask getter Gets the current attribute tag mask map.">
+                                <td><a href="#declared-member-b30c61ce"><code data-lang-source="tagMask" data-lang-kind="member-name">tagMask</code></a></td>
+                                <td><code>getter</code></td>
+                                <td>Gets the current attribute tag mask map.</td>
+                            </tr>
+                            <tr data-filter-item="deIdentificationMask setter Alias for tagMask.">
+                                <td><a href="#declared-member-5a752017"><code data-lang-source="deIdentificationMask" data-lang-kind="member-name">deIdentificationMask</code></a></td>
+                                <td><code>setter</code></td>
+                                <td>Alias for tagMask.</td>
+                            </tr>
+                            <tr data-filter-item="deIdentificationMask getter Alias for tagMask.">
+                                <td><a href="#declared-member-8f860c64"><code data-lang-source="deIdentificationMask" data-lang-kind="member-name">deIdentificationMask</code></a></td>
+                                <td><code>getter</code></td>
+                                <td>Alias for tagMask.</td>
+                            </tr>
+                            <tr data-filter-item="setTagMask method Set or replace a mask for a single tag.">
+                                <td><a href="#declared-member-aeef3839"><code data-lang-source="setTagMask" data-lang-kind="member-name">setTagMask</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Set or replace a mask for a single tag.</td>
+                            </tr>
+                            <tr data-filter-item="clearTagMask method Remove a mask for a single tag.">
+                                <td><a href="#declared-member-d93cb962"><code data-lang-source="clearTagMask" data-lang-kind="member-name">clearTagMask</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Remove a mask for a single tag.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-ec4eec42" data-filter-item="forward method Forward an event call to the next handler when supported.">
+                    <h4><code data-lang-source="forward(name, context, param)" data-lang-kind="signature">forward(name, context, param)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Forward an event call to the next handler when supported. It provides forward behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The event name. It provides the name input used by forward. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The current context. It provides the context input used by forward. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="param" data-lang-kind="parameter-name">param</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> The event parameter. It provides the param input used by forward.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="*" data-lang-kind="type-token">*</code><br><span class="page-meta">The forwarded result.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ec877a46" data-filter-item="ensureState method Ensure the de-identification context state exists.">
+                    <h4><code data-lang-source="ensureState(context)" data-lang-kind="signature">ensureState(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Ensure the de-identification context state exists. It provides ensure state behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The current context. It provides the context input used by ensureState. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">The ensured context.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8b864ca6" data-filter-item="normalizeTagMaskKey method Normalize a Tag-like key to an 8-char uppercase DICOM identifier.">
+                    <h4><code data-lang-source="normalizeTagMaskKey(tagOrIdentifier)" data-lang-kind="signature">normalizeTagMaskKey(tagOrIdentifier)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize a Tag-like key to an 8-char uppercase DICOM identifier. It provides normalize tag mask key behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tagOrIdentifier" data-lang-kind="parameter-name">tagOrIdentifier</code></td>
+                                <td class="member-param-type"><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The Tag-like key. It provides the tag or identifier input used by normalizeTagMaskKey.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The normalized identifier or NULL if invalid.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8548e7fb" data-filter-item="normalizeTagMaskItem method Normalize one mask action input to a normalized mask item.">
+                    <h4><code data-lang-source="normalizeTagMaskItem(id, maskActionOrItem)" data-lang-kind="signature">normalizeTagMaskItem(id, maskActionOrItem)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize one mask action input to a normalized mask item. It provides normalize tag mask item behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="id" data-lang-kind="parameter-name">id</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The normalized DICOM tag identifier. It provides the id input used by normalizeTagMaskItem. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="maskActionOrItem" data-lang-kind="parameter-name">maskActionOrItem</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> The input mask action or mask item. It provides the mask action or item input used by normalizeTagMaskItem.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ID: string, Action: unknown}" data-lang-kind="type-token">{ID: string, Action: unknown}</code><br><span class="page-meta">The normalized mask item.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-11bae129" data-filter-item="normalizeTagMask method Normalize the caller-provided mask into a map keyed by DICOM tag identifiers.">
+                    <h4><code data-lang-source="normalizeTagMask(tagMask)" data-lang-kind="signature">normalizeTagMask(tagMask)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize the caller-provided mask into a map keyed by DICOM tag identifiers. It provides normalize tag mask behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tagMask" data-lang-kind="parameter-name">tagMask</code></td>
+                                <td class="member-param-type"><code data-lang-source="Map" data-lang-kind="type-token">Map</code><code data-lang-source="&lt;" data-lang-kind="type-token">&lt;</code><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a><code data-lang-source=" | " data-lang-kind="type-token"> | </code><code data-lang-source="string" data-lang-kind="type-token">string</code><code data-lang-source=", " data-lang-kind="type-token">, </code><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><code data-lang-source="&gt;" data-lang-kind="type-token">&gt;</code><br /><code data-lang-source="Array" data-lang-kind="type-token">Array</code><code data-lang-source="&lt;" data-lang-kind="type-token">&lt;</code><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a><code data-lang-source=" | " data-lang-kind="type-token"> | </code><code data-lang-source="string" data-lang-kind="type-token">string</code><code data-lang-source=" | " data-lang-kind="type-token"> | </code><code data-lang-source="object" data-lang-kind="type-token">object</code><code data-lang-source="&gt;" data-lang-kind="type-token">&gt;</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The mask to normalize. It provides the tag mask input used by normalizeTagMask.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Map&lt;string, {ID: string, Action: unknown}&gt;" data-lang-kind="type-token">Map&lt;string, {ID: string, Action: unknown}&gt;</code><br><span class="page-meta">The normalized mask map.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b93dbd58" data-filter-item="resolveAttributeMaskItem method Resolve the configured mask item for the current attribute.">
+                    <h4><code data-lang-source="resolveAttributeMaskItem(attribute)" data-lang-kind="signature">resolveAttributeMaskItem(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve the configured mask item for the current attribute. It provides resolve attribute mask item behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by resolveAttributeMaskItem.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ID: string, Action: unknown}" data-lang-kind="type-token">{ID: string, Action: unknown}</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The configured mask item or null.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f27a4ab8" data-filter-item="normalizeMaskActionCode method Normalize a value to a standard DICOM de-identification action code.">
+                    <h4><code data-lang-source="normalizeMaskActionCode(maskAction)" data-lang-kind="signature">normalizeMaskActionCode(maskAction)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize a value to a standard DICOM de-identification action code. It provides normalize mask action code behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="maskAction" data-lang-kind="parameter-name">maskAction</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> The action candidate. It provides the mask action input used by normalizeMaskActionCode.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The normalized action code, or null when it is not a standard action code.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1087915c" data-filter-item="resolveZeroLengthMaskValue method Resolve a DICOM-compatible &quot;zero-length&quot; replacement value based on VR.">
+                    <h4><code data-lang-source="resolveZeroLengthMaskValue(attribute)" data-lang-kind="signature">resolveZeroLengthMaskValue(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve a DICOM-compatible &quot;zero-length&quot; replacement value based on VR. It provides resolve zero length mask value behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by resolveZeroLengthMaskValue.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The replacement value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4b5f667c" data-filter-item="resolveDummyMaskValue method Resolve a DICOM-compatible &quot;dummy&quot; replacement value based on VR.">
+                    <h4><code data-lang-source="resolveDummyMaskValue(attribute)" data-lang-kind="signature">resolveDummyMaskValue(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve a DICOM-compatible &quot;dummy&quot; replacement value based on VR. It provides resolve dummy mask value behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by resolveDummyMaskValue.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The replacement value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-57b3bacc" data-filter-item="resolveCleanMaskValue method Resolve a DICOM-compatible &quot;cleaned&quot; replacement value based on VR.">
+                    <h4><code data-lang-source="resolveCleanMaskValue(attribute)" data-lang-kind="signature">resolveCleanMaskValue(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve a DICOM-compatible &quot;cleaned&quot; replacement value based on VR. It provides resolve clean mask value behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by resolveCleanMaskValue.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The replacement value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-61164661" data-filter-item="resolveUIDMaskValue method Resolve a deterministic replacement UID for a masked UID attribute.">
+                    <h4><code data-lang-source="resolveUIDMaskValue(attribute)" data-lang-kind="signature">resolveUIDMaskValue(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve a deterministic replacement UID for a masked UID attribute. It provides resolve uidmask value behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by resolveUIDMaskValue.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">The replacement UID value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d4090347" data-filter-item="resolveMaskActionValue method Resolve a configured mask action to a replacement value.">
+                    <h4><code data-lang-source="resolveMaskActionValue(attribute, maskAction)" data-lang-kind="signature">resolveMaskActionValue(attribute, maskAction)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve a configured mask action to a replacement value. It provides resolve mask action value behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by resolveMaskActionValue.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="maskAction" data-lang-kind="parameter-name">maskAction</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured mask action. It provides the mask action input used by resolveMaskActionValue.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The resolved replacement value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-12c05735" data-filter-item="shouldDeferMaskAction method Determine whether a mask action should be deferred until the full attribute value is available.">
+                    <h4><code data-lang-source="shouldDeferMaskAction(maskAction)" data-lang-kind="signature">shouldDeferMaskAction(maskAction)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine whether a mask action should be deferred until the full attribute value is available. It provides should defer mask action behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="maskAction" data-lang-kind="parameter-name">maskAction</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured mask action. It provides the mask action input used by shouldDeferMaskAction.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when resolution should be deferred for incomplete attributes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-665b99da" data-filter-item="shouldSuppressMaskedAttribute method Determine whether the mask action should suppress forwarding the current attribute/sequence.">
+                    <h4><code data-lang-source="shouldSuppressMaskedAttribute(attribute)" data-lang-kind="signature">shouldSuppressMaskedAttribute(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine whether the mask action should suppress forwarding the current attribute/sequence. It provides should suppress masked attribute behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute or sequence element. It provides the attribute input used by shouldSuppressMaskedAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE if the current element should be suppressed.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2279ab18" data-filter-item="resolveAttributeMaskValue method Resolve the configured mask value for the current attribute potentially following the &quot;Basic Application Level Confidentiality Profile&quot; defined in: https://dicom.nema.org/medical/dicom/current/output/chtml/part15/chapter_E.html#table_E.1-1a">
+                    <h4><code data-lang-source="resolveAttributeMaskValue(attribute)" data-lang-kind="signature">resolveAttributeMaskValue(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve the configured mask value for the current attribute potentially following the &quot;Basic Application Level Confidentiality Profile&quot; defined in: https://dicom.nema.org/medical/dicom/current/output/chtml/part15/chapter_E.html#table_E.1-1a It provides resolve attribute mask value behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by resolveAttributeMaskValue.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The resolved mask value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b5f6c968" data-filter-item="shouldMaskAttribute method Determine if the current attribute should be masked.">
+                    <h4><code data-lang-source="shouldMaskAttribute(context, attribute)" data-lang-kind="signature">shouldMaskAttribute(context, attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if the current attribute should be masked. It provides should mask attribute behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The current parse context. It provides the context input used by shouldMaskAttribute. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by shouldMaskAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE if the current attribute should be masked, FALSE otherwise.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-87d9ef06" data-filter-item="applyMask method Apply masking to the current attribute when required.">
+                    <h4><code data-lang-source="applyMask(context, attribute)" data-lang-kind="signature">applyMask(context, attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Apply masking to the current attribute when required. It provides apply mask behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The current parse context. It provides the context input used by applyMask. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by applyMask.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-dd7976da" data-filter-item="onReset method ">
+                    <h4><code data-lang-source="onReset(context)" data-lang-kind="signature">onReset(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to reset conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onReset.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-9fe14c8f" data-filter-item="onStartInstance method ">
+                    <h4><code data-lang-source="onStartInstance(context)" data-lang-kind="signature">onStartInstance(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start instance conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartInstance.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-dc35462b" data-filter-item="onStartPreamble method ">
+                    <h4><code data-lang-source="onStartPreamble(context, preamble)" data-lang-kind="signature">onStartPreamble(context, preamble)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start preamble conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartPreamble.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="preamble" data-lang-kind="parameter-name">preamble</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the preamble input used by onStartPreamble.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ef1d9179" data-filter-item="onStartPrefix method ">
+                    <h4><code data-lang-source="onStartPrefix(context, prefix)" data-lang-kind="signature">onStartPrefix(context, prefix)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start prefix conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartPrefix.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="prefix" data-lang-kind="parameter-name">prefix</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the prefix input used by onStartPrefix.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3ab7cd3e" data-filter-item="onStartMetaSet method ">
+                    <h4><code data-lang-source="onStartMetaSet(context)" data-lang-kind="signature">onStartMetaSet(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start meta set conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartMetaSet.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-61d4c1c3" data-filter-item="onStartDataSet method ">
+                    <h4><code data-lang-source="onStartDataSet(context)" data-lang-kind="signature">onStartDataSet(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start data set conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartDataSet.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0a3836cf" data-filter-item="onStartAttribute method ">
+                    <h4><code data-lang-source="onStartAttribute(context, attribute)" data-lang-kind="signature">onStartAttribute(context, attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start attribute conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartAttribute.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the attribute input used by onStartAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-acc85ef9" data-filter-item="onStartSequence method ">
+                    <h4><code data-lang-source="onStartSequence(context, sequence)" data-lang-kind="signature">onStartSequence(context, sequence)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start sequence conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartSequence.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="sequence" data-lang-kind="parameter-name">sequence</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the sequence input used by onStartSequence.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-29732c94" data-filter-item="onStartItem method ">
+                    <h4><code data-lang-source="onStartItem(context)" data-lang-kind="signature">onStartItem(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to start item conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onStartItem.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-04a064dc" data-filter-item="onAppendAttribute method ">
+                    <h4><code data-lang-source="onAppendAttribute(context, attribute)" data-lang-kind="signature">onAppendAttribute(context, attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to append attribute conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onAppendAttribute.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the attribute input used by onAppendAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d834103f" data-filter-item="onAttributeChunk method ">
+                    <h4><code data-lang-source="onAttributeChunk(context, payload)" data-lang-kind="signature">onAttributeChunk(context, payload)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to attribute chunk conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onAttributeChunk.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="payload" data-lang-kind="parameter-name">payload</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the payload input used by onAttributeChunk.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-12abde49" data-filter-item="onEndPreamble method ">
+                    <h4><code data-lang-source="onEndPreamble(context, preamble)" data-lang-kind="signature">onEndPreamble(context, preamble)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end preamble conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndPreamble.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="preamble" data-lang-kind="parameter-name">preamble</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the preamble input used by onEndPreamble.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-bfe65cac" data-filter-item="onEndPrefix method ">
+                    <h4><code data-lang-source="onEndPrefix(context, prefix)" data-lang-kind="signature">onEndPrefix(context, prefix)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end prefix conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndPrefix.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="prefix" data-lang-kind="parameter-name">prefix</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the prefix input used by onEndPrefix.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-54e61115" data-filter-item="onEndAttribute method ">
+                    <h4><code data-lang-source="onEndAttribute(context, attribute)" data-lang-kind="signature">onEndAttribute(context, attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end attribute conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndAttribute.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the attribute input used by onEndAttribute.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8510b0f3" data-filter-item="onEndSequence method ">
+                    <h4><code data-lang-source="onEndSequence(context, sequence)" data-lang-kind="signature">onEndSequence(context, sequence)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end sequence conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndSequence.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="sequence" data-lang-kind="parameter-name">sequence</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the sequence input used by onEndSequence.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c4c21c06" data-filter-item="onEndItem method ">
+                    <h4><code data-lang-source="onEndItem(context)" data-lang-kind="signature">onEndItem(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end item conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndItem.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-99463232" data-filter-item="onEndMetaSet method ">
+                    <h4><code data-lang-source="onEndMetaSet(context)" data-lang-kind="signature">onEndMetaSet(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end meta set conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndMetaSet.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1c2e2d4c" data-filter-item="onEndDataSet method ">
+                    <h4><code data-lang-source="onEndDataSet(context)" data-lang-kind="signature">onEndDataSet(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end data set conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndDataSet.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-eb13ff75" data-filter-item="onEndInstance method ">
+                    <h4><code data-lang-source="onEndInstance(context)" data-lang-kind="signature">onEndInstance(context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to end instance conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onEndInstance.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f3f93ce1" data-filter-item="onError method ">
+                    <h4><code data-lang-source="onError(context, error)" data-lang-kind="signature">onError(context, error)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to error conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onError.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="error" data-lang-kind="parameter-name">error</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the error input used by onError.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-dd05a703" data-filter-item="onProgress method ">
+                    <h4><code data-lang-source="onProgress(context, progress)" data-lang-kind="signature">onProgress(context, progress)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to progress conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the context input used by onProgress.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="progress" data-lang-kind="parameter-name">progress</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the progress input used by onProgress.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2ada52b3" data-filter-item="tagMask setter Sets the current attribute tag mask map.">
+                    <h4><code data-lang-source="tagMask(tagMask)" data-lang-kind="signature">tagMask(tagMask)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>setter</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Sets the current attribute tag mask map. This setter updates tag mask on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tagMask" data-lang-kind="parameter-name">tagMask</code></td>
+                                <td class="member-param-type"><code data-lang-source="Map&lt;MaskItem&gt;" data-lang-kind="type-token">Map&lt;MaskItem&gt;</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The tag mask map. It provides the tag mask input used by tagMask.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b30c61ce" data-filter-item="tagMask getter Gets the current attribute tag mask map.">
+                    <h4><code data-lang-source="tagMask()" data-lang-kind="signature">tagMask()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Gets the current attribute tag mask map. This getter exposes tag mask from DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Map&lt;MaskItem&gt;" data-lang-kind="type-token">Map&lt;MaskItem&gt;</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The tag mask map.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5a752017" data-filter-item="deIdentificationMask setter Alias for tagMask.">
+                    <h4><code data-lang-source="deIdentificationMask(deIdentificationMask)" data-lang-kind="signature">deIdentificationMask(deIdentificationMask)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>setter</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Alias for tagMask. This setter updates de identification mask on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="deIdentificationMask" data-lang-kind="parameter-name">deIdentificationMask</code></td>
+                                <td class="member-param-type"><code data-lang-source="Map&lt;MaskItem&gt;" data-lang-kind="type-token">Map&lt;MaskItem&gt;</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The de-identification mask map. It provides the de identification mask input used by deIdentificationMask.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8f860c64" data-filter-item="deIdentificationMask getter Alias for tagMask.">
+                    <h4><code data-lang-source="deIdentificationMask()" data-lang-kind="signature">deIdentificationMask()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Alias for tagMask. This getter exposes de identification mask from DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Map&lt;MaskItem&gt;" data-lang-kind="type-token">Map&lt;MaskItem&gt;</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The de-identification mask map.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-aeef3839" data-filter-item="setTagMask method Set or replace a mask for a single tag.">
+                    <h4><code data-lang-source="setTagMask(tagOrIdentifier, maskValue)" data-lang-kind="signature">setTagMask(tagOrIdentifier, maskValue)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Set or replace a mask for a single tag. It updates tag mask state on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tagOrIdentifier" data-lang-kind="parameter-name">tagOrIdentifier</code></td>
+                                <td class="member-param-type"><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The tag to mask. It provides the tag or identifier input used by setTagMask.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="maskValue" data-lang-kind="parameter-name">maskValue</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Optional - &quot;[MASKED]&quot;)</span> The mask value or resolver function. It provides the mask value input used by setTagMask.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d93cb962" data-filter-item="clearTagMask method Remove a mask for a single tag.">
+                    <h4><code data-lang-source="clearTagMask(tagOrIdentifier)" data-lang-kind="signature">clearTagMask(tagOrIdentifier)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Remove a mask for a single tag. It provides clear tag mask behavior on DicomDeIdentificationFilter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tagOrIdentifier" data-lang-kind="parameter-name">tagOrIdentifier</code></td>
+                                <td class="member-param-type"><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The tag to clear from the mask map. It provides the tag or identifier input used by clearTagMask.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<p class="page-meta">No option-object contracts detected for declared members.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

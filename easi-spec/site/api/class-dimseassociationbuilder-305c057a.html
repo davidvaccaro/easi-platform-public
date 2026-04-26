@@ -1,0 +1,1645 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for DimseAssociationBuilder.">
+    <title>EASI | DimseAssociationBuilder</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>DimseAssociationBuilder</h2>
+                <p>This class provides dimse association builder behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><strong>DimseAssociationBuilder</strong></p>
+                <p class="page-meta">
+                    This class declares <code>32</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><span class="page-meta">none</span></td></tr>
+                        <tr><td>Declared Members</td><td>32</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>20</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="associationTimeoutMs" data-lang-kind="property-name">associationTimeoutMs</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="associationTimeoutMsConfigured" data-lang-kind="property-name">associationTimeoutMsConfigured</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="baseAssociation" data-lang-kind="property-name">baseAssociation</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="calledAeTitle" data-lang-kind="property-name">calledAeTitle</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="calledAeTitleConfigured" data-lang-kind="property-name">calledAeTitleConfigured</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="callingAeTitle" data-lang-kind="property-name">callingAeTitle</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="callingAeTitleConfigured" data-lang-kind="property-name">callingAeTitleConfigured</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="cloneBaseAssociation" data-lang-kind="property-name">cloneBaseAssociation</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="host" data-lang-kind="property-name">host</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="hostConfigured" data-lang-kind="property-name">hostConfigured</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="moveStorePolicy" data-lang-kind="property-name">moveStorePolicy</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="moveStorePolicyConfigured" data-lang-kind="property-name">moveStorePolicyConfigured</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="moveStoreTls" data-lang-kind="property-name">moveStoreTls</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="moveStoreTlsConfigured" data-lang-kind="property-name">moveStoreTlsConfigured</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="port" data-lang-kind="property-name">port</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="portConfigured" data-lang-kind="property-name">portConfigured</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="query" data-lang-kind="property-name">query</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="queryConfigured" data-lang-kind="property-name">queryConfigured</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="transportTls" data-lang-kind="property-name">transportTls</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="transportTlsConfigured" data-lang-kind="property-name">transportTlsConfigured</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="builder method Create a new DIMSE association builder.">
+                                <td><a href="#declared-member-9f5d9d13"><code data-lang-source="builder" data-lang-kind="member-name">builder</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Create a new DIMSE association builder.</td>
+                            </tr>
+                            <tr data-filter-item="isPlainObject method Determine if one value is a plain object.">
+                                <td><a href="#declared-member-26daf62e"><code data-lang-source="isPlainObject" data-lang-kind="member-name">isPlainObject</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if one value is a plain object.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeHost method Normalize and validate one host value.">
+                                <td><a href="#declared-member-82adb933"><code data-lang-source="normalizeHost" data-lang-kind="member-name">normalizeHost</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize and validate one host value.</td>
+                            </tr>
+                            <tr data-filter-item="normalizePort method Normalize and validate one TCP port value.">
+                                <td><a href="#declared-member-2357d6f7"><code data-lang-source="normalizePort" data-lang-kind="member-name">normalizePort</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize and validate one TCP port value.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeAeTitle method Normalize one AE-title value.">
+                                <td><a href="#declared-member-90bca756"><code data-lang-source="normalizeAeTitle" data-lang-kind="member-name">normalizeAeTitle</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one AE-title value.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeQuery method Normalize one query object.">
+                                <td><a href="#declared-member-83fafa06"><code data-lang-source="normalizeQuery" data-lang-kind="member-name">normalizeQuery</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one query object.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeTlsConfig method Normalize and validate one TLS configuration object.">
+                                <td><a href="#declared-member-f38753aa"><code data-lang-source="normalizeTlsConfig" data-lang-kind="member-name">normalizeTlsConfig</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize and validate one TLS configuration object.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeTimeout method Normalize one positive timeout in milliseconds.">
+                                <td><a href="#declared-member-05059e1e"><code data-lang-source="normalizeTimeout" data-lang-kind="member-name">normalizeTimeout</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one positive timeout in milliseconds.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeMoveStorePolicy method Normalize one move-store policy object.">
+                                <td><a href="#declared-member-efdcd0e3"><code data-lang-source="normalizeMoveStorePolicy" data-lang-kind="member-name">normalizeMoveStorePolicy</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one move-store policy object.</td>
+                            </tr>
+                            <tr data-filter-item="ensureTransportTlsOptions method Ensure transport TLS options object exists for option-level setters.">
+                                <td><a href="#declared-member-e6e478f1"><code data-lang-source="ensureTransportTlsOptions" data-lang-kind="member-name">ensureTransportTlsOptions</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Ensure transport TLS options object exists for option-level setters.</td>
+                            </tr>
+                            <tr data-filter-item="ensureMoveStoreTlsOptions method Ensure move-store TLS options object exists for option-level setters.">
+                                <td><a href="#declared-member-607600f9"><code data-lang-source="ensureMoveStoreTlsOptions" data-lang-kind="member-name">ensureMoveStoreTlsOptions</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Ensure move-store TLS options object exists for option-level setters.</td>
+                            </tr>
+                            <tr data-filter-item="ensureQueryOptions method Ensure query options object exists for option-level setters.">
+                                <td><a href="#declared-member-9b6ba5ce"><code data-lang-source="ensureQueryOptions" data-lang-kind="member-name">ensureQueryOptions</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Ensure query options object exists for option-level setters.</td>
+                            </tr>
+                            <tr data-filter-item="withBaseAssociation method Configure a base association object.">
+                                <td><a href="#declared-member-f77594f8"><code data-lang-source="withBaseAssociation" data-lang-kind="member-name">withBaseAssociation</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure a base association object.</td>
+                            </tr>
+                            <tr data-filter-item="withHost method Configure association host.">
+                                <td><a href="#declared-member-f9bb8c33"><code data-lang-source="withHost" data-lang-kind="member-name">withHost</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure association host.</td>
+                            </tr>
+                            <tr data-filter-item="withPort method Configure association port.">
+                                <td><a href="#declared-member-4180f596"><code data-lang-source="withPort" data-lang-kind="member-name">withPort</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure association port.</td>
+                            </tr>
+                            <tr data-filter-item="withCallingAeTitle method Configure association calling AE-title.">
+                                <td><a href="#declared-member-88dbc808"><code data-lang-source="withCallingAeTitle" data-lang-kind="member-name">withCallingAeTitle</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure association calling AE-title.</td>
+                            </tr>
+                            <tr data-filter-item="withCalledAeTitle method Configure association called AE-title.">
+                                <td><a href="#declared-member-ed5d3638"><code data-lang-source="withCalledAeTitle" data-lang-kind="member-name">withCalledAeTitle</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure association called AE-title.</td>
+                            </tr>
+                            <tr data-filter-item="withQuery method Configure association query descriptor.">
+                                <td><a href="#declared-member-4793b5ec"><code data-lang-source="withQuery" data-lang-kind="member-name">withQuery</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure association query descriptor.</td>
+                            </tr>
+                            <tr data-filter-item="withQueryOption method Configure one query option.">
+                                <td><a href="#declared-member-60812920"><code data-lang-source="withQueryOption" data-lang-kind="member-name">withQueryOption</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure one query option.</td>
+                            </tr>
+                            <tr data-filter-item="withMoveDestinationAeTitle method Configure C-MOVE destination AE-title.">
+                                <td><a href="#declared-member-8187d51a"><code data-lang-source="withMoveDestinationAeTitle" data-lang-kind="member-name">withMoveDestinationAeTitle</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure C-MOVE destination AE-title.</td>
+                            </tr>
+                            <tr data-filter-item="withMoveStoreCalledAeTitle method Configure local move-store listener called AE-title.">
+                                <td><a href="#declared-member-c81efbaf"><code data-lang-source="withMoveStoreCalledAeTitle" data-lang-kind="member-name">withMoveStoreCalledAeTitle</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure local move-store listener called AE-title.</td>
+                            </tr>
+                            <tr data-filter-item="withTransportTls method Configure outbound DIMSE transport TLS.">
+                                <td><a href="#declared-member-1b83200a"><code data-lang-source="withTransportTls" data-lang-kind="member-name">withTransportTls</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure outbound DIMSE transport TLS.</td>
+                            </tr>
+                            <tr data-filter-item="withTransportTlsOption method Configure one transport TLS option.">
+                                <td><a href="#declared-member-3197851e"><code data-lang-source="withTransportTlsOption" data-lang-kind="member-name">withTransportTlsOption</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure one transport TLS option.</td>
+                            </tr>
+                            <tr data-filter-item="withTransportMutualTls method Configure outbound mTLS transport settings.">
+                                <td><a href="#declared-member-95ef9576"><code data-lang-source="withTransportMutualTls" data-lang-kind="member-name">withTransportMutualTls</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure outbound mTLS transport settings.</td>
+                            </tr>
+                            <tr data-filter-item="withMoveStoreTls method Configure C-MOVE store-listener TLS.">
+                                <td><a href="#declared-member-c472b9b8"><code data-lang-source="withMoveStoreTls" data-lang-kind="member-name">withMoveStoreTls</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure C-MOVE store-listener TLS.</td>
+                            </tr>
+                            <tr data-filter-item="withMoveStoreTlsOption method Configure one move-store TLS option.">
+                                <td><a href="#declared-member-c880c948"><code data-lang-source="withMoveStoreTlsOption" data-lang-kind="member-name">withMoveStoreTlsOption</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure one move-store TLS option.</td>
+                            </tr>
+                            <tr data-filter-item="withMoveStoreMutualTls method Configure move-store listener mTLS settings.">
+                                <td><a href="#declared-member-8b981e31"><code data-lang-source="withMoveStoreMutualTls" data-lang-kind="member-name">withMoveStoreMutualTls</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure move-store listener mTLS settings.</td>
+                            </tr>
+                            <tr data-filter-item="withAssociationTimeoutMs method Configure DIMSE association timeout (ms).">
+                                <td><a href="#declared-member-2a3458e4"><code data-lang-source="withAssociationTimeoutMs" data-lang-kind="member-name">withAssociationTimeoutMs</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure DIMSE association timeout (ms).</td>
+                            </tr>
+                            <tr data-filter-item="withMoveStorePolicy method Configure move-store policy object.">
+                                <td><a href="#declared-member-0ebbe99a"><code data-lang-source="withMoveStorePolicy" data-lang-kind="member-name">withMoveStorePolicy</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure move-store policy object.</td>
+                            </tr>
+                            <tr data-filter-item="withMoveStorePolicyOption method Configure one move-store policy option.">
+                                <td><a href="#declared-member-e31a9a83"><code data-lang-source="withMoveStorePolicyOption" data-lang-kind="member-name">withMoveStorePolicyOption</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure one move-store policy option.</td>
+                            </tr>
+                            <tr data-filter-item="withMoveStoreAssociationTimeoutMs method Configure move-store association timeout policy (ms).">
+                                <td><a href="#declared-member-db97ab78"><code data-lang-source="withMoveStoreAssociationTimeoutMs" data-lang-kind="member-name">withMoveStoreAssociationTimeoutMs</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure move-store association timeout policy (ms).</td>
+                            </tr>
+                            <tr data-filter-item="build method Build one DIMSE association object from configured builder state.">
+                                <td><a href="#declared-member-3d3f952f"><code data-lang-source="build" data-lang-kind="member-name">build</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build one DIMSE association object from configured builder state.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-9f5d9d13" data-filter-item="builder method Create a new DIMSE association builder.">
+                    <h4><code data-lang-source="builder()" data-lang-kind="signature">builder()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Create a new DIMSE association builder. It finalizes and returns the built DimseAssociationBuilder artifact.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">A new DIMSE association builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-26daf62e" data-filter-item="isPlainObject method Determine if one value is a plain object.">
+                    <h4><code data-lang-source="isPlainObject(value)" data-lang-kind="signature">isPlainObject(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if one value is a plain object. It provides is plain object behavior on DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> Candidate value. It provides the value input used by isPlainObject.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when value is plain object.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-82adb933" data-filter-item="normalizeHost method Normalize and validate one host value.">
+                    <h4><code data-lang-source="normalizeHost(host)" data-lang-kind="signature">normalizeHost(host)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize and validate one host value. It provides normalize host behavior on DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="host" data-lang-kind="parameter-name">host</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> Host value. It provides the host input used by normalizeHost.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">Normalized host.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2357d6f7" data-filter-item="normalizePort method Normalize and validate one TCP port value.">
+                    <h4><code data-lang-source="normalizePort(port)" data-lang-kind="signature">normalizePort(port)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize and validate one TCP port value. It provides normalize port behavior on DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="port" data-lang-kind="parameter-name">port</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> Port value. It provides the port input used by normalizePort.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">Normalized integer port.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-90bca756" data-filter-item="normalizeAeTitle method Normalize one AE-title value.">
+                    <h4><code data-lang-source="normalizeAeTitle(aeTitle, label)" data-lang-kind="signature">normalizeAeTitle(aeTitle, label)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize one AE-title value. It provides normalize ae title behavior on DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="aeTitle" data-lang-kind="parameter-name">aeTitle</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> AE-title value. It provides the ae title input used by normalizeAeTitle.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="label" data-lang-kind="parameter-name">label</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Validation label. It provides the label input used by normalizeAeTitle. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">Normalized AE-title.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-83fafa06" data-filter-item="normalizeQuery method Normalize one query object.">
+                    <h4><code data-lang-source="normalizeQuery(query)" data-lang-kind="signature">normalizeQuery(query)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize one query object. It provides normalize query behavior on DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="query" data-lang-kind="parameter-name">query</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> Query object. It provides the query input used by normalizeQuery.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Normalized query object.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f38753aa" data-filter-item="normalizeTlsConfig method Normalize and validate one TLS configuration object.">
+                    <h4><code data-lang-source="normalizeTlsConfig(tlsConfig, label)" data-lang-kind="signature">normalizeTlsConfig(tlsConfig, label)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize and validate one TLS configuration object. It provides normalize tls config behavior on DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tlsConfig" data-lang-kind="parameter-name">tlsConfig</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> TLS configuration. It provides the tls config input used by normalizeTlsConfig.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="label" data-lang-kind="parameter-name">label</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Validation label. It provides the label input used by normalizeTlsConfig. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Normalized TLS config.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-05059e1e" data-filter-item="normalizeTimeout method Normalize one positive timeout in milliseconds.">
+                    <h4><code data-lang-source="normalizeTimeout(timeoutMs, label)" data-lang-kind="signature">normalizeTimeout(timeoutMs, label)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize one positive timeout in milliseconds. It provides normalize timeout behavior on DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="timeoutMs" data-lang-kind="parameter-name">timeoutMs</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Timeout value. It provides the timeout ms input used by normalizeTimeout.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="label" data-lang-kind="parameter-name">label</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Validation label. It provides the label input used by normalizeTimeout. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">Normalized timeout.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-efdcd0e3" data-filter-item="normalizeMoveStorePolicy method Normalize one move-store policy object.">
+                    <h4><code data-lang-source="normalizeMoveStorePolicy(policy)" data-lang-kind="signature">normalizeMoveStorePolicy(policy)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize one move-store policy object. It provides normalize move store policy behavior on DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="policy" data-lang-kind="parameter-name">policy</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Move-store policy object. It provides the policy input used by normalizeMoveStorePolicy.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Normalized move-store policy.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e6e478f1" data-filter-item="ensureTransportTlsOptions method Ensure transport TLS options object exists for option-level setters.">
+                    <h4><code data-lang-source="ensureTransportTlsOptions()" data-lang-kind="signature">ensureTransportTlsOptions()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Ensure transport TLS options object exists for option-level setters. It provides ensure transport tls options behavior on DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Mutable transport TLS options object.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-607600f9" data-filter-item="ensureMoveStoreTlsOptions method Ensure move-store TLS options object exists for option-level setters.">
+                    <h4><code data-lang-source="ensureMoveStoreTlsOptions()" data-lang-kind="signature">ensureMoveStoreTlsOptions()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Ensure move-store TLS options object exists for option-level setters. It provides ensure move store tls options behavior on DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Mutable move-store TLS options object.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-9b6ba5ce" data-filter-item="ensureQueryOptions method Ensure query options object exists for option-level setters.">
+                    <h4><code data-lang-source="ensureQueryOptions()" data-lang-kind="signature">ensureQueryOptions()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Ensure query options object exists for option-level setters. It provides ensure query options behavior on DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Mutable query options object.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f77594f8" data-filter-item="withBaseAssociation method Configure a base association object.">
+                    <h4><code data-lang-source="withBaseAssociation(association, clone)" data-lang-kind="signature">withBaseAssociation(association, clone)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure a base association object. It configures base association behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="association" data-lang-kind="parameter-name">association</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Base association. It provides the association input used by withBaseAssociation.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="clone" data-lang-kind="parameter-name">clone</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                <td><span class="page-meta">(Optional - true)</span> Indicates if base association should be cloned during build. It provides the clone input used by withBaseAssociation. Type detail: expects a boolean flag value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f9bb8c33" data-filter-item="withHost method Configure association host.">
+                    <h4><code data-lang-source="withHost(host)" data-lang-kind="signature">withHost(host)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure association host. It configures host behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="host" data-lang-kind="parameter-name">host</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Association host. It provides the host input used by withHost. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4180f596" data-filter-item="withPort method Configure association port.">
+                    <h4><code data-lang-source="withPort(port)" data-lang-kind="signature">withPort(port)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure association port. It configures port behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="port" data-lang-kind="parameter-name">port</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Association TCP port. It provides the port input used by withPort. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-88dbc808" data-filter-item="withCallingAeTitle method Configure association calling AE-title.">
+                    <h4><code data-lang-source="withCallingAeTitle(aeTitle)" data-lang-kind="signature">withCallingAeTitle(aeTitle)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure association calling AE-title. It configures calling ae title behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="aeTitle" data-lang-kind="parameter-name">aeTitle</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Calling AE-title. It provides the ae title input used by withCallingAeTitle. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ed5d3638" data-filter-item="withCalledAeTitle method Configure association called AE-title.">
+                    <h4><code data-lang-source="withCalledAeTitle(aeTitle)" data-lang-kind="signature">withCalledAeTitle(aeTitle)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure association called AE-title. It configures called ae title behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="aeTitle" data-lang-kind="parameter-name">aeTitle</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Called AE-title. It provides the ae title input used by withCalledAeTitle. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4793b5ec" data-filter-item="withQuery method Configure association query descriptor.">
+                    <h4><code data-lang-source="withQuery(query)" data-lang-kind="signature">withQuery(query)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure association query descriptor. It configures query behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="query" data-lang-kind="parameter-name">query</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - {})</span> Query descriptor. It provides the query input used by withQuery. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-60812920" data-filter-item="withQueryOption method Configure one query option.">
+                    <h4><code data-lang-source="withQueryOption(name, value)" data-lang-kind="signature">withQueryOption(name, value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure one query option. It configures query option behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Query option name. It provides the name input used by withQueryOption. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> Query option value. It provides the value input used by withQueryOption.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8187d51a" data-filter-item="withMoveDestinationAeTitle method Configure C-MOVE destination AE-title.">
+                    <h4><code data-lang-source="withMoveDestinationAeTitle(aeTitle)" data-lang-kind="signature">withMoveDestinationAeTitle(aeTitle)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure C-MOVE destination AE-title. It configures move destination ae title behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="aeTitle" data-lang-kind="parameter-name">aeTitle</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Destination AE-title. It provides the ae title input used by withMoveDestinationAeTitle. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c81efbaf" data-filter-item="withMoveStoreCalledAeTitle method Configure local move-store listener called AE-title.">
+                    <h4><code data-lang-source="withMoveStoreCalledAeTitle(aeTitle)" data-lang-kind="signature">withMoveStoreCalledAeTitle(aeTitle)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure local move-store listener called AE-title. It configures move store called ae title behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="aeTitle" data-lang-kind="parameter-name">aeTitle</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Listener called AE-title. It provides the ae title input used by withMoveStoreCalledAeTitle. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1b83200a" data-filter-item="withTransportTls method Configure outbound DIMSE transport TLS.">
+                    <h4><code data-lang-source="withTransportTls(tlsConfig)" data-lang-kind="signature">withTransportTls(tlsConfig)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure outbound DIMSE transport TLS. It configures transport tls behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tlsConfig" data-lang-kind="parameter-name">tlsConfig</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - true)</span> TLS config (`true` =&gt; default object, `false` =&gt; disabled). It provides the tls config input used by withTransportTls.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3197851e" data-filter-item="withTransportTlsOption method Configure one transport TLS option.">
+                    <h4><code data-lang-source="withTransportTlsOption(name, value)" data-lang-kind="signature">withTransportTlsOption(name, value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure one transport TLS option. It configures transport tls option behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Option key. It provides the name input used by withTransportTlsOption. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> Option value. It provides the value input used by withTransportTlsOption.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-95ef9576" data-filter-item="withTransportMutualTls method Configure outbound mTLS transport settings.">
+                    <h4><code data-lang-source="withTransportMutualTls(tlsOptions)" data-lang-kind="signature">withTransportMutualTls(tlsOptions)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure outbound mTLS transport settings. It configures transport mutual tls behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tlsOptions" data-lang-kind="parameter-name">tlsOptions</code></td>
+                                <td class="member-param-type"><code data-lang-source="{ cert: unknown, key: unknown, ca?: unknown, passphrase?: string, rejectUnauthorized?: boolean, servername?: string }" data-lang-kind="type-token">{ cert: unknown, key: unknown, ca?: unknown, passphrase?: string, rejectUnauthorized?: boolean, servername?: string }</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> mTLS options. It provides the tls options input used by withTransportMutualTls. <span class="page-meta">See <a href="#option-withtransportmutualtls-tlsoptions-b447b59e-shape-1">Option Contract</a>.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c472b9b8" data-filter-item="withMoveStoreTls method Configure C-MOVE store-listener TLS.">
+                    <h4><code data-lang-source="withMoveStoreTls(tlsConfig)" data-lang-kind="signature">withMoveStoreTls(tlsConfig)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure C-MOVE store-listener TLS. It configures move store tls behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tlsConfig" data-lang-kind="parameter-name">tlsConfig</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - true)</span> TLS config (`true` =&gt; default object, `false` =&gt; disabled). It provides the tls config input used by withMoveStoreTls.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c880c948" data-filter-item="withMoveStoreTlsOption method Configure one move-store TLS option.">
+                    <h4><code data-lang-source="withMoveStoreTlsOption(name, value)" data-lang-kind="signature">withMoveStoreTlsOption(name, value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure one move-store TLS option. It configures move store tls option behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Option key. It provides the name input used by withMoveStoreTlsOption. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> Option value. It provides the value input used by withMoveStoreTlsOption.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8b981e31" data-filter-item="withMoveStoreMutualTls method Configure move-store listener mTLS settings.">
+                    <h4><code data-lang-source="withMoveStoreMutualTls(tlsOptions)" data-lang-kind="signature">withMoveStoreMutualTls(tlsOptions)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure move-store listener mTLS settings. It configures move store mutual tls behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tlsOptions" data-lang-kind="parameter-name">tlsOptions</code></td>
+                                <td class="member-param-type"><code data-lang-source="{ cert: unknown, key: unknown, ca?: unknown, passphrase?: string, rejectUnauthorized?: boolean }" data-lang-kind="type-token">{ cert: unknown, key: unknown, ca?: unknown, passphrase?: string, rejectUnauthorized?: boolean }</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> mTLS options. It provides the tls options input used by withMoveStoreMutualTls. <span class="page-meta">See <a href="#option-withmovestoremutualtls-tlsoptions-b6fd2880-shape-1">Option Contract</a>.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2a3458e4" data-filter-item="withAssociationTimeoutMs method Configure DIMSE association timeout (ms).">
+                    <h4><code data-lang-source="withAssociationTimeoutMs(timeoutMs)" data-lang-kind="signature">withAssociationTimeoutMs(timeoutMs)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure DIMSE association timeout (ms). It configures association timeout ms behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="timeoutMs" data-lang-kind="parameter-name">timeoutMs</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Timeout in milliseconds. It provides the timeout ms input used by withAssociationTimeoutMs. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0ebbe99a" data-filter-item="withMoveStorePolicy method Configure move-store policy object.">
+                    <h4><code data-lang-source="withMoveStorePolicy(policy)" data-lang-kind="signature">withMoveStorePolicy(policy)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure move-store policy object. It configures move store policy behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="policy" data-lang-kind="parameter-name">policy</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - {})</span> Move-store policy. It provides the policy input used by withMoveStorePolicy. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e31a9a83" data-filter-item="withMoveStorePolicyOption method Configure one move-store policy option.">
+                    <h4><code data-lang-source="withMoveStorePolicyOption(name, value)" data-lang-kind="signature">withMoveStorePolicyOption(name, value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure one move-store policy option. It configures move store policy option behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Policy option name. It provides the name input used by withMoveStorePolicyOption. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> Policy option value. It provides the value input used by withMoveStorePolicyOption.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-db97ab78" data-filter-item="withMoveStoreAssociationTimeoutMs method Configure move-store association timeout policy (ms).">
+                    <h4><code data-lang-source="withMoveStoreAssociationTimeoutMs(timeoutMs)" data-lang-kind="signature">withMoveStoreAssociationTimeoutMs(timeoutMs)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure move-store association timeout policy (ms). It configures move store association timeout ms behavior for DimseAssociationBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="timeoutMs" data-lang-kind="parameter-name">timeoutMs</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Timeout in milliseconds. It provides the timeout ms input used by withMoveStoreAssociationTimeoutMs. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-dimseassociationbuilder-305c057a.html"><code data-lang-source="DimseAssociationBuilder" data-lang-kind="type-token">DimseAssociationBuilder</code></a><br><span class="page-meta">The current builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3d3f952f" data-filter-item="build method Build one DIMSE association object from configured builder state.">
+                    <h4><code data-lang-source="build()" data-lang-kind="signature">build()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build one DIMSE association object from configured builder state. It finalizes and returns the built DimseAssociationBuilder artifact.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">DIMSE association options object.</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<div class="grid one">
+                <article class="card reveal" id="option-withtransportmutualtls-tlsoptions-b447b59e" data-filter-item="withTransportMutualTls tlsOptions option object">
+                    <h4><code data-lang-source="withTransportMutualTls(tlsOptions)" data-lang-kind="signature">withTransportMutualTls(tlsOptions)</code> &middot; <code data-lang-source="tlsOptions" data-lang-kind="parameter-name">tlsOptions</code></h4>
+
+                            <div class="table-scroll" id="option-withtransportmutualtls-tlsoptions-b447b59e-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">cert Profile</span><span class="option-shape-description"> - Use this shape to configure tlsOptions via cert, key, ca, passphrase (+2 more).</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="cert" data-lang-kind="property-name">cert</code></td>
+                                        <td><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls cert behavior for withTransportMutualTls.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="key" data-lang-kind="property-name">key</code></td>
+                                        <td><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls key behavior for withTransportMutualTls.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="ca" data-lang-kind="property-name">ca</code></td>
+                                        <td><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls ca behavior for withTransportMutualTls.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="passphrase" data-lang-kind="property-name">passphrase</code></td>
+                                        <td><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls passphrase behavior for withTransportMutualTls.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="rejectUnauthorized" data-lang-kind="property-name">rejectUnauthorized</code></td>
+                                        <td><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls reject unauthorized behavior for withTransportMutualTls.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="servername" data-lang-kind="property-name">servername</code></td>
+                                        <td><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls servername behavior for withTransportMutualTls.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-withmovestoremutualtls-tlsoptions-b6fd2880" data-filter-item="withMoveStoreMutualTls tlsOptions option object">
+                    <h4><code data-lang-source="withMoveStoreMutualTls(tlsOptions)" data-lang-kind="signature">withMoveStoreMutualTls(tlsOptions)</code> &middot; <code data-lang-source="tlsOptions" data-lang-kind="parameter-name">tlsOptions</code></h4>
+
+                            <div class="table-scroll" id="option-withmovestoremutualtls-tlsoptions-b6fd2880-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">cert Profile</span><span class="option-shape-description"> - Use this shape to configure tlsOptions via cert, key, ca, passphrase (+1 more).</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="cert" data-lang-kind="property-name">cert</code></td>
+                                        <td><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls cert behavior for withMoveStoreMutualTls.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="key" data-lang-kind="property-name">key</code></td>
+                                        <td><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                        <td><span class="page-meta">(Required)</span> Controls key behavior for withMoveStoreMutualTls.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="ca" data-lang-kind="property-name">ca</code></td>
+                                        <td><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls ca behavior for withMoveStoreMutualTls.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="passphrase" data-lang-kind="property-name">passphrase</code></td>
+                                        <td><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls passphrase behavior for withMoveStoreMutualTls.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="rejectUnauthorized" data-lang-kind="property-name">rejectUnauthorized</code></td>
+                                        <td><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls reject unauthorized behavior for withMoveStoreMutualTls.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article></div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

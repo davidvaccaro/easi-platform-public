@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Adoption pitch for EASI: why teams choose an expressive, staged DICOM pipeline model for real-world imaging workflows.">
-    <title>EASI | Advantages of EASI</title>
+    <title>EASI | The EASI Advantage</title>
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="./assets/app.js"></script>
 </head>
@@ -21,30 +21,31 @@
 
 <div class="nav-section">
                 <a class="nav-link" data-nav-link href="index.html">Overview</a>
-                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="why-easi.html">The EASI Advantage</a>
                 <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
                 <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
                     <div class="nav-submenu" data-nav-submenu>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mapping</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-selection.html">Selection</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-filtering.html">Filtering</a>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writer</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
-                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
@@ -52,7 +53,19 @@
                         <a class="nav-link nav-sublink" data-nav-link href="lifecycle-status.html">Stream Lifecycle Events</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
                         <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="builder-types/index.html">Builders</a>
@@ -129,6 +142,7 @@
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
                     </div>
                 </div>
+                <a class="nav-link" data-nav-link href="api/index.html">API Reference</a>
                 <a class="nav-link" data-nav-link href="error-catalog.html">Errors</a>
                 <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
                 <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
@@ -144,7 +158,7 @@
 
         <main class="page">
             <section class="page-hero reveal">
-                <h2>Advantages of EASI</h2>
+                <h2>The EASI Advantage</h2>
                 <p>
                     EASI gives developers a practical way of orchestrating modern DICOM&reg; workflows without absorbing the full
                     complexity of native DICOM&reg; data processing and communications.
@@ -301,13 +315,15 @@ imagingStudy := imagingStudyResults.first()
 // to native-DICOM and HTTP POSTs the result bytes as a STOW-RS transaction 
 // to a remote DICOMweb or bespoke cloud host.
 
+listenerAssociation := EASI.dimseAssociationBuilder()
+  .withBaseAssociation({ role: "scp" })
+  .withHost("0.0.0.0")
+  .withPort(4104)
+  .withCalledAeTitle("IMAGEBRIDGE")
+  .build()
+
 listenerPipeline := EASI.pipelineBuilder()
-  .fromDimseAssociation({
-    role: "scp",
-    host: "0.0.0.0",
-    port: 4104,
-    calledAET: "IMAGEBRIDGE"
-  })
+  .fromDimseAssociation(listenerAssociation)
   .ofDicomData()
   .withDeIdentification(Tag.DefaultDeIdentificationMask)
   .toDicomData()
@@ -406,13 +422,15 @@ const imagingStudy = imagingStudyResults.first();</code></pre>
 // to native-DICOM and HTTP POSTs the result bytes as a STOW-RS transaction
 // to a remote DICOMweb or bespoke cloud host.
 
+const listenerAssociation = EASI.dimseAssociationBuilder()
+  .withBaseAssociation({ role: "scp" })
+  .withHost("0.0.0.0")
+  .withPort(4104)
+  .withCalledAeTitle("IMAGEBRIDGE")
+  .build();
+
 const listenerPipeline = EASI.pipelineBuilder()
-  .fromDimseAssociation({
-    role: "scp",
-    host: "0.0.0.0",
-    port: 4104,
-    calledAET: "IMAGEBRIDGE"
-  })
+  .fromDimseAssociation(listenerAssociation)
   .ofDicomData()
   .withDeIdentification(Tag.DefaultDeIdentificationMask)
   .toDicomData()
@@ -510,13 +528,15 @@ var imagingStudy = imagingStudyResults.First();</code></pre>
 // to native-DICOM and HTTP POSTs the result bytes as a STOW-RS transaction
 // to a remote DICOMweb or bespoke cloud host.
 
+var listenerAssociation = EASI.DimseAssociationBuilder()
+    .WithBaseAssociation(new { role = "scp" })
+    .WithHost("0.0.0.0")
+    .WithPort(4104)
+    .WithCalledAeTitle("IMAGEBRIDGE")
+    .Build();
+
 var listenerPipeline = EASI.PipelineBuilder()
-    .FromDimseAssociation(new {
-        role = "scp",
-        host = "0.0.0.0",
-        port = 4104,
-        calledAET = "IMAGEBRIDGE"
-    })
+    .FromDimseAssociation(listenerAssociation)
     .OfDicomData()
     .WithDeIdentification(Tag.DefaultDeIdentificationMask)
     .ToDicomData()
@@ -614,13 +634,15 @@ var imagingStudy = imagingStudyResults.first();</code></pre>
 // to native-DICOM and HTTP POSTs the result bytes as a STOW-RS transaction
 // to a remote DICOMweb or bespoke cloud host.
 
+var listenerAssociation = EASI.dimseAssociationBuilder()
+    .withBaseAssociation(Map.of("role", "scp"))
+    .withHost("0.0.0.0")
+    .withPort(4104)
+    .withCalledAeTitle("IMAGEBRIDGE")
+    .build();
+
 var listenerPipeline = EASI.pipelineBuilder()
-    .fromDimseAssociation(Map.of(
-        "role", "scp",
-        "host", "0.0.0.0",
-        "port", 4104,
-        "calledAET", "IMAGEBRIDGE"
-    ))
+    .fromDimseAssociation(listenerAssociation)
     .ofDicomData()
     .withDeIdentification(Tag.DefaultDeIdentificationMask)
     .toDicomData()
@@ -726,14 +748,18 @@ imaging_study = imaging_study_results.first()</code></pre>
 # to native-DICOM and HTTP POSTs the result bytes as a STOW-RS transaction
 # to a remote DICOMweb or bespoke cloud host.
 
+listener_association = (
+    EASI.dimse_association_builder()
+    .with_base_association({"role": "scp"})
+    .with_host("0.0.0.0")
+    .with_port(4104)
+    .with_called_ae_title("IMAGEBRIDGE")
+    .build()
+)
+
 listener_pipeline = (
     EASI.pipeline_builder()
-    .from_dimse_association({
-        "role": "scp",
-        "host": "0.0.0.0",
-        "port": 4104,
-        "calledAET": "IMAGEBRIDGE"
-    })
+    .from_dimse_association(listener_association)
     .of_dicom_data()
     .with_de_identification(Tag.default_de_identification_mask)
     .to_dicom_data()
@@ -761,14 +787,6 @@ run.stop()</code></pre>
                 <h3>Why This Is A Meaningful Shift For DICOM&reg; Orchestration</h3>
                 <p>
                     EASI keeps DICOM&reg; at the core while making sophisticated workflow orchestration much simpler to compose, understand, and maintain thereby reducing friction and expanding where DICOM&reg; workflows are practical in modern application architectures.
-                </p>
-            </section>
-
-            <section class="section reveal">
-                <h3>Continue Evaluation</h3>
-                <p>
-                    Next, read <a href="why-expressive.html">Why Expressive?</a> for the staged fluent builder rationale,
-                    then continue to <a href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a> for normative model orientation.
                 </p>
             </section>
 

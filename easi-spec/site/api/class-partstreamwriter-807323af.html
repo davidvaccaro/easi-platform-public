@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for PartStreamWriter.">
+    <title>EASI | PartStreamWriter</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>PartStreamWriter</h2>
+                <p>This class provides part stream writer behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><strong>PartStreamWriter</strong></p>
+                <p class="page-meta">
+                    This class declares <code>17</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><span class="page-meta">none</span></td></tr>
+                        <tr><td>Declared Members</td><td>17</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>5</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="chunkSize" data-lang-kind="property-name">chunkSize</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="collectOutput" data-lang-kind="property-name">collectOutput</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="lastBoundary" data-lang-kind="property-name">lastBoundary</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="lastContentType" data-lang-kind="property-name">lastContentType</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="onChunk" data-lang-kind="property-name">onChunk</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="toBytes method Convert a value to Uint8Array.">
+                                <td><a href="#declared-member-bd734bbd"><code data-lang-source="toBytes" data-lang-kind="member-name">toBytes</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Convert a value to Uint8Array.</td>
+                            </tr>
+                            <tr data-filter-item="isPartDescriptor method Determine if the value is likely a multipart part descriptor.">
+                                <td><a href="#declared-member-adf31ef7"><code data-lang-source="isPartDescriptor" data-lang-kind="member-name">isPartDescriptor</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if the value is likely a multipart part descriptor.</td>
+                            </tr>
+                            <tr data-filter-item="hasHeader method Determine if a header exists using case-insensitive matching.">
+                                <td><a href="#declared-member-1c1f9e19"><code data-lang-source="hasHeader" data-lang-kind="member-name">hasHeader</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if a header exists using case-insensitive matching.</td>
+                            </tr>
+                            <tr data-filter-item="setDefaultHeader method Set a default header when the key is missing.">
+                                <td><a href="#declared-member-dabfee16"><code data-lang-source="setDefaultHeader" data-lang-kind="member-name">setDefaultHeader</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Set a default header when the key is missing.</td>
+                            </tr>
+                            <tr data-filter-item="encodeText method Encode text to bytes.">
+                                <td><a href="#declared-member-30f30aee"><code data-lang-source="encodeText" data-lang-kind="member-name">encodeText</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Encode text to bytes.</td>
+                            </tr>
+                            <tr data-filter-item="createBoundary method Generate a multipart boundary token.">
+                                <td><a href="#declared-member-955bb07d"><code data-lang-source="createBoundary" data-lang-kind="member-name">createBoundary</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Generate a multipart boundary token.</td>
+                            </tr>
+                            <tr data-filter-item="createWriteState method Create one write session state from default and per-call options.">
+                                <td><a href="#declared-member-0487f898"><code data-lang-source="createWriteState" data-lang-kind="member-name">createWriteState</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Create one write session state from default and per-call options.</td>
+                            </tr>
+                            <tr data-filter-item="emit method Emit one output chunk for the current write-state.">
+                                <td><a href="#declared-member-8267b94e"><code data-lang-source="emit" data-lang-kind="member-name">emit</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Emit one output chunk for the current write-state.</td>
+                            </tr>
+                            <tr data-filter-item="emitBytes method Emit bytes honoring chunk-size splitting when configured.">
+                                <td><a href="#declared-member-b1116698"><code data-lang-source="emitBytes" data-lang-kind="member-name">emitBytes</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Emit bytes honoring chunk-size splitting when configured.</td>
+                            </tr>
+                            <tr data-filter-item="toOutputBytes method Combine collected chunks into one contiguous array.">
+                                <td><a href="#declared-member-7caf6095"><code data-lang-source="toOutputBytes" data-lang-kind="member-name">toOutputBytes</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Combine collected chunks into one contiguous array.</td>
+                            </tr>
+                            <tr data-filter-item="buildResult method Build a normalized result object.">
+                                <td><a href="#declared-member-7022d988"><code data-lang-source="buildResult" data-lang-kind="member-name">buildResult</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build a normalized result object.</td>
+                            </tr>
+                            <tr data-filter-item="normalizePart method Normalize one multipart part description.">
+                                <td><a href="#declared-member-b4436ce6"><code data-lang-source="normalizePart" data-lang-kind="member-name">normalizePart</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one multipart part description.</td>
+                            </tr>
+                            <tr data-filter-item="serializePartHeaders method Serialize multipart part headers to bytes.">
+                                <td><a href="#declared-member-2aefa5b0"><code data-lang-source="serializePartHeaders" data-lang-kind="member-name">serializePartHeaders</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Serialize multipart part headers to bytes.</td>
+                            </tr>
+                            <tr data-filter-item="buildMultiPartContentType method Build a multipart/related content-type value.">
+                                <td><a href="#declared-member-a145eb65"><code data-lang-source="buildMultiPartContentType" data-lang-kind="member-name">buildMultiPartContentType</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build a multipart/related content-type value.</td>
+                            </tr>
+                            <tr data-filter-item="writeSinglePart method Write a single-part payload.">
+                                <td><a href="#declared-member-e59c3a4d"><code data-lang-source="writeSinglePart" data-lang-kind="member-name">writeSinglePart</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Write a single-part payload.</td>
+                            </tr>
+                            <tr data-filter-item="writeMultiPart method Write a multipart/related payload.">
+                                <td><a href="#declared-member-92e97c2c"><code data-lang-source="writeMultiPart" data-lang-kind="member-name">writeMultiPart</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Write a multipart/related payload.</td>
+                            </tr>
+                            <tr data-filter-item="write method Write one payload, automatically selecting single-part versus multipart.">
+                                <td><a href="#declared-member-274e7150"><code data-lang-source="write" data-lang-kind="member-name">write</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Write one payload, automatically selecting single-part versus multipart.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-bd734bbd" data-filter-item="toBytes method Convert a value to Uint8Array.">
+                    <h4><code data-lang-source="toBytes(value)" data-lang-kind="signature">toBytes(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Convert a value to Uint8Array. It defines terminal output contract as bytes.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br /><code data-lang-source="ArrayBuffer" data-lang-kind="type-token">ArrayBuffer</code><br /><code data-lang-source="DataView" data-lang-kind="type-token">DataView</code><br /><code data-lang-source="Array&lt;number&gt;" data-lang-kind="type-token">Array&lt;number&gt;</code></td>
+                                <td><span class="page-meta">(Required)</span> The value to normalize. It provides the value input used by toBytes.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The normalized bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-adf31ef7" data-filter-item="isPartDescriptor method Determine if the value is likely a multipart part descriptor.">
+                    <h4><code data-lang-source="isPartDescriptor(value)" data-lang-kind="signature">isPartDescriptor(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if the value is likely a multipart part descriptor. It provides is part descriptor behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code></td>
+                                <td><span class="page-meta">(Required)</span> The value to inspect. It provides the value input used by isPartDescriptor.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE if the value appears to be a part descriptor.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1c1f9e19" data-filter-item="hasHeader method Determine if a header exists using case-insensitive matching.">
+                    <h4><code data-lang-source="hasHeader(headers, name)" data-lang-kind="signature">hasHeader(headers, name)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if a header exists using case-insensitive matching. It provides has header behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="headers" data-lang-kind="parameter-name">headers</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The header map. It provides the headers input used by hasHeader. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The header name. It provides the name input used by hasHeader. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE if the header exists.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-dabfee16" data-filter-item="setDefaultHeader method Set a default header when the key is missing.">
+                    <h4><code data-lang-source="setDefaultHeader(headers, name, value)" data-lang-kind="signature">setDefaultHeader(headers, name, value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Set a default header when the key is missing. It updates default header state on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="headers" data-lang-kind="parameter-name">headers</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The header map. It provides the headers input used by setDefaultHeader. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The header name. It provides the name input used by setDefaultHeader. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The header value. It provides the value input used by setDefaultHeader. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-30f30aee" data-filter-item="encodeText method Encode text to bytes.">
+                    <h4><code data-lang-source="encodeText(value)" data-lang-kind="signature">encodeText(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Encode text to bytes. It provides encode text behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The text value. It provides the value input used by encodeText. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The encoded bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-955bb07d" data-filter-item="createBoundary method Generate a multipart boundary token.">
+                    <h4><code data-lang-source="createBoundary()" data-lang-kind="signature">createBoundary()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Generate a multipart boundary token. It provides create boundary behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">The generated boundary token.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0487f898" data-filter-item="createWriteState method Create one write session state from default and per-call options.">
+                    <h4><code data-lang-source="createWriteState(options)" data-lang-kind="signature">createWriteState(options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Create one write session state from default and per-call options. It provides create write state behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional per-call options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">The write-state.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8267b94e" data-filter-item="emit method Emit one output chunk for the current write-state.">
+                    <h4><code data-lang-source="emit(state, chunk)" data-lang-kind="signature">emit(state, chunk)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Emit one output chunk for the current write-state. It provides emit behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The current write-state. It provides the state input used by emit. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="chunk" data-lang-kind="parameter-name">chunk</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> The chunk to emit. It provides the chunk input used by emit.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b1116698" data-filter-item="emitBytes method Emit bytes honoring chunk-size splitting when configured.">
+                    <h4><code data-lang-source="emitBytes(state, bytes)" data-lang-kind="signature">emitBytes(state, bytes)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Emit bytes honoring chunk-size splitting when configured. It provides emit bytes behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The current write-state. It provides the state input used by emitBytes. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="bytes" data-lang-kind="parameter-name">bytes</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> The bytes to emit. It provides the bytes input used by emitBytes.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7caf6095" data-filter-item="toOutputBytes method Combine collected chunks into one contiguous array.">
+                    <h4><code data-lang-source="toOutputBytes(state)" data-lang-kind="signature">toOutputBytes(state)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Combine collected chunks into one contiguous array. It defines terminal output contract as output bytes.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The current write-state. It provides the state input used by toOutputBytes. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The combined bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7022d988" data-filter-item="buildResult method Build a normalized result object.">
+                    <h4><code data-lang-source="buildResult(state, isMultiPart, contentType, boundary, partCount)" data-lang-kind="signature">buildResult(state, isMultiPart, contentType, boundary, partCount)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build a normalized result object. It finalizes and returns the built PartStreamWriter artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="state" data-lang-kind="parameter-name">state</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The current write-state. It provides the state input used by buildResult. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="isMultiPart" data-lang-kind="parameter-name">isMultiPart</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                <td><span class="page-meta">(Required)</span> Whether this write emitted multipart bytes. It provides the is multi part input used by buildResult. Type detail: expects a boolean flag value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="contentType" data-lang-kind="parameter-name">contentType</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The output content-type. It provides the content type input used by buildResult. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="boundary" data-lang-kind="parameter-name">boundary</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> The multipart boundary, if any. It provides the boundary input used by buildResult. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="partCount" data-lang-kind="parameter-name">partCount</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Optional - 1)</span> The count of emitted parts. It provides the part count input used by buildResult. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">The write result.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b4436ce6" data-filter-item="normalizePart method Normalize one multipart part description.">
+                    <h4><code data-lang-source="normalizePart(part)" data-lang-kind="signature">normalizePart(part)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize one multipart part description. It provides normalize part behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="part" data-lang-kind="parameter-name">part</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The part source. It provides the part input used by normalizePart.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ data: Uint8Array, headers: object }" data-lang-kind="type-token">{ data: Uint8Array, headers: object }</code><br><span class="page-meta">The normalized part.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2aefa5b0" data-filter-item="serializePartHeaders method Serialize multipart part headers to bytes.">
+                    <h4><code data-lang-source="serializePartHeaders(headers)" data-lang-kind="signature">serializePartHeaders(headers)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Serialize multipart part headers to bytes. It provides serialize part headers behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="headers" data-lang-kind="parameter-name">headers</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The part header map. It provides the headers input used by serializePartHeaders. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">The serialized header bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a145eb65" data-filter-item="buildMultiPartContentType method Build a multipart/related content-type value.">
+                    <h4><code data-lang-source="buildMultiPartContentType(boundary, options)" data-lang-kind="signature">buildMultiPartContentType(boundary, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build a multipart/related content-type value. It finalizes and returns the built PartStreamWriter artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="boundary" data-lang-kind="parameter-name">boundary</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The multipart boundary. It provides the boundary input used by buildMultiPartContentType. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Multipart options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">The content-type value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e59c3a4d" data-filter-item="writeSinglePart method Write a single-part payload.">
+                    <h4><code data-lang-source="writeSinglePart(data, options)" data-lang-kind="signature">writeSinglePart(data, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Write a single-part payload. It provides write single part behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="data" data-lang-kind="parameter-name">data</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br /><code data-lang-source="ArrayBuffer" data-lang-kind="type-token">ArrayBuffer</code><br /><code data-lang-source="DataView" data-lang-kind="type-token">DataView</code><br /><code data-lang-source="Array&lt;number&gt;" data-lang-kind="type-token">Array&lt;number&gt;</code></td>
+                                <td><span class="page-meta">(Required)</span> The data to emit. It provides the data input used by writeSinglePart.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional write options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">The write result.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-92e97c2c" data-filter-item="writeMultiPart method Write a multipart/related payload.">
+                    <h4><code data-lang-source="writeMultiPart(parts, options)" data-lang-kind="signature">writeMultiPart(parts, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Write a multipart/related payload. It provides write multi part behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="parts" data-lang-kind="parameter-name">parts</code></td>
+                                <td class="member-param-type"><code data-lang-source="Array&lt;Uint8Array | object&gt;" data-lang-kind="type-token">Array&lt;Uint8Array | object&gt;</code></td>
+                                <td><span class="page-meta">(Required)</span> The part list to emit. It provides the parts input used by writeMultiPart.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional multipart write options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">The write result.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-274e7150" data-filter-item="write method Write one payload, automatically selecting single-part versus multipart.">
+                    <h4><code data-lang-source="write(source, options)" data-lang-kind="signature">write(source, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Write one payload, automatically selecting single-part versus multipart. It provides write behavior on PartStreamWriter.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="source" data-lang-kind="parameter-name">source</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br /><code data-lang-source="Array&lt;unknown&gt;" data-lang-kind="type-token">Array&lt;unknown&gt;</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The source payload. It identifies the input source consumed by this member.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional write options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;object&gt;" data-lang-kind="type-token">Promise&lt;object&gt;</code><br><span class="page-meta">The write result.</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<div class="grid one">
+                <article class="card reveal" id="option-createwritestate-options-c2ccc647" data-filter-item="createWriteState options option object">
+                    <h4><code data-lang-source="createWriteState(options)" data-lang-kind="signature">createWriteState(options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-createwritestate-options-c2ccc647-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-buildmultipartcontenttype-options-3050e740" data-filter-item="buildMultiPartContentType options option object">
+                    <h4><code data-lang-source="buildMultiPartContentType(boundary, options)" data-lang-kind="signature">buildMultiPartContentType(boundary, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-buildmultipartcontenttype-options-3050e740-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-writesinglepart-options-a8be0317" data-filter-item="writeSinglePart options option object">
+                    <h4><code data-lang-source="writeSinglePart(data, options)" data-lang-kind="signature">writeSinglePart(data, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-writesinglepart-options-a8be0317-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-writemultipart-options-2147da45" data-filter-item="writeMultiPart options option object">
+                    <h4><code data-lang-source="writeMultiPart(parts, options)" data-lang-kind="signature">writeMultiPart(parts, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-writemultipart-options-2147da45-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-write-options-5a3d9d59" data-filter-item="write options option object">
+                    <h4><code data-lang-source="write(source, options)" data-lang-kind="signature">write(source, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-write-options-5a3d9d59-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article></div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

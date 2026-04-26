@@ -21,30 +21,31 @@
 
 <div class="nav-section">
                 <a class="nav-link" data-nav-link href="index.html">Overview</a>
-                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="why-easi.html">The EASI Advantage</a>
                 <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
                 <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
                     <div class="nav-submenu" data-nav-submenu>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mapping</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-selection.html">Selection</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-filtering.html">Filtering</a>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writer</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
-                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
@@ -52,7 +53,19 @@
                         <a class="nav-link nav-sublink" data-nav-link href="lifecycle-status.html">Stream Lifecycle Events</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
                         <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="builder-types/index.html">Builders</a>
@@ -129,6 +142,7 @@
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
                     </div>
                 </div>
+                <a class="nav-link" data-nav-link href="api/index.html">API Reference</a>
                 <a class="nav-link" data-nav-link href="error-catalog.html">Errors</a>
                 <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
                 <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
@@ -167,16 +181,119 @@
                 <p>
                     Additional features of this standard are:
                     <ul>
-                        <li>Enable substantial extension through mappings, selections, filters, and writers without weakening conformance</li>
-                        <li>Standardize staged pipeline semantics for predictable composition and execution</li>
-                        <li>Provide deterministic stream lifecycle events and consistent result contracts</li>
-                        <li>Support early-bound, late-bound, and hybrid binding models for reusable compositions</li>
+                        <li>Fosters substantial extension through mappings, selections, filters, handlers and writers without weakening conformance</li>
+                        <li>Standardizes staged pipeline semantics for predictable composition and execution</li>
+                        <li>Provides deterministic stream lifecycle events and consistent result contracts</li>
                     </ul>
                 </p>
                 <p>
                     This reference is the primary source for both language-neutral semantics and language-specific usage,
                     with ample cross-language samples presented throughout.
                 </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Composition Teaser</h3>
+                <p>
+                    A compact pipeline declaration showing the full staged grammar: <code>from -&gt; of -&gt; with -&gt; to -&gt; into</code>.
+                </p>
+
+                <div class="doc-tabset" data-tabset>
+                    <div class="doc-tablist" role="tablist" aria-label="Overview composition teaser tabs">
+                        <button class="doc-tab-button active" type="button" data-tab-button="neutral">Language-Neutral</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="javascript">JavaScript</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="csharp">C#</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="java">Java</button>
+                        <button class="doc-tab-button" type="button" data-tab-button="python">Python</button>
+                    </div>
+
+                    <div class="doc-tab-panel active" data-tab-panel="neutral">
+<pre><code class="language-text">// Compose an EASI pipeline that reads <strong>from</strong> an HTTP stream <strong>of</strong> native DICOM data, 
+// de-identifies "in-flight" <strong>with</strong> the standard de-identification mask, encodes back 
+// <strong>to</strong> native DICOM and finally, writes the results <strong>into</strong> an outbound HTTP stream.
+    
+relayPipeline := EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoHttpStream()
+  .build()
+
+// De-identify DICOM data from a source into a destination
+writeResults := relayPipeline.process(source, destination)</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="javascript">
+<pre><code class="language-javascript">// Compose an EASI pipeline that reads <strong>from</strong> an HTTP stream <strong>of</strong> native DICOM data,
+// de-identifies "in-flight" <strong>with</strong> the standard de-identification mask, encodes back
+// <strong>to</strong> native DICOM and finally, writes the results <strong>into</strong> an outbound HTTP stream.
+
+const relayPipeline = EASI.pipelineBuilder()
+  .fromHttpStream()
+  .ofDicomData()
+  .withDeIdentification(Tag.DefaultDeIdentificationMask)
+  .toDicomData()
+  .intoHttpStream()
+  .build();
+
+// De-identify DICOM data from a source into a destination
+const writeResults = await relayPipeline.process(source, destination);</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="csharp">
+<pre><code class="language-csharp">// Compose an EASI pipeline that reads <strong>from</strong> an HTTP stream <strong>of</strong> native DICOM data,
+// de-identifies "in-flight" <strong>with</strong> the standard de-identification mask, encodes back
+// <strong>to</strong> native DICOM and finally, writes the results <strong>into</strong> an outbound HTTP stream.
+
+var relayPipeline = EASI.PipelineBuilder()
+    .FromHttpStream()
+    .OfDicomData()
+    .WithDeIdentification(Tag.DefaultDeIdentificationMask)
+    .ToDicomData()
+    .IntoHttpStream()
+    .Build();
+
+// De-identify DICOM data from a source into a destination
+var writeResults = await relayPipeline.Process(source, destination);</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="java">
+<pre><code class="language-java">// Compose an EASI pipeline that reads <strong>from</strong> an HTTP stream <strong>of</strong> native DICOM data,
+// de-identifies "in-flight" <strong>with</strong> the standard de-identification mask, encodes back
+// <strong>to</strong> native DICOM and finally, writes the results <strong>into</strong> an outbound HTTP stream.
+
+var relayPipeline = EASI.pipelineBuilder()
+    .fromHttpStream()
+    .ofDicomData()
+    .withDeIdentification(Tag.DefaultDeIdentificationMask)
+    .toDicomData()
+    .intoHttpStream()
+    .build();
+
+// De-identify DICOM data from a source into a destination
+var writeResults = relayPipeline.process(source, destination);</code></pre>
+                    </div>
+
+                    <div class="doc-tab-panel" data-tab-panel="python">
+<pre><code class="language-python"># Compose an EASI pipeline that reads <strong>from</strong> an HTTP stream <strong>of</strong> native DICOM data,
+# de-identifies "in-flight" <strong>with</strong> the standard de-identification mask, encodes back
+# <strong>to</strong> native DICOM and finally, writes the results <strong>into</strong> an outbound HTTP stream.
+
+relay_pipeline = (
+    EASI.pipeline_builder()
+    .from_http_stream()
+    .of_dicom_data()
+    .with_de_identification(Tag.default_de_identification_mask)
+    .to_dicom_data()
+    .into_http_stream()
+    .build()
+)
+
+# De-identify DICOM data from a source into a destination
+write_results = relay_pipeline.process(source, destination)</code></pre>
+                    </div>
+                </div>
             </section>
 
             <section class="section reveal">
@@ -202,7 +319,7 @@
 
                 <div id="index-cards" class="grid two">
                     <article class="card reveal" data-filter-item="why easi value proposition adoption pitch readability composition dicom workflows agentic development">
-                        <h4><a href="why-easi.html">Advantages of EASI</a></h4>
+                        <h4><a href="why-easi.html">The EASI Advantage</a></h4>
                         <p>A practical adoption pitch showing why projects choose EASI for clear composition, reusable contracts, and modern DICOM&reg; workflow design.</p>
                     </article>
 
@@ -217,7 +334,7 @@
                     </article>
 
                     <article class="card reveal" data-filter-item="core pipeline reader parser adapter filter terminal writer build semantics">
-                        <h4><a href="core-pipeline.html">Core Pipeline Model</a></h4>
+                        <h4><a href="core-pipeline.html">Core Pipeline</a></h4>
                         <p>Normative structure and component responsibilities: Reader -> Parser -> Adapter -> Filter -> Terminal -> Writer.</p>
                     </article>
 
@@ -227,12 +344,12 @@
                     </article>
 
                     <article class="card reveal" data-filter-item="dimse c-echo c-find c-get c-move c-store association ae title listener start process">
-                        <h4><a href="dimse-pipeline.html">DIMSE Pipeline Model</a></h4>
+                        <h4><a href="dimse-pipeline.html">DIMSE Pipelines</a></h4>
                         <p>DIMSE composition patterns for query/retrieve and C-STORE listener lifecycles, including <code>start()</code> source-bound pipelines.</p>
                     </article>
 
                     <article class="card reveal" data-filter-item="advanced pipelines real world scenarios migration bridge de-identification redaction transcoding routing cloud assets">
-                        <h4><a href="advanced-pipeline.html">Advanced Pipeline Use Cases</a></h4>
+                        <h4><a href="advanced-pipeline.html">Advanced Pipelines</a></h4>
                         <p>Production-style patterns showing how one pipeline model powers bridge services, selective relay, and large-scale migration.</p>
                     </article>
 
@@ -266,6 +383,11 @@
                         <p>Resource-style references with Language-Neutral and language-specific tabs, plus concise composition and usage examples.</p>
                     </article>
 
+                    <article class="card reveal" data-filter-item="api reference classes methods parameters options constants signatures schema generated contract tooling ai docs">
+                        <h4><a href="api/index.html">API Reference</a></h4>
+                        <p>Complete generated reference for exported modules, classes, methods, parameters, properties, and constants.</p>
+                    </article>
+
                     <article class="card reveal" data-filter-item="error catalog parse builder transport compatibility concern codes">
                         <h4><a href="error-catalog.html">Error Catalog</a></h4>
                         <p>Canonical error condition families for parse, composition, transport, validation, and extension contracts.</p>
@@ -276,36 +398,6 @@
                         <p>Decision framework for what is normative EASI versus language-specific implementation detail.</p>
                     </article>
                 </div>
-            </section>
-
-            <section class="section reveal">
-                <h3>Conformance Ladder (Snapshot)</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Level</th>
-                            <th>Intent</th>
-                            <th>Minimum Capability</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>L1</td>
-                            <td>Core API Conformance</td>
-                            <td>Pipeline semantics, lifecycle contract, status behavior, build-time validation.</td>
-                        </tr>
-                        <tr>
-                            <td>L2</td>
-                            <td>DICOM&reg; Core Scenarios</td>
-                            <td>Instance materialization, selection, and mapping over native DICOM&reg; data streams.</td>
-                        </tr>
-                        <tr>
-                            <td>L3</td>
-                            <td>Extended Scenarios</td>
-                            <td>DICOMweb&trade; metadata adapters, de-identification, validation, transcoding, and writer integrations.</td>
-                        </tr>
-                    </tbody>
-                </table>
             </section>
 
             <p class="footer-note">

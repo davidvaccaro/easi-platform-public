@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Normative EASI DIMSE pipeline model and use-case patterns.">
-    <title>EASI | DIMSE Pipeline Model</title>
+    <title>EASI | DIMSE Pipelines</title>
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="./assets/app.js"></script>
 </head>
@@ -21,30 +21,31 @@
 
 <div class="nav-section">
                 <a class="nav-link" data-nav-link href="index.html">Overview</a>
-                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="why-easi.html">The EASI Advantage</a>
                 <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
                 <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
                     <div class="nav-submenu" data-nav-submenu>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mapping</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-selection.html">Selection</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-filtering.html">Filtering</a>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writer</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
-                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
@@ -52,7 +53,19 @@
                         <a class="nav-link nav-sublink" data-nav-link href="lifecycle-status.html">Stream Lifecycle Events</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
                         <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="builder-types/index.html">Builders</a>
@@ -129,6 +142,7 @@
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
                     </div>
                 </div>
+                <a class="nav-link" data-nav-link href="api/index.html">API Reference</a>
                 <a class="nav-link" data-nav-link href="error-catalog.html">Errors</a>
                 <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
                 <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
@@ -144,7 +158,7 @@
 
         <main class="page">
             <section class="page-hero reveal">
-                <h2>DIMSE Pipeline Model</h2>
+                <h2>DIMSE Pipelines</h2>
                 <p>
                     This page defines how EASI composes DIMSE operations into the same fluent pipeline model,
                     including request/response query-retrieve flows and source-bound listener lifecycles.
@@ -166,27 +180,27 @@
                             <tr>
                                 <td>C-ECHO</td>
                                 <td>Client operation (no parser chain required).</td>
-                                <td><code>EASI.dimseClientBuilder()<br />.withAssociation(...)<br />.build()<br />.echo()</code></td>
+                                <td><a href="api/class-easi-7f476ace.html#declared-member-6cf33c14"><code>EASI.dimseClientBuilder()<br />.withAssociation(...)<br />.build()<br />.echo()</code></a></td>
                             </tr>
                             <tr>
                                 <td>C-FIND</td>
                                 <td>DIMSE source -><br />DICOM&reg; parser -><br />instance terminal.</td>
-                                <td><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.toInstances()<br />.build()<br />.process({ sourceOptions: request })</code></td>
+                                <td><a href="api/class-easi-7f476ace.html#declared-member-5250973c"><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.toInstances()<br />.build()<br />.process({ sourceOptions: request })</code></a></td>
                             </tr>
                             <tr>
                                 <td>C-GET</td>
                                 <td>DIMSE source -><br />DICOM&reg; parser -><br />instance terminal.</td>
-                                <td><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.toInstances()<br />.build()<br />.process({ sourceOptions: request })</code></td>
+                                <td><a href="api/class-easi-7f476ace.html#declared-member-5250973c"><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.toInstances()<br />.build()<br />.process({ sourceOptions: request })</code></a></td>
                             </tr>
                             <tr>
                                 <td>C-MOVE Relay</td>
                                 <td>DIMSE source -><br />parser -><br />filter(s) -><br />DICOM writer -><br />DIMSE destination.</td>
-                                <td><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.withDeIdentification(...)<br />.toDicomData()<br />.intoDimseAssociation(...)<br />.build()<br />.process({ sourceOptions: request })</code></td>
+                                <td><a href="api/class-easi-7f476ace.html#declared-member-5250973c"><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.withDeIdentification(...)<br />.toDicomData()<br />.intoDimseAssociation(...)<br />.build()<br />.process({ sourceOptions: request })</code></a></td>
                             </tr>
                             <tr>
                                 <td>C-STORE SCP Listener</td>
                                 <td>Source-bound DIMSE transport with long-running lifecycle.</td>
-                                <td><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.toInstances()<br />.build()<br />.start({ onResult: ... })<br />// later: run.stop()</code></td>
+                                <td><a href="api/class-easi-7f476ace.html#declared-member-5250973c"><code>EASI.pipelineBuilder()<br />.fromDimseAssociation(...)<br />.ofDicomData()<br />.toInstances()<br />.build()<br />.start({ onResult: ... })<br />// later: run.stop()</code></a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -199,20 +213,20 @@
                     <article class="card">
                         <h4>Transactional</h4>
                         <p>Caller supplies one DIMSE request payload via source options and expects one result collection.</p>
-                        <p><code>resultCollection = pipeline.process({ sourceOptions: request })</code></p>
+                        <p><a href="api/class-pipeline-cc9542ef.html#declared-member-dc3b8dc7"><code>resultCollection = pipeline.process({ sourceOptions: request })</code></a></p>
                     </article>
                     <article class="card">
                         <h4>Source-Bound Listener</h4>
                         <p>Source is already bound by transport/association (for example inbound C-STORE SCP).</p>
-                        <p><code>run = pipeline.start({ onResult: ... })</code></p>
+                        <p><a href="api/class-pipeline-cc9542ef.html#declared-member-477d8908"><code>run = pipeline.start({ onResult: ... })</code></a></p>
                     </article>
                 </div>
                 <div class="callout informative">
                     <h4>Listener Semantics</h4>
                     <p>
                         In listener mode, the DIMSE source is the configured association + transport.
-                        The pipeline waits for inbound data and invokes <code>onResult</code> per transaction.
-                        Stop with <code>run.stop()</code> or <code>pipeline.stop()</code>.
+                        The pipeline waits for inbound data and invokes <a href="api/class-pipeline-cc9542ef.html#declared-member-477d8908"><code>onResult</code></a> per transaction.
+                        Stop with <a href="api/class-pipeline-cc9542ef.html#declared-member-91edff0e"><code>run.stop()</code></a> or <a href="api/class-pipeline-cc9542ef.html#declared-member-91edff0e"><code>pipeline.stop()</code></a>.
                     </p>
                 </div>
             </section>
@@ -221,7 +235,7 @@
                 <h3>DIMSE Use-Case Gallery</h3>
                 <p>
                     The examples below show practical DIMSE workflows and highlight the difference between
-                    request/response <code>process(...)</code> operations and long-running <code>start()</code> listeners.
+                    request/response <a href="api/class-pipeline-cc9542ef.html#declared-member-dc3b8dc7"><code>process(...)</code></a> operations and long-running <a href="api/class-pipeline-cc9542ef.html#declared-member-477d8908"><code>start()</code></a> listeners.
                 </p>
                 <div class="doc-tabset" data-tabset>
                     <div class="doc-tablist" role="tablist" aria-label="DIMSE pipeline example tabs">
@@ -297,7 +311,7 @@ relayPipeline.process({ sourceOptions: {
 
                         <br />
 
-                        <p>Real-world use case: inbound C-STORE SCP listener using <code>start()</code> (no <code>process()</code>).</p>
+                        <p>Real-world use case: inbound C-STORE SCP listener using <a href="api/class-pipeline-cc9542ef.html#declared-member-477d8908"><code>start()</code></a> (no <a href="api/class-pipeline-cc9542ef.html#declared-member-dc3b8dc7"><code>process()</code></a>).</p>
                         <pre><code class="language-text">listenerAssociation := {
   host: "0.0.0.0",
   port: 11112,
@@ -404,7 +418,7 @@ await relayPipeline.process({
 
                         <br />
 
-                        <p>Real-world use case: inbound C-STORE SCP listener using <code>start()</code> (no <code>process()</code>).</p>
+                        <p>Real-world use case: inbound C-STORE SCP listener using <a href="api/class-pipeline-cc9542ef.html#declared-member-477d8908"><code>start()</code></a> (no <a href="api/class-pipeline-cc9542ef.html#declared-member-dc3b8dc7"><code>process()</code></a>).</p>
                         <pre><code class="language-javascript">const listenerAssociation = {
   host: "0.0.0.0",
   port: 11112,
@@ -510,7 +524,7 @@ await relayPipeline.Process(new {
 
                         <br />
 
-                        <p>Real-world use case: inbound C-STORE SCP listener using <code>start()</code> (no <code>process()</code>).</p>
+                        <p>Real-world use case: inbound C-STORE SCP listener using <a href="api/class-pipeline-cc9542ef.html#declared-member-477d8908"><code>start()</code></a> (no <a href="api/class-pipeline-cc9542ef.html#declared-member-dc3b8dc7"><code>process()</code></a>).</p>
                         <pre><code class="language-csharp">var listenerAssociation = new {
     host = "0.0.0.0",
     port = 11112,
@@ -615,7 +629,7 @@ relayPipeline.process(Map.of(
 
                         <br />
 
-                        <p>Real-world use case: inbound C-STORE SCP listener using <code>start()</code> (no <code>process()</code>).</p>
+                        <p>Real-world use case: inbound C-STORE SCP listener using <a href="api/class-pipeline-cc9542ef.html#declared-member-477d8908"><code>start()</code></a> (no <a href="api/class-pipeline-cc9542ef.html#declared-member-dc3b8dc7"><code>process()</code></a>).</p>
                         <pre><code class="language-java">var listenerAssociation = Map.of(
     "host", "0.0.0.0",
     "port", 11112,
@@ -723,7 +737,7 @@ relay_pipeline.process({
 
                         <br />
 
-                        <p>Real-world use case: inbound C-STORE SCP listener using <code>start()</code> (no <code>process()</code>).</p>
+                        <p>Real-world use case: inbound C-STORE SCP listener using <a href="api/class-pipeline-cc9542ef.html#declared-member-477d8908"><code>start()</code></a> (no <a href="api/class-pipeline-cc9542ef.html#declared-member-dc3b8dc7"><code>process()</code></a>).</p>
                         <pre><code class="language-python">listener_association = {
     "host": "0.0.0.0",
     "port": 11112,

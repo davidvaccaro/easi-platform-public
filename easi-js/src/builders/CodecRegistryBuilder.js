@@ -20,6 +20,17 @@
 import CodecRegistry from "../codecs/CodecRegistry.js";
 import Configuration from "../environment/Configuration.js";
 
+/**
+ * Builder used to configure and create codec registries.
+ * @property {boolean} assertOnBuild Indicates whether assert-valid runs during build.
+ * @property {CodecRegistry | null} baseCodecRegistry Optional base codec registry used as build input.
+ * @property {boolean} cloneBaseCodecRegistry Indicates whether the base codec registry is cloned before modification.
+ * @property {Array<object>} decoderRegistrations Transfer-syntax decoder registrations collected for build.
+ * @property {Array<object>} encoderRegistrations Encoder registrations collected for build.
+ * @property {Array<object>} imageDecoderRegistrations Image decoder registrations collected for build.
+ * @property {boolean} includeDefaultCodecs Indicates whether default codecs are applied during build.
+ * @property {object | null} validationOptions Optional codec-registry validation options passed to assert-valid.
+ */
 export default class CodecRegistryBuilder {
 
     /**

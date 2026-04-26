@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for Utilities.">
+    <title>EASI | Utilities</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Utilities</h2>
+                <p>This class provides utilities behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><strong>Utilities</strong></p>
+                <p class="page-meta">
+                    This class declares <code>11</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><span class="page-meta">none</span></td></tr>
+                        <tr><td>Declared Members</td><td>11</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>0</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4"><span class="page-meta">No documented properties.</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="bytesToUnsignedInteger method Convert the specified byte array (2 or 4 bytes) to an unsigned integer value.">
+                                <td><a href="#declared-member-fc73401d"><code data-lang-source="bytesToUnsignedInteger" data-lang-kind="member-name">bytesToUnsignedInteger</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Convert the specified byte array (2 or 4 bytes) to an unsigned integer value.</td>
+                            </tr>
+                            <tr data-filter-item="bytesToString method Convert the specified byte array to a string representation.">
+                                <td><a href="#declared-member-ad06b264"><code data-lang-source="bytesToString" data-lang-kind="member-name">bytesToString</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Convert the specified byte array to a string representation.</td>
+                            </tr>
+                            <tr data-filter-item="swapBytes method Swap bytes in the array for when differences in the endian-ness of the runtime requires data adjustment.">
+                                <td><a href="#declared-member-23789e42"><code data-lang-source="swapBytes" data-lang-kind="member-name">swapBytes</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Swap bytes in the array for when differences in the endian-ness of the runtime requires data adjustment.</td>
+                            </tr>
+                            <tr data-filter-item="deepCopyArray method Performs a &quot;deep&quot; compy of the specified array.">
+                                <td><a href="#declared-member-9ae5c7d1"><code data-lang-source="deepCopyArray" data-lang-kind="member-name">deepCopyArray</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Performs a &quot;deep&quot; compy of the specified array.</td>
+                            </tr>
+                            <tr data-filter-item="getItem method Get the byte buffer containing the DICOM Item.">
+                                <td><a href="#declared-member-6a21bf2e"><code data-lang-source="getItem" data-lang-kind="member-name">getItem</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Get the byte buffer containing the DICOM Item.</td>
+                            </tr>
+                            <tr data-filter-item="getEndSequence method Get the byte buffer containing the DICOM End Sequence.">
+                                <td><a href="#declared-member-2cc7980e"><code data-lang-source="getEndSequence" data-lang-kind="member-name">getEndSequence</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Get the byte buffer containing the DICOM End Sequence.</td>
+                            </tr>
+                            <tr data-filter-item="parseDA method Parses the specified DA date string value to a Date instance.">
+                                <td><a href="#declared-member-c7ea9dce"><code data-lang-source="parseDA" data-lang-kind="member-name">parseDA</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parses the specified DA date string value to a Date instance.</td>
+                            </tr>
+                            <tr data-filter-item="parseDT method Parses the specified DT date string value to a Date instance.">
+                                <td><a href="#declared-member-49b5b85f"><code data-lang-source="parseDT" data-lang-kind="member-name">parseDT</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parses the specified DT date string value to a Date instance.</td>
+                            </tr>
+                            <tr data-filter-item="parseTM method Parses the specified TM date string value to a Date instance.">
+                                <td><a href="#declared-member-e448a562"><code data-lang-source="parseTM" data-lang-kind="member-name">parseTM</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parses the specified TM date string value to a Date instance.</td>
+                            </tr>
+                            <tr data-filter-item="createDeterministicUID method Create a deterministic UID from a string seed.">
+                                <td><a href="#declared-member-df5f3ce5"><code data-lang-source="createDeterministicUID" data-lang-kind="member-name">createDeterministicUID</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Create a deterministic UID from a string seed.</td>
+                            </tr>
+                            <tr data-filter-item="newUID method Create a new random UID in the DICOM-compatible 2.25 OID space.">
+                                <td><a href="#declared-member-802e8f63"><code data-lang-source="newUID" data-lang-kind="member-name">newUID</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Create a new random UID in the DICOM-compatible 2.25 OID space.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-fc73401d" data-filter-item="bytesToUnsignedInteger method Convert the specified byte array (2 or 4 bytes) to an unsigned integer value.">
+                    <h4><code data-lang-source="bytesToUnsignedInteger(bytes, isLittleEndian)" data-lang-kind="signature">bytesToUnsignedInteger(bytes, isLittleEndian)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Convert the specified byte array (2 or 4 bytes) to an unsigned integer value. It provides bytes to unsigned integer behavior on Utilities.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="bytes" data-lang-kind="parameter-name">bytes</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> The specified byte array. It provides the bytes input used by bytesToUnsignedInteger.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="isLittleEndian" data-lang-kind="parameter-name">isLittleEndian</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - Runtime.isLittleEndian)</span> No description provided. It provides the is little endian input used by bytesToUnsignedInteger.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The unsigned integer value of the byte array.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ad06b264" data-filter-item="bytesToString method Convert the specified byte array to a string representation.">
+                    <h4><code data-lang-source="bytesToString(bytes)" data-lang-kind="signature">bytesToString(bytes)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Convert the specified byte array to a string representation. It provides bytes to string behavior on Utilities.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="bytes" data-lang-kind="parameter-name">bytes</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> The specifide byte array. It provides the bytes input used by bytesToString.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The string value of the byte array.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-23789e42" data-filter-item="swapBytes method Swap bytes in the array for when differences in the endian-ness of the runtime requires data adjustment.">
+                    <h4><code data-lang-source="swapBytes(buf)" data-lang-kind="signature">swapBytes(buf)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Swap bytes in the array for when differences in the endian-ness of the runtime requires data adjustment. It provides swap bytes behavior on Utilities.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="buf" data-lang-kind="parameter-name">buf</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> The buffer of data bytes It provides the buf input used by swapBytes.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-9ae5c7d1" data-filter-item="deepCopyArray method Performs a &quot;deep&quot; compy of the specified array.">
+                    <h4><code data-lang-source="deepCopyArray(arr)" data-lang-kind="signature">deepCopyArray(arr)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Performs a &quot;deep&quot; compy of the specified array. It provides deep copy array behavior on Utilities.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="arr" data-lang-kind="parameter-name">arr</code></td>
+                                <td class="member-param-type"><code data-lang-source="Array&lt;unknown&gt;" data-lang-kind="type-token">Array&lt;unknown&gt;</code></td>
+                                <td><span class="page-meta">(Required)</span> The specified array. It provides the arr input used by deepCopyArray.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The &quot;deep&quot; copy of the specified array.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6a21bf2e" data-filter-item="getItem method Get the byte buffer containing the DICOM Item.">
+                    <h4><code data-lang-source="getItem(isLittleEndian)" data-lang-kind="signature">getItem(isLittleEndian)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Get the byte buffer containing the DICOM Item. It retrieves item state from Utilities.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="isLittleEndian" data-lang-kind="parameter-name">isLittleEndian</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - Runtime.isLittleEndian)</span> No description provided. It provides the is little endian input used by getItem.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The Item byte buffer.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2cc7980e" data-filter-item="getEndSequence method Get the byte buffer containing the DICOM End Sequence.">
+                    <h4><code data-lang-source="getEndSequence(isLittleEndian)" data-lang-kind="signature">getEndSequence(isLittleEndian)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Get the byte buffer containing the DICOM End Sequence. It retrieves end sequence state from Utilities.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="isLittleEndian" data-lang-kind="parameter-name">isLittleEndian</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - Runtime.isLittleEndian)</span> No description provided. It provides the is little endian input used by getEndSequence.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The End Sequence byte buffer.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c7ea9dce" data-filter-item="parseDA method Parses the specified DA date string value to a Date instance.">
+                    <h4><code data-lang-source="parseDA(value)" data-lang-kind="signature">parseDA(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Parses the specified DA date string value to a Date instance. It provides parse da behavior on Utilities.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The specified date value in the DA format YYYYMMDD. It provides the value input used by parseDA. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The value parsed to a Date.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-49b5b85f" data-filter-item="parseDT method Parses the specified DT date string value to a Date instance.">
+                    <h4><code data-lang-source="parseDT(value)" data-lang-kind="signature">parseDT(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Parses the specified DT date string value to a Date instance. It provides parse dt behavior on Utilities.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The specified date value in the DT format YYYYMMDDHHMMSS.FFFFFF&amp;ZZXX. It provides the value input used by parseDT. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The value parsed to a Date.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e448a562" data-filter-item="parseTM method Parses the specified TM date string value to a Date instance.">
+                    <h4><code data-lang-source="parseTM(value)" data-lang-kind="signature">parseTM(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Parses the specified TM date string value to a Date instance. It provides parse tm behavior on Utilities.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The specified date value in the TM format HHMMSS.FFFFFF. It provides the value input used by parseTM. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The value parsed to a Date.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-df5f3ce5" data-filter-item="createDeterministicUID method Create a deterministic UID from a string seed.">
+                    <h4><code data-lang-source="createDeterministicUID(seed)" data-lang-kind="signature">createDeterministicUID(seed)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Create a deterministic UID from a string seed. It provides create deterministic uid behavior on Utilities.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="seed" data-lang-kind="parameter-name">seed</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The source seed. It provides the seed input used by createDeterministicUID. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">The replacement UID.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-802e8f63" data-filter-item="newUID method Create a new random UID in the DICOM-compatible 2.25 OID space.">
+                    <h4><code data-lang-source="newUID()" data-lang-kind="signature">newUID()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Create a new random UID in the DICOM-compatible 2.25 OID space. It provides new uid behavior on Utilities.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">The new UID value.</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<p class="page-meta">No option-object contracts detected for declared members.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

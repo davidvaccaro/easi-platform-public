@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for Binarize.">
+    <title>EASI | Binarize</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Binarize</h2>
+                <p>This class provides binarize behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><strong>Binarize</strong></p>
+                <p class="page-meta">
+                    This class declares <code>12</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><span class="page-meta">none</span></td></tr>
+                        <tr><td>Declared Members</td><td>12</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>0</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4"><span class="page-meta">No documented properties.</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="toNumeric method Resolve one finite numeric value.">
+                                <td><a href="#declared-member-4c2a300f"><code data-lang-source="toNumeric" data-lang-kind="member-name">toNumeric</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve one finite numeric value.</td>
+                            </tr>
+                            <tr data-filter-item="clamp method Clamp one numeric value.">
+                                <td><a href="#declared-member-20bfe1ef"><code data-lang-source="clamp" data-lang-kind="member-name">clamp</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Clamp one numeric value.</td>
+                            </tr>
+                            <tr data-filter-item="resolvePercentile method Resolve one percentile value in [0, 1].">
+                                <td><a href="#declared-member-67dba64e"><code data-lang-source="resolvePercentile" data-lang-kind="member-name">resolvePercentile</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve one percentile value in [0, 1].</td>
+                            </tr>
+                            <tr data-filter-item="resolveThreshold method Resolve one threshold value in [0, 255].">
+                                <td><a href="#declared-member-9e01c19c"><code data-lang-source="resolveThreshold" data-lang-kind="member-name">resolveThreshold</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve one threshold value in [0, 255].</td>
+                            </tr>
+                            <tr data-filter-item="buildLuma method Build luminance bytes from RGBA input.">
+                                <td><a href="#declared-member-6c478868"><code data-lang-source="buildLuma" data-lang-kind="member-name">buildLuma</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build luminance bytes from RGBA input.</td>
+                            </tr>
+                            <tr data-filter-item="buildHistogram method Build one 256-bin luminance histogram.">
+                                <td><a href="#declared-member-94463394"><code data-lang-source="buildHistogram" data-lang-kind="member-name">buildHistogram</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build one 256-bin luminance histogram.</td>
+                            </tr>
+                            <tr data-filter-item="resolvePercentileThreshold method Resolve one percentile threshold from histogram.">
+                                <td><a href="#declared-member-5b10a5c3"><code data-lang-source="resolvePercentileThreshold" data-lang-kind="member-name">resolvePercentileThreshold</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve one percentile threshold from histogram.</td>
+                            </tr>
+                            <tr data-filter-item="isPeripheralPixel method Determine whether one pixel index belongs to configured peripheral zones.">
+                                <td><a href="#declared-member-ea69c737"><code data-lang-source="isPeripheralPixel" data-lang-kind="member-name">isPeripheralPixel</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine whether one pixel index belongs to configured peripheral zones.</td>
+                            </tr>
+                            <tr data-filter-item="resolveAdaptiveBrightChannelDeltaThreshold method Resolve adaptive bright-text channel-delta threshold.">
+                                <td><a href="#declared-member-ca24edfa"><code data-lang-source="resolveAdaptiveBrightChannelDeltaThreshold" data-lang-kind="member-name">resolveAdaptiveBrightChannelDeltaThreshold</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve adaptive bright-text channel-delta threshold.</td>
+                            </tr>
+                            <tr data-filter-item="resolveThresholds method Resolve binarization thresholds.">
+                                <td><a href="#declared-member-ebb5a729"><code data-lang-source="resolveThresholds" data-lang-kind="member-name">resolveThresholds</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve binarization thresholds.</td>
+                            </tr>
+                            <tr data-filter-item="createMask method Build one binary candidate mask.">
+                                <td><a href="#declared-member-287ced58"><code data-lang-source="createMask" data-lang-kind="member-name">createMask</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build one binary candidate mask.</td>
+                            </tr>
+                            <tr data-filter-item="apply method Convert RGBA input to luminance + binary mask.">
+                                <td><a href="#declared-member-93cd0ec3"><code data-lang-source="apply" data-lang-kind="member-name">apply</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Convert RGBA input to luminance + binary mask.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-4c2a300f" data-filter-item="toNumeric method Resolve one finite numeric value.">
+                    <h4><code data-lang-source="toNumeric(value, fallback)" data-lang-kind="signature">toNumeric(value, fallback)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve one finite numeric value. It defines terminal output contract as numeric.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Candidate value. It provides the value input used by toNumeric.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="fallback" data-lang-kind="parameter-name">fallback</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Fallback value. It provides the fallback input used by toNumeric. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">Numeric value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-20bfe1ef" data-filter-item="clamp method Clamp one numeric value.">
+                    <h4><code data-lang-source="clamp(value, minimum, maximum)" data-lang-kind="signature">clamp(value, minimum, maximum)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Clamp one numeric value. It provides clamp behavior on Binarize.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Value. It provides the value input used by clamp. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="minimum" data-lang-kind="parameter-name">minimum</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Minimum value. It provides the minimum input used by clamp. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="maximum" data-lang-kind="parameter-name">maximum</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Maximum value. It provides the maximum input used by clamp. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">Clamped value.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-67dba64e" data-filter-item="resolvePercentile method Resolve one percentile value in [0, 1].">
+                    <h4><code data-lang-source="resolvePercentile(value, fallback)" data-lang-kind="signature">resolvePercentile(value, fallback)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve one percentile value in [0, 1]. It provides resolve percentile behavior on Binarize.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Candidate value. It provides the value input used by resolvePercentile.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="fallback" data-lang-kind="parameter-name">fallback</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Fallback percentile. It provides the fallback input used by resolvePercentile. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">Percentile.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-9e01c19c" data-filter-item="resolveThreshold method Resolve one threshold value in [0, 255].">
+                    <h4><code data-lang-source="resolveThreshold(value, fallback)" data-lang-kind="signature">resolveThreshold(value, fallback)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve one threshold value in [0, 255]. It provides resolve threshold behavior on Binarize.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Candidate threshold. It provides the value input used by resolveThreshold.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="fallback" data-lang-kind="parameter-name">fallback</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Fallback threshold. It provides the fallback input used by resolveThreshold. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">Threshold.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6c478868" data-filter-item="buildLuma method Build luminance bytes from RGBA input.">
+                    <h4><code data-lang-source="buildLuma(rgba)" data-lang-kind="signature">buildLuma(rgba)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build luminance bytes from RGBA input. It finalizes and returns the built Binarize artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="rgba" data-lang-kind="parameter-name">rgba</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> RGBA bytes. It provides the rgba input used by buildLuma.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">Luminance bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-94463394" data-filter-item="buildHistogram method Build one 256-bin luminance histogram.">
+                    <h4><code data-lang-source="buildHistogram(luma)" data-lang-kind="signature">buildHistogram(luma)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build one 256-bin luminance histogram. It finalizes and returns the built Binarize artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="luma" data-lang-kind="parameter-name">luma</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> Luminance bytes. It provides the luma input used by buildHistogram.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint32Array" data-lang-kind="type-token">Uint32Array</code><br><span class="page-meta">Histogram bins.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5b10a5c3" data-filter-item="resolvePercentileThreshold method Resolve one percentile threshold from histogram.">
+                    <h4><code data-lang-source="resolvePercentileThreshold(histogram, total, percentile)" data-lang-kind="signature">resolvePercentileThreshold(histogram, total, percentile)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve one percentile threshold from histogram. It provides resolve percentile threshold behavior on Binarize.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="histogram" data-lang-kind="parameter-name">histogram</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint32Array" data-lang-kind="type-token">Uint32Array</code></td>
+                                <td><span class="page-meta">(Required)</span> Histogram bins. It provides the histogram input used by resolvePercentileThreshold.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="total" data-lang-kind="parameter-name">total</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Total sample count. It provides the total input used by resolvePercentileThreshold. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="percentile" data-lang-kind="parameter-name">percentile</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Percentile in [0, 1]. It provides the percentile input used by resolvePercentileThreshold. Type detail: expects a numeric value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">Threshold in [0, 255].</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ea69c737" data-filter-item="isPeripheralPixel method Determine whether one pixel index belongs to configured peripheral zones.">
+                    <h4><code data-lang-source="isPeripheralPixel(pixelIndex, columns, rows, options)" data-lang-kind="signature">isPeripheralPixel(pixelIndex, columns, rows, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine whether one pixel index belongs to configured peripheral zones. It provides is peripheral pixel behavior on Binarize.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="pixelIndex" data-lang-kind="parameter-name">pixelIndex</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Pixel index. It provides the pixel index input used by isPeripheralPixel. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="columns" data-lang-kind="parameter-name">columns</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Frame columns. It provides the columns input used by isPeripheralPixel. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="rows" data-lang-kind="parameter-name">rows</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Frame rows. It provides the rows input used by isPeripheralPixel. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - {})</span> Options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when peripheral.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ca24edfa" data-filter-item="resolveAdaptiveBrightChannelDeltaThreshold method Resolve adaptive bright-text channel-delta threshold.">
+                    <h4><code data-lang-source="resolveAdaptiveBrightChannelDeltaThreshold(rgba, luma, thresholds, minAlpha, columns, rows, options)" data-lang-kind="signature">resolveAdaptiveBrightChannelDeltaThreshold(rgba, luma, thresholds, minAlpha, columns, rows, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve adaptive bright-text channel-delta threshold. It provides resolve adaptive bright channel delta threshold behavior on Binarize.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="rgba" data-lang-kind="parameter-name">rgba</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> RGBA bytes. It provides the rgba input used by resolveAdaptiveBrightChannelDeltaThreshold.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="luma" data-lang-kind="parameter-name">luma</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> Luma bytes. It provides the luma input used by resolveAdaptiveBrightChannelDeltaThreshold.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="thresholds" data-lang-kind="parameter-name">thresholds</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Thresholds. It provides the thresholds input used by resolveAdaptiveBrightChannelDeltaThreshold. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="minAlpha" data-lang-kind="parameter-name">minAlpha</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Minimum alpha. It provides the min alpha input used by resolveAdaptiveBrightChannelDeltaThreshold. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="columns" data-lang-kind="parameter-name">columns</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Frame columns. It provides the columns input used by resolveAdaptiveBrightChannelDeltaThreshold. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="rows" data-lang-kind="parameter-name">rows</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Frame rows. It provides the rows input used by resolveAdaptiveBrightChannelDeltaThreshold. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - {})</span> Options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">Threshold.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ebb5a729" data-filter-item="resolveThresholds method Resolve binarization thresholds.">
+                    <h4><code data-lang-source="resolveThresholds(luma, options)" data-lang-kind="signature">resolveThresholds(luma, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve binarization thresholds. It provides resolve thresholds behavior on Binarize.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="luma" data-lang-kind="parameter-name">luma</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> Luminance bytes. It provides the luma input used by resolveThresholds.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - {})</span> Binarization options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Threshold payload.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-287ced58" data-filter-item="createMask method Build one binary candidate mask.">
+                    <h4><code data-lang-source="createMask(rgba, luma, thresholds, columns, rows, options)" data-lang-kind="signature">createMask(rgba, luma, thresholds, columns, rows, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build one binary candidate mask. It provides create mask behavior on Binarize.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="rgba" data-lang-kind="parameter-name">rgba</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> RGBA bytes. It provides the rgba input used by createMask.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="luma" data-lang-kind="parameter-name">luma</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> Luminance bytes. It provides the luma input used by createMask.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="thresholds" data-lang-kind="parameter-name">thresholds</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Threshold payload. It provides the thresholds input used by createMask. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="columns" data-lang-kind="parameter-name">columns</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> Binarization options. It provides the columns input used by createMask. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="rows" data-lang-kind="parameter-name">rows</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the rows input used by createMask.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - {})</span> Binarization options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br><span class="page-meta">Binary mask (0/1).</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-93cd0ec3" data-filter-item="apply method Convert RGBA input to luminance + binary mask.">
+                    <h4><code data-lang-source="apply(rgba, columns, rows, options)" data-lang-kind="signature">apply(rgba, columns, rows, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Convert RGBA input to luminance + binary mask. It provides apply behavior on Binarize.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="rgba" data-lang-kind="parameter-name">rgba</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> RGBA bytes. It provides the rgba input used by apply.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="columns" data-lang-kind="parameter-name">columns</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Frame columns. It provides the columns input used by apply. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="rows" data-lang-kind="parameter-name">rows</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Frame rows. It provides the rows input used by apply. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - {})</span> Binarization options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Binarized payload.</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<div class="grid one">
+                <article class="card reveal" id="option-isperipheralpixel-options-1a30fa02" data-filter-item="isPeripheralPixel options option object">
+                    <h4><code data-lang-source="isPeripheralPixel(pixelIndex, columns, rows, options)" data-lang-kind="signature">isPeripheralPixel(pixelIndex, columns, rows, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-isperipheralpixel-options-1a30fa02-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-resolveadaptivebrightchanneldeltathreshold-options-dd437069" data-filter-item="resolveAdaptiveBrightChannelDeltaThreshold options option object">
+                    <h4><code data-lang-source="resolveAdaptiveBrightChannelDeltaThreshold(rgba, luma, thresholds, minAlpha, columns, rows, options)" data-lang-kind="signature">resolveAdaptiveBrightChannelDeltaThreshold(rgba, luma, thresholds, minAlpha, columns, rows, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-resolveadaptivebrightchanneldeltathreshold-options-dd437069-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-resolvethresholds-options-26d2e08f" data-filter-item="resolveThresholds options option object">
+                    <h4><code data-lang-source="resolveThresholds(luma, options)" data-lang-kind="signature">resolveThresholds(luma, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-resolvethresholds-options-26d2e08f-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-createmask-options-91b53efc" data-filter-item="createMask options option object">
+                    <h4><code data-lang-source="createMask(rgba, luma, thresholds, columns, rows, options)" data-lang-kind="signature">createMask(rgba, luma, thresholds, columns, rows, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-createmask-options-91b53efc-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-apply-options-6f60f113" data-filter-item="apply options option object">
+                    <h4><code data-lang-source="apply(rgba, columns, rows, options)" data-lang-kind="signature">apply(rgba, columns, rows, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-apply-options-6f60f113-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article></div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

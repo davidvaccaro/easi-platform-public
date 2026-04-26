@@ -1,0 +1,2350 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for PipelineBuildSession.">
+    <title>EASI | PipelineBuildSession</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>PipelineBuildSession</h2>
+                <p>This class provides pipeline build session behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><strong>PipelineBuildSession</strong></p>
+                <p class="page-meta">
+                    This class declares <code>43</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><span class="page-meta">none</span></td></tr>
+                        <tr><td>Declared Members</td><td>43</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>17</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="bulkDataPolicy" data-lang-kind="property-name">bulkDataPolicy</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="burnedInRedaction" data-lang-kind="property-name">burnedInRedaction</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="codecRegistry" data-lang-kind="property-name">codecRegistry</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="deIdentificationMask" data-lang-kind="property-name">deIdentificationMask</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="handler" data-lang-kind="property-name">handler</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="isStrict" data-lang-kind="property-name">isStrict</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="normalization" data-lang-kind="property-name">normalization</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="onEmit" data-lang-kind="property-name">onEmit</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="parser" data-lang-kind="property-name">parser</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="reader" data-lang-kind="property-name">reader</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="source" data-lang-kind="property-name">source</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="sourceOptions" data-lang-kind="property-name">sourceOptions</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="transcoding" data-lang-kind="property-name">transcoding</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="validation" data-lang-kind="property-name">validation</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="writer" data-lang-kind="property-name">writer</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="writerOptions" data-lang-kind="property-name">writerOptions</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="writerTarget" data-lang-kind="property-name">writerTarget</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="hasPropertyInPrototypeChain method Determines whether a property exists on the object or in its prototype chain.">
+                                <td><a href="#declared-member-282ed2a8"><code data-lang-source="hasPropertyInPrototypeChain" data-lang-kind="member-name">hasPropertyInPrototypeChain</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determines whether a property exists on the object or in its prototype chain.</td>
+                            </tr>
+                            <tr data-filter-item="isValidReader method Determines if the reader appears to implement the EASI reader contract.">
+                                <td><a href="#declared-member-781624e5"><code data-lang-source="isValidReader" data-lang-kind="member-name">isValidReader</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determines if the reader appears to implement the EASI reader contract.</td>
+                            </tr>
+                            <tr data-filter-item="supportsOnEmit method Determines if the reader supports emission callbacks. Reader-level emission is implemented with the internal `onPart` contract.">
+                                <td><a href="#declared-member-b7c4c208"><code data-lang-source="supportsOnEmit" data-lang-kind="member-name">supportsOnEmit</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determines if the reader supports emission callbacks.<br>Reader-level emission is implemented with the internal `onPart` contract.</td>
+                            </tr>
+                            <tr data-filter-item="isValidParser method Determines if the parser appears to implement the EASI parser contract.">
+                                <td><a href="#declared-member-3461f917"><code data-lang-source="isValidParser" data-lang-kind="member-name">isValidParser</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determines if the parser appears to implement the EASI parser contract.</td>
+                            </tr>
+                            <tr data-filter-item="isValidHandler method Determines if the handler appears to implement the EASI handler contract.">
+                                <td><a href="#declared-member-119a2773"><code data-lang-source="isValidHandler" data-lang-kind="member-name">isValidHandler</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determines if the handler appears to implement the EASI handler contract.</td>
+                            </tr>
+                            <tr data-filter-item="isValidWriter method Determines if the writer appears to implement the EASI writer contract.">
+                                <td><a href="#declared-member-2acb50d2"><code data-lang-source="isValidWriter" data-lang-kind="member-name">isValidWriter</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determines if the writer appears to implement the EASI writer contract.</td>
+                            </tr>
+                            <tr data-filter-item="isValidCodecRegistry method Determines if the codec registry appears to implement the EASI codec registry contract.">
+                                <td><a href="#declared-member-d19fa6b6"><code data-lang-source="isValidCodecRegistry" data-lang-kind="member-name">isValidCodecRegistry</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determines if the codec registry appears to implement the EASI codec registry contract.</td>
+                            </tr>
+                            <tr data-filter-item="validateCodecRegistry method Validate the configured codec registry and fail fast on invalid state.">
+                                <td><a href="#declared-member-fd53f92d"><code data-lang-source="validateCodecRegistry" data-lang-kind="member-name">validateCodecRegistry</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Validate the configured codec registry and fail fast on invalid state.</td>
+                            </tr>
+                            <tr data-filter-item="isValidDimseSourceTransport method Determines if the DIMSE source transport appears valid.">
+                                <td><a href="#declared-member-7449b703"><code data-lang-source="isValidDimseSourceTransport" data-lang-kind="member-name">isValidDimseSourceTransport</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determines if the DIMSE source transport appears valid.</td>
+                            </tr>
+                            <tr data-filter-item="isValidDimseDestinationTransport method Determines if the DIMSE destination transport appears valid.">
+                                <td><a href="#declared-member-84e6a40f"><code data-lang-source="isValidDimseDestinationTransport" data-lang-kind="member-name">isValidDimseDestinationTransport</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determines if the DIMSE destination transport appears valid.</td>
+                            </tr>
+                            <tr data-filter-item="resolveTerminalHandler method Resolve the deepest next-handler in a handler chain.">
+                                <td><a href="#declared-member-1fe775c0"><code data-lang-source="resolveTerminalHandler" data-lang-kind="member-name">resolveTerminalHandler</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve the deepest next-handler in a handler chain.</td>
+                            </tr>
+                            <tr data-filter-item="writerRequiresTarget method Determine whether one writer requires an external destination target.">
+                                <td><a href="#declared-member-fefb58e8"><code data-lang-source="writerRequiresTarget" data-lang-kind="member-name">writerRequiresTarget</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine whether one writer requires an external destination target.</td>
+                            </tr>
+                            <tr data-filter-item="writerUsesNoTargetSignature method Determine whether one writer uses a no-target write signature.">
+                                <td><a href="#declared-member-991fd6e8"><code data-lang-source="writerUsesNoTargetSignature" data-lang-kind="member-name">writerUsesNoTargetSignature</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine whether one writer uses a no-target write signature.</td>
+                            </tr>
+                            <tr data-filter-item="mergeWriterOptions method Merge default writer options with per-process overrides.">
+                                <td><a href="#declared-member-2b495acc"><code data-lang-source="mergeWriterOptions" data-lang-kind="member-name">mergeWriterOptions</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Merge default writer options with per-process overrides.</td>
+                            </tr>
+                            <tr data-filter-item="toResultItems method ">
+                                <td><a href="#declared-member-c9a2ce12"><code data-lang-source="toResultItems" data-lang-kind="member-name">toResultItems</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="isRoutingEnvelope method ">
+                                <td><a href="#declared-member-8b1bf717"><code data-lang-source="isRoutingEnvelope" data-lang-kind="member-name">isRoutingEnvelope</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="isRoutingResultCollection method ">
+                                <td><a href="#declared-member-a1184d83"><code data-lang-source="isRoutingResultCollection" data-lang-kind="member-name">isRoutingResultCollection</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="resolveRoutingMappedTarget method ">
+                                <td><a href="#declared-member-014b9b1b"><code data-lang-source="resolveRoutingMappedTarget" data-lang-kind="member-name">resolveRoutingMappedTarget</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="resolveRoutingTarget method ">
+                                <td><a href="#declared-member-c2e3c3ca"><code data-lang-source="resolveRoutingTarget" data-lang-kind="member-name">resolveRoutingTarget</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="resolveRoutingWriterOptions method ">
+                                <td><a href="#declared-member-f93e1bc9"><code data-lang-source="resolveRoutingWriterOptions" data-lang-kind="member-name">resolveRoutingWriterOptions</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="buildRoutedWritePlans method ">
+                                <td><a href="#declared-member-e360370f"><code data-lang-source="buildRoutedWritePlans" data-lang-kind="member-name">buildRoutedWritePlans</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="wrapWriterResult method ">
+                                <td><a href="#declared-member-425e851a"><code data-lang-source="wrapWriterResult" data-lang-kind="member-name">wrapWriterResult</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="createWriterResultSink method Build a result sink callback for writer-enabled pipelines.">
+                                <td><a href="#declared-member-505fa0aa"><code data-lang-source="createWriterResultSink" data-lang-kind="member-name">createWriterResultSink</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build a result sink callback for writer-enabled pipelines.</td>
+                            </tr>
+                            <tr data-filter-item="isBuiltInWriter method Determine whether one writer is a built-in EASI writer.">
+                                <td><a href="#declared-member-ce2278ef"><code data-lang-source="isBuiltInWriter" data-lang-kind="member-name">isBuiltInWriter</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine whether one writer is a built-in EASI writer.</td>
+                            </tr>
+                            <tr data-filter-item="validateParserHandlerCompatibility method Validates compatibility of known parser and handler pairings.">
+                                <td><a href="#declared-member-674aeb39"><code data-lang-source="validateParserHandlerCompatibility" data-lang-kind="member-name">validateParserHandlerCompatibility</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Validates compatibility of known parser and handler pairings.</td>
+                            </tr>
+                            <tr data-filter-item="validateReaderParserCompatibility method Validates compatibility of known reader and parser pairings.">
+                                <td><a href="#declared-member-7d9daf22"><code data-lang-source="validateReaderParserCompatibility" data-lang-kind="member-name">validateReaderParserCompatibility</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Validates compatibility of known reader and parser pairings.</td>
+                            </tr>
+                            <tr data-filter-item="validateWriterTerminalCompatibility method Validates compatibility of known writer and terminal handler pairings.">
+                                <td><a href="#declared-member-1f782c61"><code data-lang-source="validateWriterTerminalCompatibility" data-lang-kind="member-name">validateWriterTerminalCompatibility</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Validates compatibility of known writer and terminal handler pairings.</td>
+                            </tr>
+                            <tr data-filter-item="composeDicomSemanticFilter method Compose a canonical DICOM semantic filter into the current handler chain. Supports native DICOM parser chains and metadata adapters that expose a canonical DICOM `nextHandler`.">
+                                <td><a href="#declared-member-4e18507f"><code data-lang-source="composeDicomSemanticFilter" data-lang-kind="member-name">composeDicomSemanticFilter</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Compose a canonical DICOM semantic filter into the current handler chain.<br>Supports native DICOM parser chains and metadata adapters that expose a canonical DICOM `nextHandler`.</td>
+                            </tr>
+                            <tr data-filter-item="withParser method Set the current parser.">
+                                <td><a href="#declared-member-ebecf9f2"><code data-lang-source="withParser" data-lang-kind="member-name">withParser</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Set the current parser.</td>
+                            </tr>
+                            <tr data-filter-item="withReader method Set the current reader.">
+                                <td><a href="#declared-member-98a02807"><code data-lang-source="withReader" data-lang-kind="member-name">withReader</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Set the current reader.</td>
+                            </tr>
+                            <tr data-filter-item="withSource method Set/replace the default source and source options.">
+                                <td><a href="#declared-member-93c11396"><code data-lang-source="withSource" data-lang-kind="member-name">withSource</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Set/replace the default source and source options.</td>
+                            </tr>
+                            <tr data-filter-item="withCodecRegistry method Set the codec registry used by codec-dependent handlers.">
+                                <td><a href="#declared-member-2da4320f"><code data-lang-source="withCodecRegistry" data-lang-kind="member-name">withCodecRegistry</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Set the codec registry used by codec-dependent handlers.</td>
+                            </tr>
+                            <tr data-filter-item="withHandler method Set the current handler.">
+                                <td><a href="#declared-member-f32820e3"><code data-lang-source="withHandler" data-lang-kind="member-name">withHandler</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Set the current handler.</td>
+                            </tr>
+                            <tr data-filter-item="withOnEmit method Sets the `onEmit` callback for the stream-read session.">
+                                <td><a href="#declared-member-a7cc971e"><code data-lang-source="withOnEmit" data-lang-kind="member-name">withOnEmit</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Sets the `onEmit` callback for the stream-read session.</td>
+                            </tr>
+                            <tr data-filter-item="withIsStrict method Sets strict parser behavior.">
+                                <td><a href="#declared-member-09752980"><code data-lang-source="withIsStrict" data-lang-kind="member-name">withIsStrict</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Sets strict parser behavior.</td>
+                            </tr>
+                            <tr data-filter-item="withDeIdentification method Enables de-identification using a mask. [deIdentificationMask=Tag.DefaultDeIdentificationMask] The de-identification mask map.">
+                                <td><a href="#declared-member-0f0f7c9d"><code data-lang-source="withDeIdentification" data-lang-kind="member-name">withDeIdentification</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Enables de-identification using a mask.<br>[deIdentificationMask=Tag.DefaultDeIdentificationMask] The de-identification mask map.</td>
+                            </tr>
+                            <tr data-filter-item="withBulkDataPolicy method Sets the parser bulk-data policy (when supported by the parser).">
+                                <td><a href="#declared-member-99fccce9"><code data-lang-source="withBulkDataPolicy" data-lang-kind="member-name">withBulkDataPolicy</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Sets the parser bulk-data policy (when supported by the parser).</td>
+                            </tr>
+                            <tr data-filter-item="withValidation method Enables/configures validation filtering in the canonical DICOM semantic chain.">
+                                <td><a href="#declared-member-becb5146"><code data-lang-source="withValidation" data-lang-kind="member-name">withValidation</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Enables/configures validation filtering in the canonical DICOM semantic chain.</td>
+                            </tr>
+                            <tr data-filter-item="withTranscoding method Enables/configures transfer-syntax transcoding. Supported forms: - false/null: disabled - string: target transfer syntax UID - object: full transcoding options">
+                                <td><a href="#declared-member-72ac9aac"><code data-lang-source="withTranscoding" data-lang-kind="member-name">withTranscoding</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Enables/configures transfer-syntax transcoding.<br>Supported forms:<br>- false/null: disabled<br>- string: target transfer syntax UID<br>- object: full transcoding options</td>
+                            </tr>
+                            <tr data-filter-item="withBurnedInRedaction method Enables/configures burned-in pixel redaction. Supported forms: - false/null: disabled - true: enabled with default settings - function/array/object: full redaction options">
+                                <td><a href="#declared-member-036e0a6e"><code data-lang-source="withBurnedInRedaction" data-lang-kind="member-name">withBurnedInRedaction</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Enables/configures burned-in pixel redaction.<br>Supported forms:<br>- false/null: disabled<br>- true: enabled with default settings<br>- function/array/object: full redaction options</td>
+                            </tr>
+                            <tr data-filter-item="withNormalization method Enables/configures mixed-imaging normalization. Supported forms: - false/null: disabled - function: normalization builder callback - object: normalization definition - ImagingNormalizationBuilder: built/partially-built builder">
+                                <td><a href="#declared-member-6c4c6ff4"><code data-lang-source="withNormalization" data-lang-kind="member-name">withNormalization</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Enables/configures mixed-imaging normalization.<br>Supported forms:<br>- false/null: disabled<br>- function: normalization builder callback<br>- object: normalization definition<br>- ImagingNormalizationBuilder: built/partially-built builder</td>
+                            </tr>
+                            <tr data-filter-item="withWriter method Set the outbound writer for restreaming pipeline output.">
+                                <td><a href="#declared-member-a76932af"><code data-lang-source="withWriter" data-lang-kind="member-name">withWriter</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Set the outbound writer for restreaming pipeline output.</td>
+                            </tr>
+                            <tr data-filter-item="build method Build a new pipeline instance.">
+                                <td><a href="#declared-member-20ecfdd3"><code data-lang-source="build" data-lang-kind="member-name">build</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build a new pipeline instance.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-282ed2a8" data-filter-item="hasPropertyInPrototypeChain method Determines whether a property exists on the object or in its prototype chain.">
+                    <h4><code data-lang-source="hasPropertyInPrototypeChain(value, propertyName)" data-lang-kind="signature">hasPropertyInPrototypeChain(value, propertyName)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determines whether a property exists on the object or in its prototype chain. It provides has property in prototype chain behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The object to inspect. It provides the value input used by hasPropertyInPrototypeChain. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="propertyName" data-lang-kind="parameter-name">propertyName</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The property name to locate. It provides the property name input used by hasPropertyInPrototypeChain. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">True if the property exists in the instance/prototype chain.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-781624e5" data-filter-item="isValidReader method Determines if the reader appears to implement the EASI reader contract.">
+                    <h4><code data-lang-source="isValidReader(reader)" data-lang-kind="signature">isValidReader(reader)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determines if the reader appears to implement the EASI reader contract. It provides is valid reader behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="reader" data-lang-kind="parameter-name">reader</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The reader instance. It supplies the reader implementation used to ingest input. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">True if the reader looks valid.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b7c4c208" data-filter-item="supportsOnEmit method Determines if the reader supports emission callbacks. Reader-level emission is implemented with the internal `onPart` contract.">
+                    <h4><code data-lang-source="supportsOnEmit(reader)" data-lang-kind="signature">supportsOnEmit(reader)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determines if the reader supports emission callbacks. Reader-level emission is implemented with the internal `onPart` contract. It provides supports on emit behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="reader" data-lang-kind="parameter-name">reader</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The reader instance. It supplies the reader implementation used to ingest input. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">True if internal `onPart` is present in the object/prototype chain.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3461f917" data-filter-item="isValidParser method Determines if the parser appears to implement the EASI parser contract.">
+                    <h4><code data-lang-source="isValidParser(parser)" data-lang-kind="signature">isValidParser(parser)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determines if the parser appears to implement the EASI parser contract. It provides is valid parser behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="parser" data-lang-kind="parameter-name">parser</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The parser instance. It supplies the parser implementation used to materialize input state. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">True if the parser looks valid.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-119a2773" data-filter-item="isValidHandler method Determines if the handler appears to implement the EASI handler contract.">
+                    <h4><code data-lang-source="isValidHandler(handler)" data-lang-kind="signature">isValidHandler(handler)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determines if the handler appears to implement the EASI handler contract. It provides is valid handler behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="handler" data-lang-kind="parameter-name">handler</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The handler instance. It supplies the handler that receives parser lifecycle events. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">True if the handler looks valid.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2acb50d2" data-filter-item="isValidWriter method Determines if the writer appears to implement the EASI writer contract.">
+                    <h4><code data-lang-source="isValidWriter(writer)" data-lang-kind="signature">isValidWriter(writer)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determines if the writer appears to implement the EASI writer contract. It provides is valid writer behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="writer" data-lang-kind="parameter-name">writer</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The writer instance. It provides the writer input used by isValidWriter. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">True if the writer looks valid.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d19fa6b6" data-filter-item="isValidCodecRegistry method Determines if the codec registry appears to implement the EASI codec registry contract.">
+                    <h4><code data-lang-source="isValidCodecRegistry(codecRegistry)" data-lang-kind="signature">isValidCodecRegistry(codecRegistry)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determines if the codec registry appears to implement the EASI codec registry contract. It provides is valid codec registry behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="codecRegistry" data-lang-kind="parameter-name">codecRegistry</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The codec registry. It provides the codec registry input used by isValidCodecRegistry.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">True when registry is valid.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-fd53f92d" data-filter-item="validateCodecRegistry method Validate the configured codec registry and fail fast on invalid state.">
+                    <h4><code data-lang-source="validateCodecRegistry(codecRegistry)" data-lang-kind="signature">validateCodecRegistry(codecRegistry)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Validate the configured codec registry and fail fast on invalid state. It provides validate codec registry behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="codecRegistry" data-lang-kind="parameter-name">codecRegistry</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The codec registry. It provides the codec registry input used by validateCodecRegistry.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7449b703" data-filter-item="isValidDimseSourceTransport method Determines if the DIMSE source transport appears valid.">
+                    <h4><code data-lang-source="isValidDimseSourceTransport(transport)" data-lang-kind="signature">isValidDimseSourceTransport(transport)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determines if the DIMSE source transport appears valid. It provides is valid dimse source transport behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="transport" data-lang-kind="parameter-name">transport</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The DIMSE source transport. It supplies the transport adapter used for I/O exchange.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">True when transport implements read().</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-84e6a40f" data-filter-item="isValidDimseDestinationTransport method Determines if the DIMSE destination transport appears valid.">
+                    <h4><code data-lang-source="isValidDimseDestinationTransport(transport)" data-lang-kind="signature">isValidDimseDestinationTransport(transport)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determines if the DIMSE destination transport appears valid. It provides is valid dimse destination transport behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="transport" data-lang-kind="parameter-name">transport</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The DIMSE destination transport. It supplies the transport adapter used for I/O exchange.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">True when transport implements write().</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1fe775c0" data-filter-item="resolveTerminalHandler method Resolve the deepest next-handler in a handler chain.">
+                    <h4><code data-lang-source="resolveTerminalHandler(handler)" data-lang-kind="signature">resolveTerminalHandler(handler)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve the deepest next-handler in a handler chain. It provides resolve terminal handler behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="handler" data-lang-kind="parameter-name">handler</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The current top handler. It supplies the handler that receives parser lifecycle events. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The terminal handler.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-fefb58e8" data-filter-item="writerRequiresTarget method Determine whether one writer requires an external destination target.">
+                    <h4><code data-lang-source="writerRequiresTarget(writer)" data-lang-kind="signature">writerRequiresTarget(writer)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine whether one writer requires an external destination target. It provides writer requires target behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="writer" data-lang-kind="parameter-name">writer</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The writer instance. It provides the writer input used by writerRequiresTarget. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when destination target is required.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-991fd6e8" data-filter-item="writerUsesNoTargetSignature method Determine whether one writer uses a no-target write signature.">
+                    <h4><code data-lang-source="writerUsesNoTargetSignature(writer)" data-lang-kind="signature">writerUsesNoTargetSignature(writer)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine whether one writer uses a no-target write signature. It provides writer uses no target signature behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="writer" data-lang-kind="parameter-name">writer</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The writer instance. It provides the writer input used by writerUsesNoTargetSignature. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when writer should receive source/options only.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2b495acc" data-filter-item="mergeWriterOptions method Merge default writer options with per-process overrides.">
+                    <h4><code data-lang-source="mergeWriterOptions(defaultOptions, processOptions)" data-lang-kind="signature">mergeWriterOptions(defaultOptions, processOptions)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Merge default writer options with per-process overrides. It provides merge writer options behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="defaultOptions" data-lang-kind="parameter-name">defaultOptions</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Build-time writer options. It provides the default options input used by mergeWriterOptions. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="processOptions" data-lang-kind="parameter-name">processOptions</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Per-process writer options. It provides the process options input used by mergeWriterOptions. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">Merged writer options.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c9a2ce12" data-filter-item="toResultItems method ">
+                    <h4><code data-lang-source="toResultItems(result)" data-lang-kind="signature">toResultItems(result)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It defines terminal output contract as result items.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="result" data-lang-kind="parameter-name">result</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the result input used by toResultItems.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8b1bf717" data-filter-item="isRoutingEnvelope method ">
+                    <h4><code data-lang-source="isRoutingEnvelope(value)" data-lang-kind="signature">isRoutingEnvelope(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides is routing envelope behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the value input used by isRoutingEnvelope.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a1184d83" data-filter-item="isRoutingResultCollection method ">
+                    <h4><code data-lang-source="isRoutingResultCollection(result)" data-lang-kind="signature">isRoutingResultCollection(result)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides is routing result collection behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="result" data-lang-kind="parameter-name">result</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the result input used by isRoutingResultCollection.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-014b9b1b" data-filter-item="resolveRoutingMappedTarget method ">
+                    <h4><code data-lang-source="resolveRoutingMappedTarget(routeTarget, writerOptions)" data-lang-kind="signature">resolveRoutingMappedTarget(routeTarget, writerOptions)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides resolve routing mapped target behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="routeTarget" data-lang-kind="parameter-name">routeTarget</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the route target input used by resolveRoutingMappedTarget.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="writerOptions" data-lang-kind="parameter-name">writerOptions</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the writer options input used by resolveRoutingMappedTarget.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c2e3c3ca" data-filter-item="resolveRoutingTarget method ">
+                    <h4><code data-lang-source="resolveRoutingTarget(routeTarget, defaultTarget, writerOptions)" data-lang-kind="signature">resolveRoutingTarget(routeTarget, defaultTarget, writerOptions)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides resolve routing target behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="routeTarget" data-lang-kind="parameter-name">routeTarget</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the route target input used by resolveRoutingTarget.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="defaultTarget" data-lang-kind="parameter-name">defaultTarget</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the default target input used by resolveRoutingTarget.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="writerOptions" data-lang-kind="parameter-name">writerOptions</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the writer options input used by resolveRoutingTarget.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f93e1bc9" data-filter-item="resolveRoutingWriterOptions method ">
+                    <h4><code data-lang-source="resolveRoutingWriterOptions(baseOptions, routeItem)" data-lang-kind="signature">resolveRoutingWriterOptions(baseOptions, routeItem)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides resolve routing writer options behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="baseOptions" data-lang-kind="parameter-name">baseOptions</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the base options input used by resolveRoutingWriterOptions.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="routeItem" data-lang-kind="parameter-name">routeItem</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the route item input used by resolveRoutingWriterOptions.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e360370f" data-filter-item="buildRoutedWritePlans method ">
+                    <h4><code data-lang-source="buildRoutedWritePlans(result, defaultTarget, writerOptions)" data-lang-kind="signature">buildRoutedWritePlans(result, defaultTarget, writerOptions)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It finalizes and returns the built PipelineBuildSession artifact.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="result" data-lang-kind="parameter-name">result</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the result input used by buildRoutedWritePlans.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="defaultTarget" data-lang-kind="parameter-name">defaultTarget</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the default target input used by buildRoutedWritePlans.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="writerOptions" data-lang-kind="parameter-name">writerOptions</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the writer options input used by buildRoutedWritePlans.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-425e851a" data-filter-item="wrapWriterResult method ">
+                    <h4><code data-lang-source="wrapWriterResult(writer, writerResult)" data-lang-kind="signature">wrapWriterResult(writer, writerResult)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides wrap writer result behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="writer" data-lang-kind="parameter-name">writer</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the writer input used by wrapWriterResult.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="writerResult" data-lang-kind="parameter-name">writerResult</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the writer result input used by wrapWriterResult.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-505fa0aa" data-filter-item="createWriterResultSink method Build a result sink callback for writer-enabled pipelines.">
+                    <h4><code data-lang-source="createWriterResultSink(writer, defaultTarget, defaultOptions, requiresTarget)" data-lang-kind="signature">createWriterResultSink(writer, defaultTarget, defaultOptions, requiresTarget)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build a result sink callback for writer-enabled pipelines. It provides create writer result sink behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="writer" data-lang-kind="parameter-name">writer</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured writer. It provides the writer input used by createWriterResultSink. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="defaultTarget" data-lang-kind="parameter-name">defaultTarget</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured default writer target. It provides the default target input used by createWriterResultSink.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="defaultOptions" data-lang-kind="parameter-name">defaultOptions</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Default writer options. It provides the default options input used by createWriterResultSink. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="requiresTarget" data-lang-kind="parameter-name">requiresTarget</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                <td><span class="page-meta">(Optional - false)</span> Indicates whether writer requires destination target. It provides the requires target input used by createWriterResultSink. Type detail: expects a boolean flag value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Function" data-lang-kind="type-token">Function</code><br><span class="page-meta">Result sink callback.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ce2278ef" data-filter-item="isBuiltInWriter method Determine whether one writer is a built-in EASI writer.">
+                    <h4><code data-lang-source="isBuiltInWriter(writer)" data-lang-kind="signature">isBuiltInWriter(writer)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine whether one writer is a built-in EASI writer. It provides is built in writer behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="writer" data-lang-kind="parameter-name">writer</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The writer instance. It provides the writer input used by isBuiltInWriter. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when writer is built-in.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-674aeb39" data-filter-item="validateParserHandlerCompatibility method Validates compatibility of known parser and handler pairings.">
+                    <h4><code data-lang-source="validateParserHandlerCompatibility(parser, handler)" data-lang-kind="signature">validateParserHandlerCompatibility(parser, handler)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Validates compatibility of known parser and handler pairings. It provides validate parser handler compatibility behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="parser" data-lang-kind="parameter-name">parser</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured parser. It supplies the parser implementation used to materialize input state. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="handler" data-lang-kind="parameter-name">handler</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured handler. It supplies the handler that receives parser lifecycle events. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7d9daf22" data-filter-item="validateReaderParserCompatibility method Validates compatibility of known reader and parser pairings.">
+                    <h4><code data-lang-source="validateReaderParserCompatibility(reader, parser)" data-lang-kind="signature">validateReaderParserCompatibility(reader, parser)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Validates compatibility of known reader and parser pairings. It provides validate reader parser compatibility behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="reader" data-lang-kind="parameter-name">reader</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured reader. It supplies the reader implementation used to ingest input. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="parser" data-lang-kind="parameter-name">parser</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured parser. It supplies the parser implementation used to materialize input state. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1f782c61" data-filter-item="validateWriterTerminalCompatibility method Validates compatibility of known writer and terminal handler pairings.">
+                    <h4><code data-lang-source="validateWriterTerminalCompatibility(writer, terminalHandler)" data-lang-kind="signature">validateWriterTerminalCompatibility(writer, terminalHandler)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Validates compatibility of known writer and terminal handler pairings. It provides validate writer terminal compatibility behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="writer" data-lang-kind="parameter-name">writer</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured writer. It provides the writer input used by validateWriterTerminalCompatibility. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="terminalHandler" data-lang-kind="parameter-name">terminalHandler</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The resolved terminal handler. It provides the terminal handler input used by validateWriterTerminalCompatibility.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4e18507f" data-filter-item="composeDicomSemanticFilter method Compose a canonical DICOM semantic filter into the current handler chain. Supports native DICOM parser chains and metadata adapters that expose a canonical DICOM `nextHandler`.">
+                    <h4><code data-lang-source="composeDicomSemanticFilter(parser, handler, filterFactory, errorMessage, errorCode)" data-lang-kind="signature">composeDicomSemanticFilter(parser, handler, filterFactory, errorMessage, errorCode)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Compose a canonical DICOM semantic filter into the current handler chain. Supports native DICOM parser chains and metadata adapters that expose a canonical DICOM `nextHandler`. It provides compose dicom semantic filter behavior on PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="parser" data-lang-kind="parameter-name">parser</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured parser. It supplies the parser implementation used to materialize input state. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="handler" data-lang-kind="parameter-name">handler</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured top-level handler. It supplies the handler that receives parser lifecycle events. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="filterFactory" data-lang-kind="parameter-name">filterFactory</code></td>
+                                <td class="member-param-type"><code data-lang-source="Function" data-lang-kind="type-token">Function</code></td>
+                                <td><span class="page-meta">(Required)</span> Factory that wraps the canonical DICOM semantic handler. It provides the filter factory input used by composeDicomSemanticFilter. Type detail: expects a callback/function value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="errorMessage" data-lang-kind="parameter-name">errorMessage</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The exception message when composition is incompatible. It provides the error message input used by composeDicomSemanticFilter. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="errorCode" data-lang-kind="parameter-name">errorCode</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The exception code when composition is incompatible. It provides the error code input used by composeDicomSemanticFilter. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">The updated top-level handler chain.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ebecf9f2" data-filter-item="withParser method Set the current parser.">
+                    <h4><code data-lang-source="withParser(parser)" data-lang-kind="signature">withParser(parser)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Set the current parser. It configures parser behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="parser" data-lang-kind="parameter-name">parser</code></td>
+                                <td class="member-param-type"><a href="class-dicomdataparser-5814d467.html"><code data-lang-source="DicomDataParser" data-lang-kind="type-token">DicomDataParser</code></a><br /><a href="class-bytedataparser-dcffa82a.html"><code data-lang-source="ByteDataParser" data-lang-kind="type-token">ByteDataParser</code></a><br /><a href="class-imagedataparser-74a337d4.html"><code data-lang-source="ImageDataParser" data-lang-kind="type-token">ImageDataParser</code></a><br /><a href="class-mixedimagingdataparser-a2a4d879.html"><code data-lang-source="MixedImagingDataParser" data-lang-kind="type-token">MixedImagingDataParser</code></a><br /><a href="class-jsondataparser-82759f5e.html"><code data-lang-source="JsonDataParser" data-lang-kind="type-token">JsonDataParser</code></a><br /><a href="class-xmldataparser-0792ef80.html"><code data-lang-source="XmlDataParser" data-lang-kind="type-token">XmlDataParser</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The parser used to parse elements. It supplies the parser implementation used to materialize input state.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-98a02807" data-filter-item="withReader method Set the current reader.">
+                    <h4><code data-lang-source="withReader(reader, source, options)" data-lang-kind="signature">withReader(reader, source, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Set the current reader. It configures reader behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="reader" data-lang-kind="parameter-name">reader</code></td>
+                                <td class="member-param-type"><a href="class-partstreamreader-dc86d04d.html"><code data-lang-source="PartStreamReader" data-lang-kind="type-token">PartStreamReader</code></a><br /><a href="class-httpstreamreader-ac4f17a7.html"><code data-lang-source="HttpStreamReader" data-lang-kind="type-token">HttpStreamReader</code></a><br /><a href="class-bytestreamreader-162963b3.html"><code data-lang-source="ByteStreamReader" data-lang-kind="type-token">ByteStreamReader</code></a><br /><a href="class-filestreamreader-974b6f3c.html"><code data-lang-source="FileStreamReader" data-lang-kind="type-token">FileStreamReader</code></a><br /><a href="class-folderstreamreader-fc94327a.html"><code data-lang-source="FolderStreamReader" data-lang-kind="type-token">FolderStreamReader</code></a><br /><a href="class-folderwatchreader-dc3d0d8e.html"><code data-lang-source="FolderWatchReader" data-lang-kind="type-token">FolderWatchReader</code></a><br /><a href="class-websocketstreamreader-a2a735bd.html"><code data-lang-source="WebSocketStreamReader" data-lang-kind="type-token">WebSocketStreamReader</code></a><br /><a href="class-nodestreamadapterreader-33bf646c.html"><code data-lang-source="NodeStreamAdapterReader" data-lang-kind="type-token">NodeStreamAdapterReader</code></a><br /><a href="class-dimseassociationreader-9ce3256c.html"><code data-lang-source="DimseAssociationReader" data-lang-kind="type-token">DimseAssociationReader</code></a><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The reader used to process source input. It supplies the reader implementation used to ingest input.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="source" data-lang-kind="parameter-name">source</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="ReadableStream" data-lang-kind="type-token">ReadableStream</code><br /><code data-lang-source="ReadableStreamDefaultReader&lt;Uint8Array&gt;" data-lang-kind="type-token">ReadableStreamDefaultReader&lt;Uint8Array&gt;</code><br /><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code><br /><code data-lang-source="ArrayBuffer" data-lang-kind="type-token">ArrayBuffer</code><br /><code data-lang-source="DataView" data-lang-kind="type-token">DataView</code><br /><code data-lang-source="Array&lt;number&gt;" data-lang-kind="type-token">Array&lt;number&gt;</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional default source value bound at build-time. It identifies the input source consumed by this member.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional default source options bound at build-time. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-93c11396" data-filter-item="withSource method Set/replace the default source and source options.">
+                    <h4><code data-lang-source="withSource(source, options)" data-lang-kind="signature">withSource(source, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Set/replace the default source and source options. It configures source behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="source" data-lang-kind="parameter-name">source</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional default source value. It identifies the input source consumed by this member.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional default source options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2da4320f" data-filter-item="withCodecRegistry method Set the codec registry used by codec-dependent handlers.">
+                    <h4><code data-lang-source="withCodecRegistry(codecRegistry)" data-lang-kind="signature">withCodecRegistry(codecRegistry)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Set the codec registry used by codec-dependent handlers. It configures codec registry behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="codecRegistry" data-lang-kind="parameter-name">codecRegistry</code></td>
+                                <td class="member-param-type"><a href="class-codecregistry-49570470.html"><code data-lang-source="CodecRegistry" data-lang-kind="type-token">CodecRegistry</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The codec registry. It provides the codec registry input used by withCodecRegistry.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f32820e3" data-filter-item="withHandler method Set the current handler.">
+                    <h4><code data-lang-source="withHandler(handler)" data-lang-kind="signature">withHandler(handler)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Set the current handler. It configures handler behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="handler" data-lang-kind="parameter-name">handler</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The handler used to handle parsed elements. It supplies the handler that receives parser lifecycle events. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a7cc971e" data-filter-item="withOnEmit method Sets the `onEmit` callback for the stream-read session.">
+                    <h4><code data-lang-source="withOnEmit(onEmit)" data-lang-kind="signature">withOnEmit(onEmit)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Sets the `onEmit` callback for the stream-read session. It configures on emit behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="onEmit" data-lang-kind="parameter-name">onEmit</code></td>
+                                <td class="member-param-type"><code data-lang-source="Function" data-lang-kind="type-token">Function</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The callback invoked whenever the pipeline emits a parsed result. It provides the on emit input used by withOnEmit.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-09752980" data-filter-item="withIsStrict method Sets strict parser behavior.">
+                    <h4><code data-lang-source="withIsStrict(isStrict)" data-lang-kind="signature">withIsStrict(isStrict)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Sets strict parser behavior. It configures is strict behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="isStrict" data-lang-kind="parameter-name">isStrict</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                <td><span class="page-meta">(Required)</span> Indicates strict parse behavior. It provides the is strict input used by withIsStrict. Type detail: expects a boolean flag value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0f0f7c9d" data-filter-item="withDeIdentification method Enables de-identification using a mask. [deIdentificationMask=Tag.DefaultDeIdentificationMask] The de-identification mask map.">
+                    <h4><code data-lang-source="withDeIdentification(deIdentificationMask)" data-lang-kind="signature">withDeIdentification(deIdentificationMask)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Enables de-identification using a mask. [deIdentificationMask=Tag.DefaultDeIdentificationMask] The de-identification mask map. It configures de identification behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="deIdentificationMask" data-lang-kind="parameter-name">deIdentificationMask</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - Tag.DefaultDeIdentificationMask)</span> No description provided. It provides the de identification mask input used by withDeIdentification.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-99fccce9" data-filter-item="withBulkDataPolicy method Sets the parser bulk-data policy (when supported by the parser).">
+                    <h4><code data-lang-source="withBulkDataPolicy(policy)" data-lang-kind="signature">withBulkDataPolicy(policy)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Sets the parser bulk-data policy (when supported by the parser). It configures bulk data policy behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="policy" data-lang-kind="parameter-name">policy</code></td>
+                                <td class="member-param-type"><code data-lang-source="{ mode?: &#39;materialize&#39; | &#39;auto&#39; | &#39;stream&#39;, knownLengthThreshold?: number, hardSafetyCap?: number }" data-lang-kind="type-token">{ mode?: &#39;materialize&#39; | &#39;auto&#39; | &#39;stream&#39;, knownLengthThreshold?: number, hardSafetyCap?: number }</code><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The bulk-data policy. It provides the policy input used by withBulkDataPolicy. <span class="page-meta">See <a href="#option-withbulkdatapolicy-policy-b9c5546c-shape-1">Option Contract</a>.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-becb5146" data-filter-item="withValidation method Enables/configures validation filtering in the canonical DICOM semantic chain.">
+                    <h4><code data-lang-source="withValidation(validation)" data-lang-kind="signature">withValidation(validation)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Enables/configures validation filtering in the canonical DICOM semantic chain. It configures validation behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="validation" data-lang-kind="parameter-name">validation</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - true)</span> Validation configuration. It provides the validation input used by withValidation.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-72ac9aac" data-filter-item="withTranscoding method Enables/configures transfer-syntax transcoding. Supported forms: - false/null: disabled - string: target transfer syntax UID - object: full transcoding options">
+                    <h4><code data-lang-source="withTranscoding(transcoding)" data-lang-kind="signature">withTranscoding(transcoding)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Enables/configures transfer-syntax transcoding. Supported forms: - false/null: disabled - string: target transfer syntax UID - object: full transcoding options It configures transcoding behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="transcoding" data-lang-kind="parameter-name">transcoding</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="false" data-lang-kind="type-token">false</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Transcoding configuration. It provides the transcoding input used by withTranscoding.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-036e0a6e" data-filter-item="withBurnedInRedaction method Enables/configures burned-in pixel redaction. Supported forms: - false/null: disabled - true: enabled with default settings - function/array/object: full redaction options">
+                    <h4><code data-lang-source="withBurnedInRedaction(redaction)" data-lang-kind="signature">withBurnedInRedaction(redaction)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Enables/configures burned-in pixel redaction. Supported forms: - false/null: disabled - true: enabled with default settings - function/array/object: full redaction options It configures burned in redaction behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="redaction" data-lang-kind="parameter-name">redaction</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="Function" data-lang-kind="type-token">Function</code><br /><code data-lang-source="Array&lt;object&gt;" data-lang-kind="type-token">Array&lt;object&gt;</code><br /><code data-lang-source="false" data-lang-kind="type-token">false</code></td>
+                                <td><span class="page-meta">(Optional - true)</span> Redaction configuration. It provides the redaction input used by withBurnedInRedaction.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6c4c6ff4" data-filter-item="withNormalization method Enables/configures mixed-imaging normalization. Supported forms: - false/null: disabled - function: normalization builder callback - object: normalization definition - ImagingNormalizationBuilder: built/partially-built builder">
+                    <h4><code data-lang-source="withNormalization(normalization)" data-lang-kind="signature">withNormalization(normalization)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Enables/configures mixed-imaging normalization. Supported forms: - false/null: disabled - function: normalization builder callback - object: normalization definition - ImagingNormalizationBuilder: built/partially-built builder It configures normalization behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="normalization" data-lang-kind="parameter-name">normalization</code></td>
+                                <td class="member-param-type"><code data-lang-source="Function" data-lang-kind="type-token">Function</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="import" data-lang-kind="type-token">import</code><code data-lang-source="(&quot;./" data-lang-kind="type-token">(&quot;./</code><a href="class-imagingnormalizationbuilder-b7b0c453.html"><code data-lang-source="ImagingNormalizationBuilder" data-lang-kind="type-token">ImagingNormalizationBuilder</code></a><code data-lang-source="." data-lang-kind="type-token">.</code><code data-lang-source="js" data-lang-kind="type-token">js</code><code data-lang-source="&quot;)." data-lang-kind="type-token">&quot;).</code><code data-lang-source="default" data-lang-kind="type-token">default</code><br /><code data-lang-source="false" data-lang-kind="type-token">false</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Normalization configuration. It provides the normalization input used by withNormalization.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a76932af" data-filter-item="withWriter method Set the outbound writer for restreaming pipeline output.">
+                    <h4><code data-lang-source="withWriter(writer, target, options)" data-lang-kind="signature">withWriter(writer, target, options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Set the outbound writer for restreaming pipeline output. It configures writer behavior for PipelineBuildSession.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="writer" data-lang-kind="parameter-name">writer</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The output writer. It provides the writer input used by withWriter. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="target" data-lang-kind="parameter-name">target</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional writer target. It provides the target input used by withWriter.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional writer options. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipelinebuildsession-b2588fa7.html"><code data-lang-source="PipelineBuildSession" data-lang-kind="type-token">PipelineBuildSession</code></a><br><span class="page-meta">The current session.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-20ecfdd3" data-filter-item="build method Build a new pipeline instance.">
+                    <h4><code data-lang-source="build()" data-lang-kind="signature">build()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build a new pipeline instance. It finalizes and returns the built PipelineBuildSession artifact.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><a href="class-pipeline-cc9542ef.html"><code data-lang-source="Pipeline" data-lang-kind="type-token">Pipeline</code></a><br><span class="page-meta">The built pipeline instance.</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<div class="grid one">
+                <article class="card reveal" id="option-withreader-options-b9c26f04" data-filter-item="withReader options option object">
+                    <h4><code data-lang-source="withReader(reader, source, options)" data-lang-kind="signature">withReader(reader, source, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-withreader-options-b9c26f04-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Emission Callback</span><span class="option-shape-description"> - Use this shape when only per-read emission callback behavior is needed.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="onEmit" data-lang-kind="property-name">onEmit</code></td>
+                                        <td><code data-lang-source="Function" data-lang-kind="type-token">Function</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Callback invoked for each emitted output item.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-scroll" id="option-withreader-options-b9c26f04-shape-2">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Content Metadata</span><span class="option-shape-description"> - Use this shape to pass source content metadata and emission controls.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="contentType" data-lang-kind="property-name">contentType</code></td>
+                                        <td><code data-lang-source="Response" data-lang-kind="type-token">Response</code><br /><code data-lang-source="Headers" data-lang-kind="type-token">Headers</code><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Declares or overrides source MIME/content type metadata.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="contentLength" data-lang-kind="property-name">contentLength</code></td>
+                                        <td><code data-lang-source="number" data-lang-kind="type-token">number</code><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Supplies declared source byte-length metadata when available.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="onEmit" data-lang-kind="property-name">onEmit</code></td>
+                                        <td><code data-lang-source="Function" data-lang-kind="type-token">Function</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Callback invoked for each emitted output item.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-scroll" id="option-withreader-options-b9c26f04-shape-3">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Folder Watch Controls</span><span class="option-shape-description"> - Use this shape to configure folder-watch timing, queueing, and backpressure behavior.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="recursive" data-lang-kind="property-name">recursive</code></td>
+                                        <td><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls whether directory traversal includes nested folders.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="includeHidden" data-lang-kind="property-name">includeHidden</code></td>
+                                        <td><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls whether hidden files or directories are included.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="extensions" data-lang-kind="property-name">extensions</code></td>
+                                        <td><code data-lang-source="Array&lt;string&gt;" data-lang-kind="type-token">Array&lt;string&gt;</code><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Filters files by extension set before processing.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="maxFiles" data-lang-kind="property-name">maxFiles</code></td>
+                                        <td><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Limits how many files are processed in this invocation.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="sort" data-lang-kind="property-name">sort</code></td>
+                                        <td><code data-lang-source="&quot;name&quot;" data-lang-kind="type-token">&quot;name&quot;</code><br /><code data-lang-source="&quot;mtime&quot;" data-lang-kind="type-token">&quot;mtime&quot;</code><br /><code data-lang-source="&quot;none&quot;" data-lang-kind="type-token">&quot;none&quot;</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Selects file ordering strategy before emission.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="continueOnError" data-lang-kind="property-name">continueOnError</code></td>
+                                        <td><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Determines whether processing continues after per-file errors.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="processExistingOnStart" data-lang-kind="property-name">processExistingOnStart</code></td>
+                                        <td><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls whether existing files are emitted when watch starts.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="settleMs" data-lang-kind="property-name">settleMs</code></td>
+                                        <td><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Debounce interval (ms) used before treating file writes as stable.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="stableChecks" data-lang-kind="property-name">stableChecks</code></td>
+                                        <td><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Number of stability checks before a file is emitted.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="dedupeWindowMs" data-lang-kind="property-name">dedupeWindowMs</code></td>
+                                        <td><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Window (ms) used to suppress duplicate watch events.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="reconcileIntervalMs" data-lang-kind="property-name">reconcileIntervalMs</code></td>
+                                        <td><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Interval (ms) for periodic filesystem reconciliation scans.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="maxQueue" data-lang-kind="property-name">maxQueue</code></td>
+                                        <td><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Maximum queued events buffered before overflow handling.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="overflow" data-lang-kind="property-name">overflow</code></td>
+                                        <td><code data-lang-source="&quot;fail&quot;" data-lang-kind="type-token">&quot;fail&quot;</code><br /><code data-lang-source="&quot;drop-oldest&quot;" data-lang-kind="type-token">&quot;drop-oldest&quot;</code><br /><code data-lang-source="&quot;drop-newest&quot;" data-lang-kind="type-token">&quot;drop-newest&quot;</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Defines queue overflow policy when incoming events exceed capacity.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="table-scroll" id="option-withreader-options-b9c26f04-shape-4">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Transport Override</span><span class="option-shape-description"> - Use this shape to provide an explicit transport adapter override.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="transport" data-lang-kind="property-name">transport</code></td>
+                                        <td><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Provides an explicit transport adapter override for this operation.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-withsource-options-b46fa793" data-filter-item="withSource options option object">
+                    <h4><code data-lang-source="withSource(source, options)" data-lang-kind="signature">withSource(source, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-withsource-options-b46fa793-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-withbulkdatapolicy-policy-b9c5546c" data-filter-item="withBulkDataPolicy policy option object">
+                    <h4><code data-lang-source="withBulkDataPolicy(policy)" data-lang-kind="signature">withBulkDataPolicy(policy)</code> &middot; <code data-lang-source="policy" data-lang-kind="parameter-name">policy</code></h4>
+
+                            <div class="table-scroll" id="option-withbulkdatapolicy-policy-b9c5546c-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">mode Profile</span><span class="option-shape-description"> - Use this shape to configure policy via mode, knownLengthThreshold, hardSafetyCap.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td><code data-lang-source="mode" data-lang-kind="property-name">mode</code></td>
+                                        <td><code data-lang-source="&#39;materialize&#39;" data-lang-kind="type-token">&#39;materialize&#39;</code><br /><code data-lang-source="&#39;auto&#39;" data-lang-kind="type-token">&#39;auto&#39;</code><br /><code data-lang-source="&#39;stream&#39;" data-lang-kind="type-token">&#39;stream&#39;</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls mode behavior for withBulkDataPolicy.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="knownLengthThreshold" data-lang-kind="property-name">knownLengthThreshold</code></td>
+                                        <td><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls known length threshold behavior for withBulkDataPolicy.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code data-lang-source="hardSafetyCap" data-lang-kind="property-name">hardSafetyCap</code></td>
+                                        <td><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                        <td><span class="page-meta">(Optional)</span> Controls hard safety cap behavior for withBulkDataPolicy.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-withwriter-options-7be6194b" data-filter-item="withWriter options option object">
+                    <h4><code data-lang-source="withWriter(writer, target, options)" data-lang-kind="signature">withWriter(writer, target, options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-withwriter-options-7be6194b-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article></div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

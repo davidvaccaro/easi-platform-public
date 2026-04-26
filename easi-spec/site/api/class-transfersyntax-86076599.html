@@ -1,0 +1,1647 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for TransferSyntax.">
+    <title>EASI | TransferSyntax</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>TransferSyntax</h2>
+                <p>This class provides transfer syntax behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><strong>TransferSyntax</strong></p>
+                <p class="page-meta">
+                    This class declares <code>70</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><span class="page-meta">none</span></td></tr>
+                        <tr><td>Declared Members</td><td>70</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>0</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4"><span class="page-meta">No documented properties.</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="find method ">
+                                <td><a href="#declared-member-8b199f94"><code data-lang-source="find" data-lang-kind="member-name">find</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="NONE getter ">
+                                <td><a href="#declared-member-3196431a"><code data-lang-source="NONE" data-lang-kind="member-name">NONE</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="ImplicitVRLittleEndian getter ">
+                                <td><a href="#declared-member-38a5dff4"><code data-lang-source="ImplicitVRLittleEndian" data-lang-kind="member-name">ImplicitVRLittleEndian</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="ExplicitVRLittleEndian getter ">
+                                <td><a href="#declared-member-095371ec"><code data-lang-source="ExplicitVRLittleEndian" data-lang-kind="member-name">ExplicitVRLittleEndian</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="ExplicitVRBigEndian getter ">
+                                <td><a href="#declared-member-517e9aaa"><code data-lang-source="ExplicitVRBigEndian" data-lang-kind="member-name">ExplicitVRBigEndian</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="EncapsulatedUncompressedExplicitVRLittleEndian getter ">
+                                <td><a href="#declared-member-13875290"><code data-lang-source="EncapsulatedUncompressedExplicitVRLittleEndian" data-lang-kind="member-name">EncapsulatedUncompressedExplicitVRLittleEndian</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="DeflatedExplicitVRLittleEndian getter ">
+                                <td><a href="#declared-member-ec4bdcd5"><code data-lang-source="DeflatedExplicitVRLittleEndian" data-lang-kind="member-name">DeflatedExplicitVRLittleEndian</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGBaseline8Bit getter ">
+                                <td><a href="#declared-member-636fbd57"><code data-lang-source="JPEGBaseline8Bit" data-lang-kind="member-name">JPEGBaseline8Bit</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGExtended12Bit getter ">
+                                <td><a href="#declared-member-47d4540f"><code data-lang-source="JPEGExtended12Bit" data-lang-kind="member-name">JPEGExtended12Bit</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGExtended35 getter ">
+                                <td><a href="#declared-member-0f74ef86"><code data-lang-source="JPEGExtended35" data-lang-kind="member-name">JPEGExtended35</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGSpectralSelectionNonHierarchical68 getter ">
+                                <td><a href="#declared-member-6a85bf73"><code data-lang-source="JPEGSpectralSelectionNonHierarchical68" data-lang-kind="member-name">JPEGSpectralSelectionNonHierarchical68</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGSpectralSelectionNonHierarchical79 getter ">
+                                <td><a href="#declared-member-bb4d68bb"><code data-lang-source="JPEGSpectralSelectionNonHierarchical79" data-lang-kind="member-name">JPEGSpectralSelectionNonHierarchical79</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGFullProgressionNonHierarchical1012 getter ">
+                                <td><a href="#declared-member-d7814bac"><code data-lang-source="JPEGFullProgressionNonHierarchical1012" data-lang-kind="member-name">JPEGFullProgressionNonHierarchical1012</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGFullProgressionNonHierarchical1113 getter ">
+                                <td><a href="#declared-member-49ac1302"><code data-lang-source="JPEGFullProgressionNonHierarchical1113" data-lang-kind="member-name">JPEGFullProgressionNonHierarchical1113</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGLossless getter ">
+                                <td><a href="#declared-member-b0cba934"><code data-lang-source="JPEGLossless" data-lang-kind="member-name">JPEGLossless</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGLosslessNonHierarchical15 getter ">
+                                <td><a href="#declared-member-e1d20cbe"><code data-lang-source="JPEGLosslessNonHierarchical15" data-lang-kind="member-name">JPEGLosslessNonHierarchical15</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGExtendedHierarchical1618 getter ">
+                                <td><a href="#declared-member-3e5cfeee"><code data-lang-source="JPEGExtendedHierarchical1618" data-lang-kind="member-name">JPEGExtendedHierarchical1618</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGExtendedHierarchical1719 getter ">
+                                <td><a href="#declared-member-6d10cf79"><code data-lang-source="JPEGExtendedHierarchical1719" data-lang-kind="member-name">JPEGExtendedHierarchical1719</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGSpectralSelectionHierarchical2022 getter ">
+                                <td><a href="#declared-member-086d4a9f"><code data-lang-source="JPEGSpectralSelectionHierarchical2022" data-lang-kind="member-name">JPEGSpectralSelectionHierarchical2022</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGSpectralSelectionHierarchical2123 getter ">
+                                <td><a href="#declared-member-d820d300"><code data-lang-source="JPEGSpectralSelectionHierarchical2123" data-lang-kind="member-name">JPEGSpectralSelectionHierarchical2123</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGFullProgressionHierarchical2426 getter ">
+                                <td><a href="#declared-member-4ef771e1"><code data-lang-source="JPEGFullProgressionHierarchical2426" data-lang-kind="member-name">JPEGFullProgressionHierarchical2426</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGFullProgressionHierarchical2527 getter ">
+                                <td><a href="#declared-member-4564271f"><code data-lang-source="JPEGFullProgressionHierarchical2527" data-lang-kind="member-name">JPEGFullProgressionHierarchical2527</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGLosslessHierarchical28 getter ">
+                                <td><a href="#declared-member-b8cae75b"><code data-lang-source="JPEGLosslessHierarchical28" data-lang-kind="member-name">JPEGLosslessHierarchical28</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGLosslessHierarchical29 getter ">
+                                <td><a href="#declared-member-89745b7b"><code data-lang-source="JPEGLosslessHierarchical29" data-lang-kind="member-name">JPEGLosslessHierarchical29</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGLosslessSV1 getter ">
+                                <td><a href="#declared-member-a80570c0"><code data-lang-source="JPEGLosslessSV1" data-lang-kind="member-name">JPEGLosslessSV1</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGLSLossless getter ">
+                                <td><a href="#declared-member-2cd91104"><code data-lang-source="JPEGLSLossless" data-lang-kind="member-name">JPEGLSLossless</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGLSNearLossless getter ">
+                                <td><a href="#declared-member-10f9f106"><code data-lang-source="JPEGLSNearLossless" data-lang-kind="member-name">JPEGLSNearLossless</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEG2000Lossless getter ">
+                                <td><a href="#declared-member-7cc951d2"><code data-lang-source="JPEG2000Lossless" data-lang-kind="member-name">JPEG2000Lossless</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEG2000 getter ">
+                                <td><a href="#declared-member-44a9802d"><code data-lang-source="JPEG2000" data-lang-kind="member-name">JPEG2000</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEG2000MCLossless getter ">
+                                <td><a href="#declared-member-27da935f"><code data-lang-source="JPEG2000MCLossless" data-lang-kind="member-name">JPEG2000MCLossless</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEG2000MC getter ">
+                                <td><a href="#declared-member-a02e897a"><code data-lang-source="JPEG2000MC" data-lang-kind="member-name">JPEG2000MC</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPIPReferenced getter ">
+                                <td><a href="#declared-member-5939fd9e"><code data-lang-source="JPIPReferenced" data-lang-kind="member-name">JPIPReferenced</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPIPReferencedDeflate getter ">
+                                <td><a href="#declared-member-dd69cdd4"><code data-lang-source="JPIPReferencedDeflate" data-lang-kind="member-name">JPIPReferencedDeflate</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG2MPML getter ">
+                                <td><a href="#declared-member-17f0f38b"><code data-lang-source="MPEG2MPML" data-lang-kind="member-name">MPEG2MPML</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG2MPMLF getter ">
+                                <td><a href="#declared-member-9fab5b6b"><code data-lang-source="MPEG2MPMLF" data-lang-kind="member-name">MPEG2MPMLF</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG2MPHL getter ">
+                                <td><a href="#declared-member-9bfbf4ae"><code data-lang-source="MPEG2MPHL" data-lang-kind="member-name">MPEG2MPHL</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG2MPHLF getter ">
+                                <td><a href="#declared-member-4f2060df"><code data-lang-source="MPEG2MPHLF" data-lang-kind="member-name">MPEG2MPHLF</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG4HP41 getter ">
+                                <td><a href="#declared-member-3175ab7d"><code data-lang-source="MPEG4HP41" data-lang-kind="member-name">MPEG4HP41</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG4HP41F getter ">
+                                <td><a href="#declared-member-2eae6d1f"><code data-lang-source="MPEG4HP41F" data-lang-kind="member-name">MPEG4HP41F</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG4HP41BD getter ">
+                                <td><a href="#declared-member-e8860ed8"><code data-lang-source="MPEG4HP41BD" data-lang-kind="member-name">MPEG4HP41BD</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG4HP41BDF getter ">
+                                <td><a href="#declared-member-11f13fa2"><code data-lang-source="MPEG4HP41BDF" data-lang-kind="member-name">MPEG4HP41BDF</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG4HP422D getter ">
+                                <td><a href="#declared-member-4bc19e9c"><code data-lang-source="MPEG4HP422D" data-lang-kind="member-name">MPEG4HP422D</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG4HP422DF getter ">
+                                <td><a href="#declared-member-eabf929e"><code data-lang-source="MPEG4HP422DF" data-lang-kind="member-name">MPEG4HP422DF</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG4HP423D getter ">
+                                <td><a href="#declared-member-91066c4f"><code data-lang-source="MPEG4HP423D" data-lang-kind="member-name">MPEG4HP423D</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG4HP423DF getter ">
+                                <td><a href="#declared-member-b80b6569"><code data-lang-source="MPEG4HP423DF" data-lang-kind="member-name">MPEG4HP423DF</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG4HP42STEREO getter ">
+                                <td><a href="#declared-member-af1e5dde"><code data-lang-source="MPEG4HP42STEREO" data-lang-kind="member-name">MPEG4HP42STEREO</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="MPEG4HP42STEREOF getter ">
+                                <td><a href="#declared-member-d68f316f"><code data-lang-source="MPEG4HP42STEREOF" data-lang-kind="member-name">MPEG4HP42STEREOF</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="HEVCMP51 getter ">
+                                <td><a href="#declared-member-7a4c2061"><code data-lang-source="HEVCMP51" data-lang-kind="member-name">HEVCMP51</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="HEVCM10P51 getter ">
+                                <td><a href="#declared-member-4aea0674"><code data-lang-source="HEVCM10P51" data-lang-kind="member-name">HEVCM10P51</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGXLLossless getter ">
+                                <td><a href="#declared-member-ead6a0d0"><code data-lang-source="JPEGXLLossless" data-lang-kind="member-name">JPEGXLLossless</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGXLJPEGRecompression getter ">
+                                <td><a href="#declared-member-32cbd72f"><code data-lang-source="JPEGXLJPEGRecompression" data-lang-kind="member-name">JPEGXLJPEGRecompression</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPEGXL getter ">
+                                <td><a href="#declared-member-46a28ac3"><code data-lang-source="JPEGXL" data-lang-kind="member-name">JPEGXL</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="HTJ2KLossless getter ">
+                                <td><a href="#declared-member-31317531"><code data-lang-source="HTJ2KLossless" data-lang-kind="member-name">HTJ2KLossless</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="HTJ2KLosslessRPCL getter ">
+                                <td><a href="#declared-member-e0083734"><code data-lang-source="HTJ2KLosslessRPCL" data-lang-kind="member-name">HTJ2KLosslessRPCL</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="HTJ2K getter ">
+                                <td><a href="#declared-member-7fb759a2"><code data-lang-source="HTJ2K" data-lang-kind="member-name">HTJ2K</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPIPHTJ2KReferenced getter ">
+                                <td><a href="#declared-member-4ea533a3"><code data-lang-source="JPIPHTJ2KReferenced" data-lang-kind="member-name">JPIPHTJ2KReferenced</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="JPIPHTJ2KReferencedDeflate getter ">
+                                <td><a href="#declared-member-7a7ae377"><code data-lang-source="JPIPHTJ2KReferencedDeflate" data-lang-kind="member-name">JPIPHTJ2KReferencedDeflate</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="RLELossless getter ">
+                                <td><a href="#declared-member-d7211128"><code data-lang-source="RLELossless" data-lang-kind="member-name">RLELossless</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="RFC2557MIMEEncapsulation getter ">
+                                <td><a href="#declared-member-e69cf2dc"><code data-lang-source="RFC2557MIMEEncapsulation" data-lang-kind="member-name">RFC2557MIMEEncapsulation</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="XMLEncoding getter ">
+                                <td><a href="#declared-member-0428e6cc"><code data-lang-source="XMLEncoding" data-lang-kind="member-name">XMLEncoding</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="SMPTEST211020UncompressedProgressiveActiveVideo getter ">
+                                <td><a href="#declared-member-8b6f8808"><code data-lang-source="SMPTEST211020UncompressedProgressiveActiveVideo" data-lang-kind="member-name">SMPTEST211020UncompressedProgressiveActiveVideo</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="SMPTEST211020UncompressedInterlacedActiveVideo getter ">
+                                <td><a href="#declared-member-6254ea8f"><code data-lang-source="SMPTEST211020UncompressedInterlacedActiveVideo" data-lang-kind="member-name">SMPTEST211020UncompressedInterlacedActiveVideo</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="SMPTEST211030PCMDigitalAudio getter ">
+                                <td><a href="#declared-member-9646ea4a"><code data-lang-source="SMPTEST211030PCMDigitalAudio" data-lang-kind="member-name">SMPTEST211030PCMDigitalAudio</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="DeflatedImageFrameCompression getter ">
+                                <td><a href="#declared-member-2b7111e4"><code data-lang-source="DeflatedImageFrameCompression" data-lang-kind="member-name">DeflatedImageFrameCompression</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="Papyrus3ImplicitVRLittleEndian getter ">
+                                <td><a href="#declared-member-7b4ddbf0"><code data-lang-source="Papyrus3ImplicitVRLittleEndian" data-lang-kind="member-name">Papyrus3ImplicitVRLittleEndian</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="GEImplicitVRLittleEndianExceptBigEndianPixels getter ">
+                                <td><a href="#declared-member-ca8dad1c"><code data-lang-source="GEImplicitVRLittleEndianExceptBigEndianPixels" data-lang-kind="member-name">GEImplicitVRLittleEndianExceptBigEndianPixels</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="PixelMedBzip2ExplicitVRLittleEndian getter ">
+                                <td><a href="#declared-member-a55b4c01"><code data-lang-source="PixelMedBzip2ExplicitVRLittleEndian" data-lang-kind="member-name">PixelMedBzip2ExplicitVRLittleEndian</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="PixelMedEncapsulatedRawLittleEndian getter ">
+                                <td><a href="#declared-member-6134acae"><code data-lang-source="PixelMedEncapsulatedRawLittleEndian" data-lang-kind="member-name">PixelMedEncapsulatedRawLittleEndian</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="AlgotecCompressed getter ">
+                                <td><a href="#declared-member-f475c77c"><code data-lang-source="AlgotecCompressed" data-lang-kind="member-name">AlgotecCompressed</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="ALIWavelet getter ">
+                                <td><a href="#declared-member-d2e9819f"><code data-lang-source="ALIWavelet" data-lang-kind="member-name">ALIWavelet</code></a></td>
+                                <td><code>getter</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-8b199f94" data-filter-item="find method ">
+                    <h4><code data-lang-source="find(id)" data-lang-kind="signature">find(id)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides find behavior on TransferSyntax.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="id" data-lang-kind="parameter-name">id</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the id input used by find.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3196431a" data-filter-item="NONE getter ">
+                    <h4><code data-lang-source="NONE()" data-lang-kind="signature">NONE()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes none from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-38a5dff4" data-filter-item="ImplicitVRLittleEndian getter ">
+                    <h4><code data-lang-source="ImplicitVRLittleEndian()" data-lang-kind="signature">ImplicitVRLittleEndian()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes implicit vrlittle endian from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-095371ec" data-filter-item="ExplicitVRLittleEndian getter ">
+                    <h4><code data-lang-source="ExplicitVRLittleEndian()" data-lang-kind="signature">ExplicitVRLittleEndian()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes explicit vrlittle endian from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-517e9aaa" data-filter-item="ExplicitVRBigEndian getter ">
+                    <h4><code data-lang-source="ExplicitVRBigEndian()" data-lang-kind="signature">ExplicitVRBigEndian()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes explicit vrbig endian from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-13875290" data-filter-item="EncapsulatedUncompressedExplicitVRLittleEndian getter ">
+                    <h4><code data-lang-source="EncapsulatedUncompressedExplicitVRLittleEndian()" data-lang-kind="signature">EncapsulatedUncompressedExplicitVRLittleEndian()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes encapsulated uncompressed explicit vrlittle endian from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ec4bdcd5" data-filter-item="DeflatedExplicitVRLittleEndian getter ">
+                    <h4><code data-lang-source="DeflatedExplicitVRLittleEndian()" data-lang-kind="signature">DeflatedExplicitVRLittleEndian()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes deflated explicit vrlittle endian from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-636fbd57" data-filter-item="JPEGBaseline8Bit getter ">
+                    <h4><code data-lang-source="JPEGBaseline8Bit()" data-lang-kind="signature">JPEGBaseline8Bit()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegbaseline8 bit from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-47d4540f" data-filter-item="JPEGExtended12Bit getter ">
+                    <h4><code data-lang-source="JPEGExtended12Bit()" data-lang-kind="signature">JPEGExtended12Bit()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegextended12 bit from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0f74ef86" data-filter-item="JPEGExtended35 getter ">
+                    <h4><code data-lang-source="JPEGExtended35()" data-lang-kind="signature">JPEGExtended35()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegextended35 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6a85bf73" data-filter-item="JPEGSpectralSelectionNonHierarchical68 getter ">
+                    <h4><code data-lang-source="JPEGSpectralSelectionNonHierarchical68()" data-lang-kind="signature">JPEGSpectralSelectionNonHierarchical68()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegspectral selection non hierarchical68 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-bb4d68bb" data-filter-item="JPEGSpectralSelectionNonHierarchical79 getter ">
+                    <h4><code data-lang-source="JPEGSpectralSelectionNonHierarchical79()" data-lang-kind="signature">JPEGSpectralSelectionNonHierarchical79()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegspectral selection non hierarchical79 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d7814bac" data-filter-item="JPEGFullProgressionNonHierarchical1012 getter ">
+                    <h4><code data-lang-source="JPEGFullProgressionNonHierarchical1012()" data-lang-kind="signature">JPEGFullProgressionNonHierarchical1012()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegfull progression non hierarchical1012 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-49ac1302" data-filter-item="JPEGFullProgressionNonHierarchical1113 getter ">
+                    <h4><code data-lang-source="JPEGFullProgressionNonHierarchical1113()" data-lang-kind="signature">JPEGFullProgressionNonHierarchical1113()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegfull progression non hierarchical1113 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b0cba934" data-filter-item="JPEGLossless getter ">
+                    <h4><code data-lang-source="JPEGLossless()" data-lang-kind="signature">JPEGLossless()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpeglossless from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e1d20cbe" data-filter-item="JPEGLosslessNonHierarchical15 getter ">
+                    <h4><code data-lang-source="JPEGLosslessNonHierarchical15()" data-lang-kind="signature">JPEGLosslessNonHierarchical15()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpeglossless non hierarchical15 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3e5cfeee" data-filter-item="JPEGExtendedHierarchical1618 getter ">
+                    <h4><code data-lang-source="JPEGExtendedHierarchical1618()" data-lang-kind="signature">JPEGExtendedHierarchical1618()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegextended hierarchical1618 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6d10cf79" data-filter-item="JPEGExtendedHierarchical1719 getter ">
+                    <h4><code data-lang-source="JPEGExtendedHierarchical1719()" data-lang-kind="signature">JPEGExtendedHierarchical1719()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegextended hierarchical1719 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-086d4a9f" data-filter-item="JPEGSpectralSelectionHierarchical2022 getter ">
+                    <h4><code data-lang-source="JPEGSpectralSelectionHierarchical2022()" data-lang-kind="signature">JPEGSpectralSelectionHierarchical2022()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegspectral selection hierarchical2022 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d820d300" data-filter-item="JPEGSpectralSelectionHierarchical2123 getter ">
+                    <h4><code data-lang-source="JPEGSpectralSelectionHierarchical2123()" data-lang-kind="signature">JPEGSpectralSelectionHierarchical2123()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegspectral selection hierarchical2123 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4ef771e1" data-filter-item="JPEGFullProgressionHierarchical2426 getter ">
+                    <h4><code data-lang-source="JPEGFullProgressionHierarchical2426()" data-lang-kind="signature">JPEGFullProgressionHierarchical2426()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegfull progression hierarchical2426 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4564271f" data-filter-item="JPEGFullProgressionHierarchical2527 getter ">
+                    <h4><code data-lang-source="JPEGFullProgressionHierarchical2527()" data-lang-kind="signature">JPEGFullProgressionHierarchical2527()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegfull progression hierarchical2527 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b8cae75b" data-filter-item="JPEGLosslessHierarchical28 getter ">
+                    <h4><code data-lang-source="JPEGLosslessHierarchical28()" data-lang-kind="signature">JPEGLosslessHierarchical28()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpeglossless hierarchical28 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-89745b7b" data-filter-item="JPEGLosslessHierarchical29 getter ">
+                    <h4><code data-lang-source="JPEGLosslessHierarchical29()" data-lang-kind="signature">JPEGLosslessHierarchical29()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpeglossless hierarchical29 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a80570c0" data-filter-item="JPEGLosslessSV1 getter ">
+                    <h4><code data-lang-source="JPEGLosslessSV1()" data-lang-kind="signature">JPEGLosslessSV1()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpeglossless sv1 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2cd91104" data-filter-item="JPEGLSLossless getter ">
+                    <h4><code data-lang-source="JPEGLSLossless()" data-lang-kind="signature">JPEGLSLossless()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpeglslossless from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-10f9f106" data-filter-item="JPEGLSNearLossless getter ">
+                    <h4><code data-lang-source="JPEGLSNearLossless()" data-lang-kind="signature">JPEGLSNearLossless()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpeglsnear lossless from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7cc951d2" data-filter-item="JPEG2000Lossless getter ">
+                    <h4><code data-lang-source="JPEG2000Lossless()" data-lang-kind="signature">JPEG2000Lossless()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpeg2000 lossless from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-44a9802d" data-filter-item="JPEG2000 getter ">
+                    <h4><code data-lang-source="JPEG2000()" data-lang-kind="signature">JPEG2000()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpeg2000 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-27da935f" data-filter-item="JPEG2000MCLossless getter ">
+                    <h4><code data-lang-source="JPEG2000MCLossless()" data-lang-kind="signature">JPEG2000MCLossless()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpeg2000 mclossless from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a02e897a" data-filter-item="JPEG2000MC getter ">
+                    <h4><code data-lang-source="JPEG2000MC()" data-lang-kind="signature">JPEG2000MC()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpeg2000 mc from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5939fd9e" data-filter-item="JPIPReferenced getter ">
+                    <h4><code data-lang-source="JPIPReferenced()" data-lang-kind="signature">JPIPReferenced()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpipreferenced from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-dd69cdd4" data-filter-item="JPIPReferencedDeflate getter ">
+                    <h4><code data-lang-source="JPIPReferencedDeflate()" data-lang-kind="signature">JPIPReferencedDeflate()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpipreferenced deflate from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-17f0f38b" data-filter-item="MPEG2MPML getter ">
+                    <h4><code data-lang-source="MPEG2MPML()" data-lang-kind="signature">MPEG2MPML()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg2 mpml from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-9fab5b6b" data-filter-item="MPEG2MPMLF getter ">
+                    <h4><code data-lang-source="MPEG2MPMLF()" data-lang-kind="signature">MPEG2MPMLF()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg2 mpmlf from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-9bfbf4ae" data-filter-item="MPEG2MPHL getter ">
+                    <h4><code data-lang-source="MPEG2MPHL()" data-lang-kind="signature">MPEG2MPHL()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg2 mphl from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4f2060df" data-filter-item="MPEG2MPHLF getter ">
+                    <h4><code data-lang-source="MPEG2MPHLF()" data-lang-kind="signature">MPEG2MPHLF()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg2 mphlf from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3175ab7d" data-filter-item="MPEG4HP41 getter ">
+                    <h4><code data-lang-source="MPEG4HP41()" data-lang-kind="signature">MPEG4HP41()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg4 hp41 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2eae6d1f" data-filter-item="MPEG4HP41F getter ">
+                    <h4><code data-lang-source="MPEG4HP41F()" data-lang-kind="signature">MPEG4HP41F()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg4 hp41 f from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e8860ed8" data-filter-item="MPEG4HP41BD getter ">
+                    <h4><code data-lang-source="MPEG4HP41BD()" data-lang-kind="signature">MPEG4HP41BD()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg4 hp41 bd from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-11f13fa2" data-filter-item="MPEG4HP41BDF getter ">
+                    <h4><code data-lang-source="MPEG4HP41BDF()" data-lang-kind="signature">MPEG4HP41BDF()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg4 hp41 bdf from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4bc19e9c" data-filter-item="MPEG4HP422D getter ">
+                    <h4><code data-lang-source="MPEG4HP422D()" data-lang-kind="signature">MPEG4HP422D()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg4 hp422 d from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-eabf929e" data-filter-item="MPEG4HP422DF getter ">
+                    <h4><code data-lang-source="MPEG4HP422DF()" data-lang-kind="signature">MPEG4HP422DF()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg4 hp422 df from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-91066c4f" data-filter-item="MPEG4HP423D getter ">
+                    <h4><code data-lang-source="MPEG4HP423D()" data-lang-kind="signature">MPEG4HP423D()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg4 hp423 d from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b80b6569" data-filter-item="MPEG4HP423DF getter ">
+                    <h4><code data-lang-source="MPEG4HP423DF()" data-lang-kind="signature">MPEG4HP423DF()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg4 hp423 df from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-af1e5dde" data-filter-item="MPEG4HP42STEREO getter ">
+                    <h4><code data-lang-source="MPEG4HP42STEREO()" data-lang-kind="signature">MPEG4HP42STEREO()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg4 hp42 stereo from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d68f316f" data-filter-item="MPEG4HP42STEREOF getter ">
+                    <h4><code data-lang-source="MPEG4HP42STEREOF()" data-lang-kind="signature">MPEG4HP42STEREOF()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes mpeg4 hp42 stereof from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7a4c2061" data-filter-item="HEVCMP51 getter ">
+                    <h4><code data-lang-source="HEVCMP51()" data-lang-kind="signature">HEVCMP51()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes hevcmp51 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4aea0674" data-filter-item="HEVCM10P51 getter ">
+                    <h4><code data-lang-source="HEVCM10P51()" data-lang-kind="signature">HEVCM10P51()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes hevcm10 p51 from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ead6a0d0" data-filter-item="JPEGXLLossless getter ">
+                    <h4><code data-lang-source="JPEGXLLossless()" data-lang-kind="signature">JPEGXLLossless()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegxllossless from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-32cbd72f" data-filter-item="JPEGXLJPEGRecompression getter ">
+                    <h4><code data-lang-source="JPEGXLJPEGRecompression()" data-lang-kind="signature">JPEGXLJPEGRecompression()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegxljpegrecompression from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-46a28ac3" data-filter-item="JPEGXL getter ">
+                    <h4><code data-lang-source="JPEGXL()" data-lang-kind="signature">JPEGXL()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpegxl from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-31317531" data-filter-item="HTJ2KLossless getter ">
+                    <h4><code data-lang-source="HTJ2KLossless()" data-lang-kind="signature">HTJ2KLossless()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes htj2 klossless from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e0083734" data-filter-item="HTJ2KLosslessRPCL getter ">
+                    <h4><code data-lang-source="HTJ2KLosslessRPCL()" data-lang-kind="signature">HTJ2KLosslessRPCL()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes htj2 klossless rpcl from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7fb759a2" data-filter-item="HTJ2K getter ">
+                    <h4><code data-lang-source="HTJ2K()" data-lang-kind="signature">HTJ2K()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes htj2 k from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-4ea533a3" data-filter-item="JPIPHTJ2KReferenced getter ">
+                    <h4><code data-lang-source="JPIPHTJ2KReferenced()" data-lang-kind="signature">JPIPHTJ2KReferenced()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpiphtj2 kreferenced from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7a7ae377" data-filter-item="JPIPHTJ2KReferencedDeflate getter ">
+                    <h4><code data-lang-source="JPIPHTJ2KReferencedDeflate()" data-lang-kind="signature">JPIPHTJ2KReferencedDeflate()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes jpiphtj2 kreferenced deflate from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d7211128" data-filter-item="RLELossless getter ">
+                    <h4><code data-lang-source="RLELossless()" data-lang-kind="signature">RLELossless()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes rlelossless from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e69cf2dc" data-filter-item="RFC2557MIMEEncapsulation getter ">
+                    <h4><code data-lang-source="RFC2557MIMEEncapsulation()" data-lang-kind="signature">RFC2557MIMEEncapsulation()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes rfc2557 mimeencapsulation from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0428e6cc" data-filter-item="XMLEncoding getter ">
+                    <h4><code data-lang-source="XMLEncoding()" data-lang-kind="signature">XMLEncoding()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes xmlencoding from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8b6f8808" data-filter-item="SMPTEST211020UncompressedProgressiveActiveVideo getter ">
+                    <h4><code data-lang-source="SMPTEST211020UncompressedProgressiveActiveVideo()" data-lang-kind="signature">SMPTEST211020UncompressedProgressiveActiveVideo()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes smptest211020 uncompressed progressive active video from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6254ea8f" data-filter-item="SMPTEST211020UncompressedInterlacedActiveVideo getter ">
+                    <h4><code data-lang-source="SMPTEST211020UncompressedInterlacedActiveVideo()" data-lang-kind="signature">SMPTEST211020UncompressedInterlacedActiveVideo()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes smptest211020 uncompressed interlaced active video from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-9646ea4a" data-filter-item="SMPTEST211030PCMDigitalAudio getter ">
+                    <h4><code data-lang-source="SMPTEST211030PCMDigitalAudio()" data-lang-kind="signature">SMPTEST211030PCMDigitalAudio()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes smptest211030 pcmdigital audio from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2b7111e4" data-filter-item="DeflatedImageFrameCompression getter ">
+                    <h4><code data-lang-source="DeflatedImageFrameCompression()" data-lang-kind="signature">DeflatedImageFrameCompression()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes deflated image frame compression from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7b4ddbf0" data-filter-item="Papyrus3ImplicitVRLittleEndian getter ">
+                    <h4><code data-lang-source="Papyrus3ImplicitVRLittleEndian()" data-lang-kind="signature">Papyrus3ImplicitVRLittleEndian()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes papyrus3 implicit vrlittle endian from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ca8dad1c" data-filter-item="GEImplicitVRLittleEndianExceptBigEndianPixels getter ">
+                    <h4><code data-lang-source="GEImplicitVRLittleEndianExceptBigEndianPixels()" data-lang-kind="signature">GEImplicitVRLittleEndianExceptBigEndianPixels()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes geimplicit vrlittle endian except big endian pixels from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a55b4c01" data-filter-item="PixelMedBzip2ExplicitVRLittleEndian getter ">
+                    <h4><code data-lang-source="PixelMedBzip2ExplicitVRLittleEndian()" data-lang-kind="signature">PixelMedBzip2ExplicitVRLittleEndian()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes pixel med bzip2 explicit vrlittle endian from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6134acae" data-filter-item="PixelMedEncapsulatedRawLittleEndian getter ">
+                    <h4><code data-lang-source="PixelMedEncapsulatedRawLittleEndian()" data-lang-kind="signature">PixelMedEncapsulatedRawLittleEndian()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes pixel med encapsulated raw little endian from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f475c77c" data-filter-item="AlgotecCompressed getter ">
+                    <h4><code data-lang-source="AlgotecCompressed()" data-lang-kind="signature">AlgotecCompressed()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes algotec compressed from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d2e9819f" data-filter-item="ALIWavelet getter ">
+                    <h4><code data-lang-source="ALIWavelet()" data-lang-kind="signature">ALIWavelet()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. This getter exposes aliwavelet from TransferSyntax.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<p class="page-meta">No option-object contracts detected for declared members.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+            <section class="section reveal">
+                <h3>Module-Level Constants</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Declaration</th>
+                                <th>Initializer Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><a href="constant-transfersyntaxapplicationtype-52e15f1b.html"><code>TransferSyntaxApplicationType</code></a></td>
+                                <td><code>var</code></td>
+                                <td><code>object</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><a href="constant-transfersyntaxes-0a3a76fe.html"><code>TransferSyntaxes</code></a></td>
+                                <td><code>var</code></td>
+                                <td><code>object</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

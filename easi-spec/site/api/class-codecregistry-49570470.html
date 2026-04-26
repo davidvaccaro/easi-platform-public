@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for CodecRegistry.">
+    <title>EASI | CodecRegistry</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>CodecRegistry</h2>
+                <p>This class provides codec registry behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><strong>CodecRegistry</strong></p>
+                <p class="page-meta">
+                    This class declares <code>20</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><span class="page-meta">none</span></td></tr>
+                        <tr><td>Declared Members</td><td>20</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>3</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="decoderConstructors" data-lang-kind="property-name">decoderConstructors</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="encoders" data-lang-kind="property-name">encoders</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="imageDecoderConstructors" data-lang-kind="property-name">imageDecoderConstructors</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="normalizeValidationOptions method Normalize codec-registry validation options. requireDefaultDecoder?: boolean, requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders?: Array&lt;string | null&gt;, requiredImageDecoders?: Array&lt;string | null&gt; } | null} options Validation options. requireDefaultDecoder: boolean, requiredTransferSyntaxes: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders: Array&lt;string | null&gt;, requiredImageDecoders: Array&lt;string | null&gt; }} Normalized options.">
+                                <td><a href="#declared-member-19859d50"><code data-lang-source="normalizeValidationOptions" data-lang-kind="member-name">normalizeValidationOptions</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize codec-registry validation options.<br>requireDefaultDecoder?: boolean,<br>requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;,<br>requiredEncoders?: Array&lt;string | null&gt;,<br>requiredImageDecoders?: Array&lt;string | null&gt;<br>} | null} options Validation options.<br>requireDefaultDecoder: boolean,<br>requiredTransferSyntaxes: Array&lt;TransferSyntax | string | null&gt;,<br>requiredEncoders: Array&lt;string | null&gt;,<br>requiredImageDecoders: Array&lt;string | null&gt;<br>}} Normalized options.</td>
+                            </tr>
+                            <tr data-filter-item="createValidationIssue method Build one codec-registry validation issue model.">
+                                <td><a href="#declared-member-6e51058d"><code data-lang-source="createValidationIssue" data-lang-kind="member-name">createValidationIssue</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build one codec-registry validation issue model.</td>
+                            </tr>
+                            <tr data-filter-item="validate method Validate the current codec-registry state. requireDefaultDecoder?: boolean, requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders?: Array&lt;string | null&gt; } | null} options Validation options. ok: boolean, errors: Array&lt;object&gt;, warnings: Array&lt;object&gt; }} Validation report.">
+                                <td><a href="#declared-member-27e15f0f"><code data-lang-source="validate" data-lang-kind="member-name">validate</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Validate the current codec-registry state.<br>requireDefaultDecoder?: boolean,<br>requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;,<br>requiredEncoders?: Array&lt;string | null&gt;<br>} | null} options Validation options.<br>ok: boolean,<br>errors: Array&lt;object&gt;,<br>warnings: Array&lt;object&gt;<br>}} Validation report.</td>
+                            </tr>
+                            <tr data-filter-item="assertValid method Validate and throw when current registry state is invalid. requireDefaultDecoder?: boolean, requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders?: Array&lt;string | null&gt; } | null} options Validation options. ok: boolean, errors: Array&lt;object&gt;, warnings: Array&lt;object&gt; }} Validation report.">
+                                <td><a href="#declared-member-74b5c7da"><code data-lang-source="assertValid" data-lang-kind="member-name">assertValid</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Validate and throw when current registry state is invalid.<br>requireDefaultDecoder?: boolean,<br>requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;,<br>requiredEncoders?: Array&lt;string | null&gt;<br>} | null} options Validation options.<br>ok: boolean,<br>errors: Array&lt;object&gt;,<br>warnings: Array&lt;object&gt;<br>}} Validation report.</td>
+                            </tr>
+                            <tr data-filter-item="clone method Clone this codec registry into a new independent registry.">
+                                <td><a href="#declared-member-d4578823"><code data-lang-source="clone" data-lang-kind="member-name">clone</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Clone this codec registry into a new independent registry.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeFormat method Normalize an encoder format identifier.">
+                                <td><a href="#declared-member-f9e895c5"><code data-lang-source="normalizeFormat" data-lang-kind="member-name">normalizeFormat</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize an encoder format identifier.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeImageFormat method Normalize one image-format or media-type identifier.">
+                                <td><a href="#declared-member-fdbc3959"><code data-lang-source="normalizeImageFormat" data-lang-kind="member-name">normalizeImageFormat</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one image-format or media-type identifier.</td>
+                            </tr>
+                            <tr data-filter-item="resolveTransferSyntaxID method Resolve a transfer-syntax identifier from a transfer-syntax-like value.">
+                                <td><a href="#declared-member-8452ab85"><code data-lang-source="resolveTransferSyntaxID" data-lang-kind="member-name">resolveTransferSyntaxID</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve a transfer-syntax identifier from a transfer-syntax-like value.</td>
+                            </tr>
+                            <tr data-filter-item="setDecoderForTransferSyntax method Register a decoder constructor for a transfer-syntax.">
+                                <td><a href="#declared-member-8161548c"><code data-lang-source="setDecoderForTransferSyntax" data-lang-kind="member-name">setDecoderForTransferSyntax</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Register a decoder constructor for a transfer-syntax.</td>
+                            </tr>
+                            <tr data-filter-item="getDecoderForTransferSyntax method Resolve a decoder for a transfer-syntax.">
+                                <td><a href="#declared-member-a5b7d068"><code data-lang-source="getDecoderForTransferSyntax" data-lang-kind="member-name">getDecoderForTransferSyntax</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve a decoder for a transfer-syntax.</td>
+                            </tr>
+                            <tr data-filter-item="setDecoderForImageFormat method Register one image decoder constructor for a format/media-type key.">
+                                <td><a href="#declared-member-355fe39c"><code data-lang-source="setDecoderForImageFormat" data-lang-kind="member-name">setDecoderForImageFormat</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Register one image decoder constructor for a format/media-type key.</td>
+                            </tr>
+                            <tr data-filter-item="setDecoderForMediaType method Register one image decoder constructor for media-type key.">
+                                <td><a href="#declared-member-05e768f9"><code data-lang-source="setDecoderForMediaType" data-lang-kind="member-name">setDecoderForMediaType</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Register one image decoder constructor for media-type key.</td>
+                            </tr>
+                            <tr data-filter-item="getDecoderForImageFormat method Resolve one image decoder instance by image format/media-type key.">
+                                <td><a href="#declared-member-0015c1df"><code data-lang-source="getDecoderForImageFormat" data-lang-kind="member-name">getDecoderForImageFormat</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve one image decoder instance by image format/media-type key.</td>
+                            </tr>
+                            <tr data-filter-item="getDecoderForMediaType method Resolve one image decoder instance by media-type key.">
+                                <td><a href="#declared-member-e19ab820"><code data-lang-source="getDecoderForMediaType" data-lang-kind="member-name">getDecoderForMediaType</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve one image decoder instance by media-type key.</td>
+                            </tr>
+                            <tr data-filter-item="hasDecoderForImageFormat method Determine if one image decoder registration exists.">
+                                <td><a href="#declared-member-95ae132b"><code data-lang-source="hasDecoderForImageFormat" data-lang-kind="member-name">hasDecoderForImageFormat</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if one image decoder registration exists.</td>
+                            </tr>
+                            <tr data-filter-item="hasDecoderForMediaType method Determine if one media-type image decoder registration exists.">
+                                <td><a href="#declared-member-0bf58c04"><code data-lang-source="hasDecoderForMediaType" data-lang-kind="member-name">hasDecoderForMediaType</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if one media-type image decoder registration exists.</td>
+                            </tr>
+                            <tr data-filter-item="hasDecoderForTransferSyntax method Determine if a decoder is explicitly registered for a transfer-syntax.">
+                                <td><a href="#declared-member-3315182b"><code data-lang-source="hasDecoderForTransferSyntax" data-lang-kind="member-name">hasDecoderForTransferSyntax</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if a decoder is explicitly registered for a transfer-syntax.</td>
+                            </tr>
+                            <tr data-filter-item="setEncoder method Register an encoder for a named output format.">
+                                <td><a href="#declared-member-2f917cf5"><code data-lang-source="setEncoder" data-lang-kind="member-name">setEncoder</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Register an encoder for a named output format.</td>
+                            </tr>
+                            <tr data-filter-item="getEncoder method Resolve an encoder by format identifier.">
+                                <td><a href="#declared-member-c7d6f484"><code data-lang-source="getEncoder" data-lang-kind="member-name">getEncoder</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve an encoder by format identifier.</td>
+                            </tr>
+                            <tr data-filter-item="hasEncoder method Determine if an encoder exists for the specified format.">
+                                <td><a href="#declared-member-0b134fe3"><code data-lang-source="hasEncoder" data-lang-kind="member-name">hasEncoder</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if an encoder exists for the specified format.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-19859d50" data-filter-item="normalizeValidationOptions method Normalize codec-registry validation options. requireDefaultDecoder?: boolean, requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders?: Array&lt;string | null&gt;, requiredImageDecoders?: Array&lt;string | null&gt; } | null} options Validation options. requireDefaultDecoder: boolean, requiredTransferSyntaxes: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders: Array&lt;string | null&gt;, requiredImageDecoders: Array&lt;string | null&gt; }} Normalized options.">
+                    <h4><code data-lang-source="normalizeValidationOptions(options)" data-lang-kind="signature">normalizeValidationOptions(options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize codec-registry validation options. requireDefaultDecoder?: boolean, requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders?: Array&lt;string | null&gt;, requiredImageDecoders?: Array&lt;string | null&gt; } | null} options Validation options. requireDefaultDecoder: boolean, requiredTransferSyntaxes: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders: Array&lt;string | null&gt;, requiredImageDecoders: Array&lt;string | null&gt; }} Normalized options. It provides normalize validation options behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">{{</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6e51058d" data-filter-item="createValidationIssue method Build one codec-registry validation issue model.">
+                    <h4><code data-lang-source="createValidationIssue(code, message, details)" data-lang-kind="signature">createValidationIssue(code, message, details)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build one codec-registry validation issue model. It provides create validation issue behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="code" data-lang-kind="parameter-name">code</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The issue code. It provides the code input used by createValidationIssue. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="message" data-lang-kind="parameter-name">message</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The issue message. It provides the message input used by createValidationIssue. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="details" data-lang-kind="parameter-name">details</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional issue details. It provides the details input used by createValidationIssue. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">The validation issue.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-27e15f0f" data-filter-item="validate method Validate the current codec-registry state. requireDefaultDecoder?: boolean, requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders?: Array&lt;string | null&gt; } | null} options Validation options. ok: boolean, errors: Array&lt;object&gt;, warnings: Array&lt;object&gt; }} Validation report.">
+                    <h4><code data-lang-source="validate(options)" data-lang-kind="signature">validate(options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Validate the current codec-registry state. requireDefaultDecoder?: boolean, requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders?: Array&lt;string | null&gt; } | null} options Validation options. ok: boolean, errors: Array&lt;object&gt;, warnings: Array&lt;object&gt; }} Validation report. It provides validate behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">{{</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-74b5c7da" data-filter-item="assertValid method Validate and throw when current registry state is invalid. requireDefaultDecoder?: boolean, requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders?: Array&lt;string | null&gt; } | null} options Validation options. ok: boolean, errors: Array&lt;object&gt;, warnings: Array&lt;object&gt; }} Validation report.">
+                    <h4><code data-lang-source="assertValid(options)" data-lang-kind="signature">assertValid(options)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Validate and throw when current registry state is invalid. requireDefaultDecoder?: boolean, requiredTransferSyntaxes?: Array&lt;TransferSyntax | string | null&gt;, requiredEncoders?: Array&lt;string | null&gt; } | null} options Validation options. ok: boolean, errors: Array&lt;object&gt;, warnings: Array&lt;object&gt; }} Validation report. It provides assert valid behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="options" data-lang-kind="parameter-name">options</code></td>
+                                <td class="member-param-type"><code>object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides optional configuration for this operation. <span class="page-meta">See <a href="#option-contracts">Option Contracts</a> below.</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">{{</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d4578823" data-filter-item="clone method Clone this codec registry into a new independent registry.">
+                    <h4><code data-lang-source="clone()" data-lang-kind="signature">clone()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Clone this codec registry into a new independent registry. It provides clone behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><a href="class-codecregistry-49570470.html"><code data-lang-source="CodecRegistry" data-lang-kind="type-token">CodecRegistry</code></a><br><span class="page-meta">A shallow-cloned codec registry.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f9e895c5" data-filter-item="normalizeFormat method Normalize an encoder format identifier.">
+                    <h4><code data-lang-source="normalizeFormat(format)" data-lang-kind="signature">normalizeFormat(format)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize an encoder format identifier. It provides normalize format behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="format" data-lang-kind="parameter-name">format</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The format identifier. It provides the format input used by normalizeFormat.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The normalized format identifier.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-fdbc3959" data-filter-item="normalizeImageFormat method Normalize one image-format or media-type identifier.">
+                    <h4><code data-lang-source="normalizeImageFormat(formatOrMediaType)" data-lang-kind="signature">normalizeImageFormat(formatOrMediaType)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize one image-format or media-type identifier. It provides normalize image format behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="formatOrMediaType" data-lang-kind="parameter-name">formatOrMediaType</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Image-format or media-type. It provides the format or media type input used by normalizeImageFormat.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">Normalized image-format key.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8452ab85" data-filter-item="resolveTransferSyntaxID method Resolve a transfer-syntax identifier from a transfer-syntax-like value.">
+                    <h4><code data-lang-source="resolveTransferSyntaxID(transferSyntax)" data-lang-kind="signature">resolveTransferSyntaxID(transferSyntax)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve a transfer-syntax identifier from a transfer-syntax-like value. It provides resolve transfer syntax id behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The transfer syntax value. It provides the transfer syntax input used by resolveTransferSyntaxID.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">The transfer syntax identifier.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8161548c" data-filter-item="setDecoderForTransferSyntax method Register a decoder constructor for a transfer-syntax.">
+                    <h4><code data-lang-source="setDecoderForTransferSyntax(transferSyntax, decoderPrototypeOrConstructor)" data-lang-kind="signature">setDecoderForTransferSyntax(transferSyntax, decoderPrototypeOrConstructor)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Register a decoder constructor for a transfer-syntax. It updates decoder for transfer syntax state on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a><br /><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The transfer-syntax. It provides the transfer syntax input used by setDecoderForTransferSyntax.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="decoderPrototypeOrConstructor" data-lang-kind="parameter-name">decoderPrototypeOrConstructor</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="Function" data-lang-kind="type-token">Function</code></td>
+                                <td><span class="page-meta">(Required)</span> Decoder instance prototype or constructor. It provides the decoder prototype or constructor input used by setDecoderForTransferSyntax.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a5b7d068" data-filter-item="getDecoderForTransferSyntax method Resolve a decoder for a transfer-syntax.">
+                    <h4><code data-lang-source="getDecoderForTransferSyntax(transferSyntax, dicomObject)" data-lang-kind="signature">getDecoderForTransferSyntax(transferSyntax, dicomObject)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve a decoder for a transfer-syntax. It retrieves decoder for transfer syntax state from CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The transfer-syntax. It provides the transfer syntax input used by getDecoderForTransferSyntax.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="dicomObject" data-lang-kind="parameter-name">dicomObject</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional DICOM object context. It provides the dicom object input used by getDecoderForTransferSyntax. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">A new decoder instance.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-355fe39c" data-filter-item="setDecoderForImageFormat method Register one image decoder constructor for a format/media-type key.">
+                    <h4><code data-lang-source="setDecoderForImageFormat(formatOrMediaType, decoderPrototypeOrConstructor)" data-lang-kind="signature">setDecoderForImageFormat(formatOrMediaType, decoderPrototypeOrConstructor)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Register one image decoder constructor for a format/media-type key. It updates decoder for image format state on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="formatOrMediaType" data-lang-kind="parameter-name">formatOrMediaType</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Image format or media-type. It provides the format or media type input used by setDecoderForImageFormat. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="decoderPrototypeOrConstructor" data-lang-kind="parameter-name">decoderPrototypeOrConstructor</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="Function" data-lang-kind="type-token">Function</code></td>
+                                <td><span class="page-meta">(Required)</span> Decoder prototype or constructor. It provides the decoder prototype or constructor input used by setDecoderForImageFormat.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-05e768f9" data-filter-item="setDecoderForMediaType method Register one image decoder constructor for media-type key.">
+                    <h4><code data-lang-source="setDecoderForMediaType(mediaType, decoderPrototypeOrConstructor)" data-lang-kind="signature">setDecoderForMediaType(mediaType, decoderPrototypeOrConstructor)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Register one image decoder constructor for media-type key. It updates decoder for media type state on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="mediaType" data-lang-kind="parameter-name">mediaType</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Media-type key. It provides the media type input used by setDecoderForMediaType. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="decoderPrototypeOrConstructor" data-lang-kind="parameter-name">decoderPrototypeOrConstructor</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="Function" data-lang-kind="type-token">Function</code></td>
+                                <td><span class="page-meta">(Required)</span> Decoder prototype or constructor. It provides the decoder prototype or constructor input used by setDecoderForMediaType.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0015c1df" data-filter-item="getDecoderForImageFormat method Resolve one image decoder instance by image format/media-type key.">
+                    <h4><code data-lang-source="getDecoderForImageFormat(formatOrMediaType, context)" data-lang-kind="signature">getDecoderForImageFormat(formatOrMediaType, context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve one image decoder instance by image format/media-type key. It retrieves decoder for image format state from CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="formatOrMediaType" data-lang-kind="parameter-name">formatOrMediaType</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Image format or media-type. It provides the format or media type input used by getDecoderForImageFormat. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional decoder context. It provides the context input used by getDecoderForImageFormat. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">Decoder instance, when available.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e19ab820" data-filter-item="getDecoderForMediaType method Resolve one image decoder instance by media-type key.">
+                    <h4><code data-lang-source="getDecoderForMediaType(mediaType, context)" data-lang-kind="signature">getDecoderForMediaType(mediaType, context)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve one image decoder instance by media-type key. It retrieves decoder for media type state from CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="mediaType" data-lang-kind="parameter-name">mediaType</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Media-type key. It provides the media type input used by getDecoderForMediaType. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="context" data-lang-kind="parameter-name">context</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Optional decoder context. It provides the context input used by getDecoderForMediaType. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">Decoder instance, when available.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-95ae132b" data-filter-item="hasDecoderForImageFormat method Determine if one image decoder registration exists.">
+                    <h4><code data-lang-source="hasDecoderForImageFormat(formatOrMediaType)" data-lang-kind="signature">hasDecoderForImageFormat(formatOrMediaType)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if one image decoder registration exists. It provides has decoder for image format behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="formatOrMediaType" data-lang-kind="parameter-name">formatOrMediaType</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Image format or media-type. It provides the format or media type input used by hasDecoderForImageFormat. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when the image decoder exists.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0bf58c04" data-filter-item="hasDecoderForMediaType method Determine if one media-type image decoder registration exists.">
+                    <h4><code data-lang-source="hasDecoderForMediaType(mediaType)" data-lang-kind="signature">hasDecoderForMediaType(mediaType)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if one media-type image decoder registration exists. It provides has decoder for media type behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="mediaType" data-lang-kind="parameter-name">mediaType</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Media-type key. It provides the media type input used by hasDecoderForMediaType. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when the image decoder exists.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3315182b" data-filter-item="hasDecoderForTransferSyntax method Determine if a decoder is explicitly registered for a transfer-syntax.">
+                    <h4><code data-lang-source="hasDecoderForTransferSyntax(transferSyntax)" data-lang-kind="signature">hasDecoderForTransferSyntax(transferSyntax)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if a decoder is explicitly registered for a transfer-syntax. It provides has decoder for transfer syntax behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="transferSyntax" data-lang-kind="parameter-name">transferSyntax</code></td>
+                                <td class="member-param-type"><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a><br /><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The transfer-syntax. It provides the transfer syntax input used by hasDecoderForTransferSyntax.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when a specific decoder is registered.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-2f917cf5" data-filter-item="setEncoder method Register an encoder for a named output format.">
+                    <h4><code data-lang-source="setEncoder(format, encoder)" data-lang-kind="signature">setEncoder(format, encoder)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Register an encoder for a named output format. It updates encoder state on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="format" data-lang-kind="parameter-name">format</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The output format identifier. It provides the format input used by setEncoder. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="encoder" data-lang-kind="parameter-name">encoder</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Required)</span> The encoder instance. It provides the encoder input used by setEncoder. Type detail: expects an object value (shape depends on context).</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c7d6f484" data-filter-item="getEncoder method Resolve an encoder by format identifier.">
+                    <h4><code data-lang-source="getEncoder(format)" data-lang-kind="signature">getEncoder(format)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve an encoder by format identifier. It retrieves encoder state from CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="format" data-lang-kind="parameter-name">format</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The output format identifier. It provides the format input used by getEncoder. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">The encoder, when available.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-0b134fe3" data-filter-item="hasEncoder method Determine if an encoder exists for the specified format.">
+                    <h4><code data-lang-source="hasEncoder(format)" data-lang-kind="signature">hasEncoder(format)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if an encoder exists for the specified format. It provides has encoder behavior on CodecRegistry.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="format" data-lang-kind="parameter-name">format</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The output format identifier. It provides the format input used by hasEncoder. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when an encoder exists.</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<div class="grid one">
+                <article class="card reveal" id="option-normalizevalidationoptions-options-e388c47d" data-filter-item="normalizeValidationOptions options option object">
+                    <h4><code data-lang-source="normalizeValidationOptions(options)" data-lang-kind="signature">normalizeValidationOptions(options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-normalizevalidationoptions-options-e388c47d-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-validate-options-a2f70875" data-filter-item="validate options option object">
+                    <h4><code data-lang-source="validate(options)" data-lang-kind="signature">validate(options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-validate-options-a2f70875-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article>
+                <article class="card reveal" id="option-assertvalid-options-caec7ec3" data-filter-item="assertValid options option object">
+                    <h4><code data-lang-source="assertValid(options)" data-lang-kind="signature">assertValid(options)</code> &middot; <code data-lang-source="options" data-lang-kind="parameter-name">options</code></h4>
+
+                            <div class="table-scroll" id="option-assertvalid-options-caec7ec3-shape-1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="option-shape-header"><span class="option-shape-name">Open Options Object</span><span class="option-shape-description"> - Use this open options object when fields are context-specific or intentionally implementation-defined.</span></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr>
+                                        <td colspan="3"><span class="page-meta">Open options object: field names and value types are intentionally context-specific for this member.</span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </article></div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

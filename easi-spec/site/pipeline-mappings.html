@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="EASI pipeline mapping model for deterministic projection from DICOM&reg; stream events to domain outputs.">
-    <title>EASI | Pipeline Mappings</title>
+    <title>EASI | Pipeline Mapping</title>
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="./assets/app.js"></script>
 </head>
@@ -21,30 +21,31 @@
 
 <div class="nav-section">
                 <a class="nav-link" data-nav-link href="index.html">Overview</a>
-                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="why-easi.html">The EASI Advantage</a>
                 <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
                 <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
                     <div class="nav-submenu" data-nav-submenu>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mapping</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-selection.html">Selection</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-filtering.html">Filtering</a>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writer</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
-                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
@@ -52,7 +53,19 @@
                         <a class="nav-link nav-sublink" data-nav-link href="lifecycle-status.html">Stream Lifecycle Events</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
                         <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="builder-types/index.html">Builders</a>
@@ -129,6 +142,7 @@
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
                     </div>
                 </div>
+                <a class="nav-link" data-nav-link href="api/index.html">API Reference</a>
                 <a class="nav-link" data-nav-link href="error-catalog.html">Errors</a>
                 <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
                 <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
@@ -144,7 +158,7 @@
 
         <main class="page">
             <section class="page-hero reveal">
-                <h2>Pipeline Mappings</h2>
+                <h2>Pipeline Mapping</h2>
                 <p>
                     Mappings define deterministic projection from parsed DICOM&reg; semantics into domain-specific output shapes
                     (for example FHIR&reg; resources or custom business objects) while preserving stream lifecycle boundaries.
@@ -169,7 +183,7 @@
 
             <section class="section reveal">
                 <h3>Typical Composition</h3>
-                <pre><code>Reader -> Parser -> [Adapter] -> [Filter ...] -> Mapping Terminal -> [Writer]</code></pre>
+                <pre><code class="language-text">Reader -> Parser -> [Adapter] -> [Filter ...] -> Mapping Terminal -> [Writer]</code></pre>
                 <table>
                     <thead>
                         <tr>
@@ -179,15 +193,15 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><code>toMapping(mapping)</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-243e0340"><code>toMapping(mapping)</code></a></td>
                             <td>Bind one custom mapping implementation.</td>
                         </tr>
                         <tr>
-                            <td><code>toFHIRImagingStudy(options)</code></td>
-                            <td>Bind the built-in DICOM&reg; to FHIR&reg; ImagingStudy mapping profile.</td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-0308b9bc"><code>toFHIRImagingStudy(options)</code></a></td>
+                            <td>Bind the built-in DICOM&reg; to FHIR&reg; <a href="api/class-imagingstudy-fe89e193.html"><code>ImagingStudy</code></a> mapping profile.</td>
                         </tr>
                         <tr>
-                            <td><code>EASI.mappingBuilder()</code></td>
+                            <td><a href="api/class-easi-7f476ace.html#declared-member-10c465e9"><code>EASI.mappingBuilder()</code></a></td>
                             <td>Compose custom mapping contracts with declarative mapping builders.</td>
                         </tr>
                     </tbody>
@@ -197,8 +211,8 @@
             <section class="section reveal">
                 <h3>Usage</h3>
                 <p class="page-meta">
-                    Mapping terminals return one <code>PipelineResultCollection</code> per transaction. The
-                    <code>first()</code> item is the mapping contract output (for example one FHIR&reg; ImagingStudy
+                    Mapping terminals return one <a href="api/class-pipelineresultcollection-ce74fcaf.html"><code>PipelineResultCollection</code></a> per transaction. The
+                    <a href="api/class-pipelineresultcollection-ce74fcaf.html#declared-member-0d1a8b1c"><code>first()</code></a> item is the mapping contract output (for example one FHIR&reg; <a href="api/class-imagingstudy-fe89e193.html"><code>ImagingStudy</code></a>
                     or one custom routing object).
                 </p>
                 <div class="doc-tabset" data-tabset>
@@ -607,7 +621,7 @@ routing_card = routing_results.first()</code></pre>
                 <h4>Example Transformed RoutingCard Output</h4>
                 <p>
                     The custom mapping above converts recognizable DICOM&reg; tags into an operational routing model.
-                    A typical <code>resultCollection.first()</code> value can look like:
+                    A typical <a href="api/class-pipelineresultcollection-ce74fcaf.html#declared-member-0d1a8b1c"><code>resultCollection.first()</code></a> value can look like:
                 </p>
                 <pre><code class="language-json">{
   "study": {

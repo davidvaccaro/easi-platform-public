@@ -1,0 +1,1691 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for ImagingRoutingBuilder.">
+    <title>EASI | ImagingRoutingBuilder</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>ImagingRoutingBuilder</h2>
+                <p>This class provides imaging routing builder behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><strong>ImagingRoutingBuilder</strong></p>
+                <p class="page-meta">
+                    This class declares <code>35</code> member(s) and inherits
+                    <code>0</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><span class="page-meta">none</span></td></tr>
+                        <tr><td>Declared Members</td><td>35</td></tr>
+                        <tr><td>Inherited Members</td><td>0</td></tr>
+                        <tr><td>Properties</td><td>6</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="_dicomPipeline" data-lang-kind="property-name">_dicomPipeline</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="_imagePipeline" data-lang-kind="property-name">_imagePipeline</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="_otherwisePipeline" data-lang-kind="property-name">_otherwisePipeline</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="_stages" data-lang-kind="property-name">_stages</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="_unknownMode" data-lang-kind="property-name">_unknownMode</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="_usesGeneralRouting" data-lang-kind="property-name">_usesGeneralRouting</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="resolveBranchPipeline method Resolve one route branch to a built pipeline. Supported branch definitions: - Built pipeline (`{ process(...) }`) - Output-stage/builder object (`{ build() }`) - Configure callback receiving `PipelineBuilder().fromByteStream()` stage">
+                                <td><a href="#declared-member-abfa745c"><code data-lang-source="resolveBranchPipeline" data-lang-kind="member-name">resolveBranchPipeline</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve one route branch to a built pipeline.<br>Supported branch definitions:<br>- Built pipeline (`{ process(...) }`)<br>- Output-stage/builder object (`{ build() }`)<br>- Configure callback receiving `PipelineBuilder().fromByteStream()` stage</td>
+                            </tr>
+                            <tr data-filter-item="isTagReference method ">
+                                <td><a href="#declared-member-6adb5fae"><code data-lang-source="isTagReference" data-lang-kind="member-name">isTagReference</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="normalizeTagID method ">
+                                <td><a href="#declared-member-b092b66d"><code data-lang-source="normalizeTagID" data-lang-kind="member-name">normalizeTagID</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="normalizeComparableValue method ">
+                                <td><a href="#declared-member-52a2c4a7"><code data-lang-source="normalizeComparableValue" data-lang-kind="member-name">normalizeComparableValue</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="normalizeComparableList method ">
+                                <td><a href="#declared-member-908a8b91"><code data-lang-source="normalizeComparableList" data-lang-kind="member-name">normalizeComparableList</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="normalizeMatcher method ">
+                                <td><a href="#declared-member-f7d405d1"><code data-lang-source="normalizeMatcher" data-lang-kind="member-name">normalizeMatcher</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="normalizeAction method ">
+                                <td><a href="#declared-member-bc4b33c9"><code data-lang-source="normalizeAction" data-lang-kind="member-name">normalizeAction</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="isActionDefinition method ">
+                                <td><a href="#declared-member-f90b58f0"><code data-lang-source="isActionDefinition" data-lang-kind="member-name">isActionDefinition</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="normalizeWhenArguments method ">
+                                <td><a href="#declared-member-1bbfc6e7"><code data-lang-source="normalizeWhenArguments" data-lang-kind="member-name">normalizeWhenArguments</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="resolveStage method ">
+                                <td><a href="#declared-member-9b700e17"><code data-lang-source="resolveStage" data-lang-kind="member-name">resolveStage</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="addRule method ">
+                                <td><a href="#declared-member-965e06c7"><code data-lang-source="addRule" data-lang-kind="member-name">addRule</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="setOtherwise method ">
+                                <td><a href="#declared-member-3f9d4d90"><code data-lang-source="setOtherwise" data-lang-kind="member-name">setOtherwise</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="applyStageObjectDefinition method ">
+                                <td><a href="#declared-member-62802ce4"><code data-lang-source="applyStageObjectDefinition" data-lang-kind="member-name">applyStageObjectDefinition</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="configureStage method ">
+                                <td><a href="#declared-member-6ea9dfdb"><code data-lang-source="configureStage" data-lang-kind="member-name">configureStage</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="findImagingKindPipeline method ">
+                                <td><a href="#declared-member-1fab0642"><code data-lang-source="findImagingKindPipeline" data-lang-kind="member-name">findImagingKindPipeline</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="resolveLegacyOtherwisePipeline method ">
+                                <td><a href="#declared-member-88b9a346"><code data-lang-source="resolveLegacyOtherwisePipeline" data-lang-kind="member-name">resolveLegacyOtherwisePipeline</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="cloneStage method ">
+                                <td><a href="#declared-member-5d10842f"><code data-lang-source="cloneStage" data-lang-kind="member-name">cloneStage</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="buildStagesSnapshot method ">
+                                <td><a href="#declared-member-a7a38903"><code data-lang-source="buildStagesSnapshot" data-lang-kind="member-name">buildStagesSnapshot</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onFrom method ">
+                                <td><a href="#declared-member-c5f37030"><code data-lang-source="onFrom" data-lang-kind="member-name">onFrom</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onOf method ">
+                                <td><a href="#declared-member-3e628445"><code data-lang-source="onOf" data-lang-kind="member-name">onOf</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onTo method ">
+                                <td><a href="#declared-member-3af704d4"><code data-lang-source="onTo" data-lang-kind="member-name">onTo</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="onInto method ">
+                                <td><a href="#declared-member-283ec2c5"><code data-lang-source="onInto" data-lang-kind="member-name">onInto</code></a></td>
+                                <td><code>method</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr data-filter-item="whenDicom method Configure DICOM route branch.">
+                                <td><a href="#declared-member-bd99d0d6"><code data-lang-source="whenDicom" data-lang-kind="member-name">whenDicom</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure DICOM route branch.</td>
+                            </tr>
+                            <tr data-filter-item="whenImage method Configure standard image route branch.">
+                                <td><a href="#declared-member-fe7295f2"><code data-lang-source="whenImage" data-lang-kind="member-name">whenImage</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure standard image route branch.</td>
+                            </tr>
+                            <tr data-filter-item="otherwise method Configure fallback route branch.">
+                                <td><a href="#declared-member-3858d82c"><code data-lang-source="otherwise" data-lang-kind="member-name">otherwise</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure fallback route branch.</td>
+                            </tr>
+                            <tr data-filter-item="whenTransferSyntax method Sugar for transfer-syntax routing in DICOM meta-set stage.">
+                                <td><a href="#declared-member-006463d9"><code data-lang-source="whenTransferSyntax" data-lang-kind="member-name">whenTransferSyntax</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Sugar for transfer-syntax routing in DICOM meta-set stage.</td>
+                            </tr>
+                            <tr data-filter-item="whenTransferSyntaxIn method Backward-compatible alias.">
+                                <td><a href="#declared-member-26908a0d"><code data-lang-source="whenTransferSyntaxIn" data-lang-kind="member-name">whenTransferSyntaxIn</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Backward-compatible alias.</td>
+                            </tr>
+                            <tr data-filter-item="whenModality method Sugar for modality routing in DICOM data-set stage.">
+                                <td><a href="#declared-member-40d2a812"><code data-lang-source="whenModality" data-lang-kind="member-name">whenModality</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Sugar for modality routing in DICOM data-set stage.</td>
+                            </tr>
+                            <tr data-filter-item="whenModalityIn method Backward-compatible alias.">
+                                <td><a href="#declared-member-cdc0ef63"><code data-lang-source="whenModalityIn" data-lang-kind="member-name">whenModalityIn</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Backward-compatible alias.</td>
+                            </tr>
+                            <tr data-filter-item="whenFrom method Configure generic &quot;from&quot; stage routing with one direct rule.">
+                                <td><a href="#declared-member-4c4cb867"><code data-lang-source="whenFrom" data-lang-kind="member-name">whenFrom</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure generic &quot;from&quot; stage routing with one direct rule.</td>
+                            </tr>
+                            <tr data-filter-item="whenTo method Configure generic &quot;to&quot; stage routing with one direct rule.">
+                                <td><a href="#declared-member-df440c21"><code data-lang-source="whenTo" data-lang-kind="member-name">whenTo</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure generic &quot;to&quot; stage routing with one direct rule.</td>
+                            </tr>
+                            <tr data-filter-item="whenInto method Configure generic &quot;into&quot; stage routing with one direct rule.">
+                                <td><a href="#declared-member-ba63bbcb"><code data-lang-source="whenInto" data-lang-kind="member-name">whenInto</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure generic &quot;into&quot; stage routing with one direct rule.</td>
+                            </tr>
+                            <tr data-filter-item="withUnknownMode method Configure unknown-item routing behavior.">
+                                <td><a href="#declared-member-275fa42d"><code data-lang-source="withUnknownMode" data-lang-kind="member-name">withUnknownMode</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Configure unknown-item routing behavior.</td>
+                            </tr>
+                            <tr data-filter-item="build method Build immutable routing configuration. stages: object, dicomPipeline: object | null, imagePipeline: object | null, otherwisePipeline: object | null, unknownMode: &quot;skip&quot; | &quot;fail&quot;, usesGeneralRouting: boolean }} Routing config.">
+                                <td><a href="#declared-member-46f2f07b"><code data-lang-source="build" data-lang-kind="member-name">build</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Build immutable routing configuration.<br>stages: object,<br>dicomPipeline: object | null,<br>imagePipeline: object | null,<br>otherwisePipeline: object | null,<br>unknownMode: &quot;skip&quot; | &quot;fail&quot;,<br>usesGeneralRouting: boolean<br>}} Routing config.</td>
+                            </tr>
+                            <tr data-filter-item="resolve method Resolve one public routing definition to immutable routing config.">
+                                <td><a href="#declared-member-a0020607"><code data-lang-source="resolve" data-lang-kind="member-name">resolve</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve one public routing definition to immutable routing config.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-abfa745c" data-filter-item="resolveBranchPipeline method Resolve one route branch to a built pipeline. Supported branch definitions: - Built pipeline (`{ process(...) }`) - Output-stage/builder object (`{ build() }`) - Configure callback receiving `PipelineBuilder().fromByteStream()` stage">
+                    <h4><code data-lang-source="resolveBranchPipeline(definition, routeName)" data-lang-kind="signature">resolveBranchPipeline(definition, routeName)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve one route branch to a built pipeline. Supported branch definitions: - Built pipeline (`{ process(...) }`) - Output-stage/builder object (`{ build() }`) - Configure callback receiving `PipelineBuilder().fromByteStream()` stage It provides resolve branch pipeline behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Route branch definition. It provides the definition input used by resolveBranchPipeline.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="routeName" data-lang-kind="parameter-name">routeName</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Route name. It provides the route name input used by resolveBranchPipeline. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="object" data-lang-kind="type-token">object</code><br><span class="page-meta">Built pipeline.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6adb5fae" data-filter-item="isTagReference method ">
+                    <h4><code data-lang-source="isTagReference(value)" data-lang-kind="signature">isTagReference(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides is tag reference behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the value input used by isTagReference.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-b092b66d" data-filter-item="normalizeTagID method ">
+                    <h4><code data-lang-source="normalizeTagID(tagOrID)" data-lang-kind="signature">normalizeTagID(tagOrID)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides normalize tag id behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tagOrID" data-lang-kind="parameter-name">tagOrID</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the tag or id input used by normalizeTagID.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-52a2c4a7" data-filter-item="normalizeComparableValue method ">
+                    <h4><code data-lang-source="normalizeComparableValue(value)" data-lang-kind="signature">normalizeComparableValue(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides normalize comparable value behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the value input used by normalizeComparableValue.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-908a8b91" data-filter-item="normalizeComparableList method ">
+                    <h4><code data-lang-source="normalizeComparableList(valueOrValues)" data-lang-kind="signature">normalizeComparableList(valueOrValues)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides normalize comparable list behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="valueOrValues" data-lang-kind="parameter-name">valueOrValues</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the value or values input used by normalizeComparableList.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f7d405d1" data-filter-item="normalizeMatcher method ">
+                    <h4><code data-lang-source="normalizeMatcher(stagePath, predicateOrAttribute, expectedValues)" data-lang-kind="signature">normalizeMatcher(stagePath, predicateOrAttribute, expectedValues)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides normalize matcher behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="stagePath" data-lang-kind="parameter-name">stagePath</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the stage path input used by normalizeMatcher.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="predicateOrAttribute" data-lang-kind="parameter-name">predicateOrAttribute</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the predicate or attribute input used by normalizeMatcher.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="expectedValues" data-lang-kind="parameter-name">expectedValues</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the expected values input used by normalizeMatcher.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-bc4b33c9" data-filter-item="normalizeAction method ">
+                    <h4><code data-lang-source="normalizeAction(definition, routeName)" data-lang-kind="signature">normalizeAction(definition, routeName)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides normalize action behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the definition input used by normalizeAction.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="routeName" data-lang-kind="parameter-name">routeName</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the route name input used by normalizeAction.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-f90b58f0" data-filter-item="isActionDefinition method ">
+                    <h4><code data-lang-source="isActionDefinition(value)" data-lang-kind="signature">isActionDefinition(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides is action definition behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the value input used by isActionDefinition.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1bbfc6e7" data-filter-item="normalizeWhenArguments method ">
+                    <h4><code data-lang-source="normalizeWhenArguments(stagePath, predicateOrAttribute, valueOrAction, action)" data-lang-kind="signature">normalizeWhenArguments(stagePath, predicateOrAttribute, valueOrAction, action)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides normalize when arguments behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="stagePath" data-lang-kind="parameter-name">stagePath</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the stage path input used by normalizeWhenArguments.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="predicateOrAttribute" data-lang-kind="parameter-name">predicateOrAttribute</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the predicate or attribute input used by normalizeWhenArguments.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="valueOrAction" data-lang-kind="parameter-name">valueOrAction</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the value or action input used by normalizeWhenArguments.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="action" data-lang-kind="parameter-name">action</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - undefined)</span> No description provided. It provides the action input used by normalizeWhenArguments.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-9b700e17" data-filter-item="resolveStage method ">
+                    <h4><code data-lang-source="resolveStage(stagePath)" data-lang-kind="signature">resolveStage(stagePath)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides resolve stage behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="stagePath" data-lang-kind="parameter-name">stagePath</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the stage path input used by resolveStage.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-965e06c7" data-filter-item="addRule method ">
+                    <h4><code data-lang-source="addRule(stagePath, matcher, action)" data-lang-kind="signature">addRule(stagePath, matcher, action)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides add rule behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="stagePath" data-lang-kind="parameter-name">stagePath</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the stage path input used by addRule.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="matcher" data-lang-kind="parameter-name">matcher</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the matcher input used by addRule.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="action" data-lang-kind="parameter-name">action</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the action input used by addRule.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3f9d4d90" data-filter-item="setOtherwise method ">
+                    <h4><code data-lang-source="setOtherwise(stagePath, action)" data-lang-kind="signature">setOtherwise(stagePath, action)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It updates otherwise state on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="stagePath" data-lang-kind="parameter-name">stagePath</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the stage path input used by setOtherwise.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="action" data-lang-kind="parameter-name">action</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the action input used by setOtherwise.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-62802ce4" data-filter-item="applyStageObjectDefinition method ">
+                    <h4><code data-lang-source="applyStageObjectDefinition(stagePath, definition)" data-lang-kind="signature">applyStageObjectDefinition(stagePath, definition)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides apply stage object definition behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="stagePath" data-lang-kind="parameter-name">stagePath</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the stage path input used by applyStageObjectDefinition.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the definition input used by applyStageObjectDefinition.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6ea9dfdb" data-filter-item="configureStage method ">
+                    <h4><code data-lang-source="configureStage(stagePath, definition, methodName)" data-lang-kind="signature">configureStage(stagePath, definition, methodName)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides configure stage behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="stagePath" data-lang-kind="parameter-name">stagePath</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the stage path input used by configureStage.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the definition input used by configureStage.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="methodName" data-lang-kind="parameter-name">methodName</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the method name input used by configureStage.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1fab0642" data-filter-item="findImagingKindPipeline method ">
+                    <h4><code data-lang-source="findImagingKindPipeline(kindName)" data-lang-kind="signature">findImagingKindPipeline(kindName)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides find imaging kind pipeline behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="kindName" data-lang-kind="parameter-name">kindName</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the kind name input used by findImagingKindPipeline.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-88b9a346" data-filter-item="resolveLegacyOtherwisePipeline method ">
+                    <h4><code data-lang-source="resolveLegacyOtherwisePipeline()" data-lang-kind="signature">resolveLegacyOtherwisePipeline()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides resolve legacy otherwise pipeline behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5d10842f" data-filter-item="cloneStage method ">
+                    <h4><code data-lang-source="cloneStage(stage)" data-lang-kind="signature">cloneStage(stage)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It provides clone stage behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="stage" data-lang-kind="parameter-name">stage</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the stage input used by cloneStage.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a7a38903" data-filter-item="buildStagesSnapshot method ">
+                    <h4><code data-lang-source="buildStagesSnapshot()" data-lang-kind="signature">buildStagesSnapshot()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It finalizes and returns the built ImagingRoutingBuilder artifact.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-c5f37030" data-filter-item="onFrom method ">
+                    <h4><code data-lang-source="onFrom(definition)" data-lang-kind="signature">onFrom(definition)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to from conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the definition input used by onFrom.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3e628445" data-filter-item="onOf method ">
+                    <h4><code data-lang-source="onOf(definition)" data-lang-kind="signature">onOf(definition)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to of conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the definition input used by onOf.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3af704d4" data-filter-item="onTo method ">
+                    <h4><code data-lang-source="onTo(definition)" data-lang-kind="signature">onTo(definition)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to to conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the definition input used by onTo.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-283ec2c5" data-filter-item="onInto method ">
+                    <h4><code data-lang-source="onInto(definition)" data-lang-kind="signature">onInto(definition)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>No description. It scopes handling to into conditions.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the definition input used by onInto.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-bd99d0d6" data-filter-item="whenDicom method Configure DICOM route branch.">
+                    <h4><code data-lang-source="whenDicom(definition)" data-lang-kind="signature">whenDicom(definition)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure DICOM route branch. It applies conditional branching for dicom.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Route branch definition. It provides the definition input used by whenDicom.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a><br><span class="page-meta">Current routing builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-fe7295f2" data-filter-item="whenImage method Configure standard image route branch.">
+                    <h4><code data-lang-source="whenImage(definition)" data-lang-kind="signature">whenImage(definition)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure standard image route branch. It applies conditional branching for image.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Route branch definition. It provides the definition input used by whenImage.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a><br><span class="page-meta">Current routing builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3858d82c" data-filter-item="otherwise method Configure fallback route branch.">
+                    <h4><code data-lang-source="otherwise(definition)" data-lang-kind="signature">otherwise(definition)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure fallback route branch. It provides otherwise behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Route branch definition. It provides the definition input used by otherwise.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a><br><span class="page-meta">Current routing builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-006463d9" data-filter-item="whenTransferSyntax method Sugar for transfer-syntax routing in DICOM meta-set stage.">
+                    <h4><code data-lang-source="whenTransferSyntax(valueOrValues, action)" data-lang-kind="signature">whenTransferSyntax(valueOrValues, action)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Sugar for transfer-syntax routing in DICOM meta-set stage. It applies conditional branching for transfer syntax.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="valueOrValues" data-lang-kind="parameter-name">valueOrValues</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> One transfer-syntax UID or many. It provides the value or values input used by whenTransferSyntax.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="action" data-lang-kind="parameter-name">action</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Route action (label or branch). It provides the action input used by whenTransferSyntax.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a></p>
+                </article>
+                <article class="card reveal" id="declared-member-26908a0d" data-filter-item="whenTransferSyntaxIn method Backward-compatible alias.">
+                    <h4><code data-lang-source="whenTransferSyntaxIn(valueOrValues, action)" data-lang-kind="signature">whenTransferSyntaxIn(valueOrValues, action)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Backward-compatible alias. It applies conditional branching for transfer syntax in.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="valueOrValues" data-lang-kind="parameter-name">valueOrValues</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> One transfer-syntax UID or many. It provides the value or values input used by whenTransferSyntaxIn.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="action" data-lang-kind="parameter-name">action</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Route action (label or branch). It provides the action input used by whenTransferSyntaxIn.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a></p>
+                </article>
+                <article class="card reveal" id="declared-member-40d2a812" data-filter-item="whenModality method Sugar for modality routing in DICOM data-set stage.">
+                    <h4><code data-lang-source="whenModality(valueOrValues, action)" data-lang-kind="signature">whenModality(valueOrValues, action)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Sugar for modality routing in DICOM data-set stage. It applies conditional branching for modality.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="valueOrValues" data-lang-kind="parameter-name">valueOrValues</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> One modality or many. It provides the value or values input used by whenModality.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="action" data-lang-kind="parameter-name">action</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Route action (label or branch). It provides the action input used by whenModality.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a></p>
+                </article>
+                <article class="card reveal" id="declared-member-cdc0ef63" data-filter-item="whenModalityIn method Backward-compatible alias.">
+                    <h4><code data-lang-source="whenModalityIn(valueOrValues, action)" data-lang-kind="signature">whenModalityIn(valueOrValues, action)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Backward-compatible alias. It applies conditional branching for modality in.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="valueOrValues" data-lang-kind="parameter-name">valueOrValues</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> One modality or many. It provides the value or values input used by whenModalityIn.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="action" data-lang-kind="parameter-name">action</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Route action (label or branch). It provides the action input used by whenModalityIn.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a></p>
+                </article>
+                <article class="card reveal" id="declared-member-4c4cb867" data-filter-item="whenFrom method Configure generic &quot;from&quot; stage routing with one direct rule.">
+                    <h4><code data-lang-source="whenFrom(predicateOrAttribute, valueOrAction, action)" data-lang-kind="signature">whenFrom(predicateOrAttribute, valueOrAction, action)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure generic &quot;from&quot; stage routing with one direct rule. It applies conditional branching for from.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="predicateOrAttribute" data-lang-kind="parameter-name">predicateOrAttribute</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Predicate/value/tag selector. It provides the predicate or attribute input used by whenFrom.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="valueOrAction" data-lang-kind="parameter-name">valueOrAction</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Value(s) or action. It provides the value or action input used by whenFrom.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="action" data-lang-kind="parameter-name">action</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - undefined)</span> Optional action when value(s) are provided. It provides the action input used by whenFrom.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a></p>
+                </article>
+                <article class="card reveal" id="declared-member-df440c21" data-filter-item="whenTo method Configure generic &quot;to&quot; stage routing with one direct rule.">
+                    <h4><code data-lang-source="whenTo(predicateOrAttribute, valueOrAction, action)" data-lang-kind="signature">whenTo(predicateOrAttribute, valueOrAction, action)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure generic &quot;to&quot; stage routing with one direct rule. It applies conditional branching for to.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="predicateOrAttribute" data-lang-kind="parameter-name">predicateOrAttribute</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Predicate/value/tag selector. It provides the predicate or attribute input used by whenTo.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="valueOrAction" data-lang-kind="parameter-name">valueOrAction</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Value(s) or action. It provides the value or action input used by whenTo.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="action" data-lang-kind="parameter-name">action</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - undefined)</span> Optional action when value(s) are provided. It provides the action input used by whenTo.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a></p>
+                </article>
+                <article class="card reveal" id="declared-member-ba63bbcb" data-filter-item="whenInto method Configure generic &quot;into&quot; stage routing with one direct rule.">
+                    <h4><code data-lang-source="whenInto(predicateOrAttribute, valueOrAction, action)" data-lang-kind="signature">whenInto(predicateOrAttribute, valueOrAction, action)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure generic &quot;into&quot; stage routing with one direct rule. It applies conditional branching for into.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="predicateOrAttribute" data-lang-kind="parameter-name">predicateOrAttribute</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Required)</span> Predicate/value/tag selector. It provides the predicate or attribute input used by whenInto.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="valueOrAction" data-lang-kind="parameter-name">valueOrAction</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Value(s) or action. It provides the value or action input used by whenInto.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="action" data-lang-kind="parameter-name">action</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - undefined)</span> Optional action when value(s) are provided. It provides the action input used by whenInto.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a></p>
+                </article>
+                <article class="card reveal" id="declared-member-275fa42d" data-filter-item="withUnknownMode method Configure unknown-item routing behavior.">
+                    <h4><code data-lang-source="withUnknownMode(mode)" data-lang-kind="signature">withUnknownMode(mode)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure unknown-item routing behavior. It configures unknown mode behavior for ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="mode" data-lang-kind="parameter-name">mode</code></td>
+                                <td class="member-param-type"><code data-lang-source="&quot;skip&quot;" data-lang-kind="type-token">&quot;skip&quot;</code><br /><code data-lang-source="&quot;fail&quot;" data-lang-kind="type-token">&quot;fail&quot;</code></td>
+                                <td><span class="page-meta">(Optional - &quot;skip&quot;)</span> Unknown mode. It provides the mode input used by withUnknownMode.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a><br><span class="page-meta">Current routing builder.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-46f2f07b" data-filter-item="build method Build immutable routing configuration. stages: object, dicomPipeline: object | null, imagePipeline: object | null, otherwisePipeline: object | null, unknownMode: &quot;skip&quot; | &quot;fail&quot;, usesGeneralRouting: boolean }} Routing config.">
+                    <h4><code data-lang-source="build()" data-lang-kind="signature">build()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Build immutable routing configuration. stages: object, dicomPipeline: object | null, imagePipeline: object | null, otherwisePipeline: object | null, unknownMode: &quot;skip&quot; | &quot;fail&quot;, usesGeneralRouting: boolean }} Routing config. It finalizes and returns the built ImagingRoutingBuilder artifact.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">{{</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-a0020607" data-filter-item="resolve method Resolve one public routing definition to immutable routing config.">
+                    <h4><code data-lang-source="resolve(definition)" data-lang-kind="signature">resolve(definition)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>Yes</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve one public routing definition to immutable routing config. It provides resolve behavior on ImagingRoutingBuilder.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="definition" data-lang-kind="parameter-name">definition</code></td>
+                                <td class="member-param-type"><a href="class-imagingroutingbuilder-e0a5ad92.html"><code data-lang-source="ImagingRoutingBuilder" data-lang-kind="type-token">ImagingRoutingBuilder</code></a><br /><code data-lang-source="Function" data-lang-kind="type-token">Function</code><br /><code data-lang-source="object" data-lang-kind="type-token">object</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> Routing definition. It provides the definition input used by resolve.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ dicomPipeline: object | null, imagePipeline: object | null, otherwisePipeline: object | null, unknownMode: &quot;skip&quot; | &quot;fail&quot; }" data-lang-kind="type-token">{ dicomPipeline: object | null, imagePipeline: object | null, otherwisePipeline: object | null, unknownMode: &quot;skip&quot; | &quot;fail&quot; }</code><br><span class="page-meta">Routing config.</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<p class="page-meta">No option-object contracts detected for declared members.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+<p class="page-meta">No inherited members detected.</p>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

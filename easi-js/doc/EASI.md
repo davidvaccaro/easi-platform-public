@@ -19,6 +19,22 @@ EASI provides a lightweight, extensible, and memory-efficient foundation for SAX
 
 EASI empowers developers to build scalable, high-performance imaging workflows and applications — with full control over performance and data transformation — without requiring deep expertise in the DICOM&reg; standard.
 
+# Master API Contract
+
+EASI now includes a generated machine-readable master interface contract:
+
+- `doc/contracts/easi-api.contract.json`
+- `doc/contracts/easi-api.contract.schema.json`
+
+Generate and validate sync from `easi-js`:
+
+```bash
+npm run docs:api-contract
+npm run docs:api-contract:check
+```
+
+The contract captures exported classes, methods, parameters, return metadata, properties, and constants so it can be used for human docs, AI tooling, and code-generation workflows.
+
 # `EASI` Class
 
 The `EASI` class is the root entry point for the EASI DICOM&reg; system.  

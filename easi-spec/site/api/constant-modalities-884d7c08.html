@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API constant reference for Modalities.">
+    <title>EASI | Modalities</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>Modalities</h2>
+                <p>Generated reference for this module-level constant export.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Constant Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Module</td><td><code>src/dicom/Modality.js</code></td></tr>
+                        <tr><td>Declaration</td><td><code>var</code></td></tr>
+                        <tr><td>Initializer Kind</td><td><code>object</code></td></tr>
+                        <tr><td>Documented Entries</td><td><code>78</code></td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Exported By Classes</h3>
+<ul>
+                    <li><a href="class-modality-0c67e8a1.html"><code>Modality</code></a></li>
+                </ul>
+            </section>
+
+            <section class="section reveal">
+                <h3>Constant Entries</h3>
+                <div class="search">
+                    <input id="constant-entry-search" type="search" placeholder="Search constant entries..."
+                           data-filter-input data-filter-target="#constant-entry-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="constant-entry-rows">
+
+                            <tr data-filter-item="AR new Modality({ ID: &#39;AR&#39;, Name: &#39;Autorefraction&#39;, IsMultiFrame: false, IsRetired: false }) Token used for ar conditions.">
+                                <td><code>AR</code></td>
+                                <td><code>new Modality({ ID: &#39;AR&#39;, Name: &#39;Autorefraction&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for ar conditions.</td>
+                            </tr>
+                            <tr data-filter-item="ASMT new Modality({ ID: &#39;ASMT&#39;, Name: &#39;Content Assessment Results&#39;, IsMultiFrame: false, IsRetired: false }) Token used for asmt conditions.">
+                                <td><code>ASMT</code></td>
+                                <td><code>new Modality({ ID: &#39;ASMT&#39;, Name: &#39;Content Assessment Results&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for asmt conditions.</td>
+                            </tr>
+                            <tr data-filter-item="AU new Modality({ ID: &#39;AU&#39;, Name: &#39;Audio&#39;, IsMultiFrame: false, IsRetired: false }) Token used for au conditions.">
+                                <td><code>AU</code></td>
+                                <td><code>new Modality({ ID: &#39;AU&#39;, Name: &#39;Audio&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for au conditions.</td>
+                            </tr>
+                            <tr data-filter-item="BI new Modality({ ID: &#39;BI&#39;, Name: &#39;Biomagnetic Imaging&#39;, IsMultiFrame: false, IsRetired: false }) Token used for bi conditions.">
+                                <td><code>BI</code></td>
+                                <td><code>new Modality({ ID: &#39;BI&#39;, Name: &#39;Biomagnetic Imaging&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for bi conditions.</td>
+                            </tr>
+                            <tr data-filter-item="BMD new Modality({ ID: &#39;BMD&#39;, Name: &#39;Bone Mineral Densitometry&#39;, IsMultiFrame: false, IsRetired: false }) Token used for bmd conditions.">
+                                <td><code>BMD</code></td>
+                                <td><code>new Modality({ ID: &#39;BMD&#39;, Name: &#39;Bone Mineral Densitometry&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for bmd conditions.</td>
+                            </tr>
+                            <tr data-filter-item="CFM new Modality({ ID: &#39;CFM&#39;, Name: &#39;Confocal Microscopy&#39;, IsMultiFrame: false, IsRetired: false }) Token used for cfm conditions.">
+                                <td><code>CFM</code></td>
+                                <td><code>new Modality({ ID: &#39;CFM&#39;, Name: &#39;Confocal Microscopy&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for cfm conditions.</td>
+                            </tr>
+                            <tr data-filter-item="EPS new Modality({ ID: &#39;EPS&#39;, Name: &#39;Cardiac Electrophysiology&#39;, IsMultiFrame: false, IsRetired: false }) Token used for eps conditions.">
+                                <td><code>EPS</code></td>
+                                <td><code>new Modality({ ID: &#39;EPS&#39;, Name: &#39;Cardiac Electrophysiology&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for eps conditions.</td>
+                            </tr>
+                            <tr data-filter-item="CR new Modality({ ID: &#39;CR&#39;, Name: &#39;Computed Radiography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for cr conditions.">
+                                <td><code>CR</code></td>
+                                <td><code>new Modality({ ID: &#39;CR&#39;, Name: &#39;Computed Radiography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for cr conditions.</td>
+                            </tr>
+                            <tr data-filter-item="CT new Modality({ ID: &#39;CT&#39;, Name: &#39;Computed Tomography&#39;, IsMultiFrame: true, IsRetired: false }) Token used for ct conditions.">
+                                <td><code>CT</code></td>
+                                <td><code>new Modality({ ID: &#39;CT&#39;, Name: &#39;Computed Tomography&#39;, IsMultiFrame: true, IsRetired: false })</code></td>
+                                <td>Token used for ct conditions.</td>
+                            </tr>
+                            <tr data-filter-item="CTPROTOCOL new Modality({ ID: &#39;CTPROTOCOL&#39;, Name: &#39;CT Protocol (Performed)&#39;, IsMultiFrame: false, IsRetired: false }) Token used for ctprotocol conditions.">
+                                <td><code>CTPROTOCOL</code></td>
+                                <td><code>new Modality({ ID: &#39;CTPROTOCOL&#39;, Name: &#39;CT Protocol (Performed)&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for ctprotocol conditions.</td>
+                            </tr>
+                            <tr data-filter-item="DMS new Modality({ ID: &#39;DMS&#39;, Name: &#39;Dermoscopy&#39;, IsMultiFrame: false, IsRetired: false }) Token used for dms conditions.">
+                                <td><code>DMS</code></td>
+                                <td><code>new Modality({ ID: &#39;DMS&#39;, Name: &#39;Dermoscopy&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for dms conditions.</td>
+                            </tr>
+                            <tr data-filter-item="DG new Modality({ ID: &#39;DG&#39;, Name: &#39;Diaphanography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for dg conditions.">
+                                <td><code>DG</code></td>
+                                <td><code>new Modality({ ID: &#39;DG&#39;, Name: &#39;Diaphanography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for dg conditions.</td>
+                            </tr>
+                            <tr data-filter-item="DOC new Modality({ ID: &#39;DOC&#39;, Name: &#39;Document&#39;, IsMultiFrame: false, IsRetired: false }) Token used for doc conditions.">
+                                <td><code>DOC</code></td>
+                                <td><code>new Modality({ ID: &#39;DOC&#39;, Name: &#39;Document&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for doc conditions.</td>
+                            </tr>
+                            <tr data-filter-item="DX new Modality({ ID: &#39;DX&#39;, Name: &#39;Digital Radiography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for dx conditions.">
+                                <td><code>DX</code></td>
+                                <td><code>new Modality({ ID: &#39;DX&#39;, Name: &#39;Digital Radiography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for dx conditions.</td>
+                            </tr>
+                            <tr data-filter-item="ECG new Modality({ ID: &#39;ECG&#39;, Name: &#39;Electrocardiography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for ecg conditions.">
+                                <td><code>ECG</code></td>
+                                <td><code>new Modality({ ID: &#39;ECG&#39;, Name: &#39;Electrocardiography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for ecg conditions.</td>
+                            </tr>
+                            <tr data-filter-item="EEG new Modality({ ID: &#39;EEG&#39;, Name: &#39;Electroencephalography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for eeg conditions.">
+                                <td><code>EEG</code></td>
+                                <td><code>new Modality({ ID: &#39;EEG&#39;, Name: &#39;Electroencephalography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for eeg conditions.</td>
+                            </tr>
+                            <tr data-filter-item="EMG new Modality({ ID: &#39;EMG&#39;, Name: &#39;Electromyography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for emg conditions.">
+                                <td><code>EMG</code></td>
+                                <td><code>new Modality({ ID: &#39;EMG&#39;, Name: &#39;Electromyography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for emg conditions.</td>
+                            </tr>
+                            <tr data-filter-item="EOG new Modality({ ID: &#39;EOG&#39;, Name: &#39;Electrooculography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for eog conditions.">
+                                <td><code>EOG</code></td>
+                                <td><code>new Modality({ ID: &#39;EOG&#39;, Name: &#39;Electrooculography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for eog conditions.</td>
+                            </tr>
+                            <tr data-filter-item="ES new Modality({ ID: &#39;ES&#39;, Name: &#39;Endoscopy&#39;, IsMultiFrame: false, IsRetired: false }) Token used for es conditions.">
+                                <td><code>ES</code></td>
+                                <td><code>new Modality({ ID: &#39;ES&#39;, Name: &#39;Endoscopy&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for es conditions.</td>
+                            </tr>
+                            <tr data-filter-item="FID new Modality({ ID: &#39;FID&#39;, Name: &#39;Fiducials&#39;, IsMultiFrame: false, IsRetired: false }) Token used for fid conditions.">
+                                <td><code>FID</code></td>
+                                <td><code>new Modality({ ID: &#39;FID&#39;, Name: &#39;Fiducials&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for fid conditions.</td>
+                            </tr>
+                            <tr data-filter-item="XC new Modality({ ID: &#39;XC&#39;, Name: &#39;External-camera Photography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for xc conditions.">
+                                <td><code>XC</code></td>
+                                <td><code>new Modality({ ID: &#39;XC&#39;, Name: &#39;External-camera Photography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for xc conditions.</td>
+                            </tr>
+                            <tr data-filter-item="GM new Modality({ ID: &#39;GM&#39;, Name: &#39;General Microscopy&#39;, IsMultiFrame: false, IsRetired: false }) Token used for gm conditions.">
+                                <td><code>GM</code></td>
+                                <td><code>new Modality({ ID: &#39;GM&#39;, Name: &#39;General Microscopy&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for gm conditions.</td>
+                            </tr>
+                            <tr data-filter-item="HC new Modality({ ID: &#39;HC&#39;, Name: &#39;Hard Copy&#39;, IsMultiFrame: false, IsRetired: false }) Token used for hc conditions.">
+                                <td><code>HC</code></td>
+                                <td><code>new Modality({ ID: &#39;HC&#39;, Name: &#39;Hard Copy&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for hc conditions.</td>
+                            </tr>
+                            <tr data-filter-item="HD new Modality({ ID: &#39;HD&#39;, Name: &#39;Hemodynamic Waveform&#39;, IsMultiFrame: false, IsRetired: false }) Token used for hd conditions.">
+                                <td><code>HD</code></td>
+                                <td><code>new Modality({ ID: &#39;HD&#39;, Name: &#39;Hemodynamic Waveform&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for hd conditions.</td>
+                            </tr>
+                            <tr data-filter-item="IO new Modality({ ID: &#39;IO&#39;, Name: &#39;Intra-oral Radiography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for io conditions.">
+                                <td><code>IO</code></td>
+                                <td><code>new Modality({ ID: &#39;IO&#39;, Name: &#39;Intra-oral Radiography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for io conditions.</td>
+                            </tr>
+                            <tr data-filter-item="IOL new Modality({ ID: &#39;IOL&#39;, Name: &#39;Intraocular Lens Data&#39;, IsMultiFrame: false, IsRetired: false }) Token used for iol conditions.">
+                                <td><code>IOL</code></td>
+                                <td><code>new Modality({ ID: &#39;IOL&#39;, Name: &#39;Intraocular Lens Data&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for iol conditions.</td>
+                            </tr>
+                            <tr data-filter-item="IVOCT new Modality({ ID: &#39;IVOCT&#39;, Name: &#39;Intravascular Optical Coherence Tomography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for ivoct conditions.">
+                                <td><code>IVOCT</code></td>
+                                <td><code>new Modality({ ID: &#39;IVOCT&#39;, Name: &#39;Intravascular Optical Coherence Tomography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for ivoct conditions.</td>
+                            </tr>
+                            <tr data-filter-item="IVUS new Modality({ ID: &#39;IVUS&#39;, Name: &#39;Intravascular Ultrasound&#39;, IsMultiFrame: false, IsRetired: false }) Token used for ivus conditions.">
+                                <td><code>IVUS</code></td>
+                                <td><code>new Modality({ ID: &#39;IVUS&#39;, Name: &#39;Intravascular Ultrasound&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for ivus conditions.</td>
+                            </tr>
+                            <tr data-filter-item="KER new Modality({ ID: &#39;KER&#39;, Name: &#39;Keratometry&#39;, IsMultiFrame: false, IsRetired: false }) Token used for ker conditions.">
+                                <td><code>KER</code></td>
+                                <td><code>new Modality({ ID: &#39;KER&#39;, Name: &#39;Keratometry&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for ker conditions.</td>
+                            </tr>
+                            <tr data-filter-item="KO new Modality({ ID: &#39;KO&#39;, Name: &#39;Key Object Selection&#39;, IsMultiFrame: false, IsRetired: false }) Token used for ko conditions.">
+                                <td><code>KO</code></td>
+                                <td><code>new Modality({ ID: &#39;KO&#39;, Name: &#39;Key Object Selection&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for ko conditions.</td>
+                            </tr>
+                            <tr data-filter-item="LS new Modality({ ID: &#39;LS&#39;, Name: &#39;Laser Scan&#39;, IsMultiFrame: false, IsRetired: false }) Token used for ls conditions.">
+                                <td><code>LS</code></td>
+                                <td><code>new Modality({ ID: &#39;LS&#39;, Name: &#39;Laser Scan&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for ls conditions.</td>
+                            </tr>
+                            <tr data-filter-item="LEN new Modality({ ID: &#39;LEN&#39;, Name: &#39;Lensometry&#39;, IsMultiFrame: false, IsRetired: false }) Token used for len conditions.">
+                                <td><code>LEN</code></td>
+                                <td><code>new Modality({ ID: &#39;LEN&#39;, Name: &#39;Lensometry&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for len conditions.</td>
+                            </tr>
+                            <tr data-filter-item="M3D new Modality({ ID: &#39;M3D&#39;, Name: &#39;Model for 3D Manufacturing&#39;, IsMultiFrame: false, IsRetired: false }) Token used for m3 d conditions.">
+                                <td><code>M3D</code></td>
+                                <td><code>new Modality({ ID: &#39;M3D&#39;, Name: &#39;Model for 3D Manufacturing&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for m3 d conditions.</td>
+                            </tr>
+                            <tr data-filter-item="MR new Modality({ ID: &#39;MR&#39;, Name: &#39;Magnetic Resonance&#39;, IsMultiFrame: true, IsRetired: false }) Token used for mr conditions.">
+                                <td><code>MR</code></td>
+                                <td><code>new Modality({ ID: &#39;MR&#39;, Name: &#39;Magnetic Resonance&#39;, IsMultiFrame: true, IsRetired: false })</code></td>
+                                <td>Token used for mr conditions.</td>
+                            </tr>
+                            <tr data-filter-item="MG new Modality({ ID: &#39;MG&#39;, Name: &#39;Mammography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for mg conditions.">
+                                <td><code>MG</code></td>
+                                <td><code>new Modality({ ID: &#39;MG&#39;, Name: &#39;Mammography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for mg conditions.</td>
+                            </tr>
+                            <tr data-filter-item="NM new Modality({ ID: &#39;NM&#39;, Name: &#39;Nuclear Medicine&#39;, IsMultiFrame: true, IsRetired: false }) Token used for nm conditions.">
+                                <td><code>NM</code></td>
+                                <td><code>new Modality({ ID: &#39;NM&#39;, Name: &#39;Nuclear Medicine&#39;, IsMultiFrame: true, IsRetired: false })</code></td>
+                                <td>Token used for nm conditions.</td>
+                            </tr>
+                            <tr data-filter-item="OAM new Modality({ ID: &#39;OAM&#39;, Name: &#39;Ophthalmic Axial Measurements&#39;, IsMultiFrame: false, IsRetired: false }) Token used for oam conditions.">
+                                <td><code>OAM</code></td>
+                                <td><code>new Modality({ ID: &#39;OAM&#39;, Name: &#39;Ophthalmic Axial Measurements&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for oam conditions.</td>
+                            </tr>
+                            <tr data-filter-item="OPM new Modality({ ID: &#39;OPM&#39;, Name: &#39;Ophthalmic Mapping&#39;, IsMultiFrame: false, IsRetired: false }) Token used for opm conditions.">
+                                <td><code>OPM</code></td>
+                                <td><code>new Modality({ ID: &#39;OPM&#39;, Name: &#39;Ophthalmic Mapping&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for opm conditions.</td>
+                            </tr>
+                            <tr data-filter-item="OP new Modality({ ID: &#39;OP&#39;, Name: &#39;Ophthalmic Photography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for op conditions.">
+                                <td><code>OP</code></td>
+                                <td><code>new Modality({ ID: &#39;OP&#39;, Name: &#39;Ophthalmic Photography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for op conditions.</td>
+                            </tr>
+                            <tr data-filter-item="OPT new Modality({ ID: &#39;OPT&#39;, Name: &#39;Ophthalmic Tomography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for opt conditions.">
+                                <td><code>OPT</code></td>
+                                <td><code>new Modality({ ID: &#39;OPT&#39;, Name: &#39;Ophthalmic Tomography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for opt conditions.</td>
+                            </tr>
+                            <tr data-filter-item="OPTBSV new Modality({ ID: &#39;OPTBSV&#39;, Name: &#39;Ophthalmic Tomography B-scan Volume Analysis&#39;, IsMultiFrame: false, IsRetired: false }) Token used for optbsv conditions.">
+                                <td><code>OPTBSV</code></td>
+                                <td><code>new Modality({ ID: &#39;OPTBSV&#39;, Name: &#39;Ophthalmic Tomography B-scan Volume Analysis&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for optbsv conditions.</td>
+                            </tr>
+                            <tr data-filter-item="OPTENF new Modality({ ID: &#39;OPTENF&#39;, Name: &#39;Ophthalmic Tomography En Face&#39;, IsMultiFrame: false, IsRetired: false }) Token used for optenf conditions.">
+                                <td><code>OPTENF</code></td>
+                                <td><code>new Modality({ ID: &#39;OPTENF&#39;, Name: &#39;Ophthalmic Tomography En Face&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for optenf conditions.</td>
+                            </tr>
+                            <tr data-filter-item="OPV new Modality({ ID: &#39;OPV&#39;, Name: &#39;Ophthalmic Visual Field&#39;, IsMultiFrame: false, IsRetired: false }) Token used for opv conditions.">
+                                <td><code>OPV</code></td>
+                                <td><code>new Modality({ ID: &#39;OPV&#39;, Name: &#39;Ophthalmic Visual Field&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for opv conditions.</td>
+                            </tr>
+                            <tr data-filter-item="OCT new Modality({ ID: &#39;OCT&#39;, Name: &#39;Optical Coherence Tomography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for oct conditions.">
+                                <td><code>OCT</code></td>
+                                <td><code>new Modality({ ID: &#39;OCT&#39;, Name: &#39;Optical Coherence Tomography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for oct conditions.</td>
+                            </tr>
+                            <tr data-filter-item="OSS new Modality({ ID: &#39;OSS&#39;, Name: &#39;Optical Surface Scanner&#39;, IsMultiFrame: false, IsRetired: false }) Token used for oss conditions.">
+                                <td><code>OSS</code></td>
+                                <td><code>new Modality({ ID: &#39;OSS&#39;, Name: &#39;Optical Surface Scanner&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for oss conditions.</td>
+                            </tr>
+                            <tr data-filter-item="OT new Modality({ ID: &#39;OT&#39;, Name: &#39;Other&#39;, IsMultiFrame: false, IsRetired: true }) Token used for ot conditions.">
+                                <td><code>OT</code></td>
+                                <td><code>new Modality({ ID: &#39;OT&#39;, Name: &#39;Other&#39;, IsMultiFrame: false, IsRetired: true })</code></td>
+                                <td>Token used for ot conditions.</td>
+                            </tr>
+                            <tr data-filter-item="PA new Modality({ ID: &#39;PA&#39;, Name: &#39;Photoacoustic&#39;, IsMultiFrame: false, IsRetired: false }) Token used for pa conditions.">
+                                <td><code>PA</code></td>
+                                <td><code>new Modality({ ID: &#39;PA&#39;, Name: &#39;Photoacoustic&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for pa conditions.</td>
+                            </tr>
+                            <tr data-filter-item="PX new Modality({ ID: &#39;PX&#39;, Name: &#39;Panoramic X-Ray&#39;, IsMultiFrame: false, IsRetired: false }) Token used for px conditions.">
+                                <td><code>PX</code></td>
+                                <td><code>new Modality({ ID: &#39;PX&#39;, Name: &#39;Panoramic X-Ray&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for px conditions.</td>
+                            </tr>
+                            <tr data-filter-item="PLAN new Modality({ ID: &#39;PLAN&#39;, Name: &#39;Plan&#39;, IsMultiFrame: false, IsRetired: false }) Token used for plan conditions.">
+                                <td><code>PLAN</code></td>
+                                <td><code>new Modality({ ID: &#39;PLAN&#39;, Name: &#39;Plan&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for plan conditions.</td>
+                            </tr>
+                            <tr data-filter-item="POS new Modality({ ID: &#39;POS&#39;, Name: &#39;Position Sensor&#39;, IsMultiFrame: false, IsRetired: false }) Token used for pos conditions.">
+                                <td><code>POS</code></td>
+                                <td><code>new Modality({ ID: &#39;POS&#39;, Name: &#39;Position Sensor&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for pos conditions.</td>
+                            </tr>
+                            <tr data-filter-item="PR new Modality({ ID: &#39;PR&#39;, Name: &#39;Presentation State&#39;, IsMultiFrame: false, IsRetired: false }) Token used for pr conditions.">
+                                <td><code>PR</code></td>
+                                <td><code>new Modality({ ID: &#39;PR&#39;, Name: &#39;Presentation State&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for pr conditions.</td>
+                            </tr>
+                            <tr data-filter-item="PT new Modality({ ID: &#39;PT&#39;, Name: &#39;Positron emission tomography&#39;, IsMultiFrame: true, IsRetired: false }) Token used for pt conditions.">
+                                <td><code>PT</code></td>
+                                <td><code>new Modality({ ID: &#39;PT&#39;, Name: &#39;Positron emission tomography&#39;, IsMultiFrame: true, IsRetired: false })</code></td>
+                                <td>Token used for pt conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RF new Modality({ ID: &#39;RF&#39;, Name: &#39;Radiofluoroscopy&#39;, IsMultiFrame: false, IsRetired: false }) Token used for rf conditions.">
+                                <td><code>RF</code></td>
+                                <td><code>new Modality({ ID: &#39;RF&#39;, Name: &#39;Radiofluoroscopy&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for rf conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RG new Modality({ ID: &#39;RG&#39;, Name: &#39;Radiographic imaging&#39;, IsMultiFrame: false, IsRetired: true }) Token used for rg conditions.">
+                                <td><code>RG</code></td>
+                                <td><code>new Modality({ ID: &#39;RG&#39;, Name: &#39;Radiographic imaging&#39;, IsMultiFrame: false, IsRetired: true })</code></td>
+                                <td>Token used for rg conditions.</td>
+                            </tr>
+                            <tr data-filter-item="REG new Modality({ ID: &#39;REG&#39;, Name: &#39;Registration&#39;, IsMultiFrame: false, IsRetired: false }) Token used for reg conditions.">
+                                <td><code>REG</code></td>
+                                <td><code>new Modality({ ID: &#39;REG&#39;, Name: &#39;Registration&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for reg conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RESP new Modality({ ID: &#39;RESP&#39;, Name: &#39;Respiratory Waveform&#39;, IsMultiFrame: false, IsRetired: false }) Token used for resp conditions.">
+                                <td><code>RESP</code></td>
+                                <td><code>new Modality({ ID: &#39;RESP&#39;, Name: &#39;Respiratory Waveform&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for resp conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RTDOSE new Modality({ ID: &#39;RTDOSE&#39;, Name: &#39;Radiotherapy Dose&#39;, IsMultiFrame: false, IsRetired: false }) Token used for rtdose conditions.">
+                                <td><code>RTDOSE</code></td>
+                                <td><code>new Modality({ ID: &#39;RTDOSE&#39;, Name: &#39;Radiotherapy Dose&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for rtdose conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RTIMAGE new Modality({ ID: &#39;RTIMAGE&#39;, Name: &#39;RT Image&#39;, IsMultiFrame: false, IsRetired: false }) Token used for rtimage conditions.">
+                                <td><code>RTIMAGE</code></td>
+                                <td><code>new Modality({ ID: &#39;RTIMAGE&#39;, Name: &#39;RT Image&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for rtimage conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RTINTENT new Modality({ ID: &#39;RTINTENT&#39;, Name: &#39;Radiotherapy Intent&#39;, IsMultiFrame: false, IsRetired: false }) Token used for rtintent conditions.">
+                                <td><code>RTINTENT</code></td>
+                                <td><code>new Modality({ ID: &#39;RTINTENT&#39;, Name: &#39;Radiotherapy Intent&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for rtintent conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RTPLAN new Modality({ ID: &#39;RTPLAN&#39;, Name: &#39;Radiotherapy Plan&#39;, IsMultiFrame: false, IsRetired: false }) Token used for rtplan conditions.">
+                                <td><code>RTPLAN</code></td>
+                                <td><code>new Modality({ ID: &#39;RTPLAN&#39;, Name: &#39;Radiotherapy Plan&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for rtplan conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RTRAD new Modality({ ID: &#39;RTRAD&#39;, Name: &#39;Radiotherapy Radiation&#39;, IsMultiFrame: false, IsRetired: false }) Token used for rtrad conditions.">
+                                <td><code>RTRAD</code></td>
+                                <td><code>new Modality({ ID: &#39;RTRAD&#39;, Name: &#39;Radiotherapy Radiation&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for rtrad conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RTRECORD new Modality({ ID: &#39;RTRECORD&#39;, Name: &#39;RT Radiation Record&#39;, IsMultiFrame: false, IsRetired: false }) Token used for rtrecord conditions.">
+                                <td><code>RTRECORD</code></td>
+                                <td><code>new Modality({ ID: &#39;RTRECORD&#39;, Name: &#39;RT Radiation Record&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for rtrecord conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RTSEGANN new Modality({ ID: &#39;RTSEGANN&#39;, Name: &#39;Radiotherapy Segment Annotation&#39;, IsMultiFrame: false, IsRetired: false }) Token used for rtsegann conditions.">
+                                <td><code>RTSEGANN</code></td>
+                                <td><code>new Modality({ ID: &#39;RTSEGANN&#39;, Name: &#39;Radiotherapy Segment Annotation&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for rtsegann conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RTSTRUCT new Modality({ ID: &#39;RTSTRUCT&#39;, Name: &#39;Radiotherapy Structure Set&#39;, IsMultiFrame: false, IsRetired: false }) Token used for rtstruct conditions.">
+                                <td><code>RTSTRUCT</code></td>
+                                <td><code>new Modality({ ID: &#39;RTSTRUCT&#39;, Name: &#39;Radiotherapy Structure Set&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for rtstruct conditions.</td>
+                            </tr>
+                            <tr data-filter-item="RWV new Modality({ ID: &#39;RWV&#39;, Name: &#39;Real World Value Map&#39;, IsMultiFrame: false, IsRetired: false }) Token used for rwv conditions.">
+                                <td><code>RWV</code></td>
+                                <td><code>new Modality({ ID: &#39;RWV&#39;, Name: &#39;Real World Value Map&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for rwv conditions.</td>
+                            </tr>
+                            <tr data-filter-item="SEG new Modality({ ID: &#39;SEG&#39;, Name: &#39;Segmentation&#39;, IsMultiFrame: false, IsRetired: false }) Token used for seg conditions.">
+                                <td><code>SEG</code></td>
+                                <td><code>new Modality({ ID: &#39;SEG&#39;, Name: &#39;Segmentation&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for seg conditions.</td>
+                            </tr>
+                            <tr data-filter-item="SM new Modality({ ID: &#39;SM&#39;, Name: &#39;Slide Microscopy&#39;, IsMultiFrame: false, IsRetired: false }) Token used for sm conditions.">
+                                <td><code>SM</code></td>
+                                <td><code>new Modality({ ID: &#39;SM&#39;, Name: &#39;Slide Microscopy&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for sm conditions.</td>
+                            </tr>
+                            <tr data-filter-item="SMR new Modality({ ID: &#39;SMR&#39;, Name: &#39;Stereometric Relationship&#39;, IsMultiFrame: false, IsRetired: false }) Token used for smr conditions.">
+                                <td><code>SMR</code></td>
+                                <td><code>new Modality({ ID: &#39;SMR&#39;, Name: &#39;Stereometric Relationship&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for smr conditions.</td>
+                            </tr>
+                            <tr data-filter-item="SR new Modality({ ID: &#39;SR&#39;, Name: &#39;SR Document&#39;, IsMultiFrame: false, IsRetired: false }) Token used for sr conditions.">
+                                <td><code>SR</code></td>
+                                <td><code>new Modality({ ID: &#39;SR&#39;, Name: &#39;SR Document&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for sr conditions.</td>
+                            </tr>
+                            <tr data-filter-item="SRF new Modality({ ID: &#39;SRF&#39;, Name: &#39;Subjective Refraction&#39;, IsMultiFrame: false, IsRetired: false }) Token used for srf conditions.">
+                                <td><code>SRF</code></td>
+                                <td><code>new Modality({ ID: &#39;SRF&#39;, Name: &#39;Subjective Refraction&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for srf conditions.</td>
+                            </tr>
+                            <tr data-filter-item="STAIN new Modality({ ID: &#39;STAIN&#39;, Name: &#39;Automated Slide Stainer&#39;, IsMultiFrame: false, IsRetired: false }) Token used for stain conditions.">
+                                <td><code>STAIN</code></td>
+                                <td><code>new Modality({ ID: &#39;STAIN&#39;, Name: &#39;Automated Slide Stainer&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for stain conditions.</td>
+                            </tr>
+                            <tr data-filter-item="TEXTUREMAP new Modality({ ID: &#39;TEXTUREMAP&#39;, Name: &#39;Texture Map&#39;, IsMultiFrame: false, IsRetired: false }) Token used for texturemap conditions.">
+                                <td><code>TEXTUREMAP</code></td>
+                                <td><code>new Modality({ ID: &#39;TEXTUREMAP&#39;, Name: &#39;Texture Map&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for texturemap conditions.</td>
+                            </tr>
+                            <tr data-filter-item="TG new Modality({ ID: &#39;TG&#39;, Name: &#39;Thermography&#39;, IsMultiFrame: false, IsRetired: false }) Token used for tg conditions.">
+                                <td><code>TG</code></td>
+                                <td><code>new Modality({ ID: &#39;TG&#39;, Name: &#39;Thermography&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for tg conditions.</td>
+                            </tr>
+                            <tr data-filter-item="US new Modality({ ID: &#39;US&#39;, Name: &#39;Ultrasound&#39;, IsMultiFrame: true, IsRetired: false }) Token used for us conditions.">
+                                <td><code>US</code></td>
+                                <td><code>new Modality({ ID: &#39;US&#39;, Name: &#39;Ultrasound&#39;, IsMultiFrame: true, IsRetired: false })</code></td>
+                                <td>Token used for us conditions.</td>
+                            </tr>
+                            <tr data-filter-item="BDUS new Modality({ ID: &#39;BDUS&#39;, Name: &#39;Ultrasound Bone Densitometry&#39;, IsMultiFrame: false, IsRetired: false }) Token used for bdus conditions.">
+                                <td><code>BDUS</code></td>
+                                <td><code>new Modality({ ID: &#39;BDUS&#39;, Name: &#39;Ultrasound Bone Densitometry&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for bdus conditions.</td>
+                            </tr>
+                            <tr data-filter-item="VA new Modality({ ID: &#39;VA&#39;, Name: &#39;Visual Acuity&#39;, IsMultiFrame: false, IsRetired: false }) Token used for va conditions.">
+                                <td><code>VA</code></td>
+                                <td><code>new Modality({ ID: &#39;VA&#39;, Name: &#39;Visual Acuity&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for va conditions.</td>
+                            </tr>
+                            <tr data-filter-item="XA new Modality({ ID: &#39;XA&#39;, Name: &#39;X-Ray Angiography&#39;, IsMultiFrame: true, IsRetired: false }) Token used for xa conditions.">
+                                <td><code>XA</code></td>
+                                <td><code>new Modality({ ID: &#39;XA&#39;, Name: &#39;X-Ray Angiography&#39;, IsMultiFrame: true, IsRetired: false })</code></td>
+                                <td>Token used for xa conditions.</td>
+                            </tr>
+                            <tr data-filter-item="XAPROTOCOL new Modality({ ID: &#39;XAPROTOCOL&#39;, Name: &#39;XA Protocol (Performed)&#39;, IsMultiFrame: false, IsRetired: false }) Token used for xaprotocol conditions.">
+                                <td><code>XAPROTOCOL</code></td>
+                                <td><code>new Modality({ ID: &#39;XAPROTOCOL&#39;, Name: &#39;XA Protocol (Performed)&#39;, IsMultiFrame: false, IsRetired: false })</code></td>
+                                <td>Token used for xaprotocol conditions.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <p class="footer-note">Informative generated constant reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

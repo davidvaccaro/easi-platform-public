@@ -178,6 +178,250 @@ test("Test: output writer sink is invoked when into* is configured", async () =>
   expect(result.first()).toEqual({ ok: true });
 });
 
+test("Test: output writer sink fans out routed envelopes to mapped destinations", async () => {
+  const customReader = {
+    read() {
+      return Promise.resolve([
+        {
+          route: "dicom",
+          kind: "dicom",
+          labels: ["dicom-label"],
+          target: null,
+          into: "dicom-destination",
+          output: new Uint8Array([1, 2]),
+          intoOptions: { firstRoute: true }
+        },
+        {
+          route: "image",
+          kind: "image",
+          labels: ["image-label"],
+          target: "image-destination",
+          into: null,
+          output: new Uint8Array([3, 4]),
+          targetOptions: { secondRoute: true }
+        }
+      ]);
+    },
+    parser: null,
+    onPart: null
+  };
+
+  const writer = {
+    write: jest.fn().
+    mockResolvedValueOnce({ ok: "dicom-write" }).
+    mockResolvedValueOnce({ ok: "image-write" })
+  };
+
+  const pipeline = new PipelineBuilder().
+  withReader(customReader).
+  ofDicomData().
+  toInstances().
+  withWriter(writer, "default-destination", {
+    defaultWrite: true,
+    intoTargets: {
+      "dicom-destination": "mapped-dicom-destination",
+      "image-destination": "mapped-image-destination"
+    }
+  }).
+  build();
+
+  const result = await pipeline.process(new Uint8Array([9]), null, {
+    destinationOptions: { runtimeWrite: true }
+  });
+
+  expect(writer.write).toHaveBeenCalledTimes(2);
+  expect(writer.write).toHaveBeenNthCalledWith(
+  1,
+  "mapped-dicom-destination",
+  new Uint8Array([1, 2]),
+  expect.objectContaining({
+    defaultWrite: true,
+    runtimeWrite: true,
+    firstRoute: true
+  }));
+  expect(writer.write.mock.calls[0][2].routing).toEqual({
+    route: "dicom",
+    labels: ["dicom-label"],
+    target: null,
+    into: "dicom-destination"
+  });
+
+  expect(writer.write).toHaveBeenNthCalledWith(
+  2,
+  "mapped-image-destination",
+  new Uint8Array([3, 4]),
+  expect.objectContaining({
+    defaultWrite: true,
+    runtimeWrite: true,
+    secondRoute: true
+  }));
+  expect(writer.write.mock.calls[1][2].routing).toEqual({
+    route: "image",
+    labels: ["image-label"],
+    target: "image-destination",
+    into: null
+  });
+
+  expect(result.count).toBe(2);
+  expect(result.at(0)).toEqual({ ok: "dicom-write" });
+  expect(result.at(1)).toEqual({ ok: "image-write" });
+});
+
+test("Test: output writer sink skips empty skipped routes and falls back to default destination for non-routed items", async () => {
+  const customReader = {
+    read() {
+      return Promise.resolve([
+        {
+          route: "image",
+          kind: "image",
+          into: "image-drop",
+          skipped: true,
+          output: null
+        },
+        {
+          route: "dicom",
+          kind: "dicom",
+          labels: ["dicom-label"],
+          output: new Uint8Array([5, 6])
+        },
+        new Uint8Array([7, 8, 9])
+      ]);
+    },
+    parser: null,
+    onPart: null
+  };
+
+  const writer = {
+    write: jest.fn().
+    mockResolvedValueOnce({ ok: "dicom-route-write" }).
+    mockResolvedValueOnce({ ok: "raw-item-write" })
+  };
+
+  const pipeline = new PipelineBuilder().
+  withReader(customReader).
+  ofDicomData().
+  toInstances().
+  withWriter(writer, "default-destination", {
+    defaultWrite: true
+  }).
+  build();
+
+  const result = await pipeline.process(new Uint8Array([1, 2, 3]));
+
+  expect(writer.write).toHaveBeenCalledTimes(2);
+  expect(writer.write).toHaveBeenNthCalledWith(
+  1,
+  "default-destination",
+  new Uint8Array([5, 6]),
+  expect.objectContaining({
+    defaultWrite: true
+  }));
+  expect(writer.write).toHaveBeenNthCalledWith(
+  2,
+  "default-destination",
+  new Uint8Array([7, 8, 9]),
+  expect.objectContaining({
+    defaultWrite: true
+  }));
+
+  expect(result.count).toBe(2);
+  expect(result.at(0)).toEqual({ ok: "dicom-route-write" });
+  expect(result.at(1)).toEqual({ ok: "raw-item-write" });
+});
+
+test("Test: output writer sink resolves mapped destinations with routeTargets precedence", async () => {
+  const customReader = {
+    read() {
+      return Promise.resolve([
+        {
+          route: "dicom",
+          kind: "dicom",
+          into: "route-a",
+          output: new Uint8Array([1, 1, 1])
+        }
+      ]);
+    },
+    parser: null,
+    onPart: null
+  };
+
+  const writer = {
+    write: jest.fn().mockResolvedValue({ ok: true })
+  };
+
+  const pipeline = new PipelineBuilder().
+  withReader(customReader).
+  ofDicomData().
+  toInstances().
+  withWriter(writer, "default-target", {
+    routeTargets: { "route-a": "routeTargets-hit" },
+    routingTargets: { "route-a": "routingTargets-hit" },
+    intoTargets: { "route-a": "intoTargets-hit" },
+    targets: { "route-a": "targets-hit" }
+  }).
+  build();
+
+  await pipeline.process(new Uint8Array([2, 2, 2]));
+
+  expect(writer.write).toHaveBeenCalledTimes(1);
+  expect(writer.write).toHaveBeenCalledWith(
+  "routeTargets-hit",
+  new Uint8Array([1, 1, 1]),
+  expect.any(Object));
+});
+
+test("Test: routed fanout honors no-target writer signatures", async () => {
+  class ByteStreamWriter {
+    constructor() {
+      this.write = jest.fn().mockResolvedValue({ ok: "no-target" });
+    }
+  }
+
+  const customReader = {
+    read() {
+      return Promise.resolve([
+        {
+          route: "image",
+          kind: "image",
+          into: "ignored-target",
+          output: new Uint8Array([9, 9])
+        }
+      ]);
+    },
+    parser: null,
+    onPart: null
+  };
+
+  const writer = new ByteStreamWriter();
+
+  const pipeline = new PipelineBuilder().
+  withReader(customReader).
+  ofDicomData().
+  toInstances().
+  withWriter(writer, "default-target", {
+    defaultWrite: true
+  }).
+  build();
+
+  const result = await pipeline.process(new Uint8Array([3, 3, 3]));
+
+  expect(writer.write).toHaveBeenCalledTimes(1);
+  expect(writer.write).toHaveBeenCalledWith(
+  new Uint8Array([9, 9]),
+  expect.objectContaining({
+    defaultWrite: true
+  }));
+
+  expect(result.count).toBe(1);
+  expect(result.first()).toEqual(expect.objectContaining({
+    resultType: "PipelineOperationResult",
+    category: "writer",
+    operation: "into",
+    writer: "ByteStreamWriter",
+    output: { ok: "no-target" }
+  }));
+});
+
 test("Test: process() uses early-bound source configured by from* stage", async () => {
   const customReader = {
     read: jest.fn().mockResolvedValue({ ok: true }),

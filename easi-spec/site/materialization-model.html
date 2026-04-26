@@ -21,30 +21,31 @@
 
 <div class="nav-section">
                 <a class="nav-link" data-nav-link href="index.html">Overview</a>
-                <a class="nav-link" data-nav-link href="why-easi.html">Advantages of EASI</a>
+                <a class="nav-link" data-nav-link href="why-easi.html">The EASI Advantage</a>
                 <a class="nav-link" data-nav-link href="why-expressive.html">Why Expressive?</a>
                 <a class="nav-link" data-nav-link href="what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
                     <div class="nav-submenu" data-nav-submenu>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mappings</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-mappings.html">Mapping</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-selection.html">Selection</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-filtering.html">Filtering</a>
-                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writing</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="pipeline-writing.html">Writer</a>
                         <a class="nav-link nav-sublink" data-nav-link href="pipeline-results.html">Result Contract</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="dimse-pipeline.html">DIMSE Pipeline Model</a>
-                <a class="nav-link" data-nav-link href="advanced-pipeline.html">Advanced Pipeline Use Cases</a>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
-                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing Model</a>
-                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing Model section" aria-expanded="false">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
                             <span class="nav-group-chevron">&#9662;</span>
                         </button>
                     </div>
@@ -52,7 +53,19 @@
                         <a class="nav-link nav-sublink" data-nav-link href="lifecycle-status.html">Stream Lifecycle Events</a>
                     </div>
                 </div>
-                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization Model</a>
+                <a class="nav-link" data-nav-link href="materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
                 <div class="nav-group" data-nav-group data-expanded="false">
                     <div class="nav-group-header">
                         <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="builder-types/index.html">Builders</a>
@@ -129,6 +142,7 @@
                         <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
                     </div>
                 </div>
+                <a class="nav-link" data-nav-link href="api/index.html">API Reference</a>
                 <a class="nav-link" data-nav-link href="error-catalog.html">Errors</a>
                 <a class="nav-link" data-nav-link href="implementation-boundary.html">Standard Boundary</a>
                 <a class="nav-link" data-nav-link href="conformance.html">Conformance</a>
@@ -205,27 +219,27 @@
                     <tbody>
                         <tr>
                             <td>Terminal DICOM&reg; bytes</td>
-                            <td><code>toDicomData({ collectOutput, onChunk })</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-3ddb1da1"><code>toDicomData({ collectOutput, onChunk })</code></a></td>
                             <td>Switch between full byte-array accumulation and chunk-native emission.</td>
                         </tr>
                         <tr>
                             <td>Asset payload extraction</td>
-                            <td><code>toAssets({ metadata: { mapping, collect }, payload: { mode, onFrameChunk, onContentChunk, collect } })</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-f4678ed2"><code>toAssets({ metadata: { mapping, collect }, payload: { mode, onFrameChunk, onContentChunk, collect } })</code></a></td>
                             <td>Control frame/content payload materialization versus chunk streaming.</td>
                         </tr>
                         <tr>
                             <td>Parser bulk payload policy</td>
-                            <td><code>withBulkDataPolicy({ mode, knownLengthThreshold, hardSafetyCap })</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-3c05e6c4"><code>withBulkDataPolicy({ mode, knownLengthThreshold, hardSafetyCap })</code></a></td>
                             <td>Guide parser behavior for large value fields during stream parse.</td>
                         </tr>
                         <tr>
                             <td>Per-part emission</td>
-                            <td><code>withOnEmit(callback)</code> or read options <code>onEmit</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-f0072609"><code>withOnEmit(callback)</code></a> or read options <code>onEmit</code></td>
                             <td>Process multipart results incrementally rather than aggregating externally.</td>
                         </tr>
                         <tr>
                             <td>Outbound destination streaming</td>
-                            <td><code>intoFileStream(...)</code>, <code>intoWritableStream(...)</code>, <code>intoNodeStreamAdapter(...)</code>, <code>intoHttpStream(...)</code>, <code>intoByteBuffer(...)</code>, <code>intoPartBuffer(...)</code></td>
+                            <td><a href="api/class-pipelineoutputstage-4d2e8553.html#declared-member-d64edc20"><code>intoFileStream(...)</code></a>, <a href="api/class-pipelineoutputstage-4d2e8553.html#declared-member-09a714f8"><code>intoWritableStream(...)</code></a>, <a href="api/class-pipelineoutputstage-4d2e8553.html#declared-member-9bc7bcd3"><code>intoNodeStreamAdapter(...)</code></a>, <a href="api/class-pipelineoutputstage-4d2e8553.html#declared-member-362e9fd8"><code>intoHttpStream(...)</code></a>, <a href="api/class-pipelineoutputstage-4d2e8553.html#declared-member-6654656a"><code>intoByteBuffer(...)</code></a>, <a href="api/class-pipelineoutputstage-4d2e8553.html#declared-member-5000dd93"><code>intoPartBuffer(...)</code></a></td>
                             <td>Choose external sink streaming or in-memory writer buffering; useful for transport egress even when terminal output is materialized.</td>
                         </tr>
                     </tbody>
@@ -233,13 +247,13 @@
             </section>
 
             <section class="section reveal">
-                <h3>process() Output Matrix</h3>
+                <h3><a href="api/class-pipeline-cc9542ef.html#declared-member-dc3b8dc7"><code>process()</code></a> Output Matrix</h3>
                 <div class="callout informative">
                     <h4>Stable Contract</h4>
                     <p>
-                        <code>process(...)</code> always returns a <code>PipelineResultCollection</code>. The tables below
-                        describe what <code>resultCollection.first()</code> contains for each terminal shape.
-                        Terminal and built-in writer operations use standardized <code>PipelineOperationResult</code>
+                        <a href="api/class-pipeline-cc9542ef.html#declared-member-dc3b8dc7"><code>process(...)</code></a> always returns a <a href="api/class-pipelineresultcollection-ce74fcaf.html"><code>PipelineResultCollection</code></a>. The tables below
+                        describe what <a href="api/class-pipelineresultcollection-ce74fcaf.html#declared-member-0d1a8b1c"><code>resultCollection.first()</code></a> contains for each terminal shape.
+                        Terminal and built-in writer operations use standardized <a href="api/class-pipelineoperationresult-f7af9d49.html"><code>PipelineOperationResult</code></a>
                         envelopes for non-materialized paths.
                     </p>
                 </div>
@@ -250,58 +264,58 @@
                         <tr>
                             <th>Terminal</th>
                             <th>Materialization</th>
-                            <th><code>resultCollection.first()</code></th>
+                            <th><a href="api/class-pipelineresultcollection-ce74fcaf.html#declared-member-0d1a8b1c"><code>resultCollection.first()</code></a></th>
                             <th>Notes</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><code>toInstances()</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-0587dd6d"><code>toInstances()</code></a></td>
                             <td>Must materialize</td>
-                            <td><code>Instance</code></td>
+                            <td><a href="api/class-instance-21af06b0.html"><code>Instance</code></a></td>
                             <td>Multiple instances become multiple collection items.</td>
                         </tr>
                         <tr>
-                            <td><code>toEntities()</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-a7b153d2"><code>toEntities()</code></a></td>
                             <td>Must materialize</td>
-                            <td>Entity (for example <code>Image</code>, <code>StructuredReport</code>, <code>EncapsulatedDocument</code>)</td>
+                            <td>Entity (for example <a href="api/class-image-be55b078.html"><code>Image</code></a>, <a href="api/class-structuredreport-0011847c.html"><code>StructuredReport</code></a>, <a href="api/class-encapsulateddocument-13b5fc62.html"><code>EncapsulatedDocument</code></a>)</td>
                             <td>Entity type is SOP Class / modality dependent.</td>
                         </tr>
                         <tr>
-                            <td><code>toUnwrappedDocuments(...)</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-4f19dfa5"><code>toUnwrappedDocuments(...)</code></a></td>
                             <td>Must materialize</td>
-                            <td><code>UnwrappedDocument</code></td>
+                            <td><a href="api/class-unwrappeddocument-9b6aef1b.html"><code>UnwrappedDocument</code></a></td>
                             <td>Typed unwrapped payload with fields such as <code>mimeType</code>, <code>fileName</code>, <code>bytes</code>, and <code>text</code>. When no encapsulated document is present, collection is empty.</td>
                         </tr>
                         <tr>
-                            <td><code>toWrappedDocuments(...)</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-78c9c0a1"><code>toWrappedDocuments(...)</code></a></td>
                             <td>Must materialize</td>
                             <td><code>ByteArray</code></td>
                             <td>Returns wrapped native DICOM&reg; bytes.</td>
                         </tr>
                         <tr>
-                            <td><code>toMapping(mapping)</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-243e0340"><code>toMapping(mapping)</code></a></td>
                             <td>Must materialize</td>
                             <td>Mapping-defined output</td>
                             <td>Shape is determined by <code>mapping.end(context)</code>.</td>
                         </tr>
                         <tr>
-                            <td><code>toSelection(selection)</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-34e586a7"><code>toSelection(selection)</code></a></td>
                             <td>Must materialize</td>
-                            <td>Selection-defined output (commonly <code>AttributeSet</code>)</td>
+                            <td>Selection-defined output (commonly <a href="api/class-attributeset-ac4688c6.html"><code>AttributeSet</code></a>)</td>
                             <td>Shape is determined by <code>selection.end(context)</code>.</td>
                         </tr>
                         <tr>
-                            <td><code>toFHIRImagingStudy(...)</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-0308b9bc"><code>toFHIRImagingStudy(...)</code></a></td>
                             <td>Must materialize</td>
-                            <td><code>ImagingStudy</code></td>
+                            <td><a href="api/class-imagingstudy-fe89e193.html"><code>ImagingStudy</code></a></td>
                             <td>May emit multiple studies across collection items when applicable.</td>
                         </tr>
                         <tr>
-                            <td><code>toStructuredValue()</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-785438e7"><code>toStructuredValue()</code></a></td>
                             <td>Must materialize</td>
                             <td>Structured syntax value (JSON object/array/scalar, or XML document-node object)</td>
-                            <td>Used with JSON/XML parsers, not native <code>ofDicomData()</code> parser flow.</td>
+                            <td>Used with JSON/XML parsers, not native <a href="api/class-pipelineformatstage-2f4f69d2.html#declared-member-e07fbfd1"><code>ofDicomData()</code></a> parser flow.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -312,22 +326,22 @@
                         <tr>
                             <th>Terminal</th>
                             <th>Mode Controls</th>
-                            <th><code>resultCollection.first()</code></th>
+                            <th><a href="api/class-pipelineresultcollection-ce74fcaf.html#declared-member-0d1a8b1c"><code>resultCollection.first()</code></a></th>
                             <th>Chunk Callback Path</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><code>toDicomData(...)</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-3ddb1da1"><code>toDicomData(...)</code></a></td>
                             <td><code>collectOutput</code>, <code>onChunk</code></td>
                             <td>
                                 Materialized: <code>ByteArray</code><br>
-                                Non-materialized: <code>PipelineOperationResult</code> (<code>bytesWritten</code>, <code>payload=null</code>)
+                                Non-materialized: <a href="api/class-pipelineoperationresult-f7af9d49.html"><code>PipelineOperationResult</code></a> (<code>bytesWritten</code>, <code>payload=null</code>)
                             </td>
                             <td><code>onChunk(chunk)</code></td>
                         </tr>
                         <tr>
-                            <td><code>toAssets(...)</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-f4678ed2"><code>toAssets(...)</code></a></td>
                             <td><code>metadata.mapping</code>, <code>metadata.collect</code>, <code>payload.mode</code>, <code>payload.collect</code></td>
                             <td>
                                 Default: <code>{ instanceUID }</code><br>
@@ -337,41 +351,41 @@
                             <td><code>onFrameChunk(...)</code>, <code>onContentChunk(...)</code></td>
                         </tr>
                         <tr>
-                            <td><code>toAssetArchive(...)</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-7b85d70c"><code>toAssetArchive(...)</code></a></td>
                             <td><code>collectOutput</code>, <code>onChunk</code></td>
                             <td>
                                 Materialized: ZIP <code>ByteArray</code><br>
-                                Non-materialized: <code>PipelineOperationResult</code> (<code>bytesWritten</code>, <code>payload=null</code>)
+                                Non-materialized: <a href="api/class-pipelineoperationresult-f7af9d49.html"><code>PipelineOperationResult</code></a> (<code>bytesWritten</code>, <code>payload=null</code>)
                             </td>
                             <td><code>onChunk(chunk)</code></td>
                         </tr>
                     </tbody>
                 </table>
 
-                <h4>When <code>into*</code> Is Used</h4>
+                <h4>When <a href="api/class-pipelineoutputstage-4d2e8553.html"><code>into*</code></a> Is Used</h4>
                 <table>
                     <thead>
                         <tr>
                             <th>Scenario</th>
-                            <th><code>resultCollection.first()</code></th>
+                            <th><a href="api/class-pipelineresultcollection-ce74fcaf.html#declared-member-0d1a8b1c"><code>resultCollection.first()</code></a></th>
                             <th>Notes</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Writer sink applied (for example <code>intoFileStream</code>, <code>intoHttpStream</code>)</td>
-                            <td><code>PipelineOperationResult</code> (writer category)</td>
+                            <td>Writer sink applied (for example <a href="api/class-pipelineoutputstage-4d2e8553.html#declared-member-d64edc20"><code>intoFileStream</code></a>, <a href="api/class-pipelineoutputstage-4d2e8553.html#declared-member-362e9fd8"><code>intoHttpStream</code></a>)</td>
+                            <td><a href="api/class-pipelineoperationresult-f7af9d49.html"><code>PipelineOperationResult</code></a> (writer category)</td>
                             <td>Includes stable fields (<code>resultType</code>, <code>writer</code>, <code>bytesWritten</code>, <code>payload</code>) plus writer-specific output fields.</td>
                         </tr>
                         <tr>
-                            <td><code>toDicomData({ collectOutput:false, onChunk })</code> with <code>into*</code></td>
-                            <td><code>PipelineOperationResult</code></td>
+                            <td><a href="api/class-pipelinetargetstage-2e450801.html#declared-member-3ddb1da1"><code>toDicomData({ collectOutput:false, onChunk })</code></a> with <a href="api/class-pipelineoutputstage-4d2e8553.html"><code>into*</code></a></td>
+                            <td><a href="api/class-pipelineoperationresult-f7af9d49.html"><code>PipelineOperationResult</code></a></td>
                             <td>Pipeline keeps terminal chunk path; writer sink is intentionally not layered over it (<code>operation="toDicomData"</code>, <code>category="terminal"</code>).</td>
                         </tr>
                         <tr>
-                            <td>Custom writer sink (non-built-in <code>into*</code> implementation)</td>
+                            <td>Custom writer sink (non-built-in <a href="api/class-pipelineoutputstage-4d2e8553.html"><code>into*</code></a> implementation)</td>
                             <td>Writer-defined output</td>
-                            <td>Only built-in writers are normalized to <code>PipelineOperationResult</code>; custom writers return their native output contract.</td>
+                            <td>Only built-in writers are normalized to <a href="api/class-pipelineoperationresult-f7af9d49.html"><code>PipelineOperationResult</code></a>; custom writers return their native output contract.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -421,7 +435,7 @@ const writeResult = resultCollection.first(); // PipelineOperationResult
 const bytesWritten = writeResult.bytesWritten;
 await uploadStream.close();</code></pre>
                 <p class="page-meta">
-                    In this mode, <code>toDicomData</code> returns a standardized <code>PipelineOperationResult</code>
+                    In this mode, <a href="api/class-pipelinetargetstage-2e450801.html#declared-member-3ddb1da1"><code>toDicomData</code></a> returns a standardized <a href="api/class-pipelineoperationresult-f7af9d49.html"><code>PipelineOperationResult</code></a>
                     with <code>materialized=false</code> and <code>bytesWritten</code>.
                 </p>
                 <div class="callout warning">
@@ -459,8 +473,8 @@ const bytesWritten = writeResult.bytesWritten;</code></pre>
                 <div class="callout informative">
                     <h4>Design Note</h4>
                     <p>
-                        <code>into*</code> controls outbound sink behavior. For true parser-to-terminal non-materialization,
-                        use terminal chunk mode (<code>toDicomData({ collectOutput: false, onChunk })</code>).
+                        <a href="api/class-pipelineoutputstage-4d2e8553.html"><code>into*</code></a> controls outbound sink behavior. For true parser-to-terminal non-materialization,
+                        use terminal chunk mode (<a href="api/class-pipelinetargetstage-2e450801.html#declared-member-3ddb1da1"><code>toDicomData({ collectOutput: false, onChunk })</code></a>).
                     </p>
                 </div>
             </section>

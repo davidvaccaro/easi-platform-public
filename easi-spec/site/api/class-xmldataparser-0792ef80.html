@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for XmlDataParser.">
+    <title>EASI | XmlDataParser</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>XmlDataParser</h2>
+                <p>This class provides xml data parser behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><a href="class-dataparser-61a1da46.html"><code>DataParser</code></a> &rarr; <strong>XmlDataParser</strong></p>
+                <p class="page-meta">
+                    This class declares <code>10</code> member(s) and inherits
+                    <code>8</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><code>DataParser</code></td></tr>
+                        <tr><td>Declared Members</td><td>10</td></tr>
+                        <tr><td>Inherited Members</td><td>8</td></tr>
+                        <tr><td>Properties</td><td>1</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="decoder" data-lang-kind="property-name">decoder</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="splitQualifiedName method Split an XML qualified name into prefix/local parts.">
+                                <td><a href="#declared-member-8d48c57f"><code data-lang-source="splitQualifiedName" data-lang-kind="member-name">splitQualifiedName</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Split an XML qualified name into prefix/local parts.</td>
+                            </tr>
+                            <tr data-filter-item="decodeXmlEntities method Decode common XML entities in text and attribute values.">
+                                <td><a href="#declared-member-23658db3"><code data-lang-source="decodeXmlEntities" data-lang-kind="member-name">decodeXmlEntities</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Decode common XML entities in text and attribute values.</td>
+                            </tr>
+                            <tr data-filter-item="fireXmlEvent method Normalize and track parser statuses returned by XML handler events.">
+                                <td><a href="#declared-member-31a3df73"><code data-lang-source="fireXmlEvent" data-lang-kind="member-name">fireXmlEvent</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize and track parser statuses returned by XML handler events.</td>
+                            </tr>
+                            <tr data-filter-item="isWhitespace method Determine if the supplied character is XML whitespace.">
+                                <td><a href="#declared-member-830b30f9"><code data-lang-source="isWhitespace" data-lang-kind="member-name">isWhitespace</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if the supplied character is XML whitespace.</td>
+                            </tr>
+                            <tr data-filter-item="findTagEnd method Find the matching tag-end delimiter while respecting quoted attribute values.">
+                                <td><a href="#declared-member-7d421303"><code data-lang-source="findTagEnd" data-lang-kind="member-name">findTagEnd</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Find the matching tag-end delimiter while respecting quoted attribute values.</td>
+                            </tr>
+                            <tr data-filter-item="parseStartTag method Parse a start-tag inner payload (without angle brackets).">
+                                <td><a href="#declared-member-5d8ecb24"><code data-lang-source="parseStartTag" data-lang-kind="member-name">parseStartTag</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parse a start-tag inner payload (without angle brackets).</td>
+                            </tr>
+                            <tr data-filter-item="emitText method Emit text content when non-empty.">
+                                <td><a href="#declared-member-7305acad"><code data-lang-source="emitText" data-lang-kind="member-name">emitText</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Emit text content when non-empty.</td>
+                            </tr>
+                            <tr data-filter-item="parseBufferedXml method Parse as much XML as possible from the current buffer.">
+                                <td><a href="#declared-member-1e903ec7"><code data-lang-source="parseBufferedXml" data-lang-kind="member-name">parseBufferedXml</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parse as much XML as possible from the current buffer.</td>
+                            </tr>
+                            <tr data-filter-item="reset method Reset the XML parser state.">
+                                <td><a href="#declared-member-66a14a59"><code data-lang-source="reset" data-lang-kind="member-name">reset</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Reset the XML parser state.</td>
+                            </tr>
+                            <tr data-filter-item="parse method Parse the specified chunk of XML data.">
+                                <td><a href="#declared-member-6b65e377"><code data-lang-source="parse" data-lang-kind="member-name">parse</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parse the specified chunk of XML data.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-8d48c57f" data-filter-item="splitQualifiedName method Split an XML qualified name into prefix/local parts.">
+                    <h4><code data-lang-source="splitQualifiedName(name)" data-lang-kind="signature">splitQualifiedName(name)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Split an XML qualified name into prefix/local parts. It provides split qualified name behavior on XmlDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The qualified name. It provides the name input used by splitQualifiedName. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ name: string, prefix: string | null, localName: string }" data-lang-kind="type-token">{ name: string, prefix: string | null, localName: string }</code></p>
+                </article>
+                <article class="card reveal" id="declared-member-23658db3" data-filter-item="decodeXmlEntities method Decode common XML entities in text and attribute values.">
+                    <h4><code data-lang-source="decodeXmlEntities(value)" data-lang-kind="signature">decodeXmlEntities(value)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Decode common XML entities in text and attribute values. It provides decode xml entities behavior on XmlDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="value" data-lang-kind="parameter-name">value</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The XML encoded text. It provides the value input used by decodeXmlEntities. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">The decoded text.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-31a3df73" data-filter-item="fireXmlEvent method Normalize and track parser statuses returned by XML handler events.">
+                    <h4><code data-lang-source="fireXmlEvent(name, param, currentStatus)" data-lang-kind="signature">fireXmlEvent(name, param, currentStatus)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize and track parser statuses returned by XML handler events. It provides fire xml event behavior on XmlDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="name" data-lang-kind="parameter-name">name</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The event name. It provides the name input used by fireXmlEvent. Type detail: expects a string value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="param" data-lang-kind="parameter-name">param</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> The event parameter. It provides the param input used by fireXmlEvent.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="currentStatus" data-lang-kind="parameter-name">currentStatus</code></td>
+                                <td class="member-param-type"><code data-lang-source="*" data-lang-kind="type-token">*</code></td>
+                                <td><span class="page-meta">(Optional - null)</span> The current status. It provides the current status input used by fireXmlEvent.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="*" data-lang-kind="type-token">*</code><br /><code data-lang-source="Promise&lt;*&gt;" data-lang-kind="type-token">Promise&lt;*&gt;</code><br><span class="page-meta">The raw event result.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-830b30f9" data-filter-item="isWhitespace method Determine if the supplied character is XML whitespace.">
+                    <h4><code data-lang-source="isWhitespace(ch)" data-lang-kind="signature">isWhitespace(ch)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if the supplied character is XML whitespace. It provides is whitespace behavior on XmlDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="ch" data-lang-kind="parameter-name">ch</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The character. It provides the ch input used by isWhitespace. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE if whitespace.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7d421303" data-filter-item="findTagEnd method Find the matching tag-end delimiter while respecting quoted attribute values.">
+                    <h4><code data-lang-source="findTagEnd(source)" data-lang-kind="signature">findTagEnd(source)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Find the matching tag-end delimiter while respecting quoted attribute values. It provides find tag end behavior on XmlDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="source" data-lang-kind="parameter-name">source</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The current XML buffer. It identifies the input source consumed by this member. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">The tag-end index or -1 when incomplete.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5d8ecb24" data-filter-item="parseStartTag method Parse a start-tag inner payload (without angle brackets).">
+                    <h4><code data-lang-source="parseStartTag(raw)" data-lang-kind="signature">parseStartTag(raw)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Parse a start-tag inner payload (without angle brackets). It provides parse start tag behavior on XmlDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="raw" data-lang-kind="parameter-name">raw</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The raw tag payload. It provides the raw input used by parseStartTag. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{ name: string, attributes: object, isSelfClosing: boolean }" data-lang-kind="type-token">{ name: string, attributes: object, isSelfClosing: boolean }</code></p>
+                </article>
+                <article class="card reveal" id="declared-member-7305acad" data-filter-item="emitText method Emit text content when non-empty.">
+                    <h4><code data-lang-source="emitText(text)" data-lang-kind="signature">emitText(text)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Emit text content when non-empty. It provides emit text behavior on XmlDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="text" data-lang-kind="parameter-name">text</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> The raw text content. It provides the text input used by emitText. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1e903ec7" data-filter-item="parseBufferedXml method Parse as much XML as possible from the current buffer.">
+                    <h4><code data-lang-source="parseBufferedXml(isDone)" data-lang-kind="signature">parseBufferedXml(isDone)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Parse as much XML as possible from the current buffer. It provides parse buffered xml behavior on XmlDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="isDone" data-lang-kind="parameter-name">isDone</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                <td><span class="page-meta">(Optional - false)</span> Indicates that no more input will be provided. It provides the is done input used by parseBufferedXml. Type detail: expects a boolean flag value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-66a14a59" data-filter-item="reset method Reset the XML parser state.">
+                    <h4><code data-lang-source="reset()" data-lang-kind="signature">reset()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Reset the XML parser state. It provides reset behavior on XmlDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6b65e377" data-filter-item="parse method Parse the specified chunk of XML data.">
+                    <h4><code data-lang-source="parse(chunk, isDone, totalRead, totalLength)" data-lang-kind="signature">parse(chunk, isDone, totalRead, totalLength)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Parse the specified chunk of XML data. It provides parse behavior on XmlDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="chunk" data-lang-kind="parameter-name">chunk</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> The specified chunk of XML data. It provides the chunk input used by parse.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="isDone" data-lang-kind="parameter-name">isDone</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - false)</span> No description provided. It provides the is done input used by parse.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="totalRead" data-lang-kind="parameter-name">totalRead</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the total read input used by parse.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="totalLength" data-lang-kind="parameter-name">totalLength</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the total length input used by parse.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="*" data-lang-kind="type-token">*</code><br><span class="page-meta">The parser status.</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<p class="page-meta">No option-object contracts detected for declared members.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+
+            <section class="section reveal">
+                <h4>
+                    Inherited From
+                    <a href="class-dataparser-61a1da46.html"><code>DataParser</code></a>
+                    <span class="page-meta">(src/parsers/DataParser.js)</span>
+                </h4>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr data-filter-item="isThenable method Determine whether the supplied value is Promise-like.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-b1a49997"><code data-lang-source="isThenable" data-lang-kind="member-name">isThenable</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine whether the supplied value is Promise-like. It provides is thenable behavior on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="fireStreamEvent method Fires a stream event or skips the event if the stream-handler does NOT support the event.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-7b769d27"><code data-lang-source="fireStreamEvent" data-lang-kind="member-name">fireStreamEvent</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Fires a stream event or skips the event if the stream-handler does NOT support the event. It provides fire stream event behavior on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="fireProgressEvent method Fires a throttled progress event. Parsers should call this explicitly (typically once per parse chunk).">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-8a176860"><code data-lang-source="fireProgressEvent" data-lang-kind="member-name">fireProgressEvent</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Fires a throttled progress event. Parsers should call this explicitly (typically once per parse chunk). It provides fire progress event behavior on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="resetSession method Reset process-session state before a new top-level reader transaction. This isolates one `pipeline.process(...)` call from the next while allowing parser-level part resets within a single transaction.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-15e63862"><code data-lang-source="resetSession" data-lang-kind="member-name">resetSession</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Reset process-session state before a new top-level reader transaction. This isolates one `pipeline.process(...)` call from the next while allowing parser-level part resets within a single transaction. It provides reset session behavior on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="isStrict setter Sets the the status indicating that this parser is perfomring &quot;strict&quot; parsing.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-29ad7155"><code data-lang-source="isStrict" data-lang-kind="member-name">isStrict</code></a></td>
+                                <td><code>setter</code></td>
+                                <td>Sets the the status indicating that this parser is perfomring &quot;strict&quot; parsing. This setter updates is strict on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="isStrict getter Gets the status indicating that this parser is performing &quot;strict&quot; parsing.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-dfddd854"><code data-lang-source="isStrict" data-lang-kind="member-name">isStrict</code></a></td>
+                                <td><code>getter</code></td>
+                                <td>Gets the status indicating that this parser is performing &quot;strict&quot; parsing. This getter exposes is strict from DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="handler setter Sets the current handler for this parser.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-1d7f917b"><code data-lang-source="handler" data-lang-kind="member-name">handler</code></a></td>
+                                <td><code>setter</code></td>
+                                <td>Sets the current handler for this parser. This setter updates handler on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="handler getter Gets the current handler for this parser.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-6d6ac5bc"><code data-lang-source="handler" data-lang-kind="member-name">handler</code></a></td>
+                                <td><code>getter</code></td>
+                                <td>Gets the current handler for this parser. This getter exposes handler from DataParser.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>

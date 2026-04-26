@@ -1,0 +1,1245 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Generated API class reference for DicomDataParser.">
+    <title>EASI | DicomDataParser</title>
+    <link rel="stylesheet" href="../assets/styles.css">
+    <script defer src="../assets/app.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>EASI</h1>
+                    <p>Technical Reference</p>
+                </div>
+            </div>
+
+<div class="nav-section">
+                <a class="nav-link" data-nav-link href="../index.html">Overview</a>
+                <a class="nav-link" data-nav-link href="../why-easi.html">The EASI Advantage</a>
+                <a class="nav-link" data-nav-link href="../why-expressive.html">Why Expressive?</a>
+                <a class="nav-link" data-nav-link href="../what-is-an-easi-pipeline.html">What Is an EASI Pipeline?</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../core-pipeline.html">Core Pipeline</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Core Pipeline section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-reader.html">Reader</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-parser.html">Parser</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-mappings.html">Mapping</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-selection.html">Selection</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-filtering.html">Filtering</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-terminal.html">Terminal</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-writing.html">Writer</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../pipeline-results.html">Result Contract</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../stream-processing-model.html">Stream Processing</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Stream Processing section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../lifecycle-status.html">Stream Lifecycle Events</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../materialization-model.html">Materialization</a>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dimse-pipeline.html">Common Use Cases</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Common Use Cases section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink" data-nav-link href="../dimse-pipeline.html">DIMSE Pipelines</a>
+                        <a class="nav-link nav-sublink" data-nav-link href="../advanced-pipeline.html">Advanced Pipelines</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../builder-types/index.html">Builders</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Builders section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/pipeline-builder.html">PipelineBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/codec-registry-builder.html">CodecRegistryBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-association-builder.html">DimseAssociationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dimse-client-builder.html">DimseClientBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-mapping-builder.html">DicomMappingBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-selection-builder.html">DicomSelectionBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/dicom-de-identification-mask-builder.html">DicomDeIdentificationMaskBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-normalization-builder.html">ImagingNormalizationBuilder</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../builder-types/imaging-routing-builder.html">ImagingRoutingBuilder</a>
+                    </div>
+                </div>
+                <div class="nav-group" data-nav-group data-expanded="false">
+                    <div class="nav-group-header">
+                        <a class="nav-link nav-group-root" data-nav-link data-nav-group-root href="../dicom-model/index.html">Models</a>
+                        <button class="nav-group-toggle" type="button" data-nav-group-toggle aria-label="Toggle Models section" aria-expanded="false">
+                            <span class="nav-group-chevron">&#9662;</span>
+                        </button>
+                    </div>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/diagram.html">Type Diagram</a>
+                        <span class="nav-link nav-sublink nav-group-label">Core</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute.html" title="Attribute">Attribute</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-sequence.html" title="AttributeSequence">AttributeSequence</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/attribute-set.html" title="AttributeSet">AttributeSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-element.html" title="DataElement">DataElement</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/data-set.html" title="DataSet">DataSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encoded-data.html" title="EncodedData">EncodedData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/instance.html" title="Instance">Instance</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/item.html" title="Item">Item</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/meta-set.html" title="MetaSet">MetaSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality.html" title="Modality">Modality</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/pixel-data.html" title="PixelData">PixelData</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/preamble.html" title="Preamble">Preamble</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/prefix.html" title="Prefix">Prefix</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/sop-class.html" title="SOPClass">SOPClass</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag.html" title="Tag">Tag</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/tag-set.html" title="TagSet">TagSet</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/transfer-syntax.html" title="TransferSyntax">TransferSyntax</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/unwrapped-document.html" title="UnwrappedDocument">UnwrappedDocument</a>
+                        <span class="nav-link nav-sublink nav-group-label">Entities</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document.html" title="EncapsulatedDocument">EncapsulatedDocument</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/entity.html" title="Entity">Entity</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image.html" title="Image">Image</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/key-object-selection.html" title="KeyObjectSelection">KeyObjectSelection</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state.html" title="PresentationState">PresentationState</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation.html" title="Segmentation">Segmentation</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report.html" title="StructuredReport">StructuredReport</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform.html" title="Waveform">Waveform</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/worklist-item.html" title="WorklistItem">WorklistItem</a>
+                        <span class="nav-link nav-sublink nav-group-label">Modules</span>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/current-requested-procedure-evidence-module.html" title="CurrentRequestedProcedureEvidenceModule">CurrentRequestedProcedureEvidenceModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/encapsulated-document-module.html" title="EncapsulatedDocumentModule">EncapsulatedDocumentModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/general-series-module.html" title="GeneralSeriesModule">GeneralSeriesModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-pixel-module.html" title="ImagePixelModule">ImagePixelModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/image-plane-module.html" title="ImagePlaneModule">ImagePlaneModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/modality-look-up-table-module.html" title="ModalityLookUpTableModule">ModalityLookUpTableModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/module.html" title="Module">Module</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/multi-frame-module.html" title="MultiFrameModule">MultiFrameModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/patient-module.html" title="PatientModule">PatientModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/presentation-state-module.html" title="PresentationStateModule">PresentationStateModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/requested-procedure-module.html" title="RequestedProcedureModule">RequestedProcedureModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/scheduled-procedure-step-module.html" title="ScheduledProcedureStepModule">ScheduledProcedureStepModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/segmentation-module.html" title="SegmentationModule">SegmentationModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/structured-report-module.html" title="StructuredReportModule">StructuredReportModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/visualization-function-module.html" title="VisualizationFunctionModule">VisualizationFunctionModule</a>
+                        <a class="nav-link nav-sublink nav-subsublink" data-nav-link href="../dicom-model/waveform-module.html" title="WaveformModule">WaveformModule</a>
+                    </div>
+                </div>
+                <a class="nav-link" data-nav-link href="../api/index.html">API Reference</a>
+                <a class="nav-link" data-nav-link href="../error-catalog.html">Errors</a>
+                <a class="nav-link" data-nav-link href="../implementation-boundary.html">Standard Boundary</a>
+                <a class="nav-link" data-nav-link href="../conformance.html">Conformance</a>
+            </div>
+            <div class="nav-section">
+                <span class="nav-label">Edition</span>
+                <p class="page-meta">Draft v1.0 Candidate<br>April 3, 2026</p>
+            </div>
+            <span class="badge normative">Normative</span>
+            <span class="badge informative">Informative</span>
+        </aside>
+
+        <main class="page">
+            <section class="page-hero reveal">
+                <h2>DicomDataParser</h2>
+                <p>This class provides dicom data parser behavior in the EASI API.</p>
+            </section>
+
+            <section class="section reveal api-language-switcher" data-api-language-switcher>
+                <h3>Language View</h3>
+                <div class="api-language-pill-row" role="tablist" aria-label="API language view">
+                    <button type="button" class="api-language-pill active" data-api-language="neutral" aria-selected="true">Language-Neutral</button>
+                    <button type="button" class="api-language-pill" data-api-language="javascript" aria-selected="false">JavaScript</button>
+                    <button type="button" class="api-language-pill" data-api-language="csharp" aria-selected="false">C#</button>
+                    <button type="button" class="api-language-pill" data-api-language="java" aria-selected="false">Java</button>
+                    <button type="button" class="api-language-pill" data-api-language="python" aria-selected="false">Python</button>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inheritance</h3>
+                <p><a href="class-dataparser-61a1da46.html"><code>DataParser</code></a> &rarr; <strong>DicomDataParser</strong></p>
+                <p class="page-meta">
+                    This class declares <code>27</code> member(s) and inherits
+                    <code>8</code> member(s).
+                </p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Class Metadata</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Extends</td><td><code>DataParser</code></td></tr>
+                        <tr><td>Declared Members</td><td>27</td></tr>
+                        <tr><td>Inherited Members</td><td>8</td></tr>
+                        <tr><td>Properties</td><td>10</td></tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section reveal">
+                <h3>Properties</h3>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="bulkDataHardSafetyCap" data-lang-kind="property-name">bulkDataHardSafetyCap</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="bulkDataKnownLengthThreshold" data-lang-kind="property-name">bulkDataKnownLengthThreshold</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="bulkDataPolicyMode" data-lang-kind="property-name">bulkDataPolicyMode</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="dataElementBytesConsumed" data-lang-kind="property-name">dataElementBytesConsumed</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="dataElementEndAttributeFired" data-lang-kind="property-name">dataElementEndAttributeFired</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="dataElementStreamingDecision" data-lang-kind="property-name">dataElementStreamingDecision</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="endSequenceMarker" data-lang-kind="property-name">endSequenceMarker</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="includePart10Header" data-lang-kind="property-name">includePart10Header</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="partSpecification" data-lang-kind="property-name">partSpecification</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="skipPart10MetaSet" data-lang-kind="property-name">skipPart10MetaSet</code></td>
+                                <td><span class="page-meta">n/a</span></td>
+                                <td>Required</td>
+                                <td><span class="page-meta">n/a</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal">
+                <h3>Declared Members</h3>
+                <div class="search">
+                    <input id="class-member-search" type="search" placeholder="Search declared members..."
+                           data-filter-input data-filter-target="#class-member-rows">
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="class-member-rows">
+
+                            <tr data-filter-item="reset method Reset the current state of the parser.">
+                                <td><a href="#declared-member-ee8243d0"><code data-lang-source="reset" data-lang-kind="member-name">reset</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Reset the current state of the parser.</td>
+                            </tr>
+                            <tr data-filter-item="isLittleEndianTransferSyntax getter Resolve active parser endian-ness.">
+                                <td><a href="#declared-member-ccf4f4a6"><code data-lang-source="isLittleEndianTransferSyntax" data-lang-kind="member-name">isLittleEndianTransferSyntax</code></a></td>
+                                <td><code>getter</code></td>
+                                <td>Resolve active parser endian-ness.</td>
+                            </tr>
+                            <tr data-filter-item="bytesToUnsignedInteger method Convert byte-array to unsigned integer using current transfer-syntax endian-ness.">
+                                <td><a href="#declared-member-132af82c"><code data-lang-source="bytesToUnsignedInteger" data-lang-kind="member-name">bytesToUnsignedInteger</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Convert byte-array to unsigned integer using current transfer-syntax endian-ness.</td>
+                            </tr>
+                            <tr data-filter-item="getEndSequenceMarker method Resolve the DICOM Item/Sequence Delimitation marker for current transfer-syntax endian-ness.">
+                                <td><a href="#declared-member-31f8bcb6"><code data-lang-source="getEndSequenceMarker" data-lang-kind="member-name">getEndSequenceMarker</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve the DICOM Item/Sequence Delimitation marker for current transfer-syntax endian-ness.</td>
+                            </tr>
+                            <tr data-filter-item="peekTagDetails method Peek the next, transfer-syntax independent, base tag details.">
+                                <td><a href="#declared-member-6af2a939"><code data-lang-source="peekTagDetails" data-lang-kind="member-name">peekTagDetails</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Peek the next, transfer-syntax independent, base tag details.</td>
+                            </tr>
+                            <tr data-filter-item="isParsingSequence getter Determine if the parser is currently parsing a sequence.">
+                                <td><a href="#declared-member-8af97546"><code data-lang-source="isParsingSequence" data-lang-kind="member-name">isParsingSequence</code></a></td>
+                                <td><code>getter</code></td>
+                                <td>Determine if the parser is currently parsing a sequence.</td>
+                            </tr>
+                            <tr data-filter-item="peekSequence method Peek the top sequence of the stack of sequence elements.">
+                                <td><a href="#declared-member-597d4d59"><code data-lang-source="peekSequence" data-lang-kind="member-name">peekSequence</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Peek the top sequence of the stack of sequence elements.</td>
+                            </tr>
+                            <tr data-filter-item="peekItem method Peek the top item of the stack of sequence elements.">
+                                <td><a href="#declared-member-7598355f"><code data-lang-source="peekItem" data-lang-kind="member-name">peekItem</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Peek the top item of the stack of sequence elements.</td>
+                            </tr>
+                            <tr data-filter-item="normalizeBulkDataPolicyMode method Normalize one bulk-data policy mode value.">
+                                <td><a href="#declared-member-47b60433"><code data-lang-source="normalizeBulkDataPolicyMode" data-lang-kind="member-name">normalizeBulkDataPolicyMode</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Normalize one bulk-data policy mode value.</td>
+                            </tr>
+                            <tr data-filter-item="isStructuralTag method Determine if a tag is a structural tag that should never be bulk-streamed.">
+                                <td><a href="#declared-member-919726f7"><code data-lang-source="isStructuralTag" data-lang-kind="member-name">isStructuralTag</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if a tag is a structural tag that should never be bulk-streamed.</td>
+                            </tr>
+                            <tr data-filter-item="isPayloadCandidate method Determine if the current attribute is a candidate for bulk streaming based on tag/VR.">
+                                <td><a href="#declared-member-e6a27249"><code data-lang-source="isPayloadCandidate" data-lang-kind="member-name">isPayloadCandidate</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine if the current attribute is a candidate for bulk streaming based on tag/VR.</td>
+                            </tr>
+                            <tr data-filter-item="isMetaSetTagDetails method Determine whether one data element detail belongs to File Meta Information group (0002,eeee).">
+                                <td><a href="#declared-member-8d0008c0"><code data-lang-source="isMetaSetTagDetails" data-lang-kind="member-name">isMetaSetTagDetails</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine whether one data element detail belongs to File Meta Information group (0002,eeee).</td>
+                            </tr>
+                            <tr data-filter-item="hasReachedDeclaredMetaSetLength method Determine whether the declared File Meta Information Group Length has been reached.">
+                                <td><a href="#declared-member-7fdae142"><code data-lang-source="hasReachedDeclaredMetaSetLength" data-lang-kind="member-name">hasReachedDeclaredMetaSetLength</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine whether the declared File Meta Information Group Length has been reached.</td>
+                            </tr>
+                            <tr data-filter-item="scoreExplicitTransferSyntaxCandidate method Score one explicit-VR transfer-syntax candidate for first data-set element routing.">
+                                <td><a href="#declared-member-3909f232"><code data-lang-source="scoreExplicitTransferSyntaxCandidate" data-lang-kind="member-name">scoreExplicitTransferSyntaxCandidate</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Score one explicit-VR transfer-syntax candidate for first data-set element routing.</td>
+                            </tr>
+                            <tr data-filter-item="detectDataSetTransferSyntax method Detect likely transfer-syntax for raw data-set-only input (no Part-10 file meta).">
+                                <td><a href="#declared-member-198a3434"><code data-lang-source="detectDataSetTransferSyntax" data-lang-kind="member-name">detectDataSetTransferSyntax</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Detect likely transfer-syntax for raw data-set-only input (no Part-10 file meta).</td>
+                            </tr>
+                            <tr data-filter-item="completeMetaSetPart method Complete current meta-set parsing and transition to data-set parsing.">
+                                <td><a href="#declared-member-8c14e0c3"><code data-lang-source="completeMetaSetPart" data-lang-kind="member-name">completeMetaSetPart</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Complete current meta-set parsing and transition to data-set parsing.</td>
+                            </tr>
+                            <tr data-filter-item="resolveBulkDataDecision method Resolve whether the current data element should be bulk-streamed or materialized. Decision flow: 1. Structural tags are never chunked. 2. Policy mode is applied. 3. Payload candidate check (VR/tag) is evaluated. 4. Known-length decision is applied. 5. Undefined-length decision is applied. 6. Hard safety cap is enforced independently of VR/tag.">
+                                <td><a href="#declared-member-2c3891ba"><code data-lang-source="resolveBulkDataDecision" data-lang-kind="member-name">resolveBulkDataDecision</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Resolve whether the current data element should be bulk-streamed or materialized.<br>Decision flow:<br>1. Structural tags are never chunked.<br>2. Policy mode is applied.<br>3. Payload candidate check (VR/tag) is evaluated.<br>4. Known-length decision is applied.<br>5. Undefined-length decision is applied.<br>6. Hard safety cap is enforced independently of VR/tag.</td>
+                            </tr>
+                            <tr data-filter-item="fireAttributeChunkEvent method Fire one attribute chunk event for streamed attributes.">
+                                <td><a href="#declared-member-45921fd6"><code data-lang-source="fireAttributeChunkEvent" data-lang-kind="member-name">fireAttributeChunkEvent</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Fire one attribute chunk event for streamed attributes.</td>
+                            </tr>
+                            <tr data-filter-item="applyDataElementChunk method Apply one consumed value chunk to the current attribute according to the active bulk-data decision.">
+                                <td><a href="#declared-member-3b3308e3"><code data-lang-source="applyDataElementChunk" data-lang-kind="member-name">applyDataElementChunk</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Apply one consumed value chunk to the current attribute according to the active bulk-data decision.</td>
+                            </tr>
+                            <tr data-filter-item="parse method Parse the specified chunk of DICOM data.">
+                                <td><a href="#declared-member-85fa5e92"><code data-lang-source="parse" data-lang-kind="member-name">parse</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parse the specified chunk of DICOM data.</td>
+                            </tr>
+                            <tr data-filter-item="parseNextPreamble method Parse the next DICOM Preamble from the next chunk of data.">
+                                <td><a href="#declared-member-1057b532"><code data-lang-source="parseNextPreamble" data-lang-kind="member-name">parseNextPreamble</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parse the next DICOM Preamble from the next chunk of data.</td>
+                            </tr>
+                            <tr data-filter-item="parseNextPrefix method Parse the next DICOM Prefix from the next chunk of data.">
+                                <td><a href="#declared-member-5d28956b"><code data-lang-source="parseNextPrefix" data-lang-kind="member-name">parseNextPrefix</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parse the next DICOM Prefix from the next chunk of data.</td>
+                            </tr>
+                            <tr data-filter-item="parseNextMetaSet method Parse the next DICOM MetaSet from the next chunk of data.">
+                                <td><a href="#declared-member-d91a4d66"><code data-lang-source="parseNextMetaSet" data-lang-kind="member-name">parseNextMetaSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parse the next DICOM MetaSet from the next chunk of data.</td>
+                            </tr>
+                            <tr data-filter-item="parseNextDataSet method Parse the next DICOM DataSet from the next chunk of data.">
+                                <td><a href="#declared-member-eadc1f57"><code data-lang-source="parseNextDataSet" data-lang-kind="member-name">parseNextDataSet</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parse the next DICOM DataSet from the next chunk of data.</td>
+                            </tr>
+                            <tr data-filter-item="parseNextDataElement method Parse the next DICOM Data Element from the next chunk of data.">
+                                <td><a href="#declared-member-d8827df6"><code data-lang-source="parseNextDataElement" data-lang-kind="member-name">parseNextDataElement</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Parse the next DICOM Data Element from the next chunk of data.</td>
+                            </tr>
+                            <tr data-filter-item="bulkDataPolicy setter Configure bulk data behavior. mode?: &#39;materialize&#39; | &#39;auto&#39; | &#39;stream&#39;, knownLengthThreshold?: number, hardSafetyCap?: number } | string | null} policy The policy.">
+                                <td><a href="#declared-member-41d74b7c"><code data-lang-source="bulkDataPolicy" data-lang-kind="member-name">bulkDataPolicy</code></a></td>
+                                <td><code>setter</code></td>
+                                <td>Configure bulk data behavior.<br>mode?: &#39;materialize&#39; | &#39;auto&#39; | &#39;stream&#39;,<br>knownLengthThreshold?: number,<br>hardSafetyCap?: number<br>} | string | null} policy The policy.</td>
+                            </tr>
+                            <tr data-filter-item="bulkDataPolicy getter Get the current bulk data policy configuration.">
+                                <td><a href="#declared-member-aab6422a"><code data-lang-source="bulkDataPolicy" data-lang-kind="member-name">bulkDataPolicy</code></a></td>
+                                <td><code>getter</code></td>
+                                <td>Get the current bulk data policy configuration.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section reveal" id="declared-member-details">
+                <h3>Declared Member Details</h3>
+<div class="grid one">
+                <article class="card reveal" id="declared-member-ee8243d0" data-filter-item="reset method Reset the current state of the parser.">
+                    <h4><code data-lang-source="reset()" data-lang-kind="signature">reset()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Reset the current state of the parser. It provides reset behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-ccf4f4a6" data-filter-item="isLittleEndianTransferSyntax getter Resolve active parser endian-ness.">
+                    <h4><code data-lang-source="isLittleEndianTransferSyntax()" data-lang-kind="signature">isLittleEndianTransferSyntax()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve active parser endian-ness. This getter exposes is little endian transfer syntax from DicomDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE for little-endian, FALSE for big-endian.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-132af82c" data-filter-item="bytesToUnsignedInteger method Convert byte-array to unsigned integer using current transfer-syntax endian-ness.">
+                    <h4><code data-lang-source="bytesToUnsignedInteger(bytes)" data-lang-kind="signature">bytesToUnsignedInteger(bytes)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Convert byte-array to unsigned integer using current transfer-syntax endian-ness. It provides bytes to unsigned integer behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="bytes" data-lang-kind="parameter-name">bytes</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> Source bytes. It provides the bytes input used by bytesToUnsignedInteger.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br /><code data-lang-source="undefined" data-lang-kind="type-token">undefined</code><br><span class="page-meta">Parsed integer.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-31f8bcb6" data-filter-item="getEndSequenceMarker method Resolve the DICOM Item/Sequence Delimitation marker for current transfer-syntax endian-ness.">
+                    <h4><code data-lang-source="getEndSequenceMarker()" data-lang-kind="signature">getEndSequenceMarker()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve the DICOM Item/Sequence Delimitation marker for current transfer-syntax endian-ness. It retrieves end sequence marker state from DicomDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number[]" data-lang-kind="type-token">number[]</code><br><span class="page-meta">Marker bytes.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-6af2a939" data-filter-item="peekTagDetails method Peek the next, transfer-syntax independent, base tag details.">
+                    <h4><code data-lang-source="peekTagDetails(bytesPeeked)" data-lang-kind="signature">peekTagDetails(bytesPeeked)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Peek the next, transfer-syntax independent, base tag details. It provides peek tag details behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="bytesPeeked" data-lang-kind="parameter-name">bytesPeeked</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - 0)</span> No description provided. It provides the bytes peeked input used by peekTagDetails.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The peeked local tag details.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8af97546" data-filter-item="isParsingSequence getter Determine if the parser is currently parsing a sequence.">
+                    <h4><code data-lang-source="isParsingSequence()" data-lang-kind="signature">isParsingSequence()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if the parser is currently parsing a sequence. This getter exposes is parsing sequence from DicomDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-597d4d59" data-filter-item="peekSequence method Peek the top sequence of the stack of sequence elements.">
+                    <h4><code data-lang-source="peekSequence()" data-lang-kind="signature">peekSequence()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Peek the top sequence of the stack of sequence elements. It provides peek sequence behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The sequence at the top of the sequence element stack.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7598355f" data-filter-item="peekItem method Peek the top item of the stack of sequence elements.">
+                    <h4><code data-lang-source="peekItem()" data-lang-kind="signature">peekItem()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Peek the top item of the stack of sequence elements. It provides peek item behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The item at the top of the sequence element stack.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-47b60433" data-filter-item="normalizeBulkDataPolicyMode method Normalize one bulk-data policy mode value.">
+                    <h4><code data-lang-source="normalizeBulkDataPolicyMode(mode)" data-lang-kind="signature">normalizeBulkDataPolicyMode(mode)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Normalize one bulk-data policy mode value. It provides normalize bulk data policy mode behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="mode" data-lang-kind="parameter-name">mode</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> The configured mode. It provides the mode input used by normalizeBulkDataPolicyMode.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="string" data-lang-kind="type-token">string</code><br><span class="page-meta">The normalized mode.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-919726f7" data-filter-item="isStructuralTag method Determine if a tag is a structural tag that should never be bulk-streamed.">
+                    <h4><code data-lang-source="isStructuralTag(tag)" data-lang-kind="signature">isStructuralTag(tag)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if a tag is a structural tag that should never be bulk-streamed. It provides is structural tag behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="tag" data-lang-kind="parameter-name">tag</code></td>
+                                <td class="member-param-type"><a href="class-tag-aa70a7f7.html"><code data-lang-source="Tag" data-lang-kind="type-token">Tag</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current tag. It provides the tag input used by isStructuralTag.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when the tag is structural.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-e6a27249" data-filter-item="isPayloadCandidate method Determine if the current attribute is a candidate for bulk streaming based on tag/VR.">
+                    <h4><code data-lang-source="isPayloadCandidate(attribute)" data-lang-kind="signature">isPayloadCandidate(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine if the current attribute is a candidate for bulk streaming based on tag/VR. It provides is payload candidate behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by isPayloadCandidate.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when the attribute is a bulk payload candidate.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8d0008c0" data-filter-item="isMetaSetTagDetails method Determine whether one data element detail belongs to File Meta Information group (0002,eeee).">
+                    <h4><code data-lang-source="isMetaSetTagDetails(details)" data-lang-kind="signature">isMetaSetTagDetails(details)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine whether one data element detail belongs to File Meta Information group (0002,eeee). It provides is meta set tag details behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="details" data-lang-kind="parameter-name">details</code></td>
+                                <td class="member-param-type"><code data-lang-source="object" data-lang-kind="type-token">object</code><br /><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br /><code data-lang-source="null" data-lang-kind="type-token">null</code></td>
+                                <td><span class="page-meta">(Required)</span> Peeked tag details. It provides the details input used by isMetaSetTagDetails.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when detail belongs to the meta-set group.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-7fdae142" data-filter-item="hasReachedDeclaredMetaSetLength method Determine whether the declared File Meta Information Group Length has been reached.">
+                    <h4><code data-lang-source="hasReachedDeclaredMetaSetLength()" data-lang-kind="signature">hasReachedDeclaredMetaSetLength()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Determine whether the declared File Meta Information Group Length has been reached. It provides has reached declared meta set length behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code><br><span class="page-meta">TRUE when declared meta-set length boundary is reached.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3909f232" data-filter-item="scoreExplicitTransferSyntaxCandidate method Score one explicit-VR transfer-syntax candidate for first data-set element routing.">
+                    <h4><code data-lang-source="scoreExplicitTransferSyntaxCandidate(group, element, vrID)" data-lang-kind="signature">scoreExplicitTransferSyntaxCandidate(group, element, vrID)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Score one explicit-VR transfer-syntax candidate for first data-set element routing. It provides score explicit transfer syntax candidate behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="group" data-lang-kind="parameter-name">group</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Candidate tag group. It provides the group input used by scoreExplicitTransferSyntaxCandidate. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="element" data-lang-kind="parameter-name">element</code></td>
+                                <td class="member-param-type"><code data-lang-source="number" data-lang-kind="type-token">number</code></td>
+                                <td><span class="page-meta">(Required)</span> Candidate tag element. It provides the element input used by scoreExplicitTransferSyntaxCandidate. Type detail: expects a numeric value.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="vrID" data-lang-kind="parameter-name">vrID</code></td>
+                                <td class="member-param-type"><code data-lang-source="string" data-lang-kind="type-token">string</code></td>
+                                <td><span class="page-meta">(Required)</span> Candidate VR identifier. It provides the vr id input used by scoreExplicitTransferSyntaxCandidate. Type detail: expects a string value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="number" data-lang-kind="type-token">number</code><br><span class="page-meta">Relative confidence score (higher is better).</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-198a3434" data-filter-item="detectDataSetTransferSyntax method Detect likely transfer-syntax for raw data-set-only input (no Part-10 file meta).">
+                    <h4><code data-lang-source="detectDataSetTransferSyntax()" data-lang-kind="signature">detectDataSetTransferSyntax()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Detect likely transfer-syntax for raw data-set-only input (no Part-10 file meta). It provides detect data set transfer syntax behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><a href="class-transfersyntax-86076599.html"><code data-lang-source="TransferSyntax" data-lang-kind="type-token">TransferSyntax</code></a><br /><code data-lang-source="null" data-lang-kind="type-token">null</code><br><span class="page-meta">Resolved syntax, or null if additional bytes are required.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-8c14e0c3" data-filter-item="completeMetaSetPart method Complete current meta-set parsing and transition to data-set parsing.">
+                    <h4><code data-lang-source="completeMetaSetPart(emitEndMetaSetEvent)" data-lang-kind="signature">completeMetaSetPart(emitEndMetaSetEvent)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Complete current meta-set parsing and transition to data-set parsing. It provides complete meta set part behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="emitEndMetaSetEvent" data-lang-kind="parameter-name">emitEndMetaSetEvent</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                <td><span class="page-meta">(Optional - false)</span> TRUE to emit onEndMetaSet. It provides the emit end meta set event input used by completeMetaSetPart. Type detail: expects a boolean flag value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="Promise&lt;void&gt;" data-lang-kind="type-token">Promise&lt;void&gt;</code></p>
+                </article>
+                <article class="card reveal" id="declared-member-2c3891ba" data-filter-item="resolveBulkDataDecision method Resolve whether the current data element should be bulk-streamed or materialized. Decision flow: 1. Structural tags are never chunked. 2. Policy mode is applied. 3. Payload candidate check (VR/tag) is evaluated. 4. Known-length decision is applied. 5. Undefined-length decision is applied. 6. Hard safety cap is enforced independently of VR/tag.">
+                    <h4><code data-lang-source="resolveBulkDataDecision(attribute)" data-lang-kind="signature">resolveBulkDataDecision(attribute)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Resolve whether the current data element should be bulk-streamed or materialized. Decision flow: 1. Structural tags are never chunked. 2. Policy mode is applied. 3. Payload candidate check (VR/tag) is evaluated. 4. Known-length decision is applied. 5. Undefined-length decision is applied. 6. Hard safety cap is enforced independently of VR/tag. It provides resolve bulk data decision behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by resolveBulkDataDecision.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{streamData: boolean, reason: string, isCandidate: boolean, mode: string}" data-lang-kind="type-token">{streamData: boolean, reason: string, isCandidate: boolean, mode: string}</code><br><span class="page-meta">The resolved decision.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-45921fd6" data-filter-item="fireAttributeChunkEvent method Fire one attribute chunk event for streamed attributes.">
+                    <h4><code data-lang-source="fireAttributeChunkEvent(attribute, chunk, isFinalChunk)" data-lang-kind="signature">fireAttributeChunkEvent(attribute, chunk, isFinalChunk)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Fire one attribute chunk event for streamed attributes. It provides fire attribute chunk event behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="attribute" data-lang-kind="parameter-name">attribute</code></td>
+                                <td class="member-param-type"><a href="class-attribute-efdbdee6.html"><code data-lang-source="Attribute" data-lang-kind="type-token">Attribute</code></a></td>
+                                <td><span class="page-meta">(Required)</span> The current attribute. It provides the attribute input used by fireAttributeChunkEvent.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="chunk" data-lang-kind="parameter-name">chunk</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> The raw value bytes chunk. It provides the chunk input used by fireAttributeChunkEvent.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="isFinalChunk" data-lang-kind="parameter-name">isFinalChunk</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                <td><span class="page-meta">(Optional - false)</span> TRUE when this is the final value chunk. It provides the is final chunk input used by fireAttributeChunkEvent. Type detail: expects a boolean flag value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-3b3308e3" data-filter-item="applyDataElementChunk method Apply one consumed value chunk to the current attribute according to the active bulk-data decision.">
+                    <h4><code data-lang-source="applyDataElementChunk(chunk, isFinalChunk)" data-lang-kind="signature">applyDataElementChunk(chunk, isFinalChunk)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Apply one consumed value chunk to the current attribute according to the active bulk-data decision. It provides apply data element chunk behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="chunk" data-lang-kind="parameter-name">chunk</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> The consumed value chunk. It provides the chunk input used by applyDataElementChunk.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="isFinalChunk" data-lang-kind="parameter-name">isFinalChunk</code></td>
+                                <td class="member-param-type"><code data-lang-source="boolean" data-lang-kind="type-token">boolean</code></td>
+                                <td><span class="page-meta">(Optional - false)</span> TRUE when the value is complete after this chunk. It provides the is final chunk input used by applyDataElementChunk. Type detail: expects a boolean flag value.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-85fa5e92" data-filter-item="parse method Parse the specified chunk of DICOM data.">
+                    <h4><code data-lang-source="parse(chunk, isDone, totalRead, totalLength)" data-lang-kind="signature">parse(chunk, isDone, totalRead, totalLength)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Parse the specified chunk of DICOM data. It provides parse behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="chunk" data-lang-kind="parameter-name">chunk</code></td>
+                                <td class="member-param-type"><code data-lang-source="Uint8Array" data-lang-kind="type-token">Uint8Array</code></td>
+                                <td><span class="page-meta">(Required)</span> The specified chunk of DICOM data. It provides the chunk input used by parse.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="isDone" data-lang-kind="parameter-name">isDone</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - false)</span> No description provided. It provides the is done input used by parse.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="totalRead" data-lang-kind="parameter-name">totalRead</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the total read input used by parse.</td>
+                            </tr>
+                            <tr>
+                                <td><code data-lang-source="totalLength" data-lang-kind="parameter-name">totalLength</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Optional - null)</span> No description provided. It provides the total length input used by parse.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">TRUE if a DICOM is fully parsed, FALSE otherwise.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-1057b532" data-filter-item="parseNextPreamble method Parse the next DICOM Preamble from the next chunk of data.">
+                    <h4><code data-lang-source="parseNextPreamble()" data-lang-kind="signature">parseNextPreamble()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Parse the next DICOM Preamble from the next chunk of data. It provides parse next preamble behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">TRUE if a preamble is fully parsed, FALSE otherwise.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-5d28956b" data-filter-item="parseNextPrefix method Parse the next DICOM Prefix from the next chunk of data.">
+                    <h4><code data-lang-source="parseNextPrefix()" data-lang-kind="signature">parseNextPrefix()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Parse the next DICOM Prefix from the next chunk of data. It provides parse next prefix behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">TRUE if a prefix is fully parsed, FALSE otherwise.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d91a4d66" data-filter-item="parseNextMetaSet method Parse the next DICOM MetaSet from the next chunk of data.">
+                    <h4><code data-lang-source="parseNextMetaSet(isDone)" data-lang-kind="signature">parseNextMetaSet(isDone)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Parse the next DICOM MetaSet from the next chunk of data. It provides parse next meta set behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="isDone" data-lang-kind="parameter-name">isDone</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the is done input used by parseNextMetaSet.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">TRUE if a meta-set is fully parsed, FALSE otherwise.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-eadc1f57" data-filter-item="parseNextDataSet method Parse the next DICOM DataSet from the next chunk of data.">
+                    <h4><code data-lang-source="parseNextDataSet(isDone)" data-lang-kind="signature">parseNextDataSet(isDone)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Parse the next DICOM DataSet from the next chunk of data. It provides parse next data set behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="isDone" data-lang-kind="parameter-name">isDone</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the is done input used by parseNextDataSet.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">TRUE if a data-set is fully parsed, FALSE otherwise.</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-d8827df6" data-filter-item="parseNextDataElement method Parse the next DICOM Data Element from the next chunk of data.">
+                    <h4><code data-lang-source="parseNextDataElement(isDone)" data-lang-kind="signature">parseNextDataElement(isDone)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>method</code> |
+                        Static: <code>No</code> |
+                        Async: <code>Yes</code>
+                    </p>
+                    <br />
+                    <p>Parse the next DICOM Data Element from the next chunk of data. It provides parse next data element behavior on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="isDone" data-lang-kind="parameter-name">isDone</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the is done input used by parseNextDataElement.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="unknown" data-lang-kind="type-token">unknown</code><br><span class="page-meta">The TRUE if there is more data to process and FALSE otherwise</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-41d74b7c" data-filter-item="bulkDataPolicy setter Configure bulk data behavior. mode?: &#39;materialize&#39; | &#39;auto&#39; | &#39;stream&#39;, knownLengthThreshold?: number, hardSafetyCap?: number } | string | null} policy The policy.">
+                    <h4><code data-lang-source="bulkDataPolicy(policy)" data-lang-kind="signature">bulkDataPolicy(policy)</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>setter</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Configure bulk data behavior. mode?: &#39;materialize&#39; | &#39;auto&#39; | &#39;stream&#39;, knownLengthThreshold?: number, hardSafetyCap?: number } | string | null} policy The policy. This setter updates bulk data policy on DicomDataParser.</p>
+                    <h5>Parameters</h5>
+
+                    <div class="table-scroll">
+                        <table class="member-parameter-table">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td><code data-lang-source="policy" data-lang-kind="parameter-name">policy</code></td>
+                                <td class="member-param-type"><span class="page-meta">n/a</span></td>
+                                <td><span class="page-meta">(Required)</span> No description provided. It provides the policy input used by bulkDataPolicy.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>Returns</h5>
+                    <p><span class="page-meta">n/a</span></p>
+                </article>
+                <article class="card reveal" id="declared-member-aab6422a" data-filter-item="bulkDataPolicy getter Get the current bulk data policy configuration.">
+                    <h4><code data-lang-source="bulkDataPolicy()" data-lang-kind="signature">bulkDataPolicy()</code></h4>
+                    <p class="page-meta">
+                        Kind: <code>getter</code> |
+                        Static: <code>No</code> |
+                        Async: <code>No</code>
+                    </p>
+                    <br />
+                    <p>Get the current bulk data policy configuration. This getter exposes bulk data policy from DicomDataParser.</p>
+                    <h5>Parameters</h5>
+<p class="page-meta">No parameters.</p>
+                    <h5>Returns</h5>
+                    <p><code data-lang-source="{mode: string, knownLengthThreshold: number, hardSafetyCap: number}" data-lang-kind="type-token">{mode: string, knownLengthThreshold: number, hardSafetyCap: number}</code><br><span class="page-meta">The policy.</span></p>
+                </article></div>
+            </section>
+
+            <section class="section reveal" id="option-contracts">
+                <h3>Option Contracts</h3>
+<p class="page-meta">No option-object contracts detected for declared members.</p>
+            </section>
+
+            <section class="section reveal">
+                <h3>Inherited Members</h3>
+
+            <section class="section reveal">
+                <h4>
+                    Inherited From
+                    <a href="class-dataparser-61a1da46.html"><code>DataParser</code></a>
+                    <span class="page-meta">(src/parsers/DataParser.js)</span>
+                </h4>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Kind</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr data-filter-item="isThenable method Determine whether the supplied value is Promise-like.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-b1a49997"><code data-lang-source="isThenable" data-lang-kind="member-name">isThenable</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Determine whether the supplied value is Promise-like. It provides is thenable behavior on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="fireStreamEvent method Fires a stream event or skips the event if the stream-handler does NOT support the event.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-7b769d27"><code data-lang-source="fireStreamEvent" data-lang-kind="member-name">fireStreamEvent</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Fires a stream event or skips the event if the stream-handler does NOT support the event. It provides fire stream event behavior on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="fireProgressEvent method Fires a throttled progress event. Parsers should call this explicitly (typically once per parse chunk).">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-8a176860"><code data-lang-source="fireProgressEvent" data-lang-kind="member-name">fireProgressEvent</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Fires a throttled progress event. Parsers should call this explicitly (typically once per parse chunk). It provides fire progress event behavior on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="resetSession method Reset process-session state before a new top-level reader transaction. This isolates one `pipeline.process(...)` call from the next while allowing parser-level part resets within a single transaction.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-15e63862"><code data-lang-source="resetSession" data-lang-kind="member-name">resetSession</code></a></td>
+                                <td><code>method</code></td>
+                                <td>Reset process-session state before a new top-level reader transaction. This isolates one `pipeline.process(...)` call from the next while allowing parser-level part resets within a single transaction. It provides reset session behavior on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="isStrict setter Sets the the status indicating that this parser is perfomring &quot;strict&quot; parsing.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-29ad7155"><code data-lang-source="isStrict" data-lang-kind="member-name">isStrict</code></a></td>
+                                <td><code>setter</code></td>
+                                <td>Sets the the status indicating that this parser is perfomring &quot;strict&quot; parsing. This setter updates is strict on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="isStrict getter Gets the status indicating that this parser is performing &quot;strict&quot; parsing.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-dfddd854"><code data-lang-source="isStrict" data-lang-kind="member-name">isStrict</code></a></td>
+                                <td><code>getter</code></td>
+                                <td>Gets the status indicating that this parser is performing &quot;strict&quot; parsing. This getter exposes is strict from DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="handler setter Sets the current handler for this parser.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-1d7f917b"><code data-lang-source="handler" data-lang-kind="member-name">handler</code></a></td>
+                                <td><code>setter</code></td>
+                                <td>Sets the current handler for this parser. This setter updates handler on DataParser.</td>
+                            </tr>
+                            <tr data-filter-item="handler getter Gets the current handler for this parser.">
+                                <td><a href="class-dataparser-61a1da46.html#declared-member-6d6ac5bc"><code data-lang-source="handler" data-lang-kind="member-name">handler</code></a></td>
+                                <td><code>getter</code></td>
+                                <td>Gets the current handler for this parser. This getter exposes handler from DataParser.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            </section>
+
+            
+
+            
+
+            
+            <p class="footer-note">Informative generated class reference from the EASI API contract.</p>
+        </main>
+    </div>
+</body>
+</html>
