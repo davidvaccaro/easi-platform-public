@@ -2,6 +2,15 @@
 ## Expressive API Standard for Imaging
 ### A fluent, language-neutral interface for efficient streaming, transformation, and composition of DICOM&reg; data.
 
+### Repository Scope
+
+This repository is the **EASI platform implementation monorepo** (runtime/tooling/source packages).
+
+Language-neutral standard artifacts are now hosted in the separate `easi` repository:
+
+- Specification site and reference content: `easi/easi-spec`
+- Neutral and implementation contracts: `easi/easi-contracts`
+
 ### OVERVIEW
 After over four decades of continuous standardization, Digital Imaging and Communication in Medicine (DICOM&reg;) has evolved to become one of the most ubiquitous technologies in healthcare IT. The [DICOM&reg; Standard](https://www.dicomstandard.org/) is comprehensive and adaptable, having proven its resilience and relevance over time. However, for those new to this standard, it can appear immense and complex, with a significant learning curve. Furthermore, as new use-cases emerge outside of direct radiological workflows, such as applications in artificial intelligence and data science and even new emerging clinical uses like digital pathology, the challenge of efficiently utilizing the DICOM&reg; Standard increases.
 

@@ -1,6 +1,6 @@
 # easi-cs
 
-Reserved for the future C# implementation of the EASI API within the BrightDicom monorepo.
+Reserved for the future C# implementation of the EASI API within the easi-platform monorepo.
 
 Planned high-level layout:
 

@@ -117,7 +117,8 @@ function resolveBrightDicomRoot(cwd = process.cwd()) {
     if (markerIndex >= 0)
         return normalized.substring(0, markerIndex);
 
-    if (path.basename(normalized) == 'BrightDicom')
+    var repositoryName = path.basename(normalized);
+    if ((repositoryName == 'BrightDicom') || (repositoryName == 'easi-platform'))
         return normalized;
 
     return path.resolve(normalized, '..');

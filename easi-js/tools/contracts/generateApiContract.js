@@ -8,8 +8,25 @@ import { fileURLToPath } from 'node:url';
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(scriptDirectory, '..', '..');
+const repositoryRoot = path.resolve(projectRoot, '..');
+const workspaceRoot = path.resolve(repositoryRoot, '..');
 const sourceRoot = path.join(projectRoot, 'src');
-const outputDirectory = path.resolve(projectRoot, '..', 'easi-contracts', 'schemas', 'implementation', 'javascript');
+const explicitContractsRoot = process.env.EASI_CONTRACTS_ROOT
+    ? path.resolve(process.env.EASI_CONTRACTS_ROOT)
+    : null;
+const contractsRootCandidates = [
+    explicitContractsRoot,
+    path.join(workspaceRoot, 'easi', 'easi-contracts'),
+    path.join(workspaceRoot, 'easi-contracts'),
+    path.join(repositoryRoot, 'easi-contracts')
+].filter(Boolean);
+const contractsRoot = contractsRootCandidates.find((candidate) => fs.existsSync(candidate));
+
+if (!contractsRoot) {
+    throw new Error(`Unable to resolve EASI contracts root. Checked: ${contractsRootCandidates.join(', ')}`);
+}
+
+const outputDirectory = path.join(contractsRoot, 'schemas', 'implementation', 'javascript');
 const outputFilePath = path.join(outputDirectory, 'easi-api.contract.json');
 const schemaFileName = 'easi-api.contract.schema.json';
 const schemaFilePath = path.join(outputDirectory, schemaFileName);

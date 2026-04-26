@@ -1,11 +1,11 @@
 # CLAUDE.md
-AI assistant guidance for the BrightDicom repository.
+AI assistant guidance for the easi-platform repository.
 
 ---
 
 ## Project Overview
 
-BrightDicom is a pure JavaScript implementation of **EASI** (Expressive API Standard for Imaging) for fluent composition and efficient, streaming-oriented processing of DICOM&reg; medical images. The architecture is explicitly SAX-style: data flows through a `PartStreamReader → Parser → Handler` pipeline with status-based flow control at each stage.
+This repository (easi-platform) includes the pure JavaScript implementation of **EASI** (Expressive API Standard for Imaging) for fluent composition and efficient, streaming-oriented processing of DICOM&reg; medical images. The architecture is explicitly SAX-style: data flows through a `PartStreamReader → Parser → Handler` pipeline with status-based flow control at each stage.
 
 **Primary target for all work:** `easi-js/`
 

@@ -26,7 +26,7 @@
         "harness:merge": "node tools/harness/mergeHarnessRuns.js",
         "docs:api-contract": "node tools/contracts/generateApiContract.js",
         "docs:api-contract:check": "node tools/contracts/generateApiContract.js --check",
-        "docs:api-reference": "node ../easi-spec/site/scripts/generate-api-reference.js",
+        "docs:api-reference": "node tools/docs/generateApiReference.js",
         "docs:api-reference:all": "npm run docs:api-contract && npm run docs:api-reference",
         "test:dimse-sockets": "RUN_DIMSE_SOCKET_TESTS=true jest --runInBand test/transports/dimse/NodeDimseCStoreScuTransport.test.js test/transports/dimse/NodeDimseCStoreScpSourceTransport.test.js test/transports/dimse/NodeDimseQueryRetrieveSourceTransport.test.js test/integration/KitchenSinkDimseRelayApi.test.js",
         "test:orthanc-dimse": "RUN_ORTHANC_DIMSE=true jest test/integration/OrthancDimseInterop.test.js --runInBand",

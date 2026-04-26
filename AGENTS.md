@@ -5,7 +5,7 @@ These rules apply to all automated code changes.
 ---
 
 ## 1. Project Overview
-BrightDicom provides a pure JavaScript implementation of EASI, the "Expressive API Standard for Imaging", for fluent composition and efficient reading and writing of DICOM&reg; medical images.
+This repository provides the EASI platform implementation ("easi-platform"), including the pure JavaScript implementation of EASI, for fluent composition and efficient reading and writing of DICOM&reg; medical images.
 
 - DICOM&reg; studies contain many large instances and require streaming-friendly processing.
 - EASI is designed around stream parsing and stream handling (similar in spirit to SAX-style processing).
