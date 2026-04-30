@@ -429,14 +429,6 @@ export default class DicomValidationFilter {
         return this.goal;
     }
 
-    set isStrict(isStrict) {
-        this.goal = (isStrict == true) ? ValidationGoals.STRICT : ValidationGoals.PERMISSIVE;
-    }
-
-    get isStrict() {
-        return (this.goal === ValidationGoals.STRICT);
-    }
-
     set onConcern(onConcern) {
         this._onConcern = onConcern;
     }
@@ -799,8 +791,6 @@ export default class DicomValidationFilter {
                 this.goal = options.goal;
             else if (options.mode != null)
                 this.goal = options.mode;
-            else if (options.isStrict === true)
-                this.goal = ValidationGoals.STRICT;
 
             if (typeof options.onConcern === 'function')
                 this.onConcern = options.onConcern;

@@ -300,7 +300,7 @@ export default class DicomDataParser extends DataParser {
                     var valueRepresentation = ValueRepresentation.find(Utilities.bytesToString(vr));
 
                     // If BOTH the tag and the value-representation are unknown, only fail in strict mode.
-                    if ((tag == null) && (valueRepresentation == null) && (this.isStrict == true))
+                    if ((tag == null) && (valueRepresentation == null) && (this._strictParsing == true))
                         throw new Exception("Unknown Tag and Value Representation!", DicomErrorCodes.UnknownTagAndValueRepresentation);
 
                     // In permissive mode, unknown explicit VR falls back to UN.
@@ -308,7 +308,7 @@ export default class DicomDataParser extends DataParser {
                         valueRepresentation = ValueRepresentations.UN;
 
                     // If the tag is found but the VR does NOT agree, process exception
-                    if ((tag != null) && (valueRepresentation != null) && (tag.VR != valueRepresentation) && (this.isStrict == true))
+                    if ((tag != null) && (valueRepresentation != null) && (tag.VR != valueRepresentation) && (this._strictParsing == true))
                         throw new Exception("Value Representation Read and Runtime Tag do NOT Agree!", DicomErrorCodes.InvalidDataElement);
 
                     // Establish the value representation to use to parse the value.
@@ -317,7 +317,7 @@ export default class DicomDataParser extends DataParser {
                         if (tag?.VR != null) {
                             valueRepresentation = tag.VR;
                         }
-                        else if (this.isStrict != true) {
+                        else if (this._strictParsing != true) {
                             valueRepresentation = ValueRepresentations.UN;
                         }
                     }
@@ -435,7 +435,7 @@ export default class DicomDataParser extends DataParser {
                     throw new Exception("Invalid Value Length!", DicomErrorCodes.InvalidDataElement);
 
                 // Validate the value length based on value-representation
-                if ((result.valueRepresentation.IsFixed == true) && (result.valueRepresentation.Length != valueLength) && (this.isStrict == true))
+                if ((result.valueRepresentation.IsFixed == true) && (result.valueRepresentation.Length != valueLength) && (this._strictParsing == true))
                     throw new Exception("Invalid Value Length! Value does NOT match VR fixed length.", DicomErrorCodes.InvalidDataElement);
 
                 // Validate the use of undefined-length value length
@@ -453,7 +453,7 @@ export default class DicomDataParser extends DataParser {
                         ||
                         (result.valueRepresentation == ValueRepresentations.UT)
                     )
-                    && (this.isStrict == true)
+                    && (this._strictParsing == true)
                 ) {
                     throw new Exception("Invalid Value Length! UC, UR or UT MUST be Explicit! See: 7.1.2 Data Element Structure with Explicit VR", DicomErrorCodes.InvalidDataElement);
                 }
@@ -1652,7 +1652,7 @@ export default class DicomDataParser extends DataParser {
 
                                     // Recover permissively when sequence delimitation appears while
                                     // an undefined-length item is still open (item-delimitation omitted).
-                                    if ((item.element instanceof Item) && (this.isStrict != true)) {
+                                    if ((item.element instanceof Item) && (this._strictParsing != true)) {
 
                                         // Consume the sequence-delimitation marker.
                                         this.data.consume(details.bytesPeeked);
@@ -1676,7 +1676,7 @@ export default class DicomDataParser extends DataParser {
                                     }
 
                                     // In strict mode, keep enforcing explicit item delimitation.
-                                    if (this.isStrict == true) {
+                                    if (this._strictParsing == true) {
                                         throw new Exception("Invalid Sequence. Undefined-length item MUST end with Item Delimitation Item.", DicomErrorCodes.InvalidSequence);
                                     }
 
@@ -2134,7 +2134,7 @@ export default class DicomDataParser extends DataParser {
             // If a sequence control marker is encountered while there is no active
             // data-element but sequence/item context is still open, consume the
             // marker and unwind the sequence stack instead of failing for no progress.
-            if ((this.isStrict != true)
+            if ((this._strictParsing != true)
                 && (this.dataElement == null)
                 && (this.isParsingSequence == true)) {
 

@@ -75,17 +75,6 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     }
 
     /**
-     * Sets strict parser behavior.
-     * @param {boolean} isStrict Indicates strict parse behavior.
-     * @returns {PipelineTargetStage} A new target stage object.
-     */
-    withIsStrict(isStrict) {
-        return this.cloneCurrentStage(
-            (session) => session.withIsStrict(isStrict)
-        );
-    }
-
-    /**
      * Enables de-identification using a mask.
      * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null}
      * [deIdentificationMask=Tag.DefaultDeIdentificationMask] The de-identification mask map.

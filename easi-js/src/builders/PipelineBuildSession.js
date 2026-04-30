@@ -829,16 +829,6 @@ export default class PipelineBuildSession {
     }
 
     /**
-     * Sets strict parser behavior.
-     * @param {boolean} isStrict Indicates strict parse behavior.
-     * @returns {PipelineBuildSession} The current session.
-     */
-    withIsStrict(isStrict) {
-        this.isStrict = isStrict;
-        return this;
-    }
-
-    /**
      * Enables de-identification using a mask.
      * @param {Map<Tag | string, unknown> | Array<Tag | string> | object | null}
      * [deIdentificationMask=Tag.DefaultDeIdentificationMask] The de-identification mask map.
@@ -1216,10 +1206,6 @@ export default class PipelineBuildSession {
 
         // Set parser into reader.
         reader.parser = parser;
-
-        // Set strict status.
-        reader.parser.isStrict = this.isStrict;
-
         // Set parser bulk-data policy when provided and supported.
         if ((this.bulkDataPolicy != null) && (this.hasPropertyInPrototypeChain(reader.parser, "bulkDataPolicy") == true)) {
             reader.parser.bulkDataPolicy = this.bulkDataPolicy;
@@ -1282,7 +1268,6 @@ export default class PipelineBuildSession {
         this.reader = null;
         this.source = null;
         this.sourceOptions = null;
-        this.isStrict = false;
         this.parser = null;
         this.handler = null;
         this.deIdentificationMask = null;

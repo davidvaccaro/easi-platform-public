@@ -21,6 +21,7 @@
       "**/node_modules": true,
       "**/dist": true,
       "**/coverage": true
-    }
+    },
+    "liveServer.settings.multiRootWorkspaceName": "easi"
   }
 }

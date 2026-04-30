@@ -72,7 +72,6 @@ Terminal target methods:
 Transform/filter configuration methods (applied before terminal output):
 
 - `withOnEmit(callback)`
-- `withIsStrict(boolean)`
 - `withDeIdentification(deIdentificationMask?)`
 - `withBulkDataPolicy(policy)`
 - `withValidation(validationConfig?)`

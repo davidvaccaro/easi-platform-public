@@ -1,5 +1,5 @@
 {
-    "name": "dicom-js",
+    "name": "easi-js",
     "version": "1.0.0",
     "type": "module",
     "description": "A Modern Pure-Javascript DICOM implementation.",

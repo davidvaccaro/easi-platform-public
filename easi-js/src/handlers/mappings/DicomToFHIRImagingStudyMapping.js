@@ -26,6 +26,9 @@ import ImagingSeries from "../../fhir/ImagingSeries.js";
 import ImagingInstance from "../../fhir/ImagingInstance.js";
 import Patient from "../../fhir/Patient.js";
 
+const RawToJsonSymbol = Symbol('easi.fhir.rawToJSON');
+const PrunedToJsonInstalledSymbol = Symbol('easi.fhir.prunedToJSON');
+
 export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
 
     /**
@@ -398,12 +401,17 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
             context.currentSeries = null;
             context.currentInstance = null;
 
+            // Install serialization pruning on final study output.
+            this.installPrunedSerializationForFinalResult(context.final);
+
             return context.final;
 
         }
 
-        if (study == null)
+        if (study == null) {
+            this.installPrunedSerializationForFinalResult(context.final);
             return context.final;
+        }
 
         // Find the series within the study series
         var series = study.series.find(element => element.uid == context.series.uid);
@@ -469,6 +477,9 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         context.currentStudy = null;
         context.currentSeries = null;
         context.currentInstance = null;
+
+        // Install serialization pruning on final study output.
+        this.installPrunedSerializationForFinalResult(context.final);
 
         // Return the current final value
         return context.final;
@@ -655,6 +666,146 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         var numberOfInstances = this.parseDicomInteger(study.numberOfInstances);
         if (numberOfInstances != null)
             study.numberOfInstances = numberOfInstances;
+
+    }
+
+    /**
+     * Resolve one serializer snapshot from a value.
+     * @param {*} value The value.
+     * @returns {*} The serializer snapshot.
+     */
+    resolveSerializationSnapshot(value) {
+
+        if (value == null)
+            return value;
+
+        if (typeof value !== 'object')
+            return value;
+
+        var rawToJson = value[RawToJsonSymbol];
+        if (typeof rawToJson === 'function')
+            return rawToJson.call(value);
+
+        if (typeof value.toJSON === 'function')
+            return value.toJSON();
+
+        return value;
+
+    }
+
+    /**
+     * Remove null/undefined values and empty objects from one serializable value.
+     * @param {*} value The value to prune.
+     * @param {WeakSet<object>} [seen] Optional cycle guard.
+     * @returns {*} The pruned value.
+     */
+    pruneSerializationValue(value, seen = null) {
+
+        if (value == null)
+            return undefined;
+
+        if (typeof value !== 'object')
+            return value;
+
+        var snapshot = this.resolveSerializationSnapshot(value);
+        if (snapshot == null)
+            return undefined;
+
+        if (typeof snapshot !== 'object')
+            return snapshot;
+
+        if (Array.isArray(snapshot) == true) {
+            var arrayResult = [];
+            for (var i = 0; i < snapshot.length; i++) {
+                var arrayValue = this.pruneSerializationValue(snapshot[i], seen);
+                if (arrayValue !== undefined)
+                    arrayResult.push(arrayValue);
+            }
+            return arrayResult;
+        }
+
+        if (seen == null)
+            seen = new WeakSet();
+
+        if (seen.has(snapshot) == true)
+            return undefined;
+
+        seen.add(snapshot);
+
+        var objectResult = {};
+        var keys = Object.keys(snapshot);
+        for (var j = 0; j < keys.length; j++) {
+            var key = keys[j];
+            var propertyValue = this.pruneSerializationValue(snapshot[key], seen);
+            if (propertyValue !== undefined)
+                objectResult[key] = propertyValue;
+        }
+
+        seen.delete(snapshot);
+
+        if (Object.keys(objectResult).length == 0)
+            return undefined;
+
+        return objectResult;
+
+    }
+
+    /**
+     * Install pruned JSON serialization on one ImagingStudy result object.
+     * @param {*} study The current study.
+     */
+    installPrunedSerialization(study) {
+
+        if ((study == null) || (typeof study !== 'object'))
+            return;
+
+        if (study[PrunedToJsonInstalledSymbol] === true)
+            return;
+
+        if (typeof study.toJSON !== 'function')
+            return;
+
+        Object.defineProperty(study, RawToJsonSymbol, {
+            value: study.toJSON.bind(study),
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+
+        Object.defineProperty(study, 'toJSON', {
+            configurable: true,
+            enumerable: false,
+            writable: true,
+            value: () => {
+                var raw = study[RawToJsonSymbol]();
+                var pruned = this.pruneSerializationValue(raw, new WeakSet());
+                return (pruned == null) ? {} : pruned;
+            }
+        });
+
+        Object.defineProperty(study, PrunedToJsonInstalledSymbol, {
+            value: true,
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+
+    }
+
+    /**
+     * Install pruned serialization for final mapping output.
+     * @param {*} finalResult The current final mapping result.
+     */
+    installPrunedSerializationForFinalResult(finalResult) {
+
+        if (Array.isArray(finalResult) == true) {
+            for (var i = 0; i < finalResult.length; i++) {
+                this.installPrunedSerialization(finalResult[i]);
+            }
+            return;
+        }
+
+        this.installPrunedSerialization(finalResult);
 
     }
 

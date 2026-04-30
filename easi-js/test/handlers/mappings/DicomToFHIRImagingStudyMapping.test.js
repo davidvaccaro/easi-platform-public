@@ -116,3 +116,37 @@ test('Test: DicomToFHIRImagingStudyMapping supports study-summary profile', asyn
   expect(result.series.length).toBe(0);
 
 });
+test('Test: DicomToFHIRImagingStudyMapping serialization omits null-valued fields', async () => {
+
+  var mapping = new DicomToFHIRImagingStudyMapping({
+    subjectMode: 'none'
+  });
+
+  var metadata = JSON.stringify({
+    '00201206': { vr: 'IS', Value: ['1'] },
+    '00080060': { vr: 'CS', Value: ['CT'] },
+    '00200013': { vr: 'IS', Value: ['9'] }
+  });
+
+  var result = await EASI.
+  pipelineBuilder().
+  fromPartStream().
+  ofDicomMetadata().
+  toMapping(mapping).
+  build().
+  process({ source: new TextEncoder().encode(metadata) });
+
+  expect(result instanceof ImagingStudy).toBe(true);
+
+  var serialized = JSON.parse(JSON.stringify(result));
+  var serializedStudy = Array.isArray(serialized) ? serialized[0] : serialized;
+
+  expect(Array.isArray(serializedStudy.series)).toBe(true);
+  expect(serializedStudy.series.length).toBe(1);
+  expect(Object.prototype.hasOwnProperty.call(serializedStudy.series[0], 'number')).toBe(false);
+  expect(Array.isArray(serializedStudy.series[0].instances)).toBe(true);
+  expect(serializedStudy.series[0].instances.length).toBe(1);
+  expect(Object.prototype.hasOwnProperty.call(serializedStudy.series[0].instances[0], 'uid')).toBe(false);
+  expect(serializedStudy.series[0].instances[0].number).toBe(9);
+
+});

@@ -1,6 +1,6 @@
 # DataParser Class
 
-The `DataParser` class is responsible for parsing streamed binary data in a DICOM&reg;-compatible or similarly structured format. It provides event-driven parsing logic with support for asynchronous event handlers and customizable parsing strictness.
+The `DataParser` class is responsible for parsing streamed binary data in a DICOM&reg;-compatible or similarly structured format. It provides event-driven parsing logic with support for asynchronous event handlers.
 
 ---
 
@@ -16,7 +16,6 @@ Creates a new instance of `DataParser`.
 
 | Property       | Type    | Description |
 |----------------|---------|-------------|
-| `isStrict`     | boolean | Indicates whether strict parsing mode is enabled. Enforces stricter validation rules. |
 | `handler`      | object  | The handler used to process parsing events like `onReset`, `onProgress`, etc. |
 | `context`      | any     | Parsing session context, user-defined. |
 | `data`         | `Data`  | An internal buffer that stores parsed binary data. |
@@ -98,7 +97,5 @@ parser.handler = {
     return Status.CONTINUE;
   }
 };
-
-parser.isStrict = true;
 parser.reset();
 ```

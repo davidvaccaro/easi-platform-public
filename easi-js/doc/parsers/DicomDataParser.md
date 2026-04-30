@@ -16,7 +16,6 @@ Creates a new instance of the parser. Initializes internal states and sets the d
 
 | Property        | Type     | Description |
 |-----------------|----------|-------------|
-| `isStrict`      | `boolean` | Whether strict parsing rules are enforced based on DICOM&reg; structural specifications. |
 | `handler`       | `object`  | An event handler that responds to parsing events such as `onReset`, `onStartInstance`, etc. |
 | `context`       | `any`     | A user-defined context object passed through stream events. |
 | `status`        | `Status`  | Current parser status. |

@@ -156,22 +156,6 @@ export default class DataParser {
     }
 
     /**
-     * Sets the the status indicating that this parser is perfomring "strict" parsing.
-     * @description Strict indicates that the parser will strictly enforce general structural aspects of the parsed format.
-     */
-    set isStrict (isStrict) {
-        this._isStrict = isStrict;
-    }
-
-    /**
-     * Gets the status indicating that this parser is performing "strict" parsing.
-     * @description Strict indicates that the parser will strictly enforce general structural aspects of the parsed format.
-     */
-    get isStrict() {
-        return this._isStrict;
-    }
-
-    /**
      * Sets the current handler for this parser.
      * @param {object} handler The handler used to handle parsed elements of the data.
      */
@@ -191,9 +175,8 @@ export default class DataParser {
      * Constructos a new Data Parser.
      */
     constructor() {
-        
-        // Default the "strict" status
-        this._isStrict = false;
+        // Internal parse-mode status (strict mode is no longer configurable).
+        this._strictParsing = false;
         
         // Init the session context
         this.context = null;
