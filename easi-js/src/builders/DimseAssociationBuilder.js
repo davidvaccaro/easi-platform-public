@@ -134,6 +134,31 @@ export default class DimseAssociationBuilder {
     }
 
     /**
+     * Normalize one verification object.
+     * @param {unknown} verification Verification object.
+     * @returns {object} Normalized verification object.
+     */
+    normalizeVerification(verification) {
+
+        if (this.isPlainObject(verification) == false) {
+            throw new Error("DIMSE association verification must be an object.");
+        }
+
+        var normalized = Object.assign({}, verification);
+
+        if (normalized.messageId != null) {
+            var messageId = Number(normalized.messageId);
+            if ((Number.isInteger(messageId) == false) || (messageId <= 0)) {
+                throw new Error("DIMSE verification messageId must be a positive integer.");
+            }
+            normalized.messageId = messageId;
+        }
+
+        return normalized;
+
+    }
+
+    /**
      * Normalize and validate one TLS configuration object.
      * @param {boolean | object | null} tlsConfig TLS configuration.
      * @param {string} label Validation label.
@@ -278,6 +303,24 @@ export default class DimseAssociationBuilder {
     }
 
     /**
+     * Ensure verification options object exists for option-level setters.
+     * @returns {object} Mutable verification options object.
+     */
+    ensureVerificationOptions() {
+
+        if (this.verificationConfigured == false) {
+            this.withVerification({});
+        }
+
+        if (this.isPlainObject(this.verification) == false) {
+            this.verification = {};
+        }
+
+        return this.verification;
+
+    }
+
+    /**
      * Configure a base association object.
      * @param {object | null} association Base association.
      * @param {boolean} clone Indicates if base association should be cloned during build.
@@ -358,6 +401,42 @@ export default class DimseAssociationBuilder {
             throw new Error("withQueryOption(name, value) requires a non-empty option name.");
         this.ensureQueryOptions()[name] = value;
         return this;
+    }
+
+    /**
+     * Configure association verification descriptor.
+     * @param {object} verification Verification descriptor.
+     * @returns {DimseAssociationBuilder} The current builder.
+     */
+    withVerification(verification = {}) {
+        if (this.isPlainObject(verification) == false) {
+            throw new Error("withVerification(...) requires verification object.");
+        }
+        this.verificationConfigured = true;
+        this.verification = Object.assign({}, verification);
+        return this;
+    }
+
+    /**
+     * Configure one verification option.
+     * @param {string} name Verification option name.
+     * @param {unknown} value Verification option value.
+     * @returns {DimseAssociationBuilder} The current builder.
+     */
+    withVerificationOption(name, value) {
+        if ((typeof name !== "string") || (name.length == 0))
+            throw new Error("withVerificationOption(name, value) requires a non-empty option name.");
+        this.ensureVerificationOptions()[name] = value;
+        return this;
+    }
+
+    /**
+     * Configure DIMSE C-ECHO message id.
+     * @param {number} messageId DIMSE C-ECHO message id.
+     * @returns {DimseAssociationBuilder} The current builder.
+     */
+    withVerificationMessageId(messageId) {
+        return this.withVerificationOption("messageId", messageId);
     }
 
     /**
@@ -573,6 +652,13 @@ export default class DimseAssociationBuilder {
             association.query = this.normalizeQuery(this.query);
         }
 
+        if (this.verificationConfigured == true) {
+            association.verification = this.normalizeVerification(this.verification);
+        }
+        else if (association.verification != null) {
+            association.verification = this.normalizeVerification(association.verification);
+        }
+
         if (this.transportTlsConfigured == true) {
             association.tls = this.normalizeTlsConfig(this.transportTls, "DIMSE transport TLS");
         }
@@ -603,7 +689,6 @@ export default class DimseAssociationBuilder {
             association.query = this.normalizeQuery(query);
 
         }
-
         else if (association.query != null) {
             association.query = this.normalizeQuery(association.query);
         }
@@ -629,6 +714,8 @@ export default class DimseAssociationBuilder {
         this.calledAeTitle = null;
         this.queryConfigured = false;
         this.query = null;
+        this.verificationConfigured = false;
+        this.verification = null;
 
         this.transportTlsConfigured = false;
         this.transportTls = null;

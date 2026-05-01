@@ -18,6 +18,7 @@ test("Test: DimseAssociationBuilder configures association identity and transpor
         .withCallingAeTitle("  EASI_JS  ")
         .withCalledAeTitle("  ORTHANC  ")
         .withQueryOption("operation", "cfind")
+        .withVerificationMessageId(7)
         .withTransportTls({
             rejectUnauthorized: false,
             servername: "pacs.local"
@@ -30,9 +31,23 @@ test("Test: DimseAssociationBuilder configures association identity and transpor
     expect(association.callingAeTitle).toBe("EASI_JS");
     expect(association.calledAeTitle).toBe("ORTHANC");
     expect(association.query.operation).toBe("cfind");
+    expect(association.verification.messageId).toBe(7);
     expect(association.tls.rejectUnauthorized).toBe(false);
     expect(association.tls.servername).toBe("pacs.local");
     expect(association.associationTimeoutMs).toBe(20000);
+});
+
+test("Test: DimseAssociationBuilder configures verification descriptor and options", () => {
+    var association = new DimseAssociationBuilder()
+        .withVerification({
+            transferSyntaxUids: ["1.2.840.10008.1.2"]
+        })
+        .withVerificationOption("messageId", 11)
+        .build();
+
+    expect(association.verification).toBeDefined();
+    expect(association.verification.messageId).toBe(11);
+    expect(association.verification.transferSyntaxUids).toEqual(["1.2.840.10008.1.2"]);
 });
 
 test("Test: DimseAssociationBuilder configures query AE-title options with dedicated methods", () => {
@@ -161,4 +176,12 @@ test("Test: DimseAssociationBuilder throws when query AE-title includes non-ASCI
             .withQueryOption("moveDestinationAeTitle", "MOVER_DEST_é")
             .build();
     }).toThrow("printable ASCII");
+});
+
+test("Test: DimseAssociationBuilder throws when verification messageId is invalid", () => {
+    expect(() => {
+        new DimseAssociationBuilder()
+            .withVerificationMessageId(0)
+            .build();
+    }).toThrow("messageId");
 });

@@ -36,6 +36,9 @@ const sourceAssociation = EASI
 - `withCalledAeTitle(aeTitle)`
 - `withQuery(query = {})`
 - `withQueryOption(name, value)`
+- `withVerification(verification = {})`
+- `withVerificationOption(name, value)`
+- `withVerificationMessageId(messageId)`
 - `withMoveDestinationAeTitle(aeTitle)`
 - `withMoveStoreCalledAeTitle(aeTitle)`
 - `withTransportTls(tlsConfig = true)`
