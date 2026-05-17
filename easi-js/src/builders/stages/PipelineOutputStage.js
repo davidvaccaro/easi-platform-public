@@ -40,7 +40,36 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
      * Set the current output writer sink.
      * @param {object} writer The outbound writer.
      * @param {*} target Optional outbound writer target.
-     * @param {object | null} options Optional writer options.
+     * @param {{
+     *   onChunk?: Function,
+     *   collectOutput?: boolean,
+     *   chunkSize?: number,
+     *   isMultiPart?: boolean,
+     *   contentType?: string,
+     *   boundary?: string,
+     *   partContentType?: string,
+     *   partHeaders?: object,
+     *   includeContentLength?: boolean,
+     *   type?: string,
+     *   transferSyntax?: string,
+     *   start?: string,
+     *   startInfo?: string,
+     *   closeOnDone?: boolean,
+     *   abortOnError?: boolean,
+     *   end?: boolean,
+     *   stream?: boolean,
+     *   stow?: boolean | {
+     *     strict?: boolean,
+     *     requirePostMethod?: boolean,
+     *     enforceMultipart?: boolean,
+     *     requestType?: string,
+     *     partContentType?: string,
+     *     accept?: string,
+     *     enforceSuccessfulStatus?: boolean,
+     *     allowedStatuses?: Array<number>
+     *   },
+     *   transport?: object
+     * } | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
     withWriter(writer, target = null, options = null) {
@@ -51,7 +80,21 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
 
     /**
      * Route terminal output to a byte writer sink.
-     * @param {object | null} options Optional writer options.
+     * @param {{
+     *   onChunk?: Function,
+     *   collectOutput?: boolean,
+     *   chunkSize?: number,
+     *   isMultiPart?: boolean,
+     *   contentType?: string,
+     *   boundary?: string,
+     *   partContentType?: string,
+     *   partHeaders?: object,
+     *   includeContentLength?: boolean,
+     *   type?: string,
+     *   transferSyntax?: string,
+     *   start?: string,
+     *   startInfo?: string
+     * } | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
     intoByteBuffer(options = null) {
@@ -60,7 +103,21 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
 
     /**
      * Route terminal output to a part writer sink.
-     * @param {object | null} options Optional writer options.
+     * @param {{
+     *   onChunk?: Function,
+     *   collectOutput?: boolean,
+     *   chunkSize?: number,
+     *   isMultiPart?: boolean,
+     *   contentType?: string,
+     *   boundary?: string,
+     *   partContentType?: string,
+     *   partHeaders?: object,
+     *   includeContentLength?: boolean,
+     *   type?: string,
+     *   transferSyntax?: string,
+     *   start?: string,
+     *   startInfo?: string
+     * } | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
     intoPartBuffer(options = null) {
@@ -69,8 +126,29 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
 
     /**
      * Route terminal output to a file writer sink.
-     * @param {string | object | null} filePathOrOptions The target file path or write options when late-binding destination.
-     * @param {object | null} options Optional writer options.
+     * @param {string | {
+     *   path?: string,
+     *   stream?: boolean,
+     *   onChunk?: Function,
+     *   collectOutput?: boolean,
+     *   chunkSize?: number
+     * } | null} filePathOrOptions The target file path or write options when late-binding destination.
+     * @param {{
+     *   stream?: boolean,
+     *   onChunk?: Function,
+     *   collectOutput?: boolean,
+     *   chunkSize?: number,
+     *   isMultiPart?: boolean,
+     *   contentType?: string,
+     *   boundary?: string,
+     *   partContentType?: string,
+     *   partHeaders?: object,
+     *   includeContentLength?: boolean,
+     *   type?: string,
+     *   transferSyntax?: string,
+     *   start?: string,
+     *   startInfo?: string
+     * } | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
     intoFileStream(filePathOrOptions = null, options = null) {
@@ -87,7 +165,23 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
     /**
      * Route terminal output to a browser file writable stream sink.
      * @param {object | null} targetOrOptions The FileSystemWritableFileStream or FileSystemFileHandle target or write options when late-binding destination.
-     * @param {object | null} options Optional writer options.
+     * @param {{
+     *   closeOnDone?: boolean,
+     *   abortOnError?: boolean,
+     *   onChunk?: Function,
+     *   collectOutput?: boolean,
+     *   chunkSize?: number,
+     *   isMultiPart?: boolean,
+     *   contentType?: string,
+     *   boundary?: string,
+     *   partContentType?: string,
+     *   partHeaders?: object,
+     *   includeContentLength?: boolean,
+     *   type?: string,
+     *   transferSyntax?: string,
+     *   start?: string,
+     *   startInfo?: string
+     * } | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
     intoBrowserFileStream(targetOrOptions = null, options = null) {
@@ -106,7 +200,22 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
     /**
      * Route terminal output to a Node writable stream sink.
      * @param {object | null} writableOrOptions The Node writable stream or write options when late-binding destination.
-     * @param {object | null} options Optional writer options.
+     * @param {{
+     *   end?: boolean,
+     *   onChunk?: Function,
+     *   collectOutput?: boolean,
+     *   chunkSize?: number,
+     *   isMultiPart?: boolean,
+     *   contentType?: string,
+     *   boundary?: string,
+     *   partContentType?: string,
+     *   partHeaders?: object,
+     *   includeContentLength?: boolean,
+     *   type?: string,
+     *   transferSyntax?: string,
+     *   start?: string,
+     *   startInfo?: string
+     * } | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
     intoNodeStreamAdapter(writableOrOptions = null, options = null) {
@@ -124,7 +233,24 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
     /**
      * Route terminal output to a generic writable stream/sink.
      * @param {object | null} writableOrOptions WritableStream/sink target or write options when late-binding destination.
-     * @param {object | null} options Optional writer options.
+     * @param {{
+     *   closeOnDone?: boolean,
+     *   abortOnError?: boolean,
+     *   end?: boolean,
+     *   onChunk?: Function,
+     *   collectOutput?: boolean,
+     *   chunkSize?: number,
+     *   isMultiPart?: boolean,
+     *   contentType?: string,
+     *   boundary?: string,
+     *   partContentType?: string,
+     *   partHeaders?: object,
+     *   includeContentLength?: boolean,
+     *   type?: string,
+     *   transferSyntax?: string,
+     *   start?: string,
+     *   startInfo?: string
+     * } | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
     intoWritableStream(writableOrOptions = null, options = null) {
@@ -143,7 +269,22 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
     /**
      * Route terminal output to a WebSocket sink.
      * @param {object | null} socketOrOptions The target socket or write options when late-binding destination.
-     * @param {object | null} options Optional writer options.
+     * @param {{
+     *   closeOnDone?: boolean,
+     *   onChunk?: Function,
+     *   collectOutput?: boolean,
+     *   chunkSize?: number,
+     *   isMultiPart?: boolean,
+     *   contentType?: string,
+     *   boundary?: string,
+     *   partContentType?: string,
+     *   partHeaders?: object,
+     *   includeContentLength?: boolean,
+     *   type?: string,
+     *   transferSyntax?: string,
+     *   start?: string,
+     *   startInfo?: string
+     * } | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
     intoWebSocketStream(socketOrOptions = null, options = null) {
@@ -160,8 +301,40 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
 
     /**
      * Route terminal output to an HTTP request sink.
-     * @param {string | object | null} requestOrOptions The request URL/descriptor or write options when late-binding destination.
-     * @param {object | null} options Optional writer options.
+     * @param {string | {
+     *   endpoint?: string,
+     *   url?: string,
+     *   href?: string,
+     *   method?: string,
+     *   headers?: object,
+     *   credentials?: string
+     * } | null} requestOrOptions The request URL/descriptor or write options when late-binding destination.
+     * @param {{
+     *   stream?: boolean,
+     *   stow?: boolean | {
+     *     strict?: boolean,
+     *     requirePostMethod?: boolean,
+     *     enforceMultipart?: boolean,
+     *     requestType?: string,
+     *     partContentType?: string,
+     *     accept?: string,
+     *     enforceSuccessfulStatus?: boolean,
+     *     allowedStatuses?: Array<number>
+     *   },
+     *   onChunk?: Function,
+     *   collectOutput?: boolean,
+     *   chunkSize?: number,
+     *   isMultiPart?: boolean,
+     *   contentType?: string,
+     *   boundary?: string,
+     *   partContentType?: string,
+     *   partHeaders?: object,
+     *   includeContentLength?: boolean,
+     *   type?: string,
+     *   transferSyntax?: string,
+     *   start?: string,
+     *   startInfo?: string
+     * } | null} options Optional writer options.
      * @returns {PipelineOutputStage} A new output stage object.
      */
     intoHttpStream(requestOrOptions = null, options = null) {
@@ -180,7 +353,7 @@ export default class PipelineOutputStage extends PipelineBuilderStage {
     /**
      * Route terminal output to a DIMSE association destination sink.
      * @param {object | null} association The DIMSE destination association options.
-     * @param {object | null} options Optional write options (`options.transport` should provide DIMSE transport).
+     * @param {{ transport?: object } | null} options Optional write options (`options.transport` should provide DIMSE transport).
      * @returns {PipelineOutputStage} A new output stage object.
      */
     intoDimseAssociation(association = null, options = null) {

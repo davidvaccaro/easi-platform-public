@@ -33,7 +33,8 @@ export default class CodecRegistry {
      *   requireDefaultDecoder: boolean,
      *   requiredTransferSyntaxes: Array<TransferSyntax | string | null>,
      *   requiredEncoders: Array<string | null>,
-     *   requiredImageDecoders: Array<string | null>
+     *   requiredImageDecoders: Array<string | null>,
+     *   validateProviderFactories: boolean
      * }} Normalized options.
      */
     normalizeValidationOptions(options = null) {
@@ -43,7 +44,8 @@ export default class CodecRegistry {
                 requireDefaultDecoder: true,
                 requiredTransferSyntaxes: [],
                 requiredEncoders: [],
-                requiredImageDecoders: []
+                requiredImageDecoders: [],
+                validateProviderFactories: true
             };
         }
 
@@ -57,7 +59,8 @@ export default class CodecRegistry {
                 : [],
             requiredImageDecoders: Array.isArray(options.requiredImageDecoders)
                 ? options.requiredImageDecoders
-                : []
+                : [],
+            validateProviderFactories: (options.validateProviderFactories !== false)
         };
 
     }
@@ -77,11 +80,304 @@ export default class CodecRegistry {
     }
 
     /**
+     * Determine if one object declares all required methods.
+     * @param {object | null} candidate Candidate object.
+     * @param {Array<string>} methodNames Required method names.
+     * @returns {boolean} TRUE when all required methods exist.
+     */
+    hasRequiredMethods(candidate, methodNames) {
+
+        if ((candidate == null) || (typeof candidate !== "object")) {
+            return false;
+        }
+
+        for (var i = 0; i < methodNames.length; i++) {
+            var methodName = methodNames[i];
+            if (typeof candidate[methodName] !== "function") {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Resolve missing required methods on one candidate.
+     * @param {object | null} candidate Candidate object.
+     * @param {Array<string>} methodNames Required method names.
+     * @returns {Array<string>} Missing method names.
+     */
+    getMissingRequiredMethods(candidate, methodNames) {
+
+        var missingMethods = [];
+
+        if (Array.isArray(methodNames) != true) {
+            return missingMethods;
+        }
+
+        for (var i = 0; i < methodNames.length; i++) {
+            var methodName = methodNames[i];
+            if (typeof candidate?.[methodName] !== "function") {
+                missingMethods.push(methodName);
+            }
+        }
+
+        return missingMethods;
+
+    }
+
+    /**
+     * Determine if one function appears to be a class constructor.
+     * @param {Function | null} candidate Candidate function.
+     * @returns {boolean} TRUE when function source appears to be class syntax.
+     */
+    isClassConstructor(candidate) {
+
+        if (typeof candidate !== "function") {
+            return false;
+        }
+
+        var source = "";
+        try {
+            source = Function.prototype.toString.call(candidate);
+        }
+        catch (_error) {
+            return false;
+        }
+
+        return source.trim().startsWith("class ");
+
+    }
+
+    /**
+     * Describe one registration value for diagnostics.
+     * @param {object | Function | null} registration Registration value.
+     * @returns {string} Human-readable registration description.
+     */
+    describeRegistrationValue(registration) {
+
+        if (registration == null) {
+            return "null";
+        }
+
+        if (typeof registration === "function") {
+            var name = registration.name || "(anonymous)";
+            return this.isClassConstructor(registration)
+                ? `class '${name}'`
+                : `function '${name}'`;
+        }
+
+        if (typeof registration !== "object") {
+            return `type '${typeof registration}'`;
+        }
+
+        var constructorName = registration?.constructor?.name || "Object";
+        return `object instance '${constructorName}'`;
+
+    }
+
+    /**
+     * Determine if one constructor prototype declares all required methods.
+     * @param {Function | null} constructorFn Candidate constructor.
+     * @param {Array<string>} methodNames Required method names.
+     * @returns {boolean} TRUE when constructor prototype satisfies requirements.
+     */
+    constructorHasRequiredMethods(constructorFn, methodNames) {
+
+        if (typeof constructorFn !== "function") {
+            return false;
+        }
+
+        var prototype = constructorFn.prototype ?? null;
+        if (prototype == null) {
+            return false;
+        }
+
+        for (var i = 0; i < methodNames.length; i++) {
+            var methodName = methodNames[i];
+            if (typeof prototype[methodName] !== "function") {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Resolve one normalized codec provider registration.
+     * Supports constructor/class, instance, provider object ({ create(...) }), and factory function forms.
+     * @param {object | Function | null} registration Candidate registration value.
+     * @param {Array<string>} requiredMethods Required codec methods.
+     * @param {string} registrationKind Human-readable kind label.
+     * @returns {{ provider: Function, mode: string, constructor: Function | null } | null} Registration descriptor.
+     */
+    resolveRegistrationProvider(registration, requiredMethods, registrationKind) {
+
+        if (registration == null) {
+            return null;
+        }
+
+        if (typeof registration === "function") {
+
+            if (this.constructorHasRequiredMethods(registration, requiredMethods) == true) {
+                return {
+                    provider: (context = null) => new registration(context),
+                    mode: "constructor",
+                    constructor: registration
+                };
+            }
+
+            if (this.isClassConstructor(registration) == true) {
+                var className = registration.name || "(anonymous)";
+                var prototype = registration.prototype ?? {};
+                var missingClassMethods = this.getMissingRequiredMethods(prototype, requiredMethods);
+                throw new Error(
+                    `Invalid ${registrationKind} registration. Constructor '${className}' is missing required method(s): ${missingClassMethods.join(", ")}.`
+                );
+            }
+
+            return {
+                provider: (context = null) => registration(context),
+                mode: "factory",
+                constructor: null
+            };
+
+        }
+
+        if (typeof registration !== "object") {
+            return null;
+        }
+
+        if (this.hasRequiredMethods(registration, requiredMethods) == true) {
+
+            var registrationConstructor = (typeof registration.constructor === "function")
+                ? registration.constructor
+                : null;
+            var canConstructFromInstance = (
+                (registrationConstructor != null)
+                && (this.constructorHasRequiredMethods(registrationConstructor, requiredMethods) == true)
+            );
+
+            return {
+                provider: canConstructFromInstance
+                    ? ((context = null) => new registrationConstructor(context))
+                    : (() => registration),
+                mode: canConstructFromInstance ? "instance-constructor" : "instance",
+                constructor: registrationConstructor
+            };
+        }
+
+        if (typeof registration.create === "function") {
+            return {
+                provider: (context = null) => registration.create(context),
+                mode: "provider",
+                constructor: null
+            };
+        }
+
+        if (registration.default != null) {
+            return this.resolveRegistrationProvider(registration.default, requiredMethods, registrationKind);
+        }
+
+        var missingObjectMethods = this.getMissingRequiredMethods(registration, requiredMethods);
+        var requiredSummary = requiredMethods.join(", ");
+        var missingSummary = (missingObjectMethods.length > 0)
+            ? ` Missing required method(s): ${missingObjectMethods.join(", ")}.`
+            : "";
+        throw new Error(
+            `Invalid ${registrationKind} registration. Expected constructor, instance, provider ({ create(...) }), or factory function with required method(s): ${requiredSummary}. Received ${this.describeRegistrationValue(registration)}.${missingSummary}`
+        );
+
+    }
+
+    /**
+     * Resolve one runtime codec instance from a provider.
+     * @param {Function | null} provider The provider function.
+     * @param {object | null} context Optional provider context.
+     * @param {Array<string>} requiredMethods Required methods.
+     * @param {string} missingMessage Error when provider is missing.
+     * @param {string} invalidMessage Error when provider output is invalid.
+     * @returns {object} The resolved codec instance.
+     */
+    resolveCodecInstance(provider, context, requiredMethods, missingMessage, invalidMessage, registrationKind = "codec") {
+
+        if (typeof provider !== "function") {
+            throw new Error(missingMessage);
+        }
+
+        var instance = provider(context);
+        if ((instance != null) && (typeof instance.then === "function")) {
+            throw new Error(
+                `${invalidMessage} Provider returned a Promise; codec providers must resolve synchronously.`
+            );
+        }
+
+        var missingMethods = this.getMissingRequiredMethods(instance, requiredMethods);
+        if (missingMethods.length > 0) {
+            throw new Error(
+                `${invalidMessage} Resolved ${registrationKind} instance is missing required method(s): ${missingMethods.join(", ")}.`
+            );
+        }
+
+        return instance;
+
+    }
+
+    /**
+     * Validate one registration provider.
+     * @param {Function | null} provider Provider function.
+     * @param {Array<string>} requiredMethods Required methods.
+     * @returns {{ ok: boolean, message: string | null }} Validation result.
+     */
+    validateRegistrationProvider(provider, requiredMethods, registrationKind = "codec") {
+
+        if (typeof provider !== "function") {
+            return {
+                ok: false,
+                message: `${registrationKind} registration provider is missing.`
+            };
+        }
+
+        var instance = null;
+        try {
+            instance = provider(null);
+        }
+        catch (error) {
+            return {
+                ok: false,
+                message: error?.message ?? "Provider threw during validation."
+            };
+        }
+
+        if ((instance != null) && (typeof instance.then === "function")) {
+            return {
+                ok: false,
+                message: `${registrationKind} registration provider returned a Promise. Codec providers must resolve synchronously.`
+            };
+        }
+
+        var missingMethods = this.getMissingRequiredMethods(instance, requiredMethods);
+        if (missingMethods.length > 0) {
+            return {
+                ok: false,
+                message: `Resolved ${registrationKind} instance is missing required method(s): ${missingMethods.join(", ")}.`
+            };
+        }
+
+        return { ok: true, message: null };
+
+    }
+
+    /**
      * Validate the current codec-registry state.
      * @param {{
      *   requireDefaultDecoder?: boolean,
      *   requiredTransferSyntaxes?: Array<TransferSyntax | string | null>,
-     *   requiredEncoders?: Array<string | null>
+     *   requiredEncoders?: Array<string | null>,
+     *   requiredImageDecoders?: Array<string | null>,
+     *   validateProviderFactories?: boolean
      * } | null} options Validation options.
      * @returns {{
      *   ok: boolean,
@@ -98,7 +394,7 @@ export default class CodecRegistry {
             warnings: []
         };
 
-        if ((this.decoderConstructors == null) || (typeof this.decoderConstructors !== "object")) {
+        if ((this.decoderProviders == null) || (typeof this.decoderProviders !== "object")) {
             report.errors.push(this.createValidationIssue(
                 "InvalidDecoderMap",
                 "CodecRegistry decoder map is missing or invalid."
@@ -106,23 +402,32 @@ export default class CodecRegistry {
         }
         else {
 
-            var decoderTransferSyntaxes = Object.keys(this.decoderConstructors);
+            var decoderTransferSyntaxes = Object.keys(this.decoderProviders);
             for (var i = 0; i < decoderTransferSyntaxes.length; i++) {
                 var transferSyntaxID = decoderTransferSyntaxes[i];
-                var decoderConstructor = this.decoderConstructors[transferSyntaxID];
+                var decoderProvider = this.decoderProviders[transferSyntaxID];
 
-                if (typeof decoderConstructor !== "function") {
+                if (typeof decoderProvider !== "function") {
                     report.errors.push(this.createValidationIssue(
-                        "InvalidDecoderConstructor",
+                        "InvalidDecoderProvider",
                         `Decoder registration for transfer syntax '${transferSyntaxID}' is invalid.`,
                         { transferSyntaxID }
                     ));
                 }
+                else if (normalizedOptions.validateProviderFactories == true) {
+                    var decoderValidation = this.validateRegistrationProvider(decoderProvider, ["decode"], "decoder");
+                    if (decoderValidation.ok != true) {
+                        report.errors.push(this.createValidationIssue(
+                            "InvalidDecoderProviderOutput",
+                            `Decoder provider for transfer syntax '${transferSyntaxID}' is invalid: ${decoderValidation.message}`,
+                            { transferSyntaxID }
+                        ));
+                    }
+                }
             }
 
             if (normalizedOptions.requireDefaultDecoder == true) {
-                var defaultDecoderConstructor = this.decoderConstructors[TransferSyntax.NONE.ID];
-                if (typeof defaultDecoderConstructor !== "function") {
+                if (typeof this.decoderProviders[TransferSyntax.NONE.ID] !== "function") {
                     report.errors.push(this.createValidationIssue(
                         "MissingDefaultDecoder",
                         `CodecRegistry requires a default decoder for transfer syntax '${TransferSyntax.NONE.ID}'.`,
@@ -134,7 +439,7 @@ export default class CodecRegistry {
             for (var r = 0; r < normalizedOptions.requiredTransferSyntaxes.length; r++) {
                 var requiredTransferSyntax = normalizedOptions.requiredTransferSyntaxes[r];
                 var requiredTransferSyntaxID = this.resolveTransferSyntaxID(requiredTransferSyntax);
-                if (typeof this.decoderConstructors[requiredTransferSyntaxID] !== "function") {
+                if (typeof this.decoderProviders[requiredTransferSyntaxID] !== "function") {
                     report.errors.push(this.createValidationIssue(
                         "MissingRequiredDecoder",
                         `CodecRegistry is missing decoder for transfer syntax '${requiredTransferSyntaxID}'.`,
@@ -145,7 +450,7 @@ export default class CodecRegistry {
 
         }
 
-        if ((this.imageDecoderConstructors == null) || (typeof this.imageDecoderConstructors !== "object")) {
+        if ((this.imageDecoderProviders == null) || (typeof this.imageDecoderProviders !== "object")) {
             report.errors.push(this.createValidationIssue(
                 "InvalidImageDecoderMap",
                 "CodecRegistry image-decoder map is missing or invalid."
@@ -153,17 +458,27 @@ export default class CodecRegistry {
         }
         else {
 
-            var imageFormats = Object.keys(this.imageDecoderConstructors);
+            var imageFormats = Object.keys(this.imageDecoderProviders);
             for (var k = 0; k < imageFormats.length; k++) {
                 var imageFormat = imageFormats[k];
-                var imageDecoderConstructor = this.imageDecoderConstructors[imageFormat];
+                var imageDecoderProvider = this.imageDecoderProviders[imageFormat];
 
-                if (typeof imageDecoderConstructor !== "function") {
+                if (typeof imageDecoderProvider !== "function") {
                     report.errors.push(this.createValidationIssue(
-                        "InvalidImageDecoderConstructor",
+                        "InvalidImageDecoderProvider",
                         `Image decoder registration for format '${imageFormat}' is invalid.`,
                         { format: imageFormat }
                     ));
+                }
+                else if (normalizedOptions.validateProviderFactories == true) {
+                    var imageDecoderValidation = this.validateRegistrationProvider(imageDecoderProvider, ["decodeImage"], "image decoder");
+                    if (imageDecoderValidation.ok != true) {
+                        report.errors.push(this.createValidationIssue(
+                            "InvalidImageDecoderProviderOutput",
+                            `Image decoder provider for format '${imageFormat}' is invalid: ${imageDecoderValidation.message}`,
+                            { format: imageFormat }
+                        ));
+                    }
                 }
             }
 
@@ -172,7 +487,7 @@ export default class CodecRegistry {
                 if (requiredImageFormat == null)
                     continue;
 
-                if (typeof this.imageDecoderConstructors[requiredImageFormat] !== "function") {
+                if (typeof this.imageDecoderProviders[requiredImageFormat] !== "function") {
                     report.errors.push(this.createValidationIssue(
                         "MissingRequiredImageDecoder",
                         `CodecRegistry is missing image decoder for format '${requiredImageFormat}'.`,
@@ -183,7 +498,7 @@ export default class CodecRegistry {
 
         }
 
-        if ((this.encoders == null) || (typeof this.encoders !== "object")) {
+        if ((this.encoderProviders == null) || (typeof this.encoderProviders !== "object")) {
             report.errors.push(this.createValidationIssue(
                 "InvalidEncoderMap",
                 "CodecRegistry encoder map is missing or invalid."
@@ -191,17 +506,27 @@ export default class CodecRegistry {
         }
         else {
 
-            var encoderFormats = Object.keys(this.encoders);
+            var encoderFormats = Object.keys(this.encoderProviders);
             for (var j = 0; j < encoderFormats.length; j++) {
                 var format = encoderFormats[j];
-                var encoder = this.encoders[format];
+                var encoderProvider = this.encoderProviders[format];
 
-                if ((encoder == null) || (typeof encoder.encode !== "function")) {
+                if (typeof encoderProvider !== "function") {
                     report.errors.push(this.createValidationIssue(
-                        "InvalidEncoder",
+                        "InvalidEncoderProvider",
                         `Encoder registration for format '${format}' is invalid.`,
                         { format }
                     ));
+                }
+                else if (normalizedOptions.validateProviderFactories == true) {
+                    var encoderValidation = this.validateRegistrationProvider(encoderProvider, ["encode"], "encoder");
+                    if (encoderValidation.ok != true) {
+                        report.errors.push(this.createValidationIssue(
+                            "InvalidEncoderProviderOutput",
+                            `Encoder provider for format '${format}' is invalid: ${encoderValidation.message}`,
+                            { format }
+                        ));
+                    }
                 }
             }
 
@@ -209,8 +534,7 @@ export default class CodecRegistry {
                 var requiredFormat = this.normalizeFormat(normalizedOptions.requiredEncoders[e]);
                 if (requiredFormat == null)
                     continue;
-                var requiredEncoder = this.encoders[requiredFormat];
-                if ((requiredEncoder == null) || (typeof requiredEncoder.encode !== "function")) {
+                if (typeof this.encoderProviders[requiredFormat] !== "function") {
                     report.errors.push(this.createValidationIssue(
                         "MissingRequiredEncoder",
                         `CodecRegistry is missing encoder for format '${requiredFormat}'.`,
@@ -231,7 +555,9 @@ export default class CodecRegistry {
      * @param {{
      *   requireDefaultDecoder?: boolean,
      *   requiredTransferSyntaxes?: Array<TransferSyntax | string | null>,
-     *   requiredEncoders?: Array<string | null>
+     *   requiredEncoders?: Array<string | null>,
+     *   requiredImageDecoders?: Array<string | null>,
+     *   validateProviderFactories?: boolean
      * } | null} options Validation options.
      * @returns {{
      *   ok: boolean,
@@ -257,9 +583,16 @@ export default class CodecRegistry {
     clone() {
 
         var registry = new CodecRegistry();
+
+        registry.decoderProviders = Object.assign({}, this.decoderProviders ?? {});
+        registry.imageDecoderProviders = Object.assign({}, this.imageDecoderProviders ?? {});
+        registry.encoderProviders = Object.assign({}, this.encoderProviders ?? {});
+
+        // Legacy compatibility snapshots
         registry.decoderConstructors = Object.assign({}, this.decoderConstructors ?? {});
         registry.imageDecoderConstructors = Object.assign({}, this.imageDecoderConstructors ?? {});
         registry.encoders = Object.assign({}, this.encoders ?? {});
+
         return registry;
 
     }
@@ -320,7 +653,7 @@ export default class CodecRegistry {
     resolveTransferSyntaxID(transferSyntax) {
         if (transferSyntax == null)
             return TransferSyntax.NONE.ID;
-        if (typeof transferSyntax === 'string')
+        if (typeof transferSyntax === "string")
             return transferSyntax;
         if (transferSyntax.ID != null)
             return transferSyntax.ID;
@@ -328,21 +661,53 @@ export default class CodecRegistry {
     }
 
     /**
-     * Register a decoder constructor for a transfer-syntax.
+     * Register a decoder provider for a transfer-syntax.
+     * Supports constructor/class, instance, provider object ({ create(...) }), and factory function.
      * @param {TransferSyntax | string} transferSyntax The transfer-syntax.
-     * @param {object | Function} decoderPrototypeOrConstructor Decoder instance prototype or constructor.
+     * @param {object | Function} decoderPrototypeOrConstructor Decoder instance prototype, constructor, provider, or factory.
      */
     setDecoderForTransferSyntax(transferSyntax, decoderPrototypeOrConstructor) {
 
         var transferSyntaxID = this.resolveTransferSyntaxID(transferSyntax);
-        var constructor = (typeof decoderPrototypeOrConstructor === 'function')
-            ? decoderPrototypeOrConstructor
-            : decoderPrototypeOrConstructor?.constructor;
+        var descriptor = this.resolveRegistrationProvider(
+            decoderPrototypeOrConstructor,
+            ["decode"],
+            "transfer-syntax decoder"
+        );
 
-        if (constructor == null)
+        if (descriptor == null)
             return;
 
-        this.decoderConstructors[transferSyntaxID] = constructor;
+        this.decoderProviders[transferSyntaxID] = descriptor.provider;
+
+        // Legacy compatibility snapshot
+        this.decoderConstructors[transferSyntaxID] = descriptor.constructor ?? descriptor.provider;
+
+    }
+
+    /**
+     * Resolve a decoder instance for one transfer-syntax.
+     * @param {TransferSyntax | string | null} transferSyntax The transfer-syntax.
+     * @param {object | null} dicomObject Optional DICOM object context.
+     * @returns {object} Decoder instance.
+     */
+    createDecoderForTransferSyntax(transferSyntax, dicomObject = null) {
+
+        var transferSyntaxID = this.resolveTransferSyntaxID(transferSyntax);
+        var provider = this.decoderProviders[transferSyntaxID];
+
+        if (provider == null) {
+            provider = this.decoderProviders[TransferSyntax.NONE.ID] ?? null;
+        }
+
+        return this.resolveCodecInstance(
+            provider,
+            dicomObject,
+            ["decode"],
+            "CodecRegistry has no default decoder configured.",
+            `Invalid decoder registration for transfer syntax '${transferSyntaxID}'.`,
+            "decoder"
+        );
 
     }
 
@@ -350,29 +715,17 @@ export default class CodecRegistry {
      * Resolve a decoder for a transfer-syntax.
      * @param {TransferSyntax | string | null} transferSyntax The transfer-syntax.
      * @param {object | null} dicomObject Optional DICOM object context.
-     * @returns {object} A new decoder instance.
+     * @returns {object} A decoder instance.
      */
     getDecoderForTransferSyntax(transferSyntax, dicomObject = null) {
-
-        var transferSyntaxID = this.resolveTransferSyntaxID(transferSyntax);
-        var decoderConstructor = this.decoderConstructors[transferSyntaxID];
-
-        if (decoderConstructor == null) {
-            decoderConstructor = this.decoderConstructors[TransferSyntax.NONE.ID];
-        }
-
-        if (decoderConstructor == null) {
-            throw new Error("CodecRegistry has no default decoder configured.");
-        }
-
-        return new decoderConstructor(dicomObject);
-
+        return this.createDecoderForTransferSyntax(transferSyntax, dicomObject);
     }
 
     /**
-     * Register one image decoder constructor for a format/media-type key.
+     * Register one image decoder provider for a format/media-type key.
+     * Supports constructor/class, instance, provider object ({ create(...) }), and factory function.
      * @param {string} formatOrMediaType Image format or media-type.
-     * @param {object | Function} decoderPrototypeOrConstructor Decoder prototype or constructor.
+     * @param {object | Function} decoderPrototypeOrConstructor Decoder instance prototype, constructor, provider, or factory.
      */
     setDecoderForImageFormat(formatOrMediaType, decoderPrototypeOrConstructor) {
 
@@ -380,21 +733,26 @@ export default class CodecRegistry {
         if (format == null)
             return;
 
-        var constructor = (typeof decoderPrototypeOrConstructor === "function")
-            ? decoderPrototypeOrConstructor
-            : decoderPrototypeOrConstructor?.constructor;
+        var descriptor = this.resolveRegistrationProvider(
+            decoderPrototypeOrConstructor,
+            ["decodeImage"],
+            "image decoder"
+        );
 
-        if (constructor == null)
+        if (descriptor == null)
             return;
 
-        this.imageDecoderConstructors[format] = constructor;
+        this.imageDecoderProviders[format] = descriptor.provider;
+
+        // Legacy compatibility snapshot
+        this.imageDecoderConstructors[format] = descriptor.constructor ?? descriptor.provider;
 
     }
 
     /**
-     * Register one image decoder constructor for media-type key.
+     * Register one image decoder provider for media-type key.
      * @param {string} mediaType Media-type key.
-     * @param {object | Function} decoderPrototypeOrConstructor Decoder prototype or constructor.
+     * @param {object | Function} decoderPrototypeOrConstructor Decoder prototype, constructor, provider, or factory.
      */
     setDecoderForMediaType(mediaType, decoderPrototypeOrConstructor) {
         this.setDecoderForImageFormat(mediaType, decoderPrototypeOrConstructor);
@@ -406,18 +764,35 @@ export default class CodecRegistry {
      * @param {object | null} context Optional decoder context.
      * @returns {object | null} Decoder instance, when available.
      */
-    getDecoderForImageFormat(formatOrMediaType, context = null) {
+    createDecoderForImageFormat(formatOrMediaType, context = null) {
 
         var format = this.normalizeImageFormat(formatOrMediaType);
         if (format == null)
             return null;
 
-        var constructor = this.imageDecoderConstructors[format];
-        if (constructor == null)
+        var provider = this.imageDecoderProviders[format] ?? null;
+        if (provider == null)
             return null;
 
-        return new constructor(context);
+        return this.resolveCodecInstance(
+            provider,
+            context,
+            ["decodeImage"],
+            `No image decoder is registered for format '${format}'.`,
+            `Invalid image decoder registration for format '${format}'.`,
+            "image decoder"
+        );
 
+    }
+
+    /**
+     * Resolve one image decoder instance by image format/media-type key.
+     * @param {string} formatOrMediaType Image format or media-type.
+     * @param {object | null} context Optional decoder context.
+     * @returns {object | null} Decoder instance, when available.
+     */
+    getDecoderForImageFormat(formatOrMediaType, context = null) {
+        return this.createDecoderForImageFormat(formatOrMediaType, context);
     }
 
     /**
@@ -439,7 +814,7 @@ export default class CodecRegistry {
         var format = this.normalizeImageFormat(formatOrMediaType);
         if (format == null)
             return false;
-        return (typeof this.imageDecoderConstructors[format] === "function");
+        return (typeof this.imageDecoderProviders[format] === "function");
     }
 
     /**
@@ -458,13 +833,14 @@ export default class CodecRegistry {
      */
     hasDecoderForTransferSyntax(transferSyntax) {
         var transferSyntaxID = this.resolveTransferSyntaxID(transferSyntax);
-        return (this.decoderConstructors[transferSyntaxID] != null);
+        return (this.decoderProviders[transferSyntaxID] != null);
     }
 
     /**
-     * Register an encoder for a named output format.
+     * Register an encoder provider for a named output format.
+     * Supports constructor/class, instance, provider object ({ create(...) }), and factory function.
      * @param {string} format The output format identifier.
-     * @param {object} encoder The encoder instance.
+     * @param {object | Function} encoder Encoder instance, constructor, provider, or factory.
      */
     setEncoder(format, encoder) {
 
@@ -472,7 +848,45 @@ export default class CodecRegistry {
         if (key == null)
             return;
 
+        var descriptor = this.resolveRegistrationProvider(
+            encoder,
+            ["encode"],
+            "encoder"
+        );
+
+        if (descriptor == null)
+            return;
+
+        this.encoderProviders[key] = descriptor.provider;
+
+        // Legacy compatibility snapshot
         this.encoders[key] = encoder;
+
+    }
+
+    /**
+     * Resolve an encoder instance by format identifier.
+     * @param {string} format The output format identifier.
+     * @returns {object | null} Encoder instance, when available.
+     */
+    createEncoder(format) {
+
+        var key = this.normalizeFormat(format);
+        if (key == null)
+            return null;
+
+        var provider = this.encoderProviders[key] ?? null;
+        if (provider == null)
+            return null;
+
+        return this.resolveCodecInstance(
+            provider,
+            null,
+            ["encode"],
+            `No encoder is registered for format '${key}'.`,
+            `Invalid encoder registration for format '${key}'.`,
+            "encoder"
+        );
 
     }
 
@@ -482,10 +896,7 @@ export default class CodecRegistry {
      * @returns {object | null} The encoder, when available.
      */
     getEncoder(format) {
-        var key = this.normalizeFormat(format);
-        if (key == null)
-            return null;
-        return this.encoders[key] ?? null;
+        return this.createEncoder(format);
     }
 
     /**
@@ -494,13 +905,21 @@ export default class CodecRegistry {
      * @returns {boolean} TRUE when an encoder exists.
      */
     hasEncoder(format) {
-        return (this.getEncoder(format) != null);
+        var key = this.normalizeFormat(format);
+        if (key == null)
+            return false;
+        return (typeof this.encoderProviders[key] === "function");
     }
 
     /**
      * Construct a codec registry instance.
      */
     constructor() {
+        this.decoderProviders = {};
+        this.imageDecoderProviders = {};
+        this.encoderProviders = {};
+
+        // Legacy compatibility maps retained for transitional call sites/tests.
         this.decoderConstructors = {};
         this.imageDecoderConstructors = {};
         this.encoders = {};

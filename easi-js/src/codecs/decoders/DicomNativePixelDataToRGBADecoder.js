@@ -33,6 +33,84 @@ export default class DicomNativePixelDataToRGBADecoder {
     }
 
     /**
+     * Resolve one integer pixel bit mask for the specified stored-bit count.
+     * @param {number} bitsStored The number of stored bits in the sample.
+     * @returns {number} The mask.
+     */
+    resolvePixelMask(bitsStored) {
+
+        var bits = Number(bitsStored);
+        if (Number.isFinite(bits) == false)
+            bits = 16;
+        bits = Math.max(1, Math.min(16, Math.floor(bits)));
+        if (bits >= 16)
+            return 0xFFFF;
+        return ((1 << bits) - 1);
+
+    }
+
+    /**
+     * Normalize one raw stored sample to signed/unsigned numeric form.
+     * @param {number} rawSample The raw sample value.
+     * @param {number} bitsStored The stored-bit count.
+     * @param {number} pixelRepresentation 0=unsigned, 1=signed.
+     * @returns {number} The normalized sample.
+     */
+    normalizeStoredSample(rawSample, bitsStored, pixelRepresentation = 0) {
+
+        var mask = this.resolvePixelMask(bitsStored);
+        var value = (Number(rawSample) || 0) & mask;
+        var isSigned = (Number(pixelRepresentation) == 1);
+        if (isSigned == false)
+            return value;
+
+        var bits = Math.max(1, Math.min(16, Math.floor(Number(bitsStored) || 16)));
+        var signBit = (bits >= 16) ? 0x8000 : (1 << (bits - 1));
+        if ((value & signBit) != 0)
+            value = value - (1 << bits);
+        return value;
+
+    }
+
+    /**
+     * Read one packed little-endian sample from source bytes.
+     * @param {Uint8Array} source Source bytes.
+     * @param {number} sourceStart Source start index.
+     * @param {number} sampleIndex 0-based sample index.
+     * @param {number} bitsAllocated Bits per packed sample.
+     * @returns {number} One unpacked sample value.
+     */
+    readPackedSample(source, sourceStart, sampleIndex, bitsAllocated) {
+
+        var bits = Math.max(1, Math.min(16, Math.floor(Number(bitsAllocated) || 12)));
+        var bitStart = (sampleIndex * bits);
+        var byteIndex = (sourceStart + (bitStart >> 3));
+        var bitOffsetInByte = (bitStart & 0x7);
+        var bitsRead = 0;
+        var shift = 0;
+        var value = 0;
+
+        while (bitsRead < bits) {
+
+            var currentByte = Number(source[byteIndex] ?? 0);
+            var availableBits = (8 - bitOffsetInByte);
+            var bitsToTake = Math.min((bits - bitsRead), availableBits);
+            var mask = ((1 << bitsToTake) - 1);
+            var part = ((currentByte >> bitOffsetInByte) & mask);
+            value = (value | (part << shift));
+
+            bitsRead += bitsToTake;
+            shift += bitsToTake;
+            byteIndex += 1;
+            bitOffsetInByte = 0;
+
+        }
+
+        return value;
+
+    }
+
+    /**
      * Decode the specified source 8-bit DICOM MONOCHROME pixel-data into the destination buffer as standard RGBA pixel-data.
      * @param {Uint8Array} source The source DICOM MONOCHROME pixel-data.
      * @param {number} sourceStart The index into the source pixel-data buffer to START processing.
@@ -44,16 +122,16 @@ export default class DicomNativePixelDataToRGBADecoder {
     decode8BitDICOMMonochromeToRGB(source, sourceStart, sourceStop, destination, destinationStart, bitsPerPixel, windowCenter, windowWidth) {
 
         // Establish the apply window level status
-        let applyWindowLevel = ((windowWidth != null) && (windowCenter != null)) ? true : false;
+        let applyWindowLevel = ((windowWidth != null) && (windowCenter != null) && (Number(windowWidth) > 0)) ? true : false;
 
         // Detrmine the low and high values per the specified window level parameters
         const lowValue = (applyWindowLevel == true) ? (windowCenter - (windowWidth / 2)) : 0;
         const highValue = (applyWindowLevel == true) ? (windowCenter + (windowWidth / 2)) : 0;
 
         // Generate any pixel mask for BPP < 8
-        var pixelMask = (bitsPerPixel <= 8) ? this.generatePixelMask(8, bitsPerPixel) : 255;
+        var pixelMask = (bitsPerPixel <= 8) ? this.resolvePixelMask(bitsPerPixel) : 255;
 
-        // Establish MONOCHROME "1" versus "2" which influences the alpha-channel
+        // Establish MONOCHROME "1" versus "2"
         let isOne = (this.dicomObject.imagePixelModule.photometricInterpretation == PhotometricInterpretationType.MONOCHROME1);
 
         // Loop over the source image bytes
@@ -73,13 +151,17 @@ export default class DicomNativePixelDataToRGBADecoder {
                 }
             }
 
+            // Invert grayscale for MONOCHROME1.
+            if (isOne == true)
+                pixel = (255 - pixel);
+
             // Decode the Monochrome Pixel Data to thge RGBA destination
             destination[((destinationStart + (i - sourceStart)) * 4) + 0] = pixel;
             destination[((destinationStart + (i - sourceStart)) * 4) + 1] = pixel;
             destination[((destinationStart + (i - sourceStart)) * 4) + 2] = pixel;
 
-            // Set the alpha channel to the value indicated by MONOCHROME1 versus MONOCHROME2
-            destination[((destinationStart + (i - sourceStart)) * 4) + 3] = (isOne == true) ? 0 : 255;
+            // Always emit fully-opaque RGBA output.
+            destination[((destinationStart + (i - sourceStart)) * 4) + 3] = 255;
 
         }
 
@@ -103,7 +185,7 @@ export default class DicomNativePixelDataToRGBADecoder {
         var modality = this.dicomObject.generalSeriesModule.modality;
 
         // Establish the apply window level status
-        let applyWindowLevel = ((windowWidth != null) && (windowCenter != null)) ? true : false;
+        let applyWindowLevel = ((windowWidth != null) && (windowCenter != null) && (Number(windowWidth) > 0)) ? true : false;
 
         // Detemine the "Rescale Intercept" and "Rescale Intercept"
         var rescaleIntercept = this.dicomObject.modalityLookUpTableModule.rescaleIntercept;
@@ -114,38 +196,46 @@ export default class DicomNativePixelDataToRGBADecoder {
         // Establish the apply rescale status
         let applyRescale = ((rescaleSlope != null) && (rescaleIntercept != null)) ? true : false;
 
-        // Generate any pixel mask for BPP < 8
-        var pixelMask = (bitsPerPixel <= 16) ? this.generatePixelMask(8, bitsPerPixel) : 65535;
+        // Generate any pixel mask for BPP <= 16
+        var pixelMask = this.resolvePixelMask(bitsPerPixel);
 
-        // Establish MONOCHROME "1" versus "2" which influences the alpha-channel
+        // Determine source sample layout and signedness.
+        var bitsAllocated = Math.max(1, Math.min(16, Number(this.dicomObject.imagePixelModule.bitsAllocated ?? bitsPerPixel) || bitsPerPixel));
+        var usePackedSource = ((bitsAllocated > 8) && (bitsAllocated < 16));
+        var pixelRepresentation = Number(this.dicomObject.imagePixelModule.pixelRepresentation ?? 0);
+        var totalSourceBytes = Math.max(0, (sourceStop - sourceStart));
+        var sampleCount = usePackedSource
+            ? Math.floor((totalSourceBytes * 8) / bitsAllocated)
+            : Math.floor(totalSourceBytes / 2);
+
+        // Establish MONOCHROME "1" versus "2"
         let isOne = (this.dicomObject.imagePixelModule.photometricInterpretation == PhotometricInterpretationType.MONOCHROME1);
 
-        // Determine the "Max Pixel Value" from the object
-        let maxPixelValue = this.dicomObject.imagePixelModule.largestImagePixelValue;
-        
-        // Deterime the max pixel value (if needed)
-        if (maxPixelValue == null) {
+        // Determine source intensity range for default windowing and range fallback.
+        let maxPixelValue = Number.NEGATIVE_INFINITY;
+        let minPixelValue = Number.POSITIVE_INFINITY;
+        for (let s = 0; s < sampleCount; s++) {
+            var sample = usePackedSource
+                ? this.readPackedSample(source, sourceStart, s, bitsAllocated)
+                : (source[sourceStart + (s * 2)] | source[sourceStart + (s * 2) + 1] << 8);
+            sample = (sample & pixelMask);
+            var normalized = this.normalizeStoredSample(sample, bitsPerPixel, pixelRepresentation);
+            if (applyRescale == true)
+                normalized = (normalized * rescaleSlope) + rescaleIntercept;
+            if (normalized > maxPixelValue)
+                maxPixelValue = normalized;
+            if (normalized < minPixelValue)
+                minPixelValue = normalized;
+        }
+        if (Number.isFinite(maxPixelValue) == false)
             maxPixelValue = 0;
-            for (let s = sourceStart; s < sourceStop; s += 2) {
-                maxPixelValue = Math.max(maxPixelValue, ((source[s] | source[s + 1] << 8)) & pixelMask);
-            }
-        }
-
-        // Determine the "Max Pixel Value" from the object
-        let minPixelValue = this.dicomObject.imagePixelModule.smallestImagePixelValue;
-        
-        // Deterime the max pixel value (if needed)
-        if (minPixelValue == null) {
-            minPixelValue = 9999999;
-            for (let s = sourceStart; s < sourceStop; s += 2) {
-                minPixelValue = Math.min(minPixelValue, ((source[s] | source[s + 1] << 8)) & pixelMask);
-            }
-        }
+        if (Number.isFinite(minPixelValue) == false)
+            minPixelValue = 0;
 
         // DEFAULT the window width and center (if needed)
         if (applyWindowLevel == false) {
-            windowCenter = ((maxPixelValue - minPixelValue) / 2);
-            windowWidth = (maxPixelValue - minPixelValue);            
+            windowCenter = (minPixelValue + maxPixelValue) / 2;
+            windowWidth = Math.max(1, (maxPixelValue - minPixelValue));
             applyWindowLevel = true;
         }
 
@@ -158,15 +248,20 @@ export default class DicomNativePixelDataToRGBADecoder {
         // Detrmine the low and high values per the specified window level parameters
         const lowValue = (applyWindowLevel == true) ? (windowCenter - (windowWidth / 2)) : 0;
         const highValue = (applyWindowLevel == true) ? (windowCenter + (windowWidth / 2)) : 0;
+        const rangeDenominator = Math.max(1, (maxPixelValue - minPixelValue));
                 
         // Establish the destination index
         var destinationIndex = destinationStart;
 
         // Loop over the source image bytes
-        for (let i = sourceStart; i < sourceStop; i += 2) {
+        for (let i = 0; i < sampleCount; i++) {
 
             // Convert the 8 byte array values to the raw 16-bit pixel value
-            var rawPixel = ((source[i] | source[i + 1] << 8) & pixelMask);
+            var rawPixel = usePackedSource
+                ? this.readPackedSample(source, sourceStart, i, bitsAllocated)
+                : (source[sourceStart + (i * 2)] | source[sourceStart + (i * 2) + 1] << 8);
+            rawPixel = (rawPixel & pixelMask);
+            rawPixel = this.normalizeStoredSample(rawPixel, bitsPerPixel, pixelRepresentation);
 
             // APPLY: Rescale Slope and Rescal Intercept (BEFORE Window Level for all modalities BUT PT)
             if (applyRescale == true) {
@@ -191,17 +286,23 @@ export default class DicomNativePixelDataToRGBADecoder {
             else {
 
                 // Determine the source pixel using default range 
-                pixel = Math.floor((rawPixel / maxPixelValue) * 255);
+                pixel = Math.floor(((rawPixel - minPixelValue) / rangeDenominator) * 255);
 
             }
+
+            pixel = this.toByte(pixel);
+
+            // Invert grayscale for MONOCHROME1.
+            if (isOne == true)
+                pixel = (255 - pixel);
 
             // Decode the Monochrome Pixel Data to thge RGBA destination
             destination[(destinationIndex * 4) + 0] = pixel;
             destination[(destinationIndex * 4) + 1] = pixel;
             destination[(destinationIndex * 4) + 2] = pixel;
 
-            // Set the alpha channel to the value indicated by MONOCHROME1 versus MONOCHROME2
-            destination[(destinationIndex * 4) + 3] = (isOne == true) ? 0 : 255;
+            // Always emit fully-opaque RGBA output.
+            destination[(destinationIndex * 4) + 3] = 255;
 
             // Increment the destination index
             destinationIndex++;

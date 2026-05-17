@@ -31,6 +31,89 @@ import Constants from '../Constants.js';
 export default class Image extends Entity {
 
     /**
+     * Extract one contiguous encapsulated frame codestream from ITEM-fragment bytes.
+     * @param {Uint8Array} sourceBytes PixelData source bytes.
+     * @param {number} frameStart Start offset to first frame fragment value byte.
+     * @param {number} frameStop Stop offset (exclusive) for the frame range.
+     * @param {boolean} isLittleEndian Transfer-syntax endianness.
+     * @returns {Uint8Array} Contiguous frame codestream bytes.
+     */
+    extractEncapsulatedFrameBytes(sourceBytes, frameStart, frameStop, isLittleEndian = true) {
+
+        var start = Math.max(0, Number(frameStart) || 0);
+        var stop = Math.min(sourceBytes.length, Number(frameStop) || sourceBytes.length);
+        if (stop <= start)
+            return new Uint8Array(0);
+
+        // ITEM tag bytes for FEFF00E0 (little-endian) / FFFE E000 (big-endian).
+        var itemTagBytes = (isLittleEndian == true)
+            ? [0xFE, 0xFF, 0x00, 0xE0]
+            : [0xFF, 0xFE, 0xE0, 0x00];
+
+        var isItemTagAt = (offset) => {
+            if ((offset < 0) || ((offset + 8) > sourceBytes.length))
+                return false;
+            return (
+                sourceBytes[offset + 0] == itemTagBytes[0]
+                && sourceBytes[offset + 1] == itemTagBytes[1]
+                && sourceBytes[offset + 2] == itemTagBytes[2]
+                && sourceBytes[offset + 3] == itemTagBytes[3]
+            );
+        };
+
+        // PixelData offsets point at ITEM value starts, so first header is expected at start-8.
+        var cursor = (start - 8);
+        if (isItemTagAt(cursor) == false)
+            return sourceBytes.subarray(start, stop);
+
+        var chunks = [];
+        while ((cursor + 8) <= sourceBytes.length) {
+
+            if (isItemTagAt(cursor) == false)
+                break;
+
+            var lengthView = new DataView(sourceBytes.buffer, sourceBytes.byteOffset + cursor + 4, 4);
+            var itemLength = lengthView.getUint32(0, isLittleEndian);
+            var valueStart = (cursor + 8);
+            var valueStop = (valueStart + itemLength);
+
+            if (valueStart >= stop)
+                break;
+
+            var chunkStart = Math.max(valueStart, start);
+            var chunkStop = Math.min(valueStop, stop);
+            if (chunkStop > chunkStart)
+                chunks.push(sourceBytes.subarray(chunkStart, chunkStop));
+
+            cursor = valueStop;
+            if (cursor >= stop)
+                break;
+
+        }
+
+        if (chunks.length == 0)
+            return sourceBytes.subarray(start, stop);
+
+        if (chunks.length == 1)
+            return chunks[0];
+
+        var totalLength = 0;
+        for (var i = 0; i < chunks.length; i++) {
+            totalLength += chunks[i].length;
+        }
+
+        var output = new Uint8Array(totalLength);
+        var writeOffset = 0;
+        for (var j = 0; j < chunks.length; j++) {
+            output.set(chunks[j], writeOffset);
+            writeOffset += chunks[j].length;
+        }
+
+        return output;
+
+    }
+
+    /**
      * Get the Image Pixel Module.
      * @returns The Image Pixel Module.
      */
@@ -135,7 +218,18 @@ export default class Image extends Entity {
                 : sourceBytes.length;
 
             // Decode the specified encapsulated frame bytes.
-            res = decoder.decode(sourceBytes, offset.start, stop, destination, 0, windowCenter, windowWidth);
+            if (attribute?.transferSyntax?.IsCompressed == true) {
+                var frameBytes = this.extractEncapsulatedFrameBytes(
+                    sourceBytes,
+                    offset.start,
+                    stop,
+                    (attribute?.transferSyntax?.IsLittleEndian != false)
+                );
+                res = decoder.decode(frameBytes, 0, frameBytes.length, destination, 0, windowCenter, windowWidth);
+            }
+            else {
+                res = decoder.decode(sourceBytes, offset.start, stop, destination, 0, windowCenter, windowWidth);
+            }
 
         }
         // Decode uncompressed single-frame pixel data.

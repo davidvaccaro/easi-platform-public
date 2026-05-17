@@ -24,6 +24,7 @@ const sourceAssociation = EASI
     rejectUnauthorized: true
   })
   .withAssociationTimeoutMs(30000)
+  .withMaxPdu(16384)
   .build();
 ```
 
@@ -45,6 +46,8 @@ const sourceAssociation = EASI
 - `withTransportTlsOption(name, value)`
 - `withTransportMutualTls(tlsOptions)`
 - `withAssociationTimeoutMs(timeoutMs)`
+- `withMaxPdu(maxPduLength)`
+- `withMaxPduLength(maxPduLength)`
 - `withMoveStoreTls(tlsConfig = true)`
 - `withMoveStoreTlsOption(name, value)`
 - `withMoveStoreMutualTls(tlsOptions)`

@@ -104,7 +104,7 @@ export default class CodecRegistryBuilder {
     /**
      * Register a named encoder to apply during build.
      * @param {string} format Encoder format identifier.
-     * @param {object} encoder Encoder instance.
+     * @param {object | Function} encoder Encoder instance, constructor, provider, or factory.
      * @returns {CodecRegistryBuilder} The current builder.
      */
     withEncoder(format, encoder) {

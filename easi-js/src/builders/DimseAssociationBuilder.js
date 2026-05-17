@@ -208,6 +208,19 @@ export default class DimseAssociationBuilder {
     }
 
     /**
+     * Normalize one DIMSE max PDU length.
+     * @param {number | null} maxPduLength Max PDU length in bytes.
+     * @returns {number} Normalized max PDU length.
+     */
+    normalizeMaxPduLength(maxPduLength) {
+        var numeric = Number(maxPduLength);
+        if ((Number.isFinite(numeric) == false) || (numeric <= 0)) {
+            throw new Error("DIMSE maxPduLength must be a positive number.");
+        }
+        return numeric;
+    }
+
+    /**
      * Normalize one move-store policy object.
      * @param {object | null} policy Move-store policy object.
      * @returns {object} Normalized move-store policy.
@@ -378,7 +391,23 @@ export default class DimseAssociationBuilder {
 
     /**
      * Configure association query descriptor.
-     * @param {object} query Query descriptor.
+     * @param {{
+     *   operation?: 'c-find' | 'c-get' | 'c-move',
+     *   queryRetrieveModel?: 'study-root' | 'patient-root',
+     *   performFind?: boolean,
+     *   studyInstanceUid?: string,
+     *   seriesInstanceUid?: string,
+     *   sopInstanceUid?: string,
+     *   patientId?: string,
+     *   accessionNumber?: string,
+     *   messageIdStart?: number,
+     *   priority?: number,
+     *   moveDestinationAeTitle?: string,
+     *   moveStoreHost?: string,
+     *   moveStorePort?: number,
+     *   moveStoreCalledAeTitle?: string,
+     *   moveStoreTls?: boolean | { cert?: unknown, key?: unknown, ca?: unknown, passphrase?: string, rejectUnauthorized?: boolean }
+     * }} query Query descriptor.
      * @returns {DimseAssociationBuilder} The current builder.
      */
     withQuery(query = {}) {
@@ -405,7 +434,7 @@ export default class DimseAssociationBuilder {
 
     /**
      * Configure association verification descriptor.
-     * @param {object} verification Verification descriptor.
+     * @param {{ messageId?: number }} verification Verification descriptor.
      * @returns {DimseAssociationBuilder} The current builder.
      */
     withVerification(verification = {}) {
@@ -467,7 +496,7 @@ export default class DimseAssociationBuilder {
 
     /**
      * Configure outbound DIMSE transport TLS.
-     * @param {boolean | object | null} tlsConfig TLS config (`true` => default object, `false` => disabled).
+     * @param {boolean | { cert?: unknown, key?: unknown, ca?: unknown, passphrase?: string, rejectUnauthorized?: boolean, servername?: string } | null} tlsConfig TLS config (`true` => default object, `false` => disabled).
      * @returns {DimseAssociationBuilder} The current builder.
      */
     withTransportTls(tlsConfig = true) {
@@ -573,6 +602,27 @@ export default class DimseAssociationBuilder {
     }
 
     /**
+     * Configure DIMSE association max PDU length (bytes).
+     * @param {number} maxPduLength Max PDU length in bytes.
+     * @returns {DimseAssociationBuilder} The current builder.
+     */
+    withMaxPdu(maxPduLength) {
+        this.maxPduLengthConfigured = true;
+        this.maxPduLength = maxPduLength;
+        return this;
+    }
+
+    /**
+     * Configure DIMSE association max PDU length (bytes).
+     * Alias for withMaxPdu(...).
+     * @param {number} maxPduLength Max PDU length in bytes.
+     * @returns {DimseAssociationBuilder} The current builder.
+     */
+    withMaxPduLength(maxPduLength) {
+        return this.withMaxPdu(maxPduLength);
+    }
+
+    /**
      * Configure move-store policy object.
      * @param {object} policy Move-store policy.
      * @returns {DimseAssociationBuilder} The current builder.
@@ -670,6 +720,10 @@ export default class DimseAssociationBuilder {
             );
         }
 
+        if (this.maxPduLengthConfigured == true) {
+            association.maxPduLength = this.normalizeMaxPduLength(this.maxPduLength);
+        }
+
         if ((this.moveStoreTlsConfigured == true) || (this.moveStorePolicyConfigured == true)) {
 
             var baseQuery = this.isPlainObject(association.query) ? association.query : {};
@@ -721,6 +775,8 @@ export default class DimseAssociationBuilder {
         this.transportTls = null;
         this.associationTimeoutMsConfigured = false;
         this.associationTimeoutMs = null;
+        this.maxPduLengthConfigured = false;
+        this.maxPduLength = null;
         this.moveStoreTlsConfigured = false;
         this.moveStoreTls = null;
         this.moveStorePolicyConfigured = false;

@@ -669,7 +669,13 @@ test("Test: withBurnedInRedaction falls back from RLE preserve target when no RL
   const concerns = [];
 
   const codecRegistry = new CodecRegistry();
-  codecRegistry.setDecoderForTransferSyntax(TransferSyntax.NONE, function () {});
+  codecRegistry.setDecoderForTransferSyntax(TransferSyntax.NONE, function () {
+    return {
+      decode(source, sourceStart, sourceStop, destination, destinationStart) {
+        return true;
+      }
+    };
+  });
   codecRegistry.setDecoderForTransferSyntax(TransferSyntax.RLELossless, new RleDecoder());
 
   const redactedBytes = await EASI.pipelineBuilder().

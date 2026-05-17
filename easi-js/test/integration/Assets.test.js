@@ -11,6 +11,40 @@ function readDicomBytes(name = '0002.DCM') {
   return fs.readFileSync(path.join(brightDicomRoot, '/data/dicoms/' + name));
 }
 
+function getRgbaStats(rgba) {
+
+  var min = 255;
+  var max = 0;
+  var nonZeroCount = 0;
+  var opaqueCount = 0;
+
+  for (var i = 0; i < rgba.length; i += 4) {
+    var value = Math.max(rgba[i] ?? 0, rgba[i + 1] ?? 0, rgba[i + 2] ?? 0);
+    var alpha = (rgba[i + 3] ?? 0);
+
+    if (value > 0)
+      nonZeroCount++;
+    if (alpha == 255)
+      opaqueCount++;
+
+    if (value < min)
+      min = value;
+    if (value > max)
+      max = value;
+  }
+
+  var pixelCount = Math.max(1, Math.floor(rgba.length / 4));
+
+  return {
+    min,
+    max,
+    nonZeroCount,
+    opaqueCount,
+    pixelCount
+  };
+
+}
+
 test('Test: toAssets metadata mapping emits mapped model via onMetadata and result metadata', async () => {
 
   var metadataEvents = [];
@@ -352,5 +386,88 @@ test('Test: toAssets emits frame for Explicit VR Big Endian US-RGB sample', asyn
   expect(result.frames[0].bytes[1]).toBe(80);
   expect(result.frames[0].bytes[2]).toBe(78);
   expect(result.frames[0].bytes[3]).toBe(71);
+
+});
+
+test('Test: toAssets decode rgba on JPEG lossless CT-MONO2-16-chest yields non-empty grayscale content', async () => {
+
+  var frameEvents = [];
+
+  var result = await EASI.pipelineBuilder().
+  fromPartStream().
+  ofDicomData().
+  withBulkDataPolicy({
+    mode: 'materialize',
+    hardSafetyCap: 64 * 1024 * 1024
+  }).
+  toAssets({
+    payload: {
+      frame: {
+        frames: 'first',
+        decode: 'rgba',
+        encode: 'none'
+      },
+      onFrame: (frame) => frameEvents.push(frame),
+      collect: true
+    }
+  }).
+  build().
+  process({ source: readDicomBytes('CT-MONO2-16-chest.dcm') });
+
+  expect(frameEvents.length).toBe(1);
+  expect(result.frames.length).toBe(1);
+  expect(result.frames[0].encoding).toBe('rgba');
+
+  var rgba = result.frames[0].bytes;
+  var nonZeroCount = 0;
+  var min = 255;
+  var max = 0;
+
+  for (var i = 0; i < rgba.length; i += 4) {
+    var value = Math.max(rgba[i] ?? 0, rgba[i + 1] ?? 0, rgba[i + 2] ?? 0);
+    if (value > 0)
+      nonZeroCount++;
+    if (value < min)
+      min = value;
+    if (value > max)
+      max = value;
+  }
+
+  expect(nonZeroCount).toBeGreaterThan(0);
+  expect(max).toBeGreaterThan(min);
+
+});
+
+test.each([
+  ['CR-MONO1-10-chest.dcm'],
+  ['CT-MONO2-12-lomb-an2.dcm'],
+  ['MR-MONO2-12-angio-an1.dcm'],
+  ['CT-MONO2-16-ort.dcm'],
+  ['XA-MONO2-8-12x-catheter.dcm']
+])('Test: toAssets decode rgba renders non-empty opaque monochrome content for %s', async (dicomName) => {
+
+  var result = await EASI.pipelineBuilder().
+  fromPartStream().
+  ofDicomData().
+  toAssets({
+    payload: {
+      frame: {
+        frames: 'first',
+        decode: 'rgba',
+        encode: 'none'
+      },
+      collect: true
+    }
+  }).
+  build().
+  process({ source: readDicomBytes(dicomName) });
+
+  expect(result.frames.length).toBe(1);
+  expect(result.frames[0].encoding).toBe('rgba');
+
+  var stats = getRgbaStats(result.frames[0].bytes);
+  expect(stats.max).toBeGreaterThan(stats.min);
+  expect(stats.nonZeroCount).toBeGreaterThan(0);
+  expect(stats.opaqueCount).toBe(stats.pixelCount);
 
 });

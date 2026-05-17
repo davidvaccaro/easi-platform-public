@@ -14,6 +14,10 @@ class FakeDecoder {
     constructor(dicomObject) {
         this.dicomObject = dicomObject;
     }
+
+    decode(source, sourceStart, sourceStop, destination, destinationStart) {
+        return true;
+    }
 }
 
 class FakeEncoder {
@@ -37,6 +41,12 @@ class FakeImageDecoder {
             height: 1,
             bytes: new Uint8Array([0, 0, 0, 255])
         };
+    }
+}
+
+class InvalidDecoderClass {
+    constructor(dicomObject) {
+        this.dicomObject = dicomObject;
     }
 }
 
@@ -65,6 +75,33 @@ test('Test: CodecRegistry registers and resolves format encoders case-insensitiv
     expect(registry.hasEncoder('png')).toBe(true);
     expect(registry.hasEncoder('Png')).toBe(true);
     expect(registry.getEncoder('png')).toBe(encoder);
+
+});
+
+test('Test: CodecRegistry resolves constructor and factory codec registrations consistently', () => {
+
+    var registry = new CodecRegistry();
+
+    registry.setDecoderForTransferSyntax(
+        TransferSyntax.JPEGBaseline8Bit,
+        (context) => new FakeDecoder(context)
+    );
+    registry.setDecoderForImageFormat("image/png", FakeImageDecoder);
+    registry.setEncoder("fake", FakeEncoder);
+
+    var tsDecoder = registry.getDecoderForTransferSyntax(TransferSyntax.JPEGBaseline8Bit, { marker: "x" });
+    expect(tsDecoder instanceof FakeDecoder).toBe(true);
+    expect(tsDecoder.dicomObject.marker).toBe("x");
+
+    var imageDecoder = registry.getDecoderForImageFormat("png", { scope: "image" });
+    expect(imageDecoder instanceof FakeImageDecoder).toBe(true);
+    expect(imageDecoder.context.scope).toBe("image");
+
+    var firstEncoder = registry.getEncoder("fake");
+    var secondEncoder = registry.getEncoder("fake");
+    expect(firstEncoder instanceof FakeEncoder).toBe(true);
+    expect(secondEncoder instanceof FakeEncoder).toBe(true);
+    expect(firstEncoder === secondEncoder).toBe(false);
 
 });
 
@@ -185,9 +222,64 @@ test('Test: CodecRegistry assertValid throws when an encoder registration is inv
 
     var registry = new CodecRegistry();
     registry.setDecoderForTransferSyntax(TransferSyntax.NONE, FakeDecoder);
-    registry.setEncoder('png', {});
+    expect(() => registry.setEncoder('png', {})).toThrow("Invalid encoder registration");
 
-    expect(() => registry.assertValid()).toThrow("CodecRegistry validation failed");
+});
+
+test('Test: CodecRegistry throws precise interface error for invalid decoder class registration', () => {
+
+    var registry = new CodecRegistry();
+
+    expect(() => {
+        registry.setDecoderForTransferSyntax(TransferSyntax.NONE, InvalidDecoderClass);
+    }).toThrow("Invalid transfer-syntax decoder registration. Constructor 'InvalidDecoderClass' is missing required method(s): decode.");
+
+});
+
+test('Test: CodecRegistry validate reports promise-based codec provider violations', () => {
+
+    var registry = new CodecRegistry();
+    registry.setDecoderForTransferSyntax(TransferSyntax.NONE, FakeDecoder);
+    registry.setDecoderForTransferSyntax("1.2.840.10008.1.2.4.999", () => Promise.resolve(new FakeDecoder(null)));
+
+    var report = registry.validate({
+        requireDefaultDecoder: true,
+        requiredTransferSyntaxes: ["1.2.840.10008.1.2.4.999"],
+        validateProviderFactories: true
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.errors.find((error) => error.code == "InvalidDecoderProviderOutput")).toBeDefined();
+    expect(report.errors.find((error) => (error.message ?? "").includes("must resolve synchronously"))).toBeDefined();
+
+});
+
+test('Test: CodecRegistry validate reports missing required methods from provider output', () => {
+
+    var registry = new CodecRegistry();
+    registry.setDecoderForTransferSyntax(TransferSyntax.NONE, FakeDecoder);
+    registry.setEncoder("broken", () => ({ notEncode: true }));
+
+    var report = registry.validate({
+        requireDefaultDecoder: true,
+        requiredEncoders: ["broken"],
+        validateProviderFactories: true
+    });
+
+    expect(report.ok).toBe(false);
+    expect(report.errors.find((error) => error.code == "InvalidEncoderProviderOutput")).toBeDefined();
+    expect(report.errors.find((error) => (error.message ?? "").includes("missing required method(s): encode"))).toBeDefined();
+
+});
+
+test('Test: CodecRegistry runtime resolution errors include precise missing-method details', () => {
+
+    var registry = new CodecRegistry();
+    registry.setEncoder("broken", () => ({ foo: "bar" }));
+
+    expect(() => registry.getEncoder("broken")).toThrow(
+        "Invalid encoder registration for format 'broken'. Resolved encoder instance is missing required method(s): encode."
+    );
 
 });
 

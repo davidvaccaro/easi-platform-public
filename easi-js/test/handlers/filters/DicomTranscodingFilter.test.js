@@ -202,7 +202,15 @@ test("Test: DicomTranscodingFilter rejects JPEG Baseline target when JPEG encode
 
 test("Test: DicomTranscodingFilter rejects compressed source when decoder is not registered", () => {
     const codecRegistry = new CodecRegistry();
-    codecRegistry.setEncoder("jpeg2000", {});
+    codecRegistry.setEncoder("jpeg2000", {
+        encode() {
+            return {
+                bytes: new Uint8Array(0),
+                format: "jpeg2000",
+                mimeType: "image/jp2"
+            };
+        }
+    });
 
     const filter = new DicomTranscodingFilter(null, {
         targetTransferSyntax: TransferSyntax.JPEG2000.ID,

@@ -8,6 +8,10 @@ class FakeDecoder {
     constructor(dicomObject) {
         this.dicomObject = dicomObject;
     }
+
+    decode(source, sourceStart, sourceStop, destination, destinationStart) {
+        return true;
+    }
 }
 
 class FakeEncoder {
@@ -61,7 +65,7 @@ test("Test: CodecRegistryBuilder throws on invalid encoder registration by defau
             .withDecoderForTransferSyntax(TransferSyntax.NONE, FakeDecoder)
             .withEncoder("bad", {})
             .build();
-    }).toThrow("CodecRegistry validation failed");
+    }).toThrow("Invalid encoder registration");
 });
 
 test("Test: CodecRegistryBuilder clones base codec registry by default", () => {

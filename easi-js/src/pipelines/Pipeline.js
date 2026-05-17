@@ -34,8 +34,18 @@ export default class Pipeline {
 
     /**
      * Clone one start options object to reader-read options (removing lifecycle control fields).
-     * @param {any} options Optional start/read options.
-     * @returns {any} Reader options.
+     * @param {{
+     *   sourceOptions?: object | null,
+     *   destinationOptions?: object | null,
+     *   options?: object | null,
+     *   onResult?: Function | null,
+     *   onError?: Function | null,
+     *   continueOnError?: boolean,
+     *   signal?: AbortSignal | null,
+     *   maxIterations?: number | null,
+     *   lifecycle?: object | null
+     * } | null} options Optional start/read options.
+     * @returns {object | null} Reader options.
      */
     toReadOptions(options = null) {
 
@@ -465,7 +475,7 @@ export default class Pipeline {
      * - process(source, destination, { sourceOptions, destinationOptions, options })
      * @param {any} source Source value or process envelope.
      * @param {any} destination Destination value or structured options for positional forms.
-     * @param {any} options Structured options object for the positional 3-arg form.
+     * @param {{ sourceOptions?: object | null, destinationOptions?: object | null, options?: object | null } | null} options Structured options object for the positional 3-arg form.
      * @returns {Promise<any>} The terminal pipeline output.
      */
     process(source = null, destination = null, options = null) {
@@ -530,7 +540,17 @@ export default class Pipeline {
      * - start(source, destination, { sourceOptions, destinationOptions, options, onResult, onError, continueOnError, signal, maxIterations, lifecycle })
      * @param {any} source Source value or start envelope.
      * @param {any} destination Destination value or structured options for positional forms.
-     * @param {any} options Structured options object for the positional 3-arg form.
+     * @param {{
+     *   sourceOptions?: object | null,
+     *   destinationOptions?: object | null,
+     *   options?: object | null,
+     *   onResult?: Function | null,
+     *   onError?: Function | null,
+     *   continueOnError?: boolean,
+     *   signal?: AbortSignal | null,
+     *   maxIterations?: number | null,
+     *   lifecycle?: object | null
+     * } | null} options Structured options object for the positional 3-arg form.
      * @returns {{ stop: Function, done: Promise<void>, running: boolean, iterations: number }} Run handle.
      */
     start(source = null, destination = null, options = null) {

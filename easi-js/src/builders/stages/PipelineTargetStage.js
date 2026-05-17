@@ -232,7 +232,13 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
      * Materialize parser output as unwrapped document entities.
-     * @param {object | null} options Document unwrap options.
+     * @param {{
+     *   unwrapper?: { unwrap?: Function },
+     *   fileName?: string,
+     *   fileNameFactory?: Function,
+     *   textEncoding?: string,
+     *   textDecoder?: { decode?: Function }
+     * } | null} options Document unwrap options.
      * @returns {PipelineOutputStage}
      */
     toUnwrappedDocuments(options = null) {
@@ -241,7 +247,33 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
      * Materialize parser output as wrapped DICOM document entities.
-     * @param {object | null} options Document wrapping options.
+     * @param {{
+     *   wrapper?: { wrap?: Function },
+     *   descriptor?: object,
+     *   mimeType?: string,
+     *   contentType?: string,
+     *   type?: string,
+     *   title?: string,
+     *   documentTitle?: string,
+     *   fileName?: string,
+     *   sopClassUid?: string,
+     *   sopClassUID?: string,
+     *   modality?: string,
+     *   transferSyntaxUid?: string,
+     *   transferSyntaxUID?: string,
+     *   studyInstanceUid?: string,
+     *   studyInstanceUID?: string,
+     *   seriesInstanceUid?: string,
+     *   seriesInstanceUID?: string,
+     *   sopInstanceUid?: string,
+     *   sopInstanceUID?: string,
+     *   seriesNumber?: number,
+     *   instanceNumber?: number,
+     *   implementationClassUid?: string,
+     *   implementationClassUID?: string,
+     *   implementationVersionName?: string,
+     *   sourceApplicationEntityTitle?: string
+     * } | null} options Document wrapping options.
      * @returns {PipelineOutputStage}
      */
     toWrappedDocuments(options = null) {
@@ -325,7 +357,23 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
      * Materialize parser output as extracted imaging assets.
-     * @param {object | null} options Asset extraction options.
+     * @param {{
+     *   metadata?: { mapping?: object, onMetadata?: Function, collect?: boolean },
+     *   payload?: {
+     *     mode?: 'auto' | 'stream' | 'materialize',
+     *     frame?: {
+     *       frames?: 'first' | 'all' | Array<number> | { start?: number, end?: number, step?: number },
+     *       decode?: 'native' | 'rgba',
+     *       encode?: 'none' | 'jpeg' | 'png' | 'tiff',
+     *       quality?: number
+     *     },
+     *     onFrame?: Function,
+     *     onFrameChunk?: Function,
+     *     onContent?: Function,
+     *     onContentChunk?: Function,
+     *     collect?: boolean
+     *   }
+     * } | null} options Asset extraction options.
      * @returns {PipelineOutputStage}
      */
     toAssets(options = null) {
@@ -334,7 +382,23 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
      * Materialize parser output as packaged imaging asset archives.
-     * @param {object | null} options Asset archive options.
+     * @param {{
+     *   metadata?: { mapping?: object, onMetadata?: Function },
+     *   payload?: {
+     *     frame?: { frames?: 'first' | 'all' | Array<number> | { start?: number, end?: number, step?: number }, decode?: 'native' | 'rgba', encode?: 'none' | 'jpeg' | 'png' | 'tiff', quality?: number },
+     *     onFrame?: Function,
+     *     onContent?: Function
+     *   },
+     *   includeMetadata?: boolean,
+     *   includeManifest?: boolean,
+     *   metadataFilePath?: string,
+     *   manifestFilePath?: string,
+     *   framePath?: string,
+     *   contentPath?: string,
+     *   includeContent?: boolean,
+     *   onChunk?: Function,
+     *   collectOutput?: boolean
+     * } | null} options Asset archive options.
      * @returns {PipelineOutputStage}
      */
     toAssetArchive(options = null) {

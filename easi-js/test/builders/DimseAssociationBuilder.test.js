@@ -24,6 +24,7 @@ test("Test: DimseAssociationBuilder configures association identity and transpor
             servername: "pacs.local"
         })
         .withAssociationTimeoutMs(20000)
+        .withMaxPdu(65536)
         .build();
 
     expect(association.host).toBe("127.0.0.1");
@@ -35,6 +36,7 @@ test("Test: DimseAssociationBuilder configures association identity and transpor
     expect(association.tls.rejectUnauthorized).toBe(false);
     expect(association.tls.servername).toBe("pacs.local");
     expect(association.associationTimeoutMs).toBe(20000);
+    expect(association.maxPduLength).toBe(65536);
 });
 
 test("Test: DimseAssociationBuilder configures verification descriptor and options", () => {
@@ -144,6 +146,14 @@ test("Test: DimseAssociationBuilder throws when timeout is invalid", () => {
             .withAssociationTimeoutMs(0)
             .build();
     }).toThrow("associationTimeoutMs");
+});
+
+test("Test: DimseAssociationBuilder throws when max PDU length is invalid", () => {
+    expect(() => {
+        new DimseAssociationBuilder()
+            .withMaxPdu(0)
+            .build();
+    }).toThrow("maxPduLength");
 });
 
 test("Test: DimseAssociationBuilder throws when port is invalid", () => {

@@ -30,10 +30,181 @@ const outputDirectory = path.join(contractsRoot, 'schemas', 'implementation', 'j
 const outputFilePath = path.join(outputDirectory, 'easi-api.contract.json');
 const schemaFileName = 'easi-api.contract.schema.json';
 const schemaFilePath = path.join(outputDirectory, schemaFileName);
+const neutralValidFixturesRoot = path.join(contractsRoot, 'fixtures', 'neutral', 'valid');
+const codecPluginContractFixturePath = path.join(
+    neutralValidFixturesRoot,
+    'codec-plugin-contract',
+    'basic.json'
+);
+const pluginContractFixturePath = path.join(
+    neutralValidFixturesRoot,
+    'plugin-contract',
+    'basic.json'
+);
 
 const args = new Set(process.argv.slice(2));
 const checkMode = args.has('--check');
 const writeMode = args.has('--stdout') === false;
+
+function readJsonIfExists(filePath) {
+    if (!filePath || fs.existsSync(filePath) === false) {
+        return null;
+    }
+
+    return JSON.parse(normalizeLineEndings(fs.readFileSync(filePath, 'utf8')));
+}
+
+function normalizeRequiredMethodNames(requiredMethods) {
+    if (Array.isArray(requiredMethods) === false) {
+        return [];
+    }
+
+    const names = [];
+    for (const method of requiredMethods) {
+        let name = null;
+
+        if (typeof method === 'string') {
+            name = method;
+        }
+        else if (method != null && typeof method === 'object' && typeof method.name === 'string') {
+            name = method.name;
+        }
+
+        if (typeof name !== 'string') {
+            continue;
+        }
+
+        const normalized = name.trim();
+        if (normalized.length === 0 || names.includes(normalized)) {
+            continue;
+        }
+
+        names.push(normalized);
+    }
+
+    return names;
+}
+
+function normalizePluginLanguageProfiles(profiles) {
+    if (Array.isArray(profiles) === false) {
+        return [];
+    }
+
+    const normalized = [];
+
+    for (const profile of profiles) {
+        if (profile == null || typeof profile !== 'object') {
+            continue;
+        }
+
+        if (typeof profile.language !== 'string' || profile.language.trim().length === 0) {
+            continue;
+        }
+
+        if (typeof profile.status !== 'string' || profile.status.trim().length === 0) {
+            continue;
+        }
+
+        normalized.push({
+            language: profile.language.trim().toLowerCase(),
+            status: profile.status.trim().toLowerCase(),
+            signature: typeof profile.signature === 'string' ? profile.signature : null,
+            notes: typeof profile.notes === 'string' ? profile.notes : null
+        });
+    }
+
+    return normalized;
+}
+
+function normalizeCodecPluginContract(codecPluginContract, pluginMetadata = null) {
+    if (codecPluginContract == null || typeof codecPluginContract !== 'object') {
+        return null;
+    }
+
+    const interfaces = [];
+    const interfaceKinds = [
+        ['decoder', 'decoder'],
+        ['imageDecoder', 'image-decoder'],
+        ['encoder', 'encoder']
+    ];
+
+    for (const [propertyName, kind] of interfaceKinds) {
+        const interfaceContract = codecPluginContract.interfaces?.[propertyName] ?? null;
+        if (interfaceContract == null || typeof interfaceContract !== 'object') {
+            continue;
+        }
+
+        const requiredMethods = normalizeRequiredMethodNames(interfaceContract.requiredMethods);
+        if (requiredMethods.length === 0) {
+            continue;
+        }
+
+        interfaces.push({
+            kind,
+            description: typeof interfaceContract.description === 'string' ? interfaceContract.description : null,
+            requiredMethods,
+            contextSummary: typeof interfaceContract.contextSummary === 'string'
+                ? interfaceContract.contextSummary
+                : null,
+            outputSummary: typeof interfaceContract.outputSummary === 'string'
+                ? interfaceContract.outputSummary
+                : null
+        });
+    }
+
+    const pluginFamily = typeof codecPluginContract.pluginFamily === 'string'
+        ? codecPluginContract.pluginFamily.trim().toLowerCase()
+        : null;
+    if (pluginFamily !== 'codec') {
+        return null;
+    }
+
+    const normalized = {
+        id: 'plugin:codec',
+        family: 'codec',
+        name: (typeof pluginMetadata?.name === 'string' && pluginMetadata.name.trim().length > 0)
+            ? pluginMetadata.name.trim()
+            : 'Codec Plugins',
+        summary: (typeof codecPluginContract.summary === 'string')
+            ? codecPluginContract.summary
+            : ((typeof pluginMetadata?.description === 'string') ? pluginMetadata.description : null),
+        interfaces,
+        registrationForms: Array.isArray(codecPluginContract.registrationForms)
+            ? codecPluginContract.registrationForms
+            : [],
+        languageProfiles: normalizePluginLanguageProfiles(codecPluginContract.languageProfiles)
+    };
+
+    if (codecPluginContract.conformance != null && typeof codecPluginContract.conformance === 'object') {
+        normalized.conformance = codecPluginContract.conformance;
+    }
+
+    if (pluginMetadata != null && typeof pluginMetadata === 'object') {
+        normalized.extensions = { metadata: pluginMetadata };
+    }
+
+    return normalized;
+}
+
+function loadPluginContracts() {
+    const wrapper = readJsonIfExists(pluginContractFixturePath);
+    const directCodecContract = readJsonIfExists(codecPluginContractFixturePath);
+
+    const wrappedCodecContract = (wrapper != null && typeof wrapper === 'object')
+        ? wrapper.contract
+        : null;
+
+    const candidate = (directCodecContract != null && typeof directCodecContract === 'object')
+        ? directCodecContract
+        : wrappedCodecContract;
+
+    const codecPlugin = normalizeCodecPluginContract(candidate, wrapper?.metadata ?? null);
+    if (codecPlugin == null) {
+        return [];
+    }
+
+    return [codecPlugin];
+}
 
 function listFiles(rootDirectory) {
     const files = [];
@@ -357,24 +528,70 @@ function parseJsDoc(block) {
     let deprecated = null;
     let currentExample = null;
 
-    for (let line of lines) {
-        line = line.trimEnd();
+    let index = 0;
+    while (index < lines.length) {
+        let line = String(lines[index] || '').trimEnd();
+        const trimmedLine = line.trim();
 
-        if (line.trim().length === 0) {
+        if (trimmedLine.length === 0) {
             if (currentExample != null) {
                 currentExample.push('');
             }
             else if (descriptionLines.length > 0) {
                 descriptionLines.push('');
             }
+            index += 1;
             continue;
         }
 
-        if (line.trimStart().startsWith('@')) {
-            const trimmed = line.trim();
+        if (trimmedLine.startsWith('@')) {
+            const trimmed = trimmedLine;
             currentExample = null;
 
-            const paramTag = parseTypedNamedTag(trimmed, 'param');
+            const tagNameMatch = trimmed.match(/^@([a-zA-Z0-9_-]+)/);
+            const tagName = tagNameMatch?.[1]?.toLowerCase() || null;
+
+            if (tagName === 'example') {
+                const exampleLines = [];
+                const inlineExample = trimmed.replace(/^@example\s*/, '');
+                if (inlineExample.trim().length > 0) {
+                    exampleLines.push(inlineExample);
+                }
+
+                index += 1;
+                while (index < lines.length) {
+                    const followLine = String(lines[index] || '').trimEnd();
+                    const followTrimmed = followLine.trim();
+                    if (followTrimmed.startsWith('@')) {
+                        break;
+                    }
+                    exampleLines.push(followLine);
+                    index += 1;
+                }
+
+                examples.push(exampleLines);
+                continue;
+            }
+
+            let mergedTag = trimmed;
+            let followIndex = index + 1;
+            while (followIndex < lines.length) {
+                const followLine = String(lines[followIndex] || '').trimEnd();
+                const followTrimmed = followLine.trim();
+
+                if (followTrimmed.startsWith('@')) {
+                    break;
+                }
+
+                if (followTrimmed.length > 0) {
+                    mergedTag += ` ${followTrimmed}`;
+                }
+
+                followIndex += 1;
+            }
+            index = followIndex;
+
+            const paramTag = parseTypedNamedTag(mergedTag, 'param');
             if (paramTag != null) {
                 const rawName = paramTag.rawName || '';
                 const cleanedName = cleanParamName(rawName);
@@ -389,7 +606,7 @@ function parseJsDoc(block) {
                 continue;
             }
 
-            const propertyTag = parseTypedNamedTag(trimmed, 'property');
+            const propertyTag = parseTypedNamedTag(mergedTag, 'property');
             if (propertyTag != null) {
                 const rawName = propertyTag.rawName || '';
                 properties.push({
@@ -402,19 +619,19 @@ function parseJsDoc(block) {
                 continue;
             }
 
-            const returnsTag = parseReturnsTag(trimmed);
+            const returnsTag = parseReturnsTag(mergedTag);
             if (returnsTag != null) {
                 returns = returnsTag;
                 continue;
             }
 
-            const deprecatedMatch = trimmed.match(/^@deprecated\s*(.*)$/);
+            const deprecatedMatch = mergedTag.match(/^@deprecated\s*(.*)$/);
             if (deprecatedMatch) {
                 deprecated = normalizeSentence(deprecatedMatch[1]);
                 continue;
             }
 
-            const exampleMatch = trimmed.match(/^@example\s*(.*)$/);
+            const exampleMatch = mergedTag.match(/^@example\s*(.*)$/);
             if (exampleMatch) {
                 currentExample = [];
                 if (exampleMatch[1] && exampleMatch[1].trim().length > 0) {
@@ -424,16 +641,18 @@ function parseJsDoc(block) {
                 continue;
             }
 
-            tags.push(trimmed);
+            tags.push(mergedTag);
             continue;
         }
 
         if (currentExample != null) {
             currentExample.push(line);
+            index += 1;
             continue;
         }
 
         descriptionLines.push(line);
+        index += 1;
     }
 
     const description = normalizeDescription(descriptionLines);
@@ -1301,6 +1520,7 @@ function computeHash(value) {
 function createContractDocument(modules) {
     const packageJsonPath = path.join(projectRoot, 'package.json');
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    const pluginContracts = loadPluginContracts();
 
     let classCount = 0;
     let methodCount = 0;
@@ -1342,7 +1562,8 @@ function createContractDocument(modules) {
             functionCount,
             constantCount
         },
-        modules
+        modules,
+        pluginContracts
     };
 
     const serialized = `${JSON.stringify(document, null, 2)}\n`;
