@@ -35,12 +35,10 @@ import DicomAssetsHandler from "../../handlers/terminals/DicomAssetsHandler.js";
 import DicomAssetArchiveHandler from "../../handlers/terminals/DicomAssetArchiveHandler.js";
 import ImageDataHandler from "../../handlers/terminals/ImageDataHandler.js";
 import MixedImagingDataHandler from "../../handlers/terminals/MixedImagingDataHandler.js";
-import ImagingRoutingHandler from "../../handlers/terminals/ImagingRoutingHandler.js";
 import DicomJsonMetadataAdapter from "../../handlers/adapters/DicomJsonMetadataAdapter.js";
 import DicomXmlMetadataAdapter from "../../handlers/adapters/DicomXmlMetadataAdapter.js";
 import JsonDataHandler from "../../handlers/terminals/syntax/JsonDataHandler.js";
 import XmlDataHandler from "../../handlers/terminals/syntax/XmlDataHandler.js";
-import ImagingRoutingBuilder from "../ImagingRoutingBuilder.js";
 
 import PipelineBuilderStage from "./PipelineBuilderStage.js";
 import PipelineOutputStage from "./PipelineOutputStage.js";
@@ -139,19 +137,6 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
     withNormalization(normalization = null) {
         return this.cloneCurrentStage(
             (session) => session.withNormalization(normalization)
-        );
-    }
-
-    /**
-     * Enables staged routing branches.
-     * @param {import("../ImagingRoutingBuilder.js").default | Function | object} definition Routing definition.
-     * @returns {PipelineOutputStage} An output stage reference.
-     */
-    withRouting(definition) {
-        return this.withHandler(
-            new ImagingRoutingHandler(
-                ImagingRoutingBuilder.resolve(definition)
-            )
         );
     }
 

@@ -14,7 +14,7 @@ function createPngBytes() {
 
 }
 
-test("Test: withNormalization(toDicom) converts standard image payloads into DICOM-routable payloads", async () => {
+test("Test: withNormalization(toDicom) converts standard image payloads into DICOM instance output", async () => {
 
   const pngBytes = createPngBytes();
 
@@ -22,8 +22,7 @@ test("Test: withNormalization(toDicom) converts standard image payloads into DIC
   fromByteStream().
   ofMixedImagingData().
   withNormalization((normalize) => normalize.toDicom()).
-  withRouting((route) => route.
-  whenDicom((branch) => branch.ofDicomData().toInstances())).
+  toImagingData().
   build();
 
   const result = await pipeline.process(pngBytes, null, {
@@ -34,11 +33,27 @@ test("Test: withNormalization(toDicom) converts standard image payloads into DIC
 
   expect(result.count).toBe(1);
 
-  const routed = result.first();
-  expect(routed.route).toBe("dicom");
-  expect(routed.output).toBeDefined();
-  expect(routed.output.dataSet.find(Tag.PixelData)).toBeDefined();
-  expect(routed.output.dataSet.find(Tag.SOPClassUID)).toBeDefined();
+  const normalized = result.first();
+  expect(normalized.kind).toBe("dicom");
+  expect(normalized.mediaType).toBe("application/dicom");
+  expect(normalized.bytes instanceof Uint8Array).toBe(true);
+
+  const dicomPipeline = new PipelineBuilder().
+  fromByteStream().
+  ofDicomData().
+  toInstances().
+  build();
+
+  const dicomResult = await dicomPipeline.process(normalized.bytes, null, {
+    sourceOptions: {
+      contentType: "application/dicom"
+    }
+  });
+
+  const instance = dicomResult.first();
+  expect(instance).toBeDefined();
+  expect(instance.dataSet.find(Tag.PixelData)).toBeDefined();
+  expect(instance.dataSet.find(Tag.SOPClassUID)).toBeDefined();
 
 });
 

@@ -48,7 +48,6 @@ import JsonDataHandler from "../handlers/terminals/syntax/JsonDataHandler.js";
 import XmlDataHandler from "../handlers/terminals/syntax/XmlDataHandler.js";
 import ImageDataHandler from "../handlers/terminals/ImageDataHandler.js";
 import MixedImagingDataHandler from "../handlers/terminals/MixedImagingDataHandler.js";
-import ImagingRoutingHandler from "../handlers/terminals/ImagingRoutingHandler.js";
 import ImagingNormalizationBuilder from "./ImagingNormalizationBuilder.js";
 import DimseAssociationWriter from "../writers/DimseAssociationWriter.js";
 
@@ -267,159 +266,6 @@ export default class PipelineBuildSession {
 
     }
 
-    toResultItems(result) {
-
-        if (result == null)
-            return [];
-
-        if (Array.isArray(result) == true)
-            return result;
-
-        if ((result != null)
-            && (typeof result === "object")
-            && (typeof result.toArray === "function")
-            && ((typeof result.count === "number") || (typeof result.length === "number"))) {
-            return result.toArray();
-        }
-
-        return [result];
-
-    }
-
-    isRoutingEnvelope(value) {
-
-        if ((value == null) || (typeof value !== "object") || (Array.isArray(value) == true))
-            return false;
-
-        return (
-            ((Object.prototype.hasOwnProperty.call(value, "route") == true)
-                || (Object.prototype.hasOwnProperty.call(value, "labels") == true)
-                || (Object.prototype.hasOwnProperty.call(value, "target") == true)
-                || (Object.prototype.hasOwnProperty.call(value, "into") == true))
-            && (Object.prototype.hasOwnProperty.call(value, "output") == true)
-        );
-
-    }
-
-    isRoutingResultCollection(result) {
-
-        var items = this.toResultItems(result);
-        if (items.length == 0)
-            return false;
-
-        for (var i = 0; i < items.length; i++) {
-            if (this.isRoutingEnvelope(items[i]) == true)
-                return true;
-        }
-
-        return false;
-
-    }
-
-    resolveRoutingMappedTarget(routeTarget, writerOptions = null) {
-
-        if ((routeTarget == null) || (typeof routeTarget !== "string")) {
-            return routeTarget;
-        }
-
-        var mappings = [
-            writerOptions?.routeTargets ?? null,
-            writerOptions?.routingTargets ?? null,
-            writerOptions?.intoTargets ?? null,
-            writerOptions?.targets ?? null
-        ];
-
-        for (var i = 0; i < mappings.length; i++) {
-            var map = mappings[i];
-            if ((map != null) && (typeof map === "object")
-                && (Object.prototype.hasOwnProperty.call(map, routeTarget) == true)) {
-                return map[routeTarget];
-            }
-        }
-
-        return routeTarget;
-
-    }
-
-    resolveRoutingTarget(routeTarget, defaultTarget, writerOptions = null) {
-
-        var selected = routeTarget;
-
-        if ((selected != null)
-            && (typeof selected === "object")
-            && (Array.isArray(selected) == false)
-            && (Object.prototype.hasOwnProperty.call(selected, "target") == true)) {
-            selected = selected.target;
-        }
-
-        selected = this.resolveRoutingMappedTarget(selected, writerOptions);
-
-        if (selected != null) {
-            return selected;
-        }
-
-        return defaultTarget;
-
-    }
-
-    resolveRoutingWriterOptions(baseOptions, routeItem = null) {
-
-        var overrideOptions = (
-            routeItem?.destinationOptions
-            ?? routeItem?.intoOptions
-            ?? routeItem?.targetOptions
-            ?? null
-        );
-
-        var merged = this.mergeWriterOptions(baseOptions, overrideOptions);
-        if (merged == null) {
-            merged = {};
-        }
-
-        merged.routing = Object.assign({}, merged.routing || {}, {
-            route: routeItem?.route ?? null,
-            labels: routeItem?.labels ?? [],
-            target: routeItem?.target ?? null,
-            into: routeItem?.into ?? null
-        });
-
-        return merged;
-
-    }
-
-    buildRoutedWritePlans(result, defaultTarget, writerOptions = null) {
-
-        var items = this.toResultItems(result);
-        var plans = [];
-
-        for (var i = 0; i < items.length; i++) {
-
-            var item = items[i];
-            if (this.isRoutingEnvelope(item) == false) {
-                plans.push({
-                    target: defaultTarget,
-                    source: item,
-                    options: writerOptions
-                });
-                continue;
-            }
-
-            if ((item.skipped === true) && (item.output == null)) {
-                continue;
-            }
-
-            plans.push({
-                target: this.resolveRoutingTarget((item.into ?? item.target ?? null), defaultTarget, writerOptions),
-                source: (item.output ?? item),
-                options: this.resolveRoutingWriterOptions(writerOptions, item)
-            });
-
-        }
-
-        return plans;
-
-    }
-
     wrapWriterResult(writer, writerResult) {
 
         if (this.isBuiltInWriter(writer) == true) {
@@ -454,55 +300,6 @@ export default class PipelineBuildSession {
                 defaultOptions,
                 ((context != null) ? context.destinationOptions : null)
             );
-
-            if (this.isRoutingResultCollection(result) == true) {
-
-                var routedPlans = this.buildRoutedWritePlans(result, target, writerOptions);
-                var routedWriterResults = [];
-
-                for (var routeIndex = 0; routeIndex < routedPlans.length; routeIndex++) {
-
-                    var routePlan = routedPlans[routeIndex];
-                    var routeTarget = routePlan.target;
-                    var routeSource = routePlan.source;
-                    var routeOptions = routePlan.options;
-
-                    if (requiresTarget == true) {
-
-                        if (routeTarget == null) {
-                            throw new Exception(
-                                "Pipeline.process requires a destination when using the configured writer.",
-                                GeneralErrorCodes.InvalidParameter
-                            );
-                        }
-
-                        var requiredTargetResult = await writer.write(routeTarget, routeSource, routeOptions);
-                        routedWriterResults.push(this.wrapWriterResult(writer, requiredTargetResult));
-                        continue;
-
-                    }
-
-                    if (this.writerUsesNoTargetSignature(writer) == true) {
-                        var noTargetResult = await writer.write(routeSource, routeOptions);
-                        routedWriterResults.push(this.wrapWriterResult(writer, noTargetResult));
-                        continue;
-                    }
-
-                    var routeTargetProvided = (routeTarget != null);
-                    if (routeTargetProvided == true) {
-                        var optionalTargetResult = await writer.write(routeTarget, routeSource, routeOptions);
-                        routedWriterResults.push(this.wrapWriterResult(writer, optionalTargetResult));
-                    }
-                    else {
-                        var optionalNoTargetResult = await writer.write(routeSource, routeOptions);
-                        routedWriterResults.push(this.wrapWriterResult(writer, optionalNoTargetResult));
-                    }
-
-                }
-
-                return routedWriterResults;
-
-            }
 
             var writerResult = null;
             if (requiresTarget == true) {
@@ -605,12 +402,10 @@ export default class PipelineBuildSession {
         // Byte parser compatibility:
         // - wrapped-document writing
         // - image/mixed payload terminals
-        // - mixed imaging routing terminal
         if ((parser instanceof ByteDataParser)
             && (handler instanceof DicomDocumentWrappingHandler == false)
             && (handler instanceof ImageDataHandler == false)
-            && (handler instanceof MixedImagingDataHandler == false)
-            && (handler instanceof ImagingRoutingHandler == false)) {
+            && (handler instanceof MixedImagingDataHandler == false)) {
             throw new Exception(
                 `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
                 BuilderErrorCodes.IncompatibleParserAndHandler
@@ -619,7 +414,6 @@ export default class PipelineBuildSession {
 
         if ((parser instanceof ImageDataParser)
             && (handler instanceof ImageDataHandler == false)
-            && (handler instanceof ImagingRoutingHandler == false)
             && (handler instanceof MixedImagingDataHandler == false)) {
             throw new Exception(
                 `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
@@ -629,7 +423,6 @@ export default class PipelineBuildSession {
 
         if ((parser instanceof MixedImagingDataParser)
             && (handler instanceof MixedImagingDataHandler == false)
-            && (handler instanceof ImagingRoutingHandler == false)
             && (handler instanceof ImageDataHandler == false)) {
             throw new Exception(
                 `Parser '${DiagnosticUtils.getTypeName(parser)}' is not compatible with handler '${DiagnosticUtils.getTypeName(handler)}'.`,
@@ -974,7 +767,7 @@ export default class PipelineBuildSession {
         // Fail if no handler was configured.
         if (this.handler == null) {
             throw new Exception(
-                "PipelineBuilder.build requires a handler. Call toInstances(), toEntities(), toUnwrappedDocuments(...), toWrappedDocuments(...), toSelection(...), toMapping(...), toFHIRImagingStudy(), toDicomData(...), toStructuredValue(), toImageData(), toImagingData(...), toAssets(...), toAssetArchive(...), withRouting(...), or withHandler(...).",
+                "PipelineBuilder.build requires a handler. Call toInstances(), toEntities(), toUnwrappedDocuments(...), toWrappedDocuments(...), toSelection(...), toMapping(...), toFHIRImagingStudy(), toDicomData(...), toStructuredValue(), toImageData(), toImagingData(...), toAssets(...), toAssetArchive(...), or withHandler(...).",
                 BuilderErrorCodes.MissingHandler
             );
         }
