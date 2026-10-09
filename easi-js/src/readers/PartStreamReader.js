@@ -70,7 +70,9 @@ export default class PartStreamReader {
     toStreamReader(source) {
 
         if ((source != null) && (typeof source.getReader === 'function')) {
-            return source.getReader();
+            var reader = source.getReader();
+            this._ownedReaders.add(reader);
+            return reader;
         }
 
         if ((source != null) && (typeof source.read === 'function')) {
@@ -78,6 +80,44 @@ export default class PartStreamReader {
         }
 
         throw new Exception('Invalid stream source. Expected ReadableStream or stream reader.', GeneralErrorCodes.InvalidParameter);
+
+    }
+
+    /**
+     * Close unread input acquired by this reader and release its lock.
+     * Caller-supplied readers retain ownership of their unread input.
+     */
+    async _releaseStreamReader(reader, exhausted, failed, error) {
+
+        var owned = this._ownedReaders.delete(reader);
+        var cleanupFailed = false;
+        var cleanupError;
+
+        try {
+            if ((owned === true) && (exhausted !== true) && (typeof reader.cancel === 'function')) {
+                await reader.cancel(error);
+            }
+        }
+        catch (err) {
+            cleanupFailed = true;
+            cleanupError = err;
+        }
+
+        try {
+            if ((reader != null) && (typeof reader.releaseLock === 'function')) {
+                reader.releaseLock();
+            }
+        }
+        catch (err) {
+            if (cleanupFailed === false) {
+                cleanupFailed = true;
+                cleanupError = err;
+            }
+        }
+
+        if ((failed === false) && (cleanupFailed === true)) {
+            throw cleanupError;
+        }
 
     }
 
@@ -138,6 +178,9 @@ export default class PartStreamReader {
 
         var status = Status.CONTINUE;
         var contentRead = 0;
+        var exhausted = false;
+        var failed = false;
+        var error;
 
         try {
 
@@ -146,6 +189,7 @@ export default class PartStreamReader {
             while (status === Status.CONTINUE) {
 
                 const { done, value } = await reader.read();
+                exhausted = (done === true);
                 contentRead += ((value != null) ? value.length : 0);
 
                 status = await this._parser.parse(value, done, contentRead, contentLength, contentType);
@@ -167,12 +211,13 @@ export default class PartStreamReader {
             throw new Exception('Failed parsing single DICOM data-set.', GeneralErrorCodes.GeneralError);
 
         }
+        catch (err) {
+            failed = true;
+            error = err;
+            throw err;
+        }
         finally {
-
-            if ((reader != null) && (typeof reader.releaseLock === 'function')) {
-                reader.releaseLock();
-            }
-
+            await this._releaseStreamReader(reader, exhausted, failed, error);
         }
 
     }
@@ -187,26 +232,73 @@ export default class PartStreamReader {
      */
     async processMultiPart(reader, contentType, contentLength, onEmit = null) {
 
-        if ((contentType == null) || (contentType.boundary == null) || (contentType.boundary.length === 0)) {
-            throw new Exception('Invalid multipart stream. Missing boundary parameter.', GeneralErrorCodes.InvalidParameter);
-        }
-
         var status = Status.CONTINUE;
         var contentRead = 0;
+        var exhausted = false;
+        var failed = false;
+        var error;
         var skipCurrentPart = false;
         var skipNextPart = false;
+        var partFinalized = false;
         var lastResult = null;
 
         try {
 
+            if ((contentType == null) || (contentType.boundary == null) || (contentType.boundary.length === 0)) {
+                throw new Exception('Invalid multipart stream. Missing boundary parameter.', GeneralErrorCodes.InvalidParameter);
+            }
+
             this._parser.reset();
+
+            var parsePartData = async (bytes, isFinalChunk) => {
+
+                if ((status === Status.FAIL) || (status === Status.STOP))
+                    return;
+
+                if (skipCurrentPart === true)
+                    return;
+
+                if (isFinalChunk === true)
+                    partFinalized = true;
+
+                var parseStatus = await this._parser.parse(bytes, isFinalChunk, contentRead, contentLength, contentType);
+
+                if (parseStatus === Status.FAIL) {
+                    status = Status.FAIL;
+                    if (this._parser.error != null)
+                        throw this._parser.error;
+                    throw new Exception('Failed parsing multiple DICOM data-sets.', GeneralErrorCodes.GeneralError);
+                }
+
+                if (parseStatus === Status.SUCCESS) {
+                    lastResult = this._parser.result;
+                }
+
+                if (parseStatus === Status.STOP) {
+                    status = Status.STOP;
+                    return;
+                }
+
+                if (parseStatus === Status.JUMP) {
+                    skipCurrentPart = true;
+                    status = Status.CONTINUE;
+                    return;
+                }
+
+                status = parseStatus;
+
+            };
 
             var demuxer = new MultipartDemuxer(contentType.boundary, {
 
                 onPartStart: async () => {
 
+                    if ((status === Status.FAIL) || (status === Status.STOP))
+                        return;
+
                     skipCurrentPart = (skipNextPart === true);
                     skipNextPart = false;
+                    partFinalized = false;
 
                     if (skipCurrentPart === true) {
                         this._parser.reset();
@@ -214,43 +306,14 @@ export default class PartStreamReader {
 
                 },
 
-                onPartData: async (bytes, isFinalChunk) => {
-
-                    if ((status === Status.FAIL) || (status === Status.STOP))
-                        return;
-
-                    if (skipCurrentPart === true)
-                        return;
-
-                    var parseStatus = await this._parser.parse(bytes, isFinalChunk, contentRead, contentLength, contentType);
-
-                    if (parseStatus === Status.FAIL) {
-                        status = Status.FAIL;
-                        if (this._parser.error != null)
-                            throw this._parser.error;
-                        throw new Exception('Failed parsing multiple DICOM data-sets.', GeneralErrorCodes.GeneralError);
-                    }
-
-                    if (parseStatus === Status.SUCCESS) {
-                        lastResult = this._parser.result;
-                    }
-
-                    if (parseStatus === Status.STOP) {
-                        status = Status.STOP;
-                        return;
-                    }
-
-                    if (parseStatus === Status.JUMP) {
-                        skipCurrentPart = true;
-                        status = Status.CONTINUE;
-                        return;
-                    }
-
-                    status = parseStatus;
-
-                },
+                onPartData: parsePartData,
 
                 onPartEnd: async () => {
+
+                    // A split boundary can arrive after all part bytes have been flushed.
+                    if ((status === Status.CONTINUE) && (skipCurrentPart === false) && (partFinalized === false)) {
+                        await parsePartData(null, true);
+                    }
 
                     if ((status === Status.FAIL) || (status === Status.STOP))
                         return;
@@ -306,9 +369,17 @@ export default class PartStreamReader {
             while ((status === Status.CONTINUE) || (status === Status.JUMP)) {
 
                 const { done, value } = await reader.read();
+                exhausted = (done === true);
                 contentRead += ((value != null) ? value.length : 0);
 
-                await demuxer.push(value, done === true);
+                try {
+                    await demuxer.push(value, done === true);
+                }
+                catch (err) {
+                    // STOP completes the requested parse before the remaining envelope.
+                    if (status !== Status.STOP)
+                        throw err;
+                }
 
                 if ((done === true) || (status === Status.STOP) || (status === Status.FAIL))
                     break;
@@ -328,12 +399,13 @@ export default class PartStreamReader {
             throw new Exception('Failed parsing multiple DICOM data-sets.', GeneralErrorCodes.GeneralError);
 
         }
+        catch (err) {
+            failed = true;
+            error = err;
+            throw err;
+        }
         finally {
-
-            if ((reader != null) && (typeof reader.releaseLock === 'function')) {
-                reader.releaseLock();
-            }
-
+            await this._releaseStreamReader(reader, exhausted, failed, error);
         }
 
     }
@@ -346,23 +418,45 @@ export default class PartStreamReader {
      */
     async readStream(source, streamOptions = null) {
 
-        var reader = this.toStreamReader(source);
-        var onEmit = this.resolveOnEmit(streamOptions);
-
-        // Reset parser transaction state for this top-level read.
-        if ((this._parser != null) && (typeof this._parser.resetSession === "function")) {
-            this._parser.resetSession();
-        }
-
-        var contentTypeSource = null;
+        var reader;
+        var onEmit;
+        var contentType;
         var contentLength = null;
 
-        if (streamOptions != null) {
-            contentTypeSource = ((streamOptions.contentType != null) ? streamOptions.contentType : streamOptions);
-            contentLength = ((streamOptions.contentLength != null) ? streamOptions.contentLength : null);
-        }
+        try {
 
-        var contentType = this.parseContentType(contentTypeSource);
+            onEmit = this.resolveOnEmit(streamOptions);
+
+            // Reset parser transaction state for this top-level read.
+            if ((this._parser != null) && (typeof this._parser.resetSession === "function")) {
+                this._parser.resetSession();
+            }
+
+            var contentTypeSource = null;
+
+            if (streamOptions != null) {
+                contentTypeSource = ((streamOptions.contentType != null) ? streamOptions.contentType : streamOptions);
+                contentLength = ((streamOptions.contentLength != null) ? streamOptions.contentLength : null);
+            }
+
+            contentType = this.parseContentType(contentTypeSource);
+            reader = this.toStreamReader(source);
+
+        }
+        catch (error) {
+
+            // Streams supplied to readStream are owned even before a lock is acquired.
+            if ((source != null) && (typeof source.getReader === 'function') && (typeof source.cancel === 'function')) {
+                try {
+                    await source.cancel(error);
+                }
+                catch (_) {
+                    // Preserve the transaction error if cleanup fails.
+                }
+            }
+
+            throw error;
+        }
 
         if (contentType.isMultiPart === true)
             return this.processMultiPart(reader, contentType, contentLength, onEmit);
@@ -468,6 +562,7 @@ export default class PartStreamReader {
     constructor() {
         this._parser = null;
         this._onPart = null;
+        this._ownedReaders = new WeakSet();
     }
 
 };

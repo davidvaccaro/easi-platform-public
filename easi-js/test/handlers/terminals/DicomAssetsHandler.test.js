@@ -154,3 +154,84 @@ test('Test: DicomAssetsHandler resolves effective frame count from encapsulated 
     expect(frameCount).toBe(2);
 
 });
+
+test.each([null, new Uint8Array(0)])('Test: DicomAssetsHandler emits an empty final native frame marker at the streamed byte offset', async (finalChunk) => {
+
+    const frameChunks = [];
+    const handler = new DicomAssetsHandler({
+        payload: {
+            mode: 'stream',
+            frame: { frames: 'first', decode: 'native', encode: 'none' },
+            onFrameChunk: (chunk) => frameChunks.push(chunk)
+        }
+    });
+    const context = handler.onStartInstance(null);
+    handler.onStartDataSet(context);
+    const attribute = new Attribute(Tag.PixelData, Constants.UndefinedLength, null, TransferSyntax.RLELossless);
+    attribute.isBulkStreamed = true;
+    handler.onStartAttribute(context, attribute);
+
+    await handler.onAttributeChunk(context, { attribute, chunk: new Uint8Array([1, 2, 3]), isFinalChunk: false });
+    await handler.onAttributeChunk(context, { attribute, chunk: new Uint8Array(0), isFinalChunk: false });
+    await handler.onAttributeChunk(context, { attribute, chunk: new Uint8Array([4, 5]), isFinalChunk: false });
+    await handler.onAttributeChunk(context, { attribute, chunk: finalChunk, isFinalChunk: true });
+
+    expect(frameChunks).toHaveLength(3);
+    expect(frameChunks[2]).toEqual(expect.objectContaining({
+        index: 0,
+        bytes: new Uint8Array(0),
+        absoluteOffset: 5,
+        frameOffset: 5,
+        isFirstChunk: false,
+        isFinalChunk: true
+    }));
+    expect(context.assetsRuntime.payloadStates.get(attribute).bytesSeen).toBe(5);
+    expect(context.assets.frameChunksEmitted).toBe(3);
+    expect(attribute.length()).toBe(0);
+
+});
+
+test('Test: DicomAssetsHandler preserves an empty content stream completion marker', async () => {
+
+    const chunks = [];
+    const handler = new DicomAssetsHandler({ payload: { mode: 'stream', onContentChunk: (chunk) => chunks.push(chunk) } });
+    const context = handler.onStartInstance(null);
+    handler.onStartDataSet(context);
+    const attribute = new Attribute(Tag.EncapsulatedDocument, 3, null, TransferSyntax.ExplicitVRLittleEndian);
+    attribute.isBulkStreamed = true;
+    handler.onStartAttribute(context, attribute);
+
+    await handler.onAttributeChunk(context, { attribute, chunk: new Uint8Array([1, 2, 3]), isFinalChunk: false });
+    await handler.onAttributeChunk(context, { attribute, chunk: new Uint8Array(0), isFinalChunk: true });
+
+    expect(chunks).toHaveLength(2);
+    expect(chunks[1]).toEqual(expect.objectContaining({ bytes: new Uint8Array(0), offset: 3, isFirstChunk: false, isFinalChunk: true }));
+    expect(attribute.length()).toBe(0);
+
+});
+
+test('Test: DicomAssetsHandler avoids a duplicate completion marker for a frame with known bounds', async () => {
+
+    const chunks = [];
+    const handler = new DicomAssetsHandler({
+        payload: { mode: 'stream', frame: { decode: 'native', encode: 'none' }, onFrameChunk: (chunk) => chunks.push(chunk) }
+    });
+    const context = handler.onStartInstance(null);
+    const attribute = new Attribute(Tag.PixelData, 3, null, TransferSyntax.ExplicitVRLittleEndian);
+    context.assetsRuntime.payloadStates.set(attribute, {
+        type: 'frame',
+        bytesSeen: 0,
+        valueLength: 3,
+        frameSize: 3,
+        frameCount: 1,
+        unsplitMode: false,
+        selectedFrameSet: new Set([0])
+    });
+
+    await handler.onAttributeChunk(context, { attribute, chunk: new Uint8Array([1, 2, 3]), isFinalChunk: false });
+    await handler.onAttributeChunk(context, { attribute, chunk: new Uint8Array(0), isFinalChunk: true });
+
+    expect(chunks).toHaveLength(1);
+    expect(chunks[0].isFinalChunk).toBe(true);
+
+});

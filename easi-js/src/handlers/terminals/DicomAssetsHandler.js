@@ -533,10 +533,11 @@ export default class DicomAssetsHandler {
      */
     async emitFrameChunkPayload(context, attribute, chunk, isFinalChunk, state) {
 
-        if ((chunk == null) || (chunk.length == 0)) {
-            if (isFinalChunk == true) {
-                state.bytesSeen = state.valueLength;
-            }
+        if (chunk == null)
+            chunk = new Uint8Array(0);
+
+        // Encapsulated values can finish with a separate, empty completion chunk.
+        if ((chunk.length == 0) && ((isFinalChunk != true) || (state.unsplitMode != true))) {
             return;
         }
 
@@ -628,7 +629,10 @@ export default class DicomAssetsHandler {
      */
     async emitContentChunkPayload(context, attribute, chunk, isFinalChunk, state) {
 
-        if ((chunk == null) || (chunk.length == 0))
+        if (chunk == null)
+            chunk = new Uint8Array(0);
+
+        if ((chunk.length == 0) && (isFinalChunk != true))
             return;
 
         await this.payloadOptions.onContentChunk({
@@ -1090,10 +1094,10 @@ export default class DicomAssetsHandler {
         var isFinalChunk = (payload?.isFinalChunk == true);
         var state = context?.assetsRuntime?.payloadStates?.get(attribute) ?? null;
 
-        if ((state?.type == 'frame') && (chunk != null) && (chunk.length > 0)) {
+        if (state?.type == 'frame') {
             await this.emitFrameChunkPayload(context, attribute, chunk, isFinalChunk, state);
         }
-        else if ((state?.type == 'content') && (chunk != null) && (chunk.length > 0)) {
+        else if (state?.type == 'content') {
             await this.emitContentChunkPayload(context, attribute, chunk, isFinalChunk, state);
         }
 

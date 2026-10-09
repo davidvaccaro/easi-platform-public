@@ -197,9 +197,18 @@ export default class Data {
         // Determine current active data length.
         var activeLength = (this._end - this._start);
 
-        // If compacting the current active data to offset 0 provides enough room, do that first.
+        // Consumed views and caller-provided input may still reference the old
+        // storage. Compact into fresh storage so previously emitted bytes remain
+        // stable, and size it from the active tail rather than the consumed input.
         if ((this._start > 0) && ((this._buffer.length - activeLength) >= additionalLength)) {
-            this._buffer.set(this._buffer.subarray(this._start, this._end), 0);
+            var compactedCapacity = 16;
+            var compactedRequired = activeLength + additionalLength;
+            while (compactedCapacity < compactedRequired) {
+                compactedCapacity *= 2;
+            }
+            var compactedBuffer = new Uint8Array(compactedCapacity);
+            compactedBuffer.set(this._buffer.subarray(this._start, this._end), 0);
+            this._buffer = compactedBuffer;
             this._start = 0;
             this._end = activeLength;
             this._refreshDataView();

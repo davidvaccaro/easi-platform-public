@@ -1,6 +1,16 @@
 # DicomDataParser Class
 
-The `DicomDataParser` class is a streaming parser for DICOM&reg; Part-10 formatted data, capable of processing standard DICOM&reg; structures such as the file preamble, prefix, metadata, and dataset. It is event-driven and supports asynchronous handlers for each parsing stage.
+The `DicomDataParser` class parses DICOM&reg; Part-10 files and raw datasets incrementally. It processes the file preamble, prefix, metadata, dataset, and nested sequences, and supports asynchronous handlers for each parsing stage.
+
+At EOF, incomplete attribute values, partial headers, open items/sequences, and unfinished file metadata fail parsing. Failure sets `error`, emits `onError`, and returns `Status.FAIL`; it does not emit successful dataset/instance completion. A valid raw dataset can be shorter than the 132-byte Part-10 preamble and prefix.
+
+Explicit-VR headers use the reserved bytes and 32-bit value length for `OB`, `OD`, `OF`, `OL`, `OV`, `OW`, `SQ`, `SV`, `UC`, `UN`, `UR`, `UT`, and `UV`. Both explicit byte orders use this classification.
+
+Undefined-length encapsulated PixelData is consumed through item headers and declared fragment lengths. Fragment payloads are opaque, so delimiter-like bytes within a fragment cannot terminate the attribute. Chunk boundaries do not change the raw value bytes. Materialized values and `onAttributeChunk` output preserve item headers and payload bytes; the closing sequence delimiter is structural and excluded from the value.
+
+For streamed undefined-length values, completion can arrive as an empty chunk with `isFinalChunk: true`. Chunk consumers must process that completion flag even when the chunk contains no bytes.
+
+Undefined-length `UN` values currently fail with an explicit unsupported-encoding error. Supporting them requires parsing their nested datasets with implicit VR while retaining the surrounding transfer syntax and raw-copy behavior; see [DICOM PS3.5 section 6.2.2](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.2.html). Defined-length `UN` values remain opaque bytes.
 
 ---
 

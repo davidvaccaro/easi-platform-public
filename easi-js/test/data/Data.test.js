@@ -56,3 +56,46 @@ test('Test: Data indexOf returns -1 when sequence is not found', () => {
     expect(data.indexOf(0, sequence)).toBe(-1);
 
 });
+
+
+test('Test: Data compaction preserves consumed views and caller-owned input bytes', () => {
+
+    var original = Uint8Array.from({ length: 32 }, (_, index) => index);
+    var source = Uint8Array.from(original);
+    var data = new Data();
+    data.append(source);
+
+    // Initial adoption and consumption remain zero-copy.
+    expect(data.access().buffer).toBe(source.buffer);
+    var consumed = data.consume(23);
+    expect(consumed.buffer).toBe(source.buffer);
+    var tail = data.peek(0, 9);
+
+    // The old buffer has no free write tail. Appending must compact safely.
+    data.append(new Uint8Array([201]));
+
+    expect(source).toEqual(original);
+    expect(consumed).toEqual(original.subarray(0, 23));
+    expect(tail).toEqual(original.subarray(23));
+    expect(data.access()).toEqual(new Uint8Array([23, 24, 25, 26, 27, 28, 29, 30, 31, 201]));
+    expect(data.access().buffer).not.toBe(source.buffer);
+
+});
+
+test('Test: Data compaction capacity depends on remaining bytes, not the large consumed input', () => {
+
+    var source = new Uint8Array(1024 * 1024);
+    source.set([1, 2, 3], source.length - 3);
+    var data = new Data();
+    data.append(source);
+    var consumed = data.consume(source.length - 3);
+
+    data.append(new Uint8Array([4]));
+
+    expect(data.access()).toEqual(new Uint8Array([1, 2, 3, 4]));
+    expect(data.access().buffer.byteLength).toBeLessThanOrEqual(32);
+    expect(consumed.every(value => value == 0)).toBe(true);
+    expect(source.subarray(0, 4)).toEqual(new Uint8Array(4));
+    expect(source.subarray(source.length - 3)).toEqual(new Uint8Array([1, 2, 3]));
+
+});

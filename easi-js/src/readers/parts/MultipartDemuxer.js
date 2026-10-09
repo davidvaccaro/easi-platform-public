@@ -131,9 +131,7 @@ export default class MultipartDemuxer {
                 if (boundaryIndex < 0) {
 
                     if (done) {
-                        if (this.buffer.length() > 0)
-                            throw new Exception('Invalid multipart payload. Missing boundary.', GeneralErrorCodes.GeneralError);
-                        return;
+                        throw new Exception('Invalid multipart payload. Missing boundary.', GeneralErrorCodes.GeneralError);
                     }
 
                     // Keep enough trailing bytes for one boundary prefix match.
@@ -202,13 +200,7 @@ export default class MultipartDemuxer {
                 if (partBoundaryIndex < 0) {
 
                     if (done) {
-                        if (this.buffer.length() > 0) {
-                            await this.fire('onPartData', this.buffer.consume(this.buffer.length()), true);
-                        }
-                        await this.fire('onPartEnd', this.currentPartHeaders);
-                        this.state = MultipartDemuxerStates.Ended;
-                        await this.fire('onEnd');
-                        return;
+                        throw new Exception('Invalid multipart payload. Missing closing boundary.', GeneralErrorCodes.GeneralError);
                     }
 
                     // Emit flushable bytes while retaining enough bytes to detect split boundary.

@@ -39,20 +39,62 @@ export default class NodeStreamAdapterReader {
         }
 
         var iterator = source[Symbol.asyncIterator]();
+        var exhausted = false;
         var that = this;
 
         return {
             read: async function () {
 
+                if (exhausted === true) {
+                    return { done: true, value: null };
+                }
+
                 var next = await iterator.next();
                 if (next.done == true) {
+                    exhausted = true;
                     return { done: true, value: null };
                 }
 
                 return { done: false, value: that._partReader.toBytes(next.value) };
 
             },
-            releaseLock: function () { }
+            releaseLock: function () { },
+            cancel: async function () {
+
+                if (exhausted === true)
+                    return;
+
+                exhausted = true;
+                var cleanupFailed = false;
+                var cleanupError;
+
+                try {
+                    if (typeof iterator.return === 'function') {
+                        await iterator.return();
+                    }
+                }
+                catch (err) {
+                    cleanupFailed = true;
+                    cleanupError = err;
+                }
+
+                try {
+                    if ((typeof source.destroy === 'function') && (source.destroyed !== true)) {
+                        source.destroy();
+                    }
+                }
+                catch (err) {
+                    if (cleanupFailed === false) {
+                        cleanupFailed = true;
+                        cleanupError = err;
+                    }
+                }
+
+                if (cleanupFailed === true) {
+                    throw cleanupError;
+                }
+
+            }
         };
 
     }
@@ -63,13 +105,34 @@ export default class NodeStreamAdapterReader {
      * @param {{ contentType?: string | object, contentLength?: number | string | null, onEmit?: Function | null } | null} options Optional content metadata.
      * @returns {Promise<object>} The parser result.
      */
-    read(source, options = null) {
+    async read(source, options = null) {
 
         if ((source != null) && (typeof source.getReader === 'function')) {
             return this._partReader.readStream(source, options);
         }
 
-        return this._partReader.readStream(this.toReader(source), options);
+        var reader = this.toReader(source);
+        var borrowed = (reader === source);
+        var failed = false;
+
+        try {
+            return await this._partReader.readStream(reader, options);
+        }
+        catch (err) {
+            failed = true;
+            throw err;
+        }
+        finally {
+            if (borrowed === false) {
+                try {
+                    await reader.cancel();
+                }
+                catch (err) {
+                    if (failed === false)
+                        throw err;
+                }
+            }
+        }
 
     }
 

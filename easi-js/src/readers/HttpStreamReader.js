@@ -44,17 +44,46 @@ export default class HttpStreamReader {
             delete httpOptions.onEmit;
         }
 
+        if ((onEmit != null) && (typeof onEmit !== 'function')) {
+            throw new Exception('Invalid "onEmit" option. Expected function or null.', GeneralErrorCodes.InvalidParameter);
+        }
+
         var response = await fetch(url, Object.assign({
             method: 'GET'
         }, httpOptions));
 
+        var responseError = null;
+        if ((response != null) && ((response.ok === false)
+            || ((typeof response.status === 'number') && ((response.status < 200) || (response.status >= 300))))) {
+            responseError = new Exception('HTTP request failed for ' + url + ': '
+                + ((response.status != null) ? response.status : 'unsuccessful response')
+                + ((response.statusText) ? ' ' + response.statusText : '') + '.', GeneralErrorCodes.GeneralError);
+        } else if (httpOptions.signal?.aborted === true) {
+            responseError = httpOptions.signal.reason;
+            if (responseError == null) {
+                responseError = new Error('HTTP request aborted for ' + url + '.');
+                responseError.name = 'AbortError';
+            }
+        }
+
+        if (responseError != null) {
+            if (typeof response?.body?.cancel === 'function') {
+                try {
+                    await response.body.cancel(responseError);
+                } catch (_) {
+                    // Preserve the request failure if cleanup also fails.
+                }
+            }
+            throw responseError;
+        }
+
         if ((response == null) || (response.body == null)) {
-            throw new Exception('Invalid HTTP response. Missing response body stream.', GeneralErrorCodes.GeneralError);
+            throw new Exception('Invalid HTTP response for ' + url + '. Missing response body stream.', GeneralErrorCodes.GeneralError);
         }
 
         var streamOptions = {
             contentType: PartContentType.parse(response),
-            contentLength: (response.headers != null) ? response.headers.get('content-length') : null
+            contentLength: (typeof response.headers?.get === 'function') ? response.headers.get('content-length') : null
         };
 
         if (hasOnEmit == true) {

@@ -23,7 +23,7 @@ import TransferSyntax from "../../dicom/TransferSyntax.js";
 import ValueRepresentations from "../../dicom/ValueRepresentation.js";
 import PipelineOperationResult from "../../pipelines/PipelineOperationResult.js";
 
-const ExplicitLongLengthVRs = new Set(['OB', 'OD', 'OF', 'OL', 'OV', 'OW', 'SQ', 'UC', 'UR', 'UT', 'UN']);
+const ExplicitLongLengthVRs = new Set(['OB', 'OD', 'OF', 'OL', 'OV', 'OW', 'SQ', 'SV', 'UC', 'UR', 'UT', 'UN', 'UV']);
 
 const BinaryPadVRs = new Set(['OB', 'OD', 'OF', 'OL', 'OV', 'OW', 'UN', 'AT']);
 

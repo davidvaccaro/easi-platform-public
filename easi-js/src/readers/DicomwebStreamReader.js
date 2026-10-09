@@ -272,8 +272,11 @@ export default class DicomwebStreamReader {
             params.append(key, String(value));
         });
 
-        var separator = (url.indexOf("?") > -1) ? "&" : "?";
-        return url + separator + params.toString();
+        var hashIndex = url.indexOf("#");
+        var fragment = (hashIndex >= 0) ? url.substring(hashIndex) : "";
+        var queryUrl = (hashIndex >= 0) ? url.substring(0, hashIndex) : url;
+        var separator = (queryUrl.indexOf("?") > -1) ? "&" : "?";
+        return queryUrl + separator + params.toString() + fragment;
 
     }
 
@@ -288,7 +291,7 @@ export default class DicomwebStreamReader {
 
         var explicitUrl = this.resolveExplicitUrl(sourceObject, options);
         if (explicitUrl != null)
-            return explicitUrl;
+            return this.appendQuery(explicitUrl, this.resolveQueryObject(sourceObject, options));
 
         var baseUrl = normalizeString(sourceObject.baseUrl || sourceObject.base || options.baseUrl || options.base);
         if (baseUrl.length <= 0)
@@ -366,12 +369,16 @@ export default class DicomwebStreamReader {
      * Copy selected request-init keys from source object.
      * @param {object} source Source object.
      * @param {object} target Target request options.
+     * @param {boolean} includeFetchMode Whether source is a nested RequestInit object.
      */
-    applyRequestKeys(source, target) {
+    applyRequestKeys(source, target, includeFetchMode = false) {
         if (isObject(source) === false)
             return;
 
         REQUEST_OPTION_KEYS.forEach((key) => {
+            // Top-level mode selects a DICOMweb operation; request.mode controls fetch.
+            if ((key === "mode") && (includeFetchMode === false))
+                return;
             if (Object.prototype.hasOwnProperty.call(source, key) == true) {
                 target[key] = source[key];
             }
@@ -388,19 +395,25 @@ export default class DicomwebStreamReader {
         if (headersValue == null)
             return;
 
-        if (typeof headersValue.forEach === "function") {
-            headersValue.forEach((value, key) => {
-                targetHeaders[String(key)] = String(value);
-            });
-            return;
-        }
+        var setHeader = (name, value) => {
+            var headerName = String(name);
+            var existingName = Object.keys(targetHeaders).find((key) => key.toLowerCase() === headerName.toLowerCase());
+            if ((existingName != null) && (existingName !== headerName))
+                delete targetHeaders[existingName];
+            targetHeaders[headerName] = String(value);
+        };
 
         if (Array.isArray(headersValue)) {
             headersValue.forEach((entry) => {
                 if ((Array.isArray(entry) == false) || (entry.length < 2))
                     return;
-                targetHeaders[String(entry[0])] = String(entry[1]);
+                setHeader(entry[0], entry[1]);
             });
+            return;
+        }
+
+        if (typeof headersValue.forEach === "function") {
+            headersValue.forEach((value, key) => setHeader(key, value));
             return;
         }
 
@@ -408,7 +421,7 @@ export default class DicomwebStreamReader {
             return;
 
         Object.entries(headersValue).forEach((entry) => {
-            targetHeaders[String(entry[0])] = String(entry[1]);
+            setHeader(entry[0], entry[1]);
         });
 
     }
@@ -425,9 +438,9 @@ export default class DicomwebStreamReader {
         var requestOptions = {};
 
         this.applyRequestKeys(sourceObject, requestOptions);
-        this.applyRequestKeys(sourceObject.request, requestOptions);
+        this.applyRequestKeys(sourceObject.request, requestOptions, true);
         this.applyRequestKeys(options, requestOptions);
-        this.applyRequestKeys(options.request, requestOptions);
+        this.applyRequestKeys(options.request, requestOptions, true);
 
         var hasOnEmit = false;
         var onEmit = null;
@@ -451,11 +464,12 @@ export default class DicomwebStreamReader {
         this.mergeHeaders(headers, options.request?.headers);
 
         var acceptHeader = normalizeString(options.accept || sourceObject.accept);
-        if (acceptHeader.length <= 0)
+        var hasAcceptHeader = Object.keys(headers).some((key) => key.toLowerCase() === "accept");
+        if ((acceptHeader.length <= 0) && (hasAcceptHeader === false))
             acceptHeader = this.defaultAcceptByMode(mode);
 
         if (acceptHeader.length > 0)
-            headers.Accept = acceptHeader;
+            this.mergeHeaders(headers, { Accept: acceptHeader });
 
         requestOptions.headers = headers;
         requestOptions.method = normalizeString(requestOptions.method).toUpperCase() || "GET";
@@ -483,8 +497,33 @@ export default class DicomwebStreamReader {
         var requestMeta = this.buildRequestOptions(sourceObject, readOptions, mode);
 
         var response = await fetch(url, requestMeta.requestOptions);
+        var responseError = null;
+        if ((response != null) && ((response.ok === false)
+            || ((typeof response.status === "number") && ((response.status < 200) || (response.status >= 300))))) {
+            responseError = new Exception("DICOMweb request failed for " + url + ": "
+                + ((response.status != null) ? response.status : "unsuccessful response")
+                + ((response.statusText) ? " " + response.statusText : "") + ".", GeneralErrorCodes.GeneralError);
+        } else if (requestMeta.requestOptions.signal?.aborted === true) {
+            responseError = requestMeta.requestOptions.signal.reason;
+            if (responseError == null) {
+                responseError = new Error("DICOMweb request aborted for " + url + ".");
+                responseError.name = "AbortError";
+            }
+        }
+
+        if (responseError != null) {
+            if (typeof response?.body?.cancel === "function") {
+                try {
+                    await response.body.cancel(responseError);
+                } catch (_) {
+                    // Preserve the request failure if cleanup also fails.
+                }
+            }
+            throw responseError;
+        }
+
         if ((response == null) || (response.body == null)) {
-            throw new Exception("Invalid DICOMweb response. Missing response body stream.", GeneralErrorCodes.GeneralError);
+            throw new Exception("Invalid DICOMweb response for " + url + ". Missing response body stream.", GeneralErrorCodes.GeneralError);
         }
 
         var contentType = PartContentType.parse(response);
@@ -494,7 +533,7 @@ export default class DicomwebStreamReader {
 
         var streamOptions = {
             contentType: contentType,
-            contentLength: (response.headers != null) ? response.headers.get("content-length") : null
+            contentLength: (typeof response.headers?.get === "function") ? response.headers.get("content-length") : null
         };
 
         if (requestMeta.hasOnEmit === true) {

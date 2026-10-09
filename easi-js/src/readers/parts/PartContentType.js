@@ -17,6 +17,8 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
+const CONTENT_TYPE_PARAMETERS = String.raw`;\s*([^;=\s]+)\s*=\s*("(?:\\.|[^"\\])*"|[^;]*)`;
+
 export default class PartContentType {
 
     /**
@@ -36,8 +38,8 @@ export default class PartContentType {
             return source.get('content-type');
         }
 
-        if ((typeof source === 'object') && (source.headers != null) && (typeof source.headers.get === 'function')) {
-            return source.headers.get('content-type');
+        if ((typeof source === 'object') && (source.headers != null)) {
+            return this.toHeaderValue(source.headers);
         }
 
         if ((typeof source === 'object') && (source.contentType != null)) {
@@ -50,6 +52,17 @@ export default class PartContentType {
 
         if ((typeof source === 'object') && (source.content_type != null)) {
             return String(source.content_type);
+        }
+
+        if (Array.isArray(source)) {
+            var headerEntry = source.find((entry) => Array.isArray(entry) && String(entry[0]).toLowerCase() === 'content-type');
+            return (headerEntry != null) ? String(headerEntry[1]) : null;
+        }
+
+        if (typeof source === 'object') {
+            var headerName = Object.keys(source).find((name) => name.toLowerCase() === 'content-type');
+            if (headerName != null)
+                return String(source[headerName]);
         }
 
         return null;
@@ -71,12 +84,9 @@ export default class PartContentType {
 
             var parsed = Object.assign({}, source);
 
-            if (parsed['content-type'] == null) {
-                parsed['content-type'] = String(parsed.mediaType).toLowerCase().trim();
-            }
-
-            parsed.mediaType = String(parsed['content-type']).toLowerCase().trim();
-            parsed.isMultiPart = ((parsed.mediaType.indexOf('multipart/') > -1) || (parsed.isMultiPart === true));
+            parsed['content-type'] = String(parsed['content-type'] || parsed.mediaType).toLowerCase().trim();
+            parsed.mediaType = parsed['content-type'];
+            parsed.isMultiPart = ((parsed.mediaType.startsWith('multipart/')) || (parsed.isMultiPart === true));
 
             return parsed;
 
@@ -87,36 +97,25 @@ export default class PartContentType {
 
         if (header != null) {
 
-            var parts = String(header).split(';');
+            var headerText = String(header);
+            contentType['content-type'] = headerText.split(';', 1)[0].toLowerCase().trim();
 
-            contentType['content-type'] = parts[0]
-                .replaceAll('"', '')
-                .toLowerCase()
-                .trim();
+            // Quoted parameter values can contain semicolons, equals signs and escapes.
+            var parameters = new RegExp(CONTENT_TYPE_PARAMETERS, 'g');
+            var match;
+            while ((match = parameters.exec(headerText)) != null) {
+                var name = match[1].toLowerCase();
+                var value = match[2].trim();
+                if (value.startsWith('"') && value.endsWith('"'))
+                    value = value.substring(1, value.length - 1).replace(/\\(.)/g, '$1');
 
-            for (var i = 1; i < parts.length; i++) {
-
-                var part = parts[i];
-                if (part.indexOf('=') < 0)
-                    continue;
-
-                var nameValue = part
-                    .replaceAll('"', '')
-                    .trim()
-                    .split('=');
-
-                if (nameValue.length < 2)
-                    continue;
-
-                var name = String(nameValue[0]).toLowerCase().trim();
-                var value = nameValue.slice(1).join('=').toLowerCase().trim();
-                contentType[name] = value;
-
+                // The related-part type is a media type; boundaries and other values are case-sensitive.
+                contentType[name] = (name === 'type') ? value.toLowerCase() : value;
             }
 
         }
 
-        contentType.isMultiPart = ((contentType['content-type'] != null) && (contentType['content-type'].indexOf('multipart/') > -1));
+        contentType.isMultiPart = ((contentType['content-type'] != null) && (contentType['content-type'].startsWith('multipart/')));
         contentType.mediaType = contentType['content-type'] || null;
 
         return contentType;

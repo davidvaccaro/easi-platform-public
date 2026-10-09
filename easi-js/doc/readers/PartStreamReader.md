@@ -1,101 +1,39 @@
 # `PartStreamReader` Class
 
-The `PartStreamReader` class coordinates streamed data reading and forwards data into configured parsers/handlers.
+`PartStreamReader` routes byte sources and Web Streams to a configured parser. It supports single-part payloads and MIME multipart payloads. Use `HttpStreamReader` for URL sources and `NodeStreamAdapterReader` for Node streams or async iterables.
 
----
-
-## Inheritance
-
-```text
-PartStreamReader → (none)
-```
-
-## Constructor
+## Constructor and properties
 
 ```js
-new PartStreamReader()
+const reader = new PartStreamReader();
+reader.parser = parser;
+reader.onPart = onEmit;
 ```
 
-## Properties
+`parser` is the parser used for the transaction. `onPart` is an optional result callback; per-read `options.onEmit` overrides it, including `null` to disable emission. Callbacks can return promises.
 
-| Property | Type    | Description |
-|----------|---------|-------------|
-| `onPart` | `*` | Accessor property. |
-| `parser` | `*` | Accessor property. |
+## Reading
 
-## Methods
+| Method | Source | Options |
+| --- | --- | --- |
+| `read(source, options = null)` | Byte source, Web Stream, or reader with `read()` | Routes to the appropriate method below. |
+| `readData(data, options = null)` | `Uint8Array`, `ArrayBuffer`, typed-array view, or numeric array | `onEmit` |
+| `readStream(source, options = null)` | `ReadableStream` or reader with `read()` | `contentType`, `contentLength`, `onEmit` |
+| `parseContentType(source)` | Content-Type string, headers, response, or parsed metadata | Returns normalized media type and parameters. |
 
-### `parseContentType(response)`
+Read methods return a promise for the parser result. `contentType` selects multipart handling; a multipart source must supply a nonempty boundary and a complete closing delimiter. Unless processing stops intentionally, EOF before the closing delimiter rejects the read, even when an inner payload is complete. Media types and parameter names are case insensitive, while boundary values preserve their case. At every multipart boundary the parser receives a final chunk, even when the last payload bytes arrived in an earlier network chunk.
 
-Parse the content-type from the response.
+The reader accepts parser `SUCCESS`, `STOP`, and single-part `JUMP` as completed read operations. Parser failures, read failures, and callback failures reject the promise. Multipart `JUMP` skips the current part, or the next part when returned by the emission callback.
 
-#### Parameters
+## Source ownership and cleanup
 
-| Parameter | Type    | Description |
-|-----------|---------|-------------|
-| `response` | `Response` | The response. |
+Passing a Web `ReadableStream` transfers ownership of the read transaction to EASI. EASI cancels unread input on early completion, parser failure, read failure, or callback failure, then releases any acquired reader lock. A failure before acquisition also cancels the supplied stream without taking a lock. Normal EOF releases the lock without cancellation. If processing fails and cleanup also fails, the processing error remains the rejection reason.
 
-#### Returns
+Passing an already-created reader keeps ownership with the caller. EASI releases its lock when possible but does not cancel its unread input; the caller must decide whether to continue reading or cancel it. Option validation and session reset happen before EASI acquires a Web Stream reader.
 
-| Type | Description |
-|------|-------------|
-| `*` | The contentType header parsed as an object. |
+`NodeStreamAdapterReader` follows the same distinction for supplied readers. When it creates an iterator for a Node stream or async iterable, it calls `return()` on early completion or failure and destroys the Node readable when necessary. An exhausted iterator needs no cancellation.
 
----
-
-### `readUrl(url)`
-
-Read a DICOM&reg; instance from the response content of specified URL.
-
-#### Parameters
-
-| Parameter | Type    | Description |
-|-----------|---------|-------------|
-| `url` | `string` | The specified URL to a DICOM&reg; instance. |
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | A Promise that resolves to the result from the DICOM&reg; parse operation. |
-
----
-
-### `readData(data)`
-
-Read a DICOM&reg; instance from the specified data.
-
-#### Parameters
-
-| Parameter | Type    | Description |
-|-----------|---------|-------------|
-| `data` | `Uint8Array` | The specified data. |
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | A Promise that resolves to the result from the DICOM&reg; parse operation. |
-
----
-
-### `read(source)`
-
-Read a DICOM&reg; instance from the specified source of data.
-
-#### Parameters
-
-| Parameter | Type    | Description |
-|-----------|---------|-------------|
-| `source` | `string | Uint8Array` | The specified source of data. |
-
-#### Returns
-
-| Type | Description |
-|------|-------------|
-| `*` | A Promise that resolves to the result from the DICOM&reg; parse operation. |
-
-## Usage Example
+## Example
 
 ```js
 import PartStreamReader from '../../src/readers/PartStreamReader.js';
@@ -107,6 +45,7 @@ const parser = new DicomDataParser();
 parser.handler = new DicomInstanceHandler();
 reader.parser = parser;
 
-const instance = await reader.read('https://example.org/instance.dcm');
+const result = await reader.readStream(stream, {
+  contentType: 'application/dicom'
+});
 ```
----
