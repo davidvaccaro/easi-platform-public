@@ -14,6 +14,10 @@ function encodeLiteralSegment(bytes) {
         offset += count;
     }
 
+    // DICOM RLE segments have even lengths; -128 is a PackBits NOP.
+    if (output.length % 2 != 0)
+        output.push(128);
+
     return new Uint8Array(output);
 }
 
@@ -177,4 +181,38 @@ test('Test: RleDecoder normalizes photometric interpretation from symbol and att
 
     expect(decoder.photometricInterpretation).toBe('PALETTE COLOR');
 
+});
+
+test.each([
+    ['signed 16-bit', 16, 16, 1, [[0x80, 0xFF, 0x00, 0x7F], [0x00, 0xFF, 0x00, 0xFF]], [0, 127, 128, 255]],
+    ['signed 12-bit with unused high bits', 16, 12, 1, [[0xA8, 0xAF, 0xB0, 0xB7], [0x00, 0xFF, 0x00, 0xFF]], [0, 127, 128, 255]],
+    ['signed 8-bit', 8, 8, 1, [[0x80, 0xFF, 0x00, 0x7F]], [0, 127, 128, 255]],
+    ['signed 4-bit in an 8-bit sample', 8, 4, 1, [[0xF8, 0xFF, 0xB0, 0xA7]], [0, 119, 136, 255]],
+    ['unsigned 4-bit with unused high bits', 8, 4, 0, [[0xB0, 0xB4, 0xB8, 0xBF]], [0, 68, 136, 255]]
+])('Test: RleDecoder renders %s using the stored sample range', (_name, bitsAllocated, bitsStored, pixelRepresentation, planes, grayValues) => {
+    // The byte planes are fixed two's-complement encodings, independent of any EASI encoder.
+    const decoder = new RleDecoder({ imagePixelModule: {
+        rows: 2, columns: 2, samplesPerPixel: 1,
+        bitsAllocated, bitsStored, pixelRepresentation,
+        photometricInterpretation: 'MONOCHROME2'
+    } });
+    const frame = buildRleFrame(planes.map(plane => encodeLiteralSegment(new Uint8Array(plane))));
+    const rgba = new Uint8Array(16);
+
+    expect(decoder.decode(frame, 0, frame.length, rgba, 0)).toBe(true);
+    expect(Array.from(rgba)).toEqual(grayValues.flatMap(gray => [gray, gray, gray, 255]));
+});
+
+test('Test: RleDecoder normalizes stored bits independently for RGB components', () => {
+    const decoder = new RleDecoder({ imagePixelModule: {
+        rows: 1, columns: 2, samplesPerPixel: 3,
+        bitsAllocated: 8, bitsStored: 4, pixelRepresentation: 0,
+        photometricInterpretation: 'RGB'
+    } });
+    const planes = [[0xA0, 0xAF], [0xA4, 0xA8], [0xA8, 0xA4]];
+    const frame = buildRleFrame(planes.map(plane => encodeLiteralSegment(new Uint8Array(plane))));
+    const rgba = new Uint8Array(8);
+
+    expect(decoder.decode(frame, 0, frame.length, rgba, 0)).toBe(true);
+    expect(Array.from(rgba)).toEqual([0, 68, 136, 255, 255, 136, 68, 255]);
 });

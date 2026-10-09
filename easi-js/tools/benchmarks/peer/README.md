@@ -13,6 +13,10 @@ This harness compares EASI parse performance against peer DICOM toolkits using a
 ## Workload
 Default workload file: `tools/benchmarks/peer/workloads/default-workload.json`
 
+The default workload uses independently generated `synthetic:` profiles for native, nested-sequence, multiframe, RLE palette, and RGB inputs. Files are materialized in an owned temporary directory and removed after the run. No original image corpus is needed. A custom workload can still supply paths relative to the repository for an optional local corpus; do not commit those files or publish their reports automatically.
+
+The fixture revision is `synthetic-v1`. Establish a new performance baseline for this corpus; results are not directly comparable to the old clinical-sample workloads.
+
 Operation benchmarked:
 - Parse complete DICOM file
 - Extract core tags (`StudyInstanceUID`, `SeriesInstanceUID`, `SOPInstanceUID`, `Modality`, `Rows`, `Columns`, `NumberOfFrames`)
@@ -23,6 +27,12 @@ From `easi-js`:
 ```bash
 npm run bench:peers:bootstrap
 node tools/benchmarks/peer/runPeerBenchmarks.js
+```
+
+For a smoke check with no external toolkit installation:
+
+```bash
+npm run bench:peers -- --include easi-js --iterations 1 --warmup 0
 ```
 
 Optional flags:

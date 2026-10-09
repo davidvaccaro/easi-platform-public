@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Invented identifiers and metadata; no clinical file was used as input. -->
+<NativeDicomModel xmlns="http://dicom.nema.org/PS3.19/models/NativeDICOM">
+  <DicomAttribute tag="00080016" vr="UI" keyword="SOPClassUID"><Value number="1">1.2.840.10008.5.1.4.1.1.7</Value></DicomAttribute>
+  <DicomAttribute tag="00080018" vr="UI" keyword="SOPInstanceUID"><Value number="1">2.25.103</Value></DicomAttribute>
+  <DicomAttribute tag="00080020" vr="DA" keyword="StudyDate"><Value number="1">20260102</Value></DicomAttribute>
+  <DicomAttribute tag="00080030" vr="TM" keyword="StudyTime"><Value number="1">123456</Value></DicomAttribute>
+  <DicomAttribute tag="00080060" vr="CS" keyword="Modality"><Value number="1">OT</Value></DicomAttribute>
+  <DicomAttribute tag="00100010" vr="PN" keyword="PatientName"><PersonName number="1"><Alphabetic><FamilyName>SYNTHETIC</FamilyName><GivenName>EASI</GivenName></Alphabetic></PersonName></DicomAttribute>
+  <DicomAttribute tag="00100020" vr="LO" keyword="PatientID"><Value number="1">EASI-SYNTHETIC-001</Value></DicomAttribute>
+  <DicomAttribute tag="0020000D" vr="UI" keyword="StudyInstanceUID"><Value number="1">2.25.101</Value></DicomAttribute>
+  <DicomAttribute tag="0020000E" vr="UI" keyword="SeriesInstanceUID"><Value number="1">2.25.102</Value></DicomAttribute>
+</NativeDicomModel>

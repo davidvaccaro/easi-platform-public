@@ -2,29 +2,7 @@ import EASI from "../../src/EASI.js";
 import Tag from "../../src/dicom/Tag.js";
 import InMemoryDimseSourceTransport from "../../src/transports/dimse/InMemoryDimseSourceTransport.js";
 import InMemoryDimseDestinationTransport from "../../src/transports/dimse/InMemoryDimseDestinationTransport.js";
-
-const fs = require("fs");
-const path = require("path");
-
-function resolveEasiJsRoot() {
-
-  var marker = `${path.sep}easi-js`;
-  var cwd = process.cwd();
-  var markerIndex = cwd.lastIndexOf(marker);
-
-  if (markerIndex > -1) {
-    return cwd.substring(0, markerIndex + marker.length);
-  }
-
-  return cwd;
-
-}
-
-function readDicomBytes(fileName) {
-  const easiJsRoot = resolveEasiJsRoot();
-  const filePath = path.join(easiJsRoot, "..", "data", "dicoms", fileName);
-  return new Uint8Array(fs.readFileSync(filePath));
-}
+import { getFixtureBytes } from "../fixtures/dicom/SyntheticDicom.js";
 
 async function parseDicomInstance(bytes) {
   return EASI.pipelineBuilder().
@@ -51,7 +29,7 @@ test("Test: in-memory DIMSE source to DIMSE destination pipeline supports de-ide
     calledAeTitle: "DST_PACS"
   };
 
-  const sourceBytes = readDicomBytes("0002.DCM");
+  const sourceBytes = getFixtureBytes();
   const sourceTransport = new InMemoryDimseSourceTransport();
   sourceTransport.enqueueSource(sourceBytes, {
     contentType: "application/dicom",
@@ -108,7 +86,7 @@ test("Test: source-bound DIMSE pipeline supports start/stop lifecycle", async ()
     calledAeTitle: "SRC_PACS"
   };
 
-  const sourceBytes = readDicomBytes("0002.DCM");
+  const sourceBytes = getFixtureBytes();
   const sourceTransport = new InMemoryDimseSourceTransport();
   sourceTransport.enqueueSource(sourceBytes, {
     contentType: "application/dicom"

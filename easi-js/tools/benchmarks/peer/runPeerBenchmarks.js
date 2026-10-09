@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import { tmpdir } from 'os';
+import { getFixtureBytes } from '../../../test/fixtures/dicom/SyntheticDicom.js';
 import { spawnSync } from 'child_process';
 
 function parseArguments(argv) {
@@ -124,7 +126,7 @@ function resolveToolkitRunners() {
     }
     var dcm4cheDumpPath = (fs.existsSync(dcm4cheInstalledDump) === true)
         ? dcm4cheInstalledDump
-        : ((fs.existsSync(dcm4cheSourceBuildDump) === true) ? dcm4cheSourceBuildDump : null);
+        : ((dcm4cheSourceBuildDump != null && fs.existsSync(dcm4cheSourceBuildDump) === true) ? dcm4cheSourceBuildDump : null);
 
     return [
         {
@@ -290,84 +292,99 @@ function main() {
     }
 
     var runRows = [];
+    var syntheticDirectory = fs.mkdtempSync(path.join(tmpdir(), 'easi-peer-fixtures-'));
 
-    for (var fileIndex = 0; fileIndex < workload.files.length; fileIndex++) {
+    try {
+        for (var fileIndex = 0; fileIndex < workload.files.length; fileIndex++) {
 
-        var relativeFile = workload.files[fileIndex];
-        var absoluteFile = path.resolve(repoRoot, relativeFile);
-
-        if (fs.existsSync(absoluteFile) !== true) {
-            for (var missingRunnerIndex = 0; missingRunnerIndex < runners.length; missingRunnerIndex++) {
-                runRows.push({
-                    toolkit: runners[missingRunnerIndex].key,
-                    file: absoluteFile,
-                    status: 'missing-fixture',
-                    error: 'Fixture file was not found.',
-                    metrics: {
-                        samples: [],
-                        avgMs: null,
-                        p50Ms: null,
-                        p90Ms: null,
-                        throughputMBps: null
-                    },
-                    extracted: null
-                });
+            var relativeFile = workload.files[fileIndex];
+            var absoluteFile;
+            if (relativeFile.startsWith('synthetic:')) {
+                var profile = relativeFile.slice('synthetic:'.length);
+                // The filename comes from an allowlisted fixture profile, never an input path.
+                var bytes = getFixtureBytes(profile, profile === 'multiframe' ? { rows: 256, columns: 256, frames: 32 } : {});
+                absoluteFile = path.join(syntheticDirectory, `fixture-${fileIndex}.dcm`);
+                fs.writeFileSync(absoluteFile, bytes);
             }
-            continue;
-        }
+            else absoluteFile = path.resolve(repoRoot, relativeFile);
+            var reportFile = relativeFile.startsWith('synthetic:') ? relativeFile : absoluteFile;
 
-        for (var runnerIndex = 0; runnerIndex < runners.length; runnerIndex++) {
-
-            var runner = runners[runnerIndex];
-            process.stdout.write(`[peer-bench] ${runner.key} :: ${relativeFile}\n`);
-
-            var execution = executeRunner(runner, absoluteFile, args.iterations, args.warmup);
-            if (execution.ok !== true) {
-                runRows.push({
-                    toolkit: runner.key,
-                    file: absoluteFile,
-                    status: 'unavailable',
-                    error: execution.error,
-                    metrics: {
-                        samples: [],
-                        avgMs: null,
-                        p50Ms: null,
-                        p90Ms: null,
-                        throughputMBps: null
-                    },
-                    extracted: null
-                });
+            if (fs.existsSync(absoluteFile) !== true) {
+                for (var missingRunnerIndex = 0; missingRunnerIndex < runners.length; missingRunnerIndex++) {
+                    runRows.push({
+                        toolkit: runners[missingRunnerIndex].key,
+                        file: reportFile,
+                        status: 'missing-fixture',
+                        error: 'Fixture file was not found.',
+                        metrics: {
+                            samples: [],
+                            avgMs: null,
+                            p50Ms: null,
+                            p90Ms: null,
+                            throughputMBps: null
+                        },
+                        extracted: null
+                    });
+                }
                 continue;
             }
 
-            var metrics = summarizeResult(execution.output);
-            runRows.push({
-                toolkit: runner.key,
-                file: absoluteFile,
-                status: 'ok',
-                error: null,
-                metrics,
-                extracted: execution.output.extracted || null,
-                raw: execution.output
-            });
+            for (var runnerIndex = 0; runnerIndex < runners.length; runnerIndex++) {
+
+                var runner = runners[runnerIndex];
+                process.stdout.write(`[peer-bench] ${runner.key} :: ${relativeFile}\n`);
+
+                var execution = executeRunner(runner, absoluteFile, args.iterations, args.warmup);
+                if (execution.ok !== true) {
+                    runRows.push({
+                        toolkit: runner.key,
+                        file: reportFile,
+                        status: 'unavailable',
+                        error: execution.error,
+                        metrics: {
+                            samples: [],
+                            avgMs: null,
+                            p50Ms: null,
+                            p90Ms: null,
+                            throughputMBps: null
+                        },
+                        extracted: null
+                    });
+                    continue;
+                }
+
+                var metrics = summarizeResult(execution.output);
+                runRows.push({
+                    toolkit: runner.key,
+                    file: reportFile,
+                    status: 'ok',
+                    error: null,
+                    metrics,
+                    extracted: execution.output.extracted || null,
+                    raw: execution.output
+                });
+
+            }
 
         }
 
+        var snapshot = buildSnapshot(workload, args, runRows);
+        var outputDirectory = path.resolve(process.cwd(), 'tools/benchmarks/peer/output');
+        fs.mkdirSync(outputDirectory, { recursive: true });
+
+        var timestamp = snapshot.generatedAt.replace(/[:.]/g, '-');
+        var jsonPath = path.resolve(args.output || path.join(outputDirectory, `peer-benchmark-${timestamp}.json`));
+        var markdownPath = jsonPath.replace(/\.json$/i, '.md');
+
+        fs.writeFileSync(jsonPath, JSON.stringify(snapshot, null, 2));
+        fs.writeFileSync(markdownPath, renderMarkdownReport(snapshot));
+
+        process.stdout.write(`\nPeer benchmark JSON: ${jsonPath}\n`);
+        process.stdout.write(`Peer benchmark report: ${markdownPath}\n`);
     }
-
-    var snapshot = buildSnapshot(workload, args, runRows);
-    var outputDirectory = path.resolve(process.cwd(), 'tools/benchmarks/peer/output');
-    fs.mkdirSync(outputDirectory, { recursive: true });
-
-    var timestamp = snapshot.generatedAt.replace(/[:.]/g, '-');
-    var jsonPath = path.resolve(args.output || path.join(outputDirectory, `peer-benchmark-${timestamp}.json`));
-    var markdownPath = jsonPath.replace(/\.json$/i, '.md');
-
-    fs.writeFileSync(jsonPath, JSON.stringify(snapshot, null, 2));
-    fs.writeFileSync(markdownPath, renderMarkdownReport(snapshot));
-
-    process.stdout.write(`\nPeer benchmark JSON: ${jsonPath}\n`);
-    process.stdout.write(`Peer benchmark report: ${markdownPath}\n`);
+    finally {
+        fs.rmSync(syntheticDirectory, { recursive: true, force: true });
+    }
 
 }
 

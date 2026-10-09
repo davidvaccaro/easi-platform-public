@@ -921,7 +921,7 @@ async function runTranscodeScenario(absolutePath, sourceFormat, configuration) {
 
     var result = await EASI.pipelineBuilder().
     fromFileStream().
-    ofDicomData().
+    ofDicomData({ includePart10Header: true }).
     withTranscoding({
       targetTransferSyntax: configuration.transcodeTargetSyntax,
       goal: 'compatibility',

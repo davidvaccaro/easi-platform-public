@@ -1,5 +1,5 @@
 import path from 'node:path';
-import fs from 'node:fs';
+import { createDicomFixture } from '../../fixtures/dicom/SyntheticDicom.js';
 
 import EASI from '../../../src/EASI.js';
 import {
@@ -8,11 +8,6 @@ ImageBridgeMetadataMapping,
 createImageBridgeConfigFromEnvironment,
 createImageBridgeService } from
 '../../../tools/pocs/ImageBridge/ImageBridge.js';
-
-function readDicomBytes(name = '0002.DCM') {
-  var brightDicomRoot = process.cwd().split('easi-js')[0];
-  return fs.readFileSync(path.join(brightDicomRoot, '/data/dicoms/' + name));
-}
 
 test('Test: ImageBridge config parsing normalizes listener, policy, and output settings', () => {
 
@@ -58,9 +53,11 @@ test('Test: ImageBridge config parsing normalizes listener, policy, and output s
 
 test('Test: ImageBridge metadata mapping emits stable selected DICOM JSON shape', async () => {
 
+  const fixture = createDicomFixture();
+
   var result = await EASI.pipelineBuilder().
   fromPartStream().
-  ofDicomData().
+  ofDicomData({ includePart10Header: true }).
   toAssets({
     metadata: {
       mapping: new ImageBridgeMetadataMapping(),
@@ -68,14 +65,14 @@ test('Test: ImageBridge metadata mapping emits stable selected DICOM JSON shape'
     }
   }).
   build().
-  process({ source: readDicomBytes('0002.DCM') });
+  process({ source: fixture.bytes });
 
   expect(result.metadata).toBeDefined();
   expect(result.metadata).not.toBeNull();
-  expect(result.metadata.studyInstanceUid).toBeDefined();
-  expect(result.metadata.seriesInstanceUid).toBeDefined();
-  expect(result.metadata.sopInstanceUid).toBeDefined();
-  expect(result.metadata.transferSyntaxUid).toBeDefined();
+  expect(result.metadata.studyInstanceUid).toBe(fixture.expected.studyInstanceUid);
+  expect(result.metadata.seriesInstanceUid).toBe(fixture.expected.seriesInstanceUid);
+  expect(result.metadata.sopInstanceUid).toBe(fixture.expected.sopInstanceUid);
+  expect(result.metadata.transferSyntaxUid).toBe(fixture.expected.transferSyntaxUid);
   expect(result.metadata.dicom).toBeUndefined();
 
 });

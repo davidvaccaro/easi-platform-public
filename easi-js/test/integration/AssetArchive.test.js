@@ -1,13 +1,6 @@
 import EASI from '../../src/EASI.js';
 import DicomToFHIRImagingStudyMapping from '../../src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
-
-const path = require('path');
-const fs = require('fs');
-
-function readDicomBytes(name = '0002.DCM') {
-  var root = process.cwd().split('easi-js')[0];
-  return fs.readFileSync(path.join(root, '/data/dicoms/' + name));
-}
+import { getFixtureBytes } from '../fixtures/dicom/SyntheticDicom.js';
 
 function findEndOfCentralDirectory(bytes) {
   for (var i = bytes.length - 22; i >= 0; i--) {
@@ -122,7 +115,7 @@ test('Test: toAssetArchive packages metadata and PNG frame payloads into ZIP', a
     }
   }).
   build().
-  process({ source: readDicomBytes('0002.DCM') });
+  process({ source: getFixtureBytes() });
 
   expect(result instanceof Uint8Array).toBe(true);
   expect(result.length).toBeGreaterThan(0);
@@ -174,7 +167,7 @@ test('Test: toAssetArchive can stream ZIP chunks without materializing archive b
     onChunk: (chunk) => chunks.push(chunk)
   }).
   build().
-  process({ source: readDicomBytes('0002.DCM') });
+  process({ source: getFixtureBytes() });
 
   expect(result.resultType).toBe('PipelineOperationResult');
   expect(result.operation).toBe('toAssetArchive');

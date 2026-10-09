@@ -1,6 +1,16 @@
 data/dicoms/local/*
 data/dicoms/test-library/*
 data/test-library/*
+# Original imaging corpora and external binaries stay in the local developer kit.
+data/dicoms/
+data/mixed/
+data/xml/
+data/dumps/
+data/local-corpus/
+ext/tools/
+*.[dD][cC][mM]
+*.[dD][iI][cC][oO][mM]
+*.[iI][mM][aA]
 easi-js/test/output/
 easi-js/artifacts/
 easi-js/coverage/

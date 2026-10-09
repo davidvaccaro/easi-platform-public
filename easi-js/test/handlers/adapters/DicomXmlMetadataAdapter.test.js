@@ -1,5 +1,3 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import XmlDataParser from '../../../src/parsers/XmlDataParser.js';
 import DicomXmlMetadataAdapter from '../../../src/handlers/adapters/DicomXmlMetadataAdapter.js';
 import DicomInstanceHandler from '../../../src/handlers/terminals/DicomInstanceHandler.js';
@@ -89,21 +87,31 @@ test('Test: XML metadata adapter supports adapter-only materialization mode', as
 
 });
 
-test('Test: XML metadata adapter parses repository DICOMweb XML sample file', async () => {
+test('Test: XML metadata adapter parses fragmented synthetic DICOMweb XML metadata', async () => {
 
-    const xmlPath = path.resolve(process.cwd(), '../data/xml/dicomweb.xml');
-    const bytes = fs.readFileSync(xmlPath);
+    const xml = `<NativeDicomModel xmlns="http://dicom.nema.org/PS3.19/models/NativeDICOM">
+  <DicomAttribute tag="00080016" vr="UI"><Value number="1">1.2.840.10008.5.1.4.1.1.7</Value></DicomAttribute>
+  <DicomAttribute tag="00080018" vr="UI"><Value number="1">2.25.903</Value></DicomAttribute>
+  <DicomAttribute tag="0020000D" vr="UI"><Value number="1">2.25.901</Value></DicomAttribute>
+  <DicomAttribute tag="0020000E" vr="UI"><Value number="1">2.25.902</Value></DicomAttribute>
+</NativeDicomModel>`;
+    const bytes = new TextEncoder().encode(xml);
 
     const parser = new XmlDataParser();
     parser.reset();
     parser.handler = new DicomXmlMetadataAdapter(new DicomInstanceHandler());
 
-    const status = await parser.parse(new Uint8Array(bytes), true, bytes.length, bytes.length);
+    let status;
+    for (let offset = 0; offset < bytes.length; offset += 11) {
+        const end = Math.min(offset + 11, bytes.length);
+        status = await parser.parse(bytes.subarray(offset, end), end == bytes.length, end, bytes.length);
+    }
 
     expect(status).toBe(Status.SUCCESS);
     expect(parser.result).toBeTruthy();
-    expect(parser.result.dataSet.find(Tag.SOPClassUID)).toBeTruthy();
-    expect(parser.result.dataSet.find(Tag.SOPInstanceUID)).toBeTruthy();
-    expect(parser.result.dataSet.find(Tag.StudyInstanceUID)).toBeTruthy();
-    expect(parser.result.dataSet.find(Tag.SeriesInstanceUID)).toBeTruthy();
+    expect(parser.result.dataSet.value(Tag.SOPClassUID)).toBe('1.2.840.10008.5.1.4.1.1.7');
+    expect(parser.result.dataSet.value(Tag.SOPInstanceUID)).toBe('2.25.903');
+    expect(parser.result.dataSet.value(Tag.StudyInstanceUID)).toBe('2.25.901');
+    expect(parser.result.dataSet.value(Tag.SeriesInstanceUID)).toBe('2.25.902');
+    expect(parser.result.dataSet.attributes.length).toBe(4);
 });

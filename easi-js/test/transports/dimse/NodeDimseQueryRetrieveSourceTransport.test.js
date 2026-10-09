@@ -7,8 +7,7 @@ import NodeDimseCStoreScuTransport from "../../../src/transports/dimse/NodeDimse
 import NodeDimseQueryRetrieveSourceTransport from "../../../src/transports/dimse/NodeDimseQueryRetrieveSourceTransport.js";
 import { dimseSocketTest } from "./DimseSocketTestGate.js";
 
-const fs = require("fs");
-const path = require("path");
+import { getFixtureBytes } from "../../fixtures/dicom/SyntheticDicom.js";
 
 const EXPLICIT_VR_LE = "1.2.840.10008.1.2.1";
 
@@ -489,26 +488,6 @@ function buildAssociateAcPdu(requestDetails, storeSopClassUid) {
   userInfoItem]));
 
 
-}
-
-function resolveEasiJsRoot() {
-
-  var marker = `${path.sep}easi-js`;
-  var cwd = process.cwd();
-  var markerIndex = cwd.lastIndexOf(marker);
-
-  if (markerIndex > -1) {
-    return cwd.substring(0, markerIndex + marker.length);
-  }
-
-  return cwd;
-
-}
-
-function readDicomBytes(fileName) {
-  const easiJsRoot = resolveEasiJsRoot();
-  const filePath = path.join(easiJsRoot, "..", "data", "dicoms", fileName);
-  return new Uint8Array(fs.readFileSync(filePath));
 }
 
 async function reserveLocalPort() {
@@ -1111,7 +1090,7 @@ function createMockDimseQueryRetrieveMoveScp(storePayload, moveRoute) {
 
 dimseSocketTest("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND + C-GET and emits retrieved DICOM instance", async () => {
 
-  const sampleBytes = readDicomBytes("0002.DCM");
+  const sampleBytes = getFixtureBytes();
   const sampleMeta = parsePart10Meta(sampleBytes);
 
   const storePayload = {
@@ -1169,7 +1148,7 @@ dimseSocketTest("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND + C
 
 dimseSocketTest("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND only and emits identifier instances", async () => {
 
-  const sampleBytes = readDicomBytes("0002.DCM");
+  const sampleBytes = getFixtureBytes();
   const sampleMeta = parsePart10Meta(sampleBytes);
 
   const storePayload = {
@@ -1284,7 +1263,7 @@ dimseSocketTest("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND onl
 
 dimseSocketTest("Test: NodeDimseQueryRetrieveSourceTransport executes C-FIND + C-MOVE and receives retrieved instance through local store SCP", async () => {
 
-  const sampleBytes = readDicomBytes("0002.DCM");
+  const sampleBytes = getFixtureBytes();
   const sampleMeta = parsePart10Meta(sampleBytes);
 
   const moveStorePort = await reserveLocalPort();

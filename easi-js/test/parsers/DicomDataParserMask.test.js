@@ -3,19 +3,7 @@ import Tag from '../../src/dicom/Tag.js';
 import DicomInstanceHandler from '../../src/handlers/terminals/DicomInstanceHandler.js';
 import DicomDeIdentificationFilter from '../../src/handlers/filters/DicomDeIdentificationFilter.js';
 import { Status } from '../../src/parsers/Status.js';
-
-const path = require('path');
-const fs = require('fs');
-
-function readDicomBytes(name = '0002.DCM') {
-
-  // Establish the root path to BrightDicom.
-  var brightDicomRoot = process.cwd().split('easi-js')[0];
-
-  // Read the requested DICOM file.
-  return fs.readFileSync(path.join(brightDicomRoot, '/data/dicoms/' + name));
-
-}
+import { getFixtureBytes } from '../fixtures/dicom/SyntheticDicom.js';
 
 async function parseInstanceWithHandler(handler, bytes) {
 
@@ -36,7 +24,7 @@ test('Test: DicomDeIdentificationFilter tagMask applies literal masked values', 
   [Tag.PatientID, '[MASKED ID]']]);
 
 
-  const result = await parseInstanceWithHandler(handler, readDicomBytes('0002.DCM'));
+  const result = await parseInstanceWithHandler(handler, getFixtureBytes());
 
   expect(result.dataSet.find(Tag.PatientName).value).toBe('[MASKED NAME]');
   expect(result.dataSet.find(Tag.PatientID).value).toBe('[MASKED ID]');
@@ -51,7 +39,7 @@ test('Test: DicomDeIdentificationFilter tagMask supports function resolvers', as
   [Tag.PatientName, (attribute) => 'MASK:' + attribute.tag.ID]]);
 
 
-  const result = await parseInstanceWithHandler(handler, readDicomBytes('0002.DCM'));
+  const result = await parseInstanceWithHandler(handler, getFixtureBytes());
 
   expect(result.dataSet.find(Tag.PatientName).value).toBe('MASK:00100010');
 
@@ -64,7 +52,7 @@ test('Test: DicomDeIdentificationFilter deIdentificationMask alias supports obje
     '(0010,0010)': '[HIDDEN]'
   };
 
-  const result = await parseInstanceWithHandler(handler, readDicomBytes('0002.DCM'));
+  const result = await parseInstanceWithHandler(handler, getFixtureBytes());
 
   expect(result.dataSet.find(Tag.PatientName).value).toBe('[HIDDEN]');
 
@@ -75,7 +63,7 @@ test('Test: Tag default de-identification mask applies DICOM action-code behavio
   const handler = new DicomDeIdentificationFilter(new DicomInstanceHandler());
   handler.deIdentificationMask = Tag.DefaultDeIdentificationMask;
 
-  const result = await parseInstanceWithHandler(handler, readDicomBytes('0002.DCM'));
+  const result = await parseInstanceWithHandler(handler, getFixtureBytes());
 
   // PatientName is action "Z" in the default profile.
   expect(result.dataSet.find(Tag.PatientName).value).toBe('');
@@ -87,7 +75,7 @@ test('Test: Tag default de-identification mask applies DICOM action-code behavio
 
 test('Test: PipelineBuilder withMask applies de-identification handler chain', async () => {
 
-  const bytes = readDicomBytes('0002.DCM');
+  const bytes = getFixtureBytes();
 
   const pipeline = EASI.pipelineBuilder().
   fromPartStream().ofDicomData().
@@ -110,7 +98,7 @@ test('Test: Action code X removes the masked attribute from the emitted data set
   [Tag.PatientName, { ID: Tag.PatientName.ID, Action: 'X' }]]);
 
 
-  const result = await parseInstanceWithHandler(handler, readDicomBytes('0002.DCM'));
+  const result = await parseInstanceWithHandler(handler, getFixtureBytes());
 
   expect(result.dataSet.find(Tag.PatientName)).toBe(undefined);
 
@@ -120,7 +108,7 @@ test('Test: Action code U replaces a UID value with a deterministic replacement 
 
   const baseline = await parseInstanceWithHandler(
   new DicomInstanceHandler(),
-  readDicomBytes('0002.DCM'));
+  getFixtureBytes());
 
 
   const handler = new DicomDeIdentificationFilter(new DicomInstanceHandler());
@@ -128,7 +116,7 @@ test('Test: Action code U replaces a UID value with a deterministic replacement 
   [Tag.SOPInstanceUID, { ID: Tag.SOPInstanceUID.ID, Action: 'U' }]]);
 
 
-  const result = await parseInstanceWithHandler(handler, readDicomBytes('0002.DCM'));
+  const result = await parseInstanceWithHandler(handler, getFixtureBytes());
 
   const originalUID = baseline.dataSet.find(Tag.SOPInstanceUID).value;
   const maskedUID = result.dataSet.find(Tag.SOPInstanceUID).value;
@@ -145,7 +133,7 @@ test('Test: Action code U creates stable replacement UID across repeated reads',
   [Tag.SOPInstanceUID, { ID: Tag.SOPInstanceUID.ID, Action: 'U' }]]);
 
 
-  const bytes = readDicomBytes('0002.DCM');
+  const bytes = getFixtureBytes();
   const first = await parseInstanceWithHandler(handler, bytes);
   const second = await parseInstanceWithHandler(handler, bytes);
 
@@ -164,7 +152,7 @@ test('Test: mask array input applies default [MASKED] action', async () => {
   '(0010,0020)'];
 
 
-  const result = await parseInstanceWithHandler(handler, readDicomBytes('0002.DCM'));
+  const result = await parseInstanceWithHandler(handler, getFixtureBytes());
 
   expect(result.dataSet.find(Tag.PatientName).value).toBe('[MASKED]');
   expect(result.dataSet.find(Tag.PatientID).value).toBe('[MASKED]');

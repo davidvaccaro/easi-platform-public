@@ -6,6 +6,22 @@ This harness runs broad EASI pipeline scenarios across a filesystem DICOM librar
 - `report.html` (human-readable index with overall summary + modality navigation)
 - `report-<modality>-pNNN.html` (per-modality paged tables, max 1000 rows/page, with details and frame previews)
 
+This is an optional local-corpus harness. The library directory and its reports are ignored; original images are not supplied by the public checkout. Ordinary unit and deterministic integration tests use independent synthetic fixtures instead. To exercise your existing kit, run `npm run harness:test-library -- --root ../data/dicoms --max-files 20`. See the [local data guide](../../../data/README.md).
+
+## Synthetic functional run
+
+Run the functional scenarios from a fresh checkout without a local image corpus:
+
+```bash
+npm run harness:synthetic
+# Or choose the report directory:
+node tools/harness/runSyntheticHarness.js --output test/output/harness
+```
+
+The command creates eight independent DICOM fixtures in an owned temporary directory: explicit and implicit little endian, explicit big endian, RGB, multiple frames, RLE, baseline JPEG, and lossless JPEG. It runs all six existing scenarios (`parse`, `convert`, `deidentify`, `transcode`, `fhir`, `assets`), requires every scenario to pass, and checks that actual decoding produced JPEG thumbnails without falling back to native frames. It additionally reparses transcoded output and compares native samples or decoded pixels with the independent fixture expectations. No optional codec module or original image file is needed.
+
+Generated source files are removed in `finally` after success or failure. HTML/JSON reports and thumbnails remain in an ignored `test/output/harness/synthetic-*/run-*` directory; the command prints the report path. These small invented fixtures test deterministic library behavior, not complete clinical IOD conformance or vendor-specific compatibility. Use the optional local-corpus workflow below for broader device coverage.
+
 ## Run
 
 From `easi-js`:
@@ -121,4 +137,4 @@ Default scenarios:
 - `deidentify`: parse + default de-identification mask + write native DICOM bytes
 - `transcode`: parse + transfer syntax transcoding + write native DICOM bytes
 - `fhir`: parse + map to FHIR ImagingStudy
-- `assets`: parse + metadata mapping + first-frame PNG extraction
+- `assets`: parse + metadata mapping + first-frame JPEG thumbnail extraction

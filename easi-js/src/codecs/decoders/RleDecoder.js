@@ -168,14 +168,21 @@ export default class RleDecoder {
      */
     sampleToByte(sample) {
 
-        var bitsStored = Math.max(1, Math.min(31, Number(this.bitsStored ?? this.bitsAllocated ?? 8)));
+        var bitsStored = Math.max(1, Math.min(31, Math.trunc(Number(this.bitsStored ?? this.bitsAllocated ?? 8)) || 8));
         var isSigned = (Number(this.pixelRepresentation ?? 0) == 1);
         var numeric = Number(sample);
         if (Number.isFinite(numeric) == false)
             numeric = 0;
 
-        var minValue = isSigned ? (-(1 << (bitsStored - 1))) : 0;
-        var maxValue = isSigned ? ((1 << (bitsStored - 1)) - 1) : ((1 << bitsStored) - 1);
+        // Byte-plane reconstruction preserves unsigned bit patterns. Ignore unused
+        // high bits, then interpret the stored sign bit before display scaling.
+        var storedRange = 2 ** bitsStored;
+        numeric = Math.trunc(numeric) & (storedRange - 1);
+        if (isSigned && numeric >= storedRange / 2)
+            numeric -= storedRange;
+
+        var minValue = isSigned ? -(storedRange / 2) : 0;
+        var maxValue = isSigned ? (storedRange / 2 - 1) : (storedRange - 1);
 
         if (numeric < minValue)
             numeric = minValue;
@@ -298,7 +305,7 @@ export default class RleDecoder {
                     blue = paletteBlue?.[paletteIndex] ?? red;
                 }
                 else {
-                    var gray = (bytesPerSample == 1) ? (sample & 0xFF) : this.sampleToByte(sample);
+                    var gray = this.sampleToByte(sample);
                     red = gray;
                     green = gray;
                     blue = gray;
@@ -314,7 +321,7 @@ export default class RleDecoder {
                         var segment = decodedSegments[(component * bytesPerSample) + plane];
                         componentSample = ((componentSample << 8) | (segment?.[pixelIndex] ?? 0));
                     }
-                    componentValues.push((bytesPerSample == 1) ? (componentSample & 0xFF) : this.sampleToByte(componentSample));
+                    componentValues.push(this.sampleToByte(componentSample));
                 }
 
                 red = componentValues[0] ?? 0;

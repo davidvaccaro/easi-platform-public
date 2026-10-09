@@ -6,7 +6,7 @@ The EASI platform repository contains implementations and development tools for 
 
 **[Read the EASI JS usage guide](easi-js/README.md)** for installation, a runnable synthetic quick start, Node/browser examples, HTTP/DICOMweb, FHIR, DIMSE, pixel data, custom mappings, and troubleshooting. That same guide is included in the npm archive.
 
-The package name is `@xinonix/easi-js`; the current candidate version is `1.0.0-rc.1`. Candidate archives can be prepared locally with the commands below. It uses native ES modules and supports Node.js 22/24 plus compatible browser workflows. Registry installation applies after publication.
+The published package is `@xinonix/easi-js@1.0.0-rc.1`, available with `npm install @xinonix/easi-js@next`. It uses native ES modules and supports Node.js 22/24 plus compatible browser workflows. Changes made after that release require a new package version.
 
 From this checkout:
 
@@ -22,6 +22,7 @@ To check the documentation and package:
 
 ```bash
 npm run docs:readme:check
+npm run source:check
 npm run package:check
 npm run package:pack
 ```
@@ -35,7 +36,9 @@ Archives and their integrity/inventory manifests are generated under `easi-js/ar
 | `easi-js/` | Primary JavaScript implementation, tests, API documentation, and samples |
 | `easi-cs/`, `easi-java/`, `easi-py/` | Other language implementation work; outside the first EASI JS release |
 | `easi-ui/` | UI work outside the first library release |
-| `data/`, `ext/tools/` | Repository development/test assets and external tooling; excluded from the npm library |
+| `easi-js/test/fixtures/dicom/` | Independent synthetic DICOM generators and known compressed pixel vectors |
+| `data/` | Dictionary sources and [local developer data guide](data/README.md); original images are ignored and stay local |
+| `ext/tools/` | Optional local external tools; ignored and excluded from public source and npm |
 
 Language-neutral specification, conformance material, and canonical API contracts live in the separate [EASI specification repository](https://github.com/davidvaccaro/easi). EASI Studio is a separate project. Availability of those projects does not establish their first-release status.
 

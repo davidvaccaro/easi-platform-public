@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+- Keep original DICOM, derived image/metadata samples, and external native tools in the ignored local developer kit; replace public test dependencies with independently generated synthetic DICOM.
+- Preserve native endian, signed/unsigned pixel, multiframe, nested sequence, malformed fragment, RLE, JPEG, lossless JPEG, and genuine JPEG 2000 regression coverage. Large streaming checks now use mandatory generated inputs.
+- Generate default benchmark inputs and provide an offline synthetic sample in the Kitchen Sink and a fresh-checkout ImageBridge demo.
+- Add an offline synthetic corpus harness with exact output checks across all six pipeline scenarios; keep private corpus runs optional.
+- Add a source publication check for accidentally tracked imaging assets.
+- Fix native dump execution, promise error reporting, and argument handling; allow a local tool override or a tool installed on PATH.
+- Correct signed RLE sample rendering, including stored-bit masking and 8-bit signed input.
+- Honor the pipeline's codec registry when rendering RGBA assets, including isolated JPEG 2000 providers.
+- Preserve source byte order while reading numeric metadata during native big-endian to little-endian transcoding; verify exact 16-bit pixel output through fragmented and streamed inputs.
+- Read Part-10 transfer syntax information in the corpus harness's transcode scenario and use a valid default AE title in ImageBridge.
+
 ## 1.0.0-rc.1
 
 First installable EASI JS release candidate under the `@xinonix/easi-js` package name.

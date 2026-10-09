@@ -20,14 +20,14 @@ From repository root:
 
 ```bash
 cd easi-js
-node tools/pocs/ImageBridge/ImageBridgeDemo.js --pick
+node tools/pocs/ImageBridge/ImageBridgeDemo.js
 ```
 
 What this does for you automatically:
 
 1. Starts a local mock cloud receiver.
 2. Starts ImageBridge as a DIMSE C-STORE listener.
-3. Lets you pick a DICOM file from `data/dicoms`.
+3. Generates invented DICOM pixels; use `--pick` or `--input` to select your optional local corpus explicitly.
 4. Sends it to ImageBridge using DIMSE C-STORE.
 5. Shows where key-frame images + metadata landed.
 6. Keeps services running so you can inspect the flow in real time.
@@ -40,12 +40,12 @@ Press `Ctrl+C` to stop.
 
 ## Demo Options
 
-- `--pick`: interactive file picker from `data/dicoms`
+- `--pick`: interactive file picker from the ignored local `data/dicoms` corpus; generates a synthetic input if none is present
 - `--input <path>`: explicit file or directory of DICOM files
 - `--bridge-port <port>`: ImageBridge listener port (default `11112`)
 - `--cloud-port <port>`: mock cloud dashboard/API port (default `18080`)
 - `--called-ae-title <AE>`: bridge called AE title (default `IMAGE_BRIDGE`)
-- `--calling-ae-title <AE>`: sender calling AE title (default `IMAGE_BRIDGE_DEMO`)
+- `--calling-ae-title <AE>`: sender calling AE title (default `IMAGE_DEMO`)
 - `--output-dir <path>`: output root (default `test/output/pocs/imagebridge/demo`)
 - `--once`: run one send pass and exit (no long-running live mode)
 
@@ -54,9 +54,11 @@ Example:
 ```bash
 cd easi-js
 node tools/pocs/ImageBridge/ImageBridgeDemo.js \
-  --input ../data/dicoms/0002.DCM \
+  --input /path/to/your/local/example.dcm \
   --once
 ```
+
+The public checkout contains no original imaging files. Default synthetic inputs come from the independent test fixture generator and are written under the ignored output directory, even when a local corpus is present. Your existing local files remain usable with `--pick` or `--input`; files and reports created from your corpus stay local. See the [local data guide](../../../../data/README.md).
 
 ## Mock Cloud (Standalone)
 

@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import readline from 'node:readline';
+import { getFixtureBytes } from '../../../test/fixtures/dicom/SyntheticDicom.js';
 
 // DIMSE SCU transport used by the demo sender to push files into the bridge.
 import NodeDimseCStoreScuTransport from '../../../src/transports/dimse/NodeDimseCStoreScuTransport.js';
@@ -246,21 +247,26 @@ async function resolveInputFiles(config) {
     }
 
     var defaultLibrary = path.join(config.brightDicomRoot, 'data', 'dicoms');
-    var candidates = await listDicomFiles(defaultLibrary);
-
-    if (candidates.length == 0)
-        throw new Error(`No DICOM files found under '${defaultLibrary}'.`);
-
+    var candidates = [];
     if (config.pickInput == true) {
-        var picked = await pickDicomFile(candidates, config.brightDicomRoot);
-        return (picked != null) ? [picked] : [candidates[0]];
+        try {
+            candidates = await listDicomFiles(defaultLibrary);
+        }
+        catch (error) {
+            if (error.code !== 'ENOENT') throw error;
+        }
     }
 
-    var preferred = candidates.find((candidate) => path.basename(candidate).toUpperCase() == '0002.DCM');
-    if (preferred != null)
-        return [preferred];
+    if (candidates.length == 0) {
+        var syntheticPath = path.join(config.outputDirectory, 'fixtures', 'synthetic-demo.dcm');
+        await fs.mkdir(path.dirname(syntheticPath), { recursive: true });
+        await fs.writeFile(syntheticPath, getFixtureBytes('default'));
+        console.log('Using independently generated synthetic demo pixels.');
+        return [syntheticPath];
+    }
 
-    return [candidates[0]];
+    var picked = await pickDicomFile(candidates, config.brightDicomRoot);
+    return (picked != null) ? [picked] : [candidates[0]];
 
 }
 
@@ -278,7 +284,7 @@ function createDemoConfig(options = null, cwd = process.cwd()) {
         bridgePort: normalizeInteger(parsed.bridgePort ?? parsed['bridge-port'], 11112, 1024, 65535),
         cloudPort: normalizeInteger(parsed.cloudPort ?? parsed['cloud-port'], 18080, 1024, 65535),
         calledAeTitle: normalizeString(parsed.calledAeTitle ?? parsed['called-ae-title'], 'IMAGE_BRIDGE'),
-        callingAeTitle: normalizeString(parsed.callingAeTitle ?? parsed['calling-ae-title'], 'IMAGE_BRIDGE_DEMO'),
+        callingAeTitle: normalizeString(parsed.callingAeTitle ?? parsed['calling-ae-title'], 'IMAGE_DEMO'),
         startupTimeoutMs: normalizeInteger(parsed.startupTimeoutMs ?? parsed['startup-timeout-ms'], 10000, 1000, 120000),
         receiveTimeoutMs: normalizeInteger(parsed.receiveTimeoutMs ?? parsed['receive-timeout-ms'], 15000, 1000, 300000),
         outputDirectory: path.resolve(cwd, normalizeString(parsed.outputDir ?? parsed['output-dir'], 'test/output/pocs/imagebridge/demo')),

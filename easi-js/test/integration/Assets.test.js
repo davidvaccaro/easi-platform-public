@@ -1,15 +1,10 @@
 import EASI from '../../src/EASI.js';
 import DicomToFHIRImagingStudyMapping from '../../src/handlers/mappings/DicomToFHIRImagingStudyMapping.js';
 import JpegDecoder from '../../src/codecs/decoders/JpegDecoder.js';
+import OpenJpegRuntime from '../../src/codecs/runtimes/OpenJpegRuntime.js';
+import PngDecoder from '../../src/codecs/decoders/PngDecoder.js';
 import Tag from '../../src/dicom/Tag.js';
-
-const path = require('path');
-const fs = require('fs');
-
-function readDicomBytes(name = '0002.DCM') {
-  var brightDicomRoot = process.cwd().split('easi-js')[0];
-  return fs.readFileSync(path.join(brightDicomRoot, '/data/dicoms/' + name));
-}
+import { createDicomFixture, getFixtureBytes } from '../fixtures/dicom/SyntheticDicom.js';
 
 function getRgbaStats(rgba) {
 
@@ -59,7 +54,7 @@ test('Test: toAssets metadata mapping emits mapped model via onMetadata and resu
     }
   }).
   build().
-  process({ source: readDicomBytes('0002.DCM') });
+  process({ source: getFixtureBytes() });
 
   expect(metadataEvents.length).toBe(1);
   expect(result.metadata).toBeDefined();
@@ -91,7 +86,7 @@ test('Test: toAssets payload frame emits PNG bytes for first frame', async () =>
     }
   }).
   build().
-  process({ source: readDicomBytes('0002.DCM') });
+  process({ source: getFixtureBytes() });
 
   expect(frameEvents.length).toBe(1);
   expect(result.frames.length).toBe(1);
@@ -122,7 +117,7 @@ test('Test: toAssets payload frame emits TIFF bytes for first frame', async () =
     }
   }).
   build().
-  process({ source: readDicomBytes('0002.DCM') });
+  process({ source: getFixtureBytes() });
 
   expect(frameEvents.length).toBe(1);
   expect(result.frames.length).toBe(1);
@@ -153,7 +148,7 @@ test('Test: toAssets payload frame emits JPEG bytes for first frame', async () =
     }
   }).
   build().
-  process({ source: readDicomBytes('0002.DCM') });
+  process({ source: getFixtureBytes() });
 
   expect(frameEvents.length).toBe(1);
   expect(result.frames.length).toBe(1);
@@ -183,6 +178,7 @@ test('Test: toAssets still decodes frame payload when parser bulk-data policy st
   var result = await EASI.pipelineBuilder().
   fromPartStream().
   ofDicomData().
+  withBulkDataPolicy({ mode: 'auto', knownLengthThreshold: 1024, hardSafetyCap: 64 * 1024 * 1024 }).
   toAssets({
     payload: {
       frame: {
@@ -195,7 +191,7 @@ test('Test: toAssets still decodes frame payload when parser bulk-data policy st
     }
   }).
   build().
-  process({ source: readDicomBytes('0002.DCM') });
+  process({ source: getFixtureBytes() });
 
   expect(frameEvents.length).toBe(1);
   expect(result.frames.length).toBe(1);
@@ -233,7 +229,7 @@ test('Test: toAssets can emit native frame chunks without materializing PixelDat
     }
   }).
   build().
-  process({ source: readDicomBytes('0002.DCM') });
+  process({ source: getFixtureBytes() });
 
   expect(frameChunkEvents.length).toBeGreaterThan(0);
   expect(frameChunkEvents[0].encoding).toBe('native');
@@ -274,7 +270,7 @@ test('Test: toAssets payload mode materialize prefers end-of-instance frame emis
     }
   }).
   build().
-  process({ source: readDicomBytes('0002.DCM') });
+  process({ source: getFixtureBytes() });
 
   expect(frameEvents.length).toBe(1);
   expect(frameChunkEvents.length).toBe(0);
@@ -282,7 +278,9 @@ test('Test: toAssets payload mode materialize prefers end-of-instance frame emis
 
 });
 
-test('Test: toAssets decodes encapsulated RLE multi-frame pixel data from US-PAL sample', async () => {
+test('Test: toAssets decodes independent encapsulated RLE palette multi-frame pixels', async () => {
+
+  var fixture = createDicomFixture('rle-palette');
 
   var frameEvents = [];
 
@@ -301,16 +299,22 @@ test('Test: toAssets decodes encapsulated RLE multi-frame pixel data from US-PAL
     }
   }).
   build().
-  process({ source: readDicomBytes('US-PAL-8-10x-echo.dcm') });
+  process({ source: fixture.bytes });
 
   expect(frameEvents.length).toBe(1);
   expect(result.frames.length).toBe(1);
   expect(result.frames[0].mimeType).toBe('image/png');
   expect(result.frames[0].bytes.length).toBeGreaterThan(0);
+  const decoded = await new PngDecoder().decodeImage(result.frames[0].bytes);
+  expect(decoded.width).toBe(fixture.expected.columns);
+  expect(decoded.height).toBe(fixture.expected.rows);
+  expect(decoded.bytes).toEqual(fixture.expected.firstFrameRgba);
 
 });
 
-test('Test: toAssets decodes US-PAL first frame to non-empty RGBA pixels', async () => {
+test('Test: toAssets decodes independent RLE palette first frame to known RGBA pixels', async () => {
+
+  var fixture = createDicomFixture('rle-palette');
 
   var frameEvents = [];
 
@@ -329,13 +333,14 @@ test('Test: toAssets decodes US-PAL first frame to non-empty RGBA pixels', async
     }
   }).
   build().
-  process({ source: readDicomBytes('US-PAL-8-10x-echo.dcm') });
+  process({ source: fixture.bytes });
 
   expect(frameEvents.length).toBe(1);
   expect(result.frames.length).toBe(1);
   expect(result.frames[0].encoding).toBe('rgba');
 
   var rgba = result.frames[0].bytes;
+  expect(rgba).toEqual(fixture.expected.firstFrameRgba);
   var rgbNonZeroCount = 0;
   var min = 255;
   var max = 0;
@@ -358,7 +363,9 @@ test('Test: toAssets decodes US-PAL first frame to non-empty RGBA pixels', async
 
 });
 
-test('Test: toAssets emits frame for Explicit VR Big Endian US-RGB sample', async () => {
+test('Test: toAssets emits frames for synthetic Explicit VR Big Endian RGB pixels', async () => {
+
+  var fixture = createDicomFixture('rgb-big-endian', { frames: 3 });
 
   var frameEvents = [];
 
@@ -377,19 +384,23 @@ test('Test: toAssets emits frame for Explicit VR Big Endian US-RGB sample', asyn
     }
   }).
   build().
-  process({ source: readDicomBytes('US-RGB-8-epicard.dcm') });
+  process({ source: fixture.bytes });
 
-  expect(frameEvents.length).toBeGreaterThan(0);
-  expect(result.frames.length).toBeGreaterThan(0);
+  expect(frameEvents.length).toBe(fixture.expected.frames);
+  expect(result.frames.length).toBe(fixture.expected.frames);
   expect(result.frames[0].mimeType).toBe('image/png');
   expect(result.frames[0].bytes[0]).toBe(137);
   expect(result.frames[0].bytes[1]).toBe(80);
   expect(result.frames[0].bytes[2]).toBe(78);
   expect(result.frames[0].bytes[3]).toBe(71);
+  const decoded = await new PngDecoder().decodeImage(result.frames[0].bytes);
+  expect(decoded.bytes).toEqual(fixture.expected.firstFrameRgba);
 
 });
 
-test('Test: toAssets decode rgba on JPEG lossless CT-MONO2-16-chest yields non-empty grayscale content', async () => {
+test('Test: toAssets decodes independent JPEG lossless pixels to known grayscale content', async () => {
+
+  var fixture = createDicomFixture('jpeg-lossless');
 
   var frameEvents = [];
 
@@ -412,13 +423,14 @@ test('Test: toAssets decode rgba on JPEG lossless CT-MONO2-16-chest yields non-e
     }
   }).
   build().
-  process({ source: readDicomBytes('CT-MONO2-16-chest.dcm') });
+  process({ source: fixture.bytes });
 
   expect(frameEvents.length).toBe(1);
   expect(result.frames.length).toBe(1);
   expect(result.frames[0].encoding).toBe('rgba');
 
   var rgba = result.frames[0].bytes;
+  expect(rgba).toEqual(fixture.expected.firstFrameRgba);
   var nonZeroCount = 0;
   var min = 255;
   var max = 0;
@@ -438,14 +450,45 @@ test('Test: toAssets decode rgba on JPEG lossless CT-MONO2-16-chest yields non-e
 
 });
 
-test.each([
-  ['CR-MONO1-10-chest.dcm'],
-  ['CT-MONO2-12-lomb-an2.dcm'],
-  ['MR-MONO2-12-angio-an1.dcm'],
-  ['CT-MONO2-16-ort.dcm'],
-  ['XA-MONO2-8-12x-catheter.dcm']
-])('Test: toAssets decode rgba renders non-empty opaque monochrome content for %s', async (dicomName) => {
+test('Test: toAssets decodes independent JPEG baseline blocks to known RGBA pixels', async () => {
+  const fixture = createDicomFixture('jpeg-baseline');
+  const result = await EASI.pipelineBuilder().fromByteStream().ofDicomData().
+    toAssets({ payload: { frame: { frames: 'first', decode: 'rgba', encode: 'none' }, collect: true } }).
+    build().process({ source: fixture.bytes });
+  expect(result.frames.length).toBe(1);
+  expect(result.frames[0].width).toBe(16);
+  expect(result.frames[0].height).toBe(8);
+  expect(result.frames[0].bytes).toEqual(fixture.expected.firstFrameRgba);
+});
 
+test('Test: toAssets decodes independent JPEG 2000 pixels through the actual OpenJPEG backend', async () => {
+  const fs = require('fs');
+  const factory = require('@voxelmed/openjpegjs/dist/openjpegwasm.js');
+  const wasmBinary = fs.readFileSync(require.resolve('@voxelmed/openjpegjs/dist/openjpegwasm.wasm'));
+  const openjpegModule = await factory({ wasmBinary, print() {}, printErr() {} });
+  OpenJpegRuntime.setModule(openjpegModule);
+  try {
+    const fixture = createDicomFixture('jpeg2000');
+    const result = await EASI.pipelineBuilder().fromByteStream().ofDicomData().
+      toAssets({ payload: { frame: { frames: 'first', decode: 'rgba', encode: 'none' }, collect: true } }).
+      build().process({ source: fixture.bytes });
+    expect(result.frames.length).toBe(1);
+    expect(result.frames[0].width).toBe(2);
+    expect(result.frames[0].height).toBe(2);
+    expect(result.frames[0].bytes).toEqual(fixture.expected.firstFrameRgba);
+  }
+  finally { OpenJpegRuntime.clear(); }
+});
+
+test.each([
+  ['raw-implicit-monochrome1', {}],
+  ['unsigned-16', { bitsStored: 12, highBit: 11 }],
+  ['signed-16', {}],
+  ['unsigned-16', { bitsStored: 16, highBit: 15, pixels: [0, 16384, 32768, 65535], windowCenter: 32768, windowWidth: 65536 }],
+  ['default', {}]
+])('Test: toAssets decode rgba renders non-empty opaque monochrome content for %s', async (profile, overrides) => {
+
+  var fixture = createDicomFixture(profile, overrides);
   var result = await EASI.pipelineBuilder().
   fromPartStream().
   ofDicomData().
@@ -460,10 +503,12 @@ test.each([
     }
   }).
   build().
-  process({ source: readDicomBytes(dicomName) });
+  process({ source: fixture.bytes });
 
   expect(result.frames.length).toBe(1);
   expect(result.frames[0].encoding).toBe('rgba');
+  expect(result.frames[0].width).toBe(fixture.expected.columns);
+  expect(result.frames[0].height).toBe(fixture.expected.rows);
 
   var stats = getRgbaStats(result.frames[0].bytes);
   expect(stats.max).toBeGreaterThan(stats.min);

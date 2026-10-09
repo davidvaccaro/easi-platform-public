@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import os from "node:os";
 import net from "node:net";
 
 import PartStreamReader from "../../../src/readers/PartStreamReader.js";
@@ -10,8 +11,21 @@ import NodeDimseCStoreScpSourceTransport from "../../../src/transports/dimse/Nod
 import NodeDimseQueryRetrieveSourceTransport from "../../../src/transports/dimse/NodeDimseQueryRetrieveSourceTransport.js";
 import Exception, { GeneralErrorCodes } from "../../../src/environment/Exception.js";
 import { dimseSocketTest } from "./DimseSocketTestGate.js";
+import { getFixtureBytes } from "../../fixtures/dicom/SyntheticDicom.js";
 
-const sampleDicomPath = path.resolve(process.cwd(), "../data/dicoms/0002.DCM");
+let fixtureDirectory;
+let sampleDicomPath;
+
+beforeAll(async () => {
+    fixtureDirectory = await fs.mkdtemp(path.join(os.tmpdir(), "easi-store-scp-synthetic-"));
+    sampleDicomPath = path.join(fixtureDirectory, "synthetic.dcm");
+    await fs.writeFile(sampleDicomPath, getFixtureBytes());
+});
+
+afterAll(async () => {
+    if (fixtureDirectory != null)
+        await fs.rm(fixtureDirectory, { recursive: true, force: true });
+});
 
 async function parseEnvelopeToInstances(envelope) {
 

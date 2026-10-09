@@ -1,12 +1,12 @@
 {
   "name": "dicom-parse-and-core-tag-extract",
-  "description": "Parse full DICOM dataset and extract core identifying/image tags for each file.",
+  "description": "Parse independently generated synthetic DICOM datasets and extract core tags. No local image corpus is required.",
   "files": [
-    "data/dicoms/0002.DCM",
-    "data/dicoms/NESTED_SEQUENCE.dcm",
-    "data/dicoms/MR-MONO2-8-16x-heart.dcm",
-    "data/dicoms/US-PAL-8-10x-echo.dcm",
-    "data/dicoms/US-RGB-8-epicard.dcm"
+    "synthetic:default",
+    "synthetic:nested-sequences",
+    "synthetic:multiframe",
+    "synthetic:rle-palette",
+    "synthetic:rgb"
   ],
   "tags": [
     "00080018",
@@ -16,5 +16,6 @@
     "00280008",
     "00280010",
     "00280011"
-  ]
+  ],
+  "fixtureRevision": "synthetic-v1"
 }

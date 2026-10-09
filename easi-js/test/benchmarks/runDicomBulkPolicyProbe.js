@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import EASI from '../../src/EASI.js';
+import { getFixtureBytes } from '../fixtures/dicom/SyntheticDicom.js';
 import Tag from '../../src/dicom/Tag.js';
 import DicomDataParser from '../../src/parsers/DicomDataParser.js';
 
@@ -11,7 +12,7 @@ import { createChunkReader } from './probes/DicomPipelineProbeHandler.js';
 function parseArgs(argv) {
 
   var args = {
-    fixture: 'data/dicoms/local/Lateral_View0.dcm',
+    fixture: null,
     iterations: 8,
     chunkKB: 64
   };
@@ -144,17 +145,18 @@ async function main() {
 
   var args = parseArgs(process.argv.slice(2));
   var repoRoot = resolveRepoRoot();
-  var fixturePath = path.resolve(repoRoot, args.fixture);
+  var fixturePath = args.fixture == null ? null : path.resolve(repoRoot, args.fixture);
 
-  if (fs.existsSync(fixturePath) != true) {
+  if (fixturePath != null && fs.existsSync(fixturePath) != true) {
     throw new Error(`Fixture file does not exist: ${fixturePath}`);
   }
 
-  var bytes = new Uint8Array(fs.readFileSync(fixturePath));
+  var bytes = fixturePath == null ? getFixtureBytes('multiframe', { rows: 256, columns: 256, frames: 32 }) :
+    new Uint8Array(fs.readFileSync(fixturePath));
   var chunkBytes = args.chunkKB * 1024;
 
   console.log('Running DICOM bulk policy probe...');
-  console.log(`Fixture: ${fixturePath}`);
+  console.log(`Fixture: ${fixturePath ?? 'synthetic-large-multiframe-v1'}`);
   console.log(`Size: ${toMB(bytes.length)} MB`);
   console.log(`Iterations: ${args.iterations}`);
   console.log(`Chunk Size: ${args.chunkKB} KB`);

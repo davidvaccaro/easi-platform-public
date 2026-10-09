@@ -4,7 +4,7 @@
 
 EASI JS is the JavaScript implementation of the Expressive API Standard for Imaging. It accepts native DICOM bytes, DICOM JSON/XML metadata, files, and streams. Its main outputs are DICOM instance objects, selected attributes, custom objects, serialized DICOM bytes, and FHIR R4 `ImagingStudy` resources. Node.js transports add DIMSE Verification, Store, and Study Root Query/Retrieve.
 
-This guide is used both in the source repository and in the npm package. The current version is **`@xinonix/easi-js@1.0.0-rc.1`**, a release candidate. Install a locally prepared candidate from its archive; the registry commands below apply once a candidate is published. It uses native ES modules, supports **Node.js 22 and 24**, and has **no required npm runtime dependencies**. Browser applications can use the core pipeline and browser-compatible sources; DIMSE and filesystem paths require Node.js.
+This guide is used both in the source repository and in the npm package. The published version is **`@xinonix/easi-js@1.0.0-rc.1`**, a release candidate available under `next`. Later source changes remain unreleased until a new package version is published. It uses native ES modules, supports **Node.js 22 and 24**, and has **no required npm runtime dependencies**. Browser applications can use the core pipeline and browser-compatible sources; DIMSE and filesystem paths require Node.js.
 
 ## Contents
 
@@ -28,19 +28,21 @@ This guide is used both in the source repository and in the npm package. The cur
 
 ## Install and import
 
-Install the local candidate into your application, replacing the archive path:
-
-```bash
-npm install /path/to/artifacts/xinonix-easi-js-1.0.0-rc.1.tgz
-```
-
-For a release candidate published under the npm `next` tag:
+Install the published release candidate:
 
 ```bash
 npm install @xinonix/easi-js@next
 ```
 
+To test a separately prepared local candidate, replace the archive path:
+
+```bash
+npm install /path/to/artifacts/xinonix-easi-js-VERSION.tgz
+```
+
 Use an ES module: save Node.js examples as `.mjs`, or set `"type": "module"` in your application's `package.json` and use `.js`. Top-level `await` in this guide assumes an ES module.
+
+The first npm publication also received the automatic `latest` tag. Both tags currently select `1.0.0-rc.1`; this does not establish a stable v1 release. Pin `1.0.0-rc.1` if you need that exact candidate.
 
 ```js
 import EASI, { Tag } from '@xinonix/easi-js';
@@ -884,6 +886,10 @@ npm run kitchen-sink
 
 Open **http://127.0.0.1:8080** for the Kitchen Sink, then open the browser console to exercise and inspect the actions. Use the [Kitchen Sink guide](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/samples/kitchen-sink/README.md) for archive/Orthanc configuration and preview-server details. Stop the development server with Ctrl+C. The workbench and its optional demo dependencies stay in the source checkout; they are not shipped in the npm library.
 
+Click **Use sample** in **Read DICOM** to generate an invented three-frame DICOM file for parsing, preview, FHIR mapping, and attribute selection. The XML metadata example also uses invented values. Public tests and default benchmarks generate their inputs independently, including real compressed-format test vectors; no original medical images are included in the source tree or required to run them. Your own files remain usable through file pickers and the optional local corpus harness. See the [local data guide](https://github.com/davidvaccaro/easi-platform/blob/main/data/README.md) and [synthetic fixture documentation](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/test/fixtures/dicom/README.md).
+
+For an offline functional run, use `npm run harness:synthetic`. It generates eight formats, checks all six pipeline scenarios and exact transcoded pixels, and writes its report under ignored `test/output/`. The separate `harness:test-library` command remains available for an explicitly chosen local corpus.
+
 Further reading:
 
 - [Pipeline builder and extension contracts](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/doc/builders/PipelineBuilder.md)
@@ -897,6 +903,7 @@ From `easi-js`, validate and regenerate the candidate:
 
 ```bash
 npm test -- --runInBand
+npm run source:check
 npm run docs:readme:check
 npm run package:check
 npm run package:check -- --browser

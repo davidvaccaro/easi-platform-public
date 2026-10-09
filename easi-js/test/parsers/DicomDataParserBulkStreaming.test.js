@@ -2,16 +2,7 @@ import EASI from '../../src/EASI.js';
 import Tag from '../../src/dicom/Tag.js';
 import DicomDataParser from '../../src/parsers/DicomDataParser.js';
 import DicomInstanceHandler from '../../src/handlers/terminals/DicomInstanceHandler.js';
-
-const path = require('path');
-const fs = require('fs');
-
-function readDicomBytes(name = '0002.DCM') {
-
-  var brightDicomRoot = process.cwd().split('easi-js')[0];
-  return fs.readFileSync(path.join(brightDicomRoot, '/data/dicoms/' + name));
-
-}
+import { createDicomFixture, getFixtureBytes } from '../fixtures/dicom/SyntheticDicom.js';
 
 class ChunkCaptureInstanceHandler extends DicomInstanceHandler {
 
@@ -34,6 +25,9 @@ class ChunkCaptureInstanceHandler extends DicomInstanceHandler {
 
 test('Test: DicomDataParser bulk-data auto policy streams PixelData chunks above threshold', async () => {
 
+  const fixture = createDicomFixture();
+  expect(fixture.expected.pixelBytes.length).toBeGreaterThan(1024);
+
   var parser = new DicomDataParser();
   parser.bulkDataPolicy = {
     mode: 'auto',
@@ -48,7 +42,7 @@ test('Test: DicomDataParser bulk-data auto policy streams PixelData chunks above
   withParser(parser).
   withHandler(handler).
   build().
-  process({ source: readDicomBytes('0002.DCM') });
+  process({ source: fixture.bytes });
 
   var pixelData = instance.dataSet.find(Tag.PixelData);
   var totalChunkBytes = handler.pixelChunkLengths.reduce((sum, length) => sum + length, 0);
@@ -59,7 +53,7 @@ test('Test: DicomDataParser bulk-data auto policy streams PixelData chunks above
   expect(pixelData.access().length).toBe(0);
   expect(handler.pixelChunkCount).toBeGreaterThan(0);
   expect(totalChunkBytes).toBe(pixelData.bytesStreamed);
-  expect(pixelData.bytesStreamed).toBeGreaterThan(0);
+  expect(pixelData.bytesStreamed).toBe(fixture.expected.pixelBytes.length);
 
 });
 
@@ -77,7 +71,7 @@ test('Test: DicomDataParser stream policy does not stream structural sequence at
   withParser(parser).
   toInstances().
   build().
-  process({ source: readDicomBytes('NESTED_SEQUENCE.dcm') });
+  process({ source: getFixtureBytes('nested-sequences') });
 
   var firstSequence = instance.dataSet.attributes.find((attribute) => Array.isArray(attribute.items));
 
@@ -89,7 +83,8 @@ test('Test: DicomDataParser stream policy does not stream structural sequence at
 
 test('Test: DicomDataWriterHandler round-trips streamed PixelData via onAttributeChunk', async () => {
 
-  var sourceBytes = readDicomBytes('0002.DCM');
+  const fixture = createDicomFixture();
+  var sourceBytes = fixture.bytes;
 
   var streamingParser = new DicomDataParser();
   streamingParser.bulkDataPolicy = {
@@ -122,7 +117,13 @@ test('Test: DicomDataWriterHandler round-trips streamed PixelData via onAttribut
   expect(emittedInstance.dataSet.find(Tag.PixelData).access().length).
   toBe(sourceInstance.dataSet.find(Tag.PixelData).access().length);
 
+  expect(new Uint8Array(emittedInstance.dataSet.find(Tag.PixelData).access())).
+  toEqual(fixture.expected.pixelBytes);
+
   expect(emittedInstance.dataSet.find(Tag.PatientName).value).
   toBe(sourceInstance.dataSet.find(Tag.PatientName).value);
+
+  expect(emittedInstance.dataSet.find(Tag.PatientName).value).
+  toBe(fixture.expected.patientName);
 
 });

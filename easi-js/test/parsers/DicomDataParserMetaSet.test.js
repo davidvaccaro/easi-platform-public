@@ -1,15 +1,6 @@
 import EASI from '../../src/EASI.js';
 import Tag from '../../src/dicom/Tag.js';
-
-const path = require('path');
-const fs = require('fs');
-
-function readDicomBytes(name = '0002.DCM') {
-
-  var brightDicomRoot = process.cwd().split('easi-js')[0];
-  return fs.readFileSync(path.join(brightDicomRoot, '/data/dicoms/' + name));
-
-}
+import { getFixtureBytes } from '../fixtures/dicom/SyntheticDicom.js';
 
 function writeUint32LE(target, offset, value) {
 
@@ -68,7 +59,7 @@ async function parseInstance(bytes) {
 
 test('Test: DicomDataParser tolerates malformed File Meta Information Group Length of zero', async () => {
 
-  var bytes = readDicomBytes('0002.DCM');
+  var bytes = getFixtureBytes();
   var baseline = await parseInstance(bytes);
   var malformed = withCorruptedFileMetaGroupLength(bytes, 0);
   var instance = await parseInstance(malformed);
@@ -83,7 +74,7 @@ test('Test: DicomDataParser tolerates malformed File Meta Information Group Leng
 
 test('Test: DicomDataParser tolerates malformed File Meta Information Group Length that is too large', async () => {
 
-  var bytes = readDicomBytes('0002.DCM');
+  var bytes = getFixtureBytes();
   var baseline = await parseInstance(bytes);
   var malformed = withCorruptedFileMetaGroupLength(bytes, 0x7FFFFFFF);
   var instance = await parseInstance(malformed);

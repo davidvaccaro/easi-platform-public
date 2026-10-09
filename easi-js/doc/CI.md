@@ -10,15 +10,22 @@ Workflow file:
 
 Core, packaging, DIMSE socket, and independent-peer checks run on normal development changes. Core and packaging each test supported Node.js versions 22 and 24. Socket, peer, and benchmark jobs use Node.js 24. Benchmarks remain scheduled or manually enabled.
 
+Pushes and pull requests targeting `main` run these checks regardless of the changed paths, so an accidentally added imaging asset outside `easi-js` also receives the source publication check.
+
 ### 1) Core Tests
 
 - Job names: `Core Tests (Node 22.x)` and `Core Tests (Node 24.x)`
 - Trigger: `pull_request`, `push`, `workflow_dispatch`
 - Command:
+  - `npm run source:check`
   - `npm test -- --runInBand`
+  - `npm run harness:synthetic`
 - Purpose:
   - Required correctness gate for normal development/PRs.
   - Runs unit + deterministic integration tests.
+  - Rejects accidentally tracked original imaging files, private corpus directories, external native tools, and renamed Part-10 binaries. Ignored local assets are permitted.
+  - Generates independent synthetic inputs for native/endian/signed-pixel, nested-sequence, multiframe, streaming, and genuine compressed-format coverage. No original corpus or local native dump executable is required.
+  - Runs eight generated profiles through all six corpus-harness scenarios and verifies exact transcoded pixels and real thumbnails, without external peers or optional codec setup.
   - Includes API contract synchronization coverage via `test/contracts/ApiContractSync.test.js`.
 
 ### 2) Package Validation
@@ -27,6 +34,7 @@ Core, packaging, DIMSE socket, and independent-peer checks run on normal develop
 - Trigger: `pull_request`, `push`, `workflow_dispatch`
 - Commands:
   - `npm ci`
+  - `npm run source:check`
   - `npm run package:check`
   - `npm run docs:readme:check`
   - `npm run package:pack`

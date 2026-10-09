@@ -1,29 +1,10 @@
-import path from 'path';
-import fs from 'fs';
-
 import EASI from '../../src/EASI.js';
 import Tag from '../../src/dicom/Tag.js';
 import DicomDataParser from '../../src/parsers/DicomDataParser.js';
 
 import DicomPipelineProbeHandler from '../benchmarks/probes/DicomPipelineProbeHandler.js';
 import { createChunkReader } from '../benchmarks/probes/DicomPipelineProbeHandler.js';
-
-function resolveRepoRoot() {
-
-  var marker = `${path.sep}easi-js`;
-  var cwd = process.cwd();
-  var markerIndex = cwd.lastIndexOf(marker);
-
-  if (markerIndex > -1)
-  return cwd.substring(0, markerIndex);
-
-  return cwd;
-
-}
-
-function readFixture(relativePath) {
-  return new Uint8Array(fs.readFileSync(path.join(resolveRepoRoot(), relativePath)));
-}
+import { createDicomFixture } from '../fixtures/dicom/SyntheticDicom.js';
 
 async function runProbe(bytes, mode, chunkBytes = 64 * 1024) {
 
@@ -55,10 +36,10 @@ async function runProbe(bytes, mode, chunkBytes = 64 * 1024) {
 
 }
 
-test('Test: Probe integration with NESTED_SEQUENCE keeps PixelData top-level and captures streamed chunk metrics', async () => {
+test('Test: Probe integration with synthetic nested sequences keeps PixelData top-level and captures streamed chunk metrics', async () => {
 
-  var bytes = readFixture('data/dicoms/NESTED_SEQUENCE.dcm');
-  var result = await runProbe(bytes, 'stream');
+  var fixture = createDicomFixture('nested-sequences');
+  var result = await runProbe(fixture.bytes, 'stream');
   var pixelData = result.instance.dataSet.find(Tag.PixelData);
 
   expect(pixelData).toBeDefined();
@@ -67,17 +48,15 @@ test('Test: Probe integration with NESTED_SEQUENCE keeps PixelData top-level and
   expect(pixelData.length()).toBe(0);
   expect(result.metrics.attributeCount).toBeGreaterThan(0);
   expect(result.metrics.pixelDataChunkCount).toBeGreaterThan(0);
-  expect(result.metrics.pixelDataChunkBytes).toBeGreaterThan(0);
+  expect(result.metrics.pixelDataChunkBytes).toBe(fixture.expected.pixelBytes.length);
   expect(result.metrics.peakHeapUsedBytes).toBeGreaterThan(0);
 
 });
 
-const lateralViewFixture = path.join(resolveRepoRoot(), 'data/dicoms/local/Lateral_View0.dcm');
-const testIfLateralViewExists = fs.existsSync(lateralViewFixture) ? test : test.skip;
+test('Test: Probe integration demonstrates materialize vs stream PixelData behavior on a generated large fixture', async () => {
 
-testIfLateralViewExists('Test: Probe integration demonstrates materialize vs stream PixelData behavior on large fixture', async () => {
-
-  var bytes = new Uint8Array(fs.readFileSync(lateralViewFixture));
+  var fixture = createDicomFixture('multiframe', { rows: 512, columns: 512, frames: 16 });
+  var bytes = fixture.bytes;
 
   var materializeResult = await runProbe(bytes, 'materialize');
   var streamResult = await runProbe(bytes, 'stream');
@@ -87,7 +66,7 @@ testIfLateralViewExists('Test: Probe integration demonstrates materialize vs str
 
   expect(materializePixelData).toBeDefined();
   expect(materializePixelData.isBulkStreamed).toBe(false);
-  expect(materializePixelData.length()).toBeGreaterThan(0);
+  expect(materializePixelData.length()).toBe(fixture.expected.pixelBytes.length);
   expect(materializeResult.metrics.pixelDataChunkCount).toBe(0);
   expect(materializeResult.metrics.peakPixelDataMaterializedBytes).toBeGreaterThan(0);
 
@@ -95,6 +74,7 @@ testIfLateralViewExists('Test: Probe integration demonstrates materialize vs str
   expect(streamPixelData.isBulkStreamed).toBe(true);
   expect(streamPixelData.length()).toBe(0);
   expect(streamResult.metrics.pixelDataChunkCount).toBeGreaterThan(0);
+  expect(streamResult.metrics.pixelDataChunkBytes).toBe(fixture.expected.pixelBytes.length);
   expect(streamResult.metrics.peakPixelDataMaterializedBytes).toBe(0);
 
 });

@@ -26,7 +26,7 @@ The Node backend accepts cross-origin DIMSE requests from local previews on port
 
 1. Open DevTools and select the Console tab. On macOS Chrome, use **Option + Command + J**.
 2. Start with **Run quick JSON check**, or open **Metadata & JSON** and run the local XML metadata example. These checks do not need Orthanc.
-3. For a local DICOM file, choose the file in **Read DICOM**, then click **Run** beside **Parse file** or **Preview first frame**. Choosing a file never starts a parse or clears the console.
+3. Click **Use sample** in **Read DICOM** for an independently generated synthetic DICOM file, or choose your own file. Then click **Run** beside **Parse file** or **Preview first frame**. The synthetic sample also fills the FHIR and selection file inputs; selecting it never starts a parse or clears the console.
 4. Use the sidebar to switch feature groups, or search for an action across all groups.
 
 The workbench groups native reads, FHIR mapping, DIMSE, metadata/JSON, attribute selection, transformations, documents/assets, folder tools, and dump parsing. Each action displays its state and duration. **Passed** means the action completed; inspect the output and any validation concerns in the console. **Failed** shows the error. **Blocked** explains a missing file, required identifier, unsupported browser capability, or cancelled picker.
@@ -40,6 +40,8 @@ Start Orthanc before remote operations. Expand **Connection settings** to set th
 **DIMSE networking** has its own association settings because DIMSE uses the local Node server. FIND queries by modality. GET accepts a complete identifier set or discovers an Orthanc instance when all three fields are blank. MOVE requires the destination AE to be registered at the archive and writes the relayed copy to the configured C-STORE destination.
 
 Local parsing/FHIR/selection use browser File inputs. Preview/asset actions require a suitable decoder. Folder tools require `showDirectoryPicker`; transformation, archive, and document-save actions may create downloads or output files. Advanced controls are folded until needed.
+
+The sample file is generated in browser memory with invented pixels and identifiers. The bundled XML example at `fixtures/synthetic-metadata.xml` and editable dump also have invented values and need no local corpus. Original DICOM files remain in your ignored local developer kit; a fresh checkout runs the offline scenarios without them.
 
 FHIR mapping defaults to a contained Patient. **External Reference** uses the editable Patient reference template, initially `Patient/{dicom.PatientID}`. Mapping produces the reference without contacting a FHIR server; use a reference appropriate to your integration.
 

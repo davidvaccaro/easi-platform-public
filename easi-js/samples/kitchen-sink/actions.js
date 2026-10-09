@@ -1,5 +1,6 @@
 import { BlockedRunError, RunFeedback, dicomwebUrl } from './run-feedback.js';
 import { postDimseRequest, resolveDimseRequestUrl } from './dimse-api.js';
+import { getFixtureBytes } from '../../test/fixtures/dicom/SyntheticDicom.js';
 
 import EASI from '../../src/EASI.js';
 
@@ -66,6 +67,22 @@ $(function () {
             return handler.call(input ?? this, event);
         });
     }
+
+    registerAction('useSyntheticDicom', 'click', function () {
+        if (typeof DataTransfer !== 'function')
+            throw new BlockedRunError('This browser cannot fill file inputs. Use the synthetic fixture generator from the source checkout, then choose its file.');
+        var file = new File([getFixtureBytes('default')], 'easi-synthetic.dcm', { type: 'application/dicom' });
+        for (var id of ['dicomFile', 'dicomFileFHIR', 'dicomFileSelection']) {
+            var input = document.getElementById(id);
+            if (!input) continue;
+            var transfer = new DataTransfer();
+            transfer.items.add(file);
+            input.files = transfer.files;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        console.log('Synthetic DICOM selected for Read DICOM, FHIR mapping, and attribute selection.', file);
+        return { filename: file.name, bytes: file.size, frames: 3, synthetic: true };
+    });
 
     function getDicomwebUrl(level) {
         return dicomwebUrl({
@@ -3423,8 +3440,8 @@ $(function () {
             .toInstances()
             .build();
 
-        // Read and parse the local DICOMweb XML metadata sample.
-        return processWithTiming(reader, "../../../data/xml/dicomweb.xml")
+        // Read the explicitly invented, public DICOMweb XML fixture.
+        return processWithTiming(reader, "./fixtures/synthetic-metadata.xml")
         .then(result => console.log(result))
         .catch(err => { throw err; });
 

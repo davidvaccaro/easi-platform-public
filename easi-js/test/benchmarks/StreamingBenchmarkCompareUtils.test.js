@@ -12,7 +12,7 @@ test('Test: compareStreamingBenchmarkSnapshots summarizes lower/higher-better tr
 
     var before = createSnapshot([
         {
-            fixtureName: '0002.DCM',
+            fixtureName: 'synthetic-native-v1',
             scenario: 'single-buffer',
             elapsedMsAverage: 10,
             throughputMBpsAverage: 100,
@@ -23,7 +23,7 @@ test('Test: compareStreamingBenchmarkSnapshots summarizes lower/higher-better tr
             heapPeakMB: 80
         },
         {
-            fixtureName: '0002.DCM',
+            fixtureName: 'synthetic-native-v1',
             scenario: 'stream-64KB',
             elapsedMsAverage: 12,
             throughputMBpsAverage: 85,
@@ -37,7 +37,7 @@ test('Test: compareStreamingBenchmarkSnapshots summarizes lower/higher-better tr
 
     var after = createSnapshot([
         {
-            fixtureName: '0002.DCM',
+            fixtureName: 'synthetic-native-v1',
             scenario: 'single-buffer',
             elapsedMsAverage: 8,
             throughputMBpsAverage: 125,
@@ -48,7 +48,7 @@ test('Test: compareStreamingBenchmarkSnapshots summarizes lower/higher-better tr
             heapPeakMB: 78
         },
         {
-            fixtureName: '0002.DCM',
+            fixtureName: 'synthetic-native-v1',
             scenario: 'stream-64KB',
             elapsedMsAverage: 15,
             throughputMBpsAverage: 70,
@@ -80,7 +80,7 @@ test('Test: compareStreamingBenchmarkSnapshots reports unmatched scenarios', () 
 
     var before = createSnapshot([
         {
-            fixtureName: '0002.DCM',
+            fixtureName: 'synthetic-native-v1',
             scenario: 'single-buffer',
             elapsedMsAverage: 10,
             throughputMBpsAverage: 100,
@@ -94,7 +94,7 @@ test('Test: compareStreamingBenchmarkSnapshots reports unmatched scenarios', () 
 
     var after = createSnapshot([
         {
-            fixtureName: '0009.DCM',
+            fixtureName: 'synthetic-large-multiframe-v1',
             scenario: 'single-buffer',
             elapsedMsAverage: 20,
             throughputMBpsAverage: 50,

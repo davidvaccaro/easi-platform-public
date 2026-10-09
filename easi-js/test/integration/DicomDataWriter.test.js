@@ -1,24 +1,22 @@
 import EASI from '../../src/EASI.js';
 import Tag from '../../src/dicom/Tag.js';
 import DicomDataWriterHandler from '../../src/handlers/terminals/DicomDataWriterHandler.js';
+import { createDicomFixture, getFixtureBytes } from '../fixtures/dicom/SyntheticDicom.js';
 
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
+var outputDirectory;
 
-function readDicomBytes(name = '0002.DCM') {
+beforeEach(() => {
+  outputDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'easi-synthetic-writer-'));
+});
 
-  // Establish the root path to BrightDicom.
-  var brightDicomRoot = process.cwd().split('easi-js')[0];
-
-  // Read the requested DICOM file.
-  return fs.readFileSync(path.join(brightDicomRoot, '/data/dicoms/' + name));
-
-}
+afterEach(() => {
+  fs.rmSync(outputDirectory, { recursive: true, force: true });
+});
 
 function writeTestOutputBytes(name, bytes) {
-
-  var outputDirectory = path.join(process.cwd(), 'test/output');
-  fs.mkdirSync(outputDirectory, { recursive: true });
 
   var outputPath = path.join(outputDirectory, name);
   fs.writeFileSync(outputPath, Buffer.from(bytes));
@@ -44,7 +42,7 @@ function combineChunks(chunks) {
 
 test('Test: PipelineBuilder toDicomData emits native DICOM bytes that round-trip parse', async () => {
 
-  var sourceBytes = readDicomBytes('0002.DCM');
+  var sourceBytes = getFixtureBytes();
 
   var writerReader = EASI.pipelineBuilder().
   fromPartStream().
@@ -83,7 +81,8 @@ test('Test: PipelineBuilder toDicomData emits native DICOM bytes that round-trip
 
 test('Test: toDicomData preserves little-endian dataset ordering for raw dataset-only DICOM input', async () => {
 
-  var sourceBytes = readDicomBytes('CR-MONO1-10-chest.dcm');
+  var fixture = createDicomFixture('raw-implicit-monochrome1');
+  var sourceBytes = fixture.bytes;
 
   var emittedBytes = await EASI.pipelineBuilder().
   fromPartStream().
@@ -95,10 +94,10 @@ test('Test: toDicomData preserves little-endian dataset ordering for raw dataset
   expect(emittedBytes instanceof Uint8Array).toBe(true);
   expect(emittedBytes.length).toBeGreaterThan(0);
 
-  // First attribute tag should remain little-endian encoded (0008,0000) -> 08 00 00 00
+  // First attribute is Specific Character Set (0008,0005), encoded little endian.
   expect(emittedBytes[0]).toBe(0x08);
   expect(emittedBytes[1]).toBe(0x00);
-  expect(emittedBytes[2]).toBe(0x00);
+  expect(emittedBytes[2]).toBe(0x05);
   expect(emittedBytes[3]).toBe(0x00);
 
   var emittedInstance = await EASI.pipelineBuilder().
@@ -109,15 +108,16 @@ test('Test: toDicomData preserves little-endian dataset ordering for raw dataset
   process({ source: emittedBytes });
 
   expect(emittedInstance.metaSet == null).toBe(true);
-  expect(emittedInstance.dataSet.find(Tag.Rows).value).toBe(440);
-  expect(emittedInstance.dataSet.find(Tag.Columns).value).toBe(440);
+  expect(emittedInstance.dataSet.find(Tag.Rows).value).toBe(fixture.expected.rows);
+  expect(emittedInstance.dataSet.find(Tag.Columns).value).toBe(fixture.expected.columns);
+  expect(Array.from(emittedInstance.dataSet.find(Tag.PixelData).access())).toEqual(Array.from(fixture.expected.pixelBytes));
 
 });
 
 test('Test: toDicomData with onChunk streams bytes and can be chained with withDeIdentification for anonymized DICOM output', async () => {
 
   var chunks = [];
-  var sourceBytes = readDicomBytes('0002.DCM');
+  var sourceBytes = getFixtureBytes();
 
   var reader = EASI.pipelineBuilder().
   fromPartStream().ofDicomData().
@@ -151,7 +151,7 @@ test('Test: toDicomData with onChunk streams bytes and can be chained with withD
 
 test('Test: toDicomData returns byte output', async () => {
 
-  var sourceBytes = readDicomBytes('0002.DCM');
+  var sourceBytes = getFixtureBytes();
   var reader = EASI.pipelineBuilder().
   fromPartStream().ofDicomData().
   toDicomData().
@@ -167,7 +167,8 @@ test('Test: toDicomData returns byte output', async () => {
 
 test('Test: toDicomData round-trips a nested-sequence instance and retains top-level PixelData', async () => {
 
-  var sourceBytes = readDicomBytes('NESTED_SEQUENCE.dcm');
+  var fixture = createDicomFixture('nested-sequences');
+  var sourceBytes = fixture.bytes;
 
   var emittedBytes = await EASI.pipelineBuilder().
   fromPartStream().ofDicomData().
@@ -184,12 +185,16 @@ test('Test: toDicomData round-trips a nested-sequence instance and retains top-l
   expect(emittedInstance.dataSet.find(Tag.PixelData)).not.toBe(undefined);
   expect(emittedInstance.dataSet.find(Tag.StudyInstanceUID)).not.toBe(undefined);
   expect(emittedInstance.dataSet.find(Tag.SeriesInstanceUID)).not.toBe(undefined);
+  expect(Array.from(emittedInstance.dataSet.find(Tag.PixelData).access())).toEqual(Array.from(fixture.expected.pixelBytes));
+  const sequence = emittedInstance.dataSet.find(Tag.SourceImageSequence);
+  expect(sequence.items.length).toBe(2);
+  expect(sequence.items[0].find(Tag.RequestAttributesSequence).items[0].find(Tag.PatientName).value).toBe('SYNTHETIC^NESTED');
 
 });
 
-test('Test: toDicomData anonymizes NESTED_SEQUENCE.dcm and writes NESTED_SEQUENCE_ANON.dcm', async () => {
+test('Test: toDicomData anonymizes synthetic nested sequences and writes a generated output file', async () => {
 
-  var sourceBytes = readDicomBytes('NESTED_SEQUENCE.dcm');
+  var sourceBytes = getFixtureBytes('nested-sequences');
 
   var emittedBytes = await EASI.pipelineBuilder().
   fromPartStream().ofDicomData().
@@ -201,7 +206,7 @@ test('Test: toDicomData anonymizes NESTED_SEQUENCE.dcm and writes NESTED_SEQUENC
   expect(emittedBytes instanceof Uint8Array).toBe(true);
   expect(emittedBytes.length).toBeGreaterThan(0);
 
-  var outputPath = writeTestOutputBytes('NESTED_SEQUENCE_ANON.dcm', emittedBytes);
+  var outputPath = writeTestOutputBytes('synthetic-nested-anonymized.dcm', emittedBytes);
   expect(fs.existsSync(outputPath)).toBe(true);
 
   var writtenBytes = new Uint8Array(fs.readFileSync(outputPath));

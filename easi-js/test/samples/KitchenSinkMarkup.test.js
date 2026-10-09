@@ -22,7 +22,7 @@ describe('Kitchen Sink markup wiring', () => {
     });
 
     test('provides a button, status, and inline message control for every registered action', () => {
-        expect(actionIds).toHaveLength(38);
+        expect(actionIds).toHaveLength(39);
         expect(new Set(actionIds).size).toBe(actionIds.length);
         const missing = actionIds.flatMap(id => [id, id + 'Status', id + 'Message']).filter(id => !byId.has(id));
         expect(missing).toEqual([]);

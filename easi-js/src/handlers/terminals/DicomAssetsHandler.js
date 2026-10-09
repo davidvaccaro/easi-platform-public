@@ -704,7 +704,9 @@ export default class DicomAssetsHandler {
         var height = image.imagePixelModule.rows;
         var rgba = new Uint8Array(width * height * 4);
 
-        var decodeResult = image.decodeFrame(rgba, null, frameIndex);
+        var pixelData = instance.dataSet.find(Tag.PixelData);
+        var decoder = this.codecRegistry.getDecoderForTransferSyntax(pixelData.transferSyntax, image);
+        var decodeResult = image.decodeFrame(rgba, decoder, frameIndex);
         if (decodeResult !== true) {
             throw new Exception(
                 "Failed decoding frame to RGBA.",

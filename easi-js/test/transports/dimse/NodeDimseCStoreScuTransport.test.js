@@ -6,8 +6,7 @@ import Exception, { GeneralErrorCodes } from "../../../src/environment/Exception
 import NodeDimseCStoreScuTransport from "../../../src/transports/dimse/NodeDimseCStoreScuTransport.js";
 import { dimseSocketTest } from "./DimseSocketTestGate.js";
 
-const fs = require("fs");
-const path = require("path");
+import { getFixtureBytes } from "../../fixtures/dicom/SyntheticDicom.js";
 
 function toUint16BE(value) {
   var bytes = new Uint8Array(2);
@@ -260,26 +259,6 @@ function parsePdusFromBuffer(buffer) {
     pdus
   };
 
-}
-
-function resolveEasiJsRoot() {
-
-  var marker = `${path.sep}easi-js`;
-  var cwd = process.cwd();
-  var markerIndex = cwd.lastIndexOf(marker);
-
-  if (markerIndex > -1) {
-    return cwd.substring(0, markerIndex + marker.length);
-  }
-
-  return cwd;
-
-}
-
-function readDicomBytes(fileName) {
-  const easiJsRoot = resolveEasiJsRoot();
-  const filePath = path.join(easiJsRoot, "..", "data", "dicoms", fileName);
-  return new Uint8Array(fs.readFileSync(filePath));
 }
 
 function readPart10DataSetOffset(bytes) {
@@ -540,7 +519,7 @@ dimseSocketTest("Test: NodeDimseCStoreScuTransport sends C-STORE to mock SCP and
   try {
 
     const transport = new NodeDimseCStoreScuTransport();
-    const sourceBytes = readDicomBytes("0002.DCM");
+    const sourceBytes = getFixtureBytes();
 
     const pipeline = EASI.pipelineBuilder().
     fromByteStream().
@@ -618,7 +597,7 @@ dimseSocketTest("Test: NodeDimseCStoreScuTransport prefers data-set SOP Instance
 
   try {
 
-    const sourceBytes = readDicomBytes("0002.DCM");
+    const sourceBytes = getFixtureBytes();
 
     const originalSopInstanceUid = readPart10MetaSopInstanceUid(sourceBytes);
     expect(typeof originalSopInstanceUid).toBe("string");

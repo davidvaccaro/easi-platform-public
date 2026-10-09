@@ -4,15 +4,9 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "easi-js/**"
-      - ".github/workflows/**"
   push:
     branches:
       - main
-    paths:
-      - "easi-js/**"
-      - ".github/workflows/**"
   workflow_dispatch:
     inputs:
       run_benchmarks:
@@ -70,8 +64,14 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Check Source Publication Assets
+        run: npm run source:check
+
       - name: Run Core Test Suite
         run: npm test -- --runInBand
+
+      - name: Run Synthetic Functional Harness
+        run: npm run harness:synthetic
 
       - name: Upload Coverage Report
         if: always()
@@ -105,6 +105,9 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+
+      - name: Check Source Publication Assets
+        run: npm run source:check
 
       - name: Validate Packed Consumers
         run: npm run package:check

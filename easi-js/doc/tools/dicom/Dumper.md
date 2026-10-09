@@ -2,6 +2,8 @@
 
 The `Dumper` class provides tooling support for parsing or generating diagnostic DICOM&reg; dumps.
 
+This optional Node tool requires a locally installed `dcdump` executable; external binaries are not distributed with the public source or npm archive. Set `EASI_DCDUMP_PATH` to an explicit executable path, keep your local tool at `ext/tools/dcdump`, or install `dcdump` on `PATH`. `dump(path)` returns a promise for the parsed result and rejects execution or parse failures. Filenames are passed as executable arguments without shell evaluation.
+
 ---
 
 ## Inheritance

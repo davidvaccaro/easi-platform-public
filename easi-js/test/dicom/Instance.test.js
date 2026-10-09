@@ -2,21 +2,11 @@ import EASI from '../../src/EASI.js';
 import Constants from '../../src/dicom/Constants.js';
 import DicomDataParser from '../../src/parsers/DicomDataParser.js';
 import DicomInstanceHandler from '../../src/handlers/terminals/DicomInstanceHandler.js';
-
-const { exec } = require("child_process");
-const path = require('path');
-const fs = require('fs');
-const { Blob } = require("buffer");
+import { getFixtureBytes } from '../fixtures/dicom/SyntheticDicom.js';
 
 var instance = null;
 
 beforeAll(async () => {
-
-  // Establish the root path to BrightDicom
-  var brightDicomRoot = process.cwd().split('easi-js')[0];
-
-  // Determine if the dicom file is a complete path or simply a filename
-  const dicomFullPath = path.join(brightDicomRoot, '/data/dicoms/0002.DCM');
 
   // Build the DICOM streaming reader
   const pipeline = EASI.pipelineBuilder().
@@ -25,9 +15,9 @@ beforeAll(async () => {
   withHandler(new DicomInstanceHandler()).
   build();
 
-  // Read and parse the DICOM file
+  // Parse an independently generated Part 10 object.
   await pipeline.
-  process({ source: fs.readFileSync(dicomFullPath) }).
+  process({ source: getFixtureBytes() }).
   then((parseResult) => {
 
     // Set the instance

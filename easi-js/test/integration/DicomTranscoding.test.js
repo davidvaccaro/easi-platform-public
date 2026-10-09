@@ -4,16 +4,9 @@ import TransferSyntax from "../../src/dicom/TransferSyntax.js";
 import Constants from "../../src/dicom/Constants.js";
 import CodecRegistry from "../../src/codecs/CodecRegistry.js";
 import RleDecoder from "../../src/codecs/decoders/RleDecoder.js";
+import OpenJpegRuntime from "../../src/codecs/runtimes/OpenJpegRuntime.js";
 
-const path = require("path");
-const fs = require("fs");
-
-function readDicomBytes(name = "0002.DCM") {
-
-  var brightDicomRoot = process.cwd().split("easi-js")[0];
-  return fs.readFileSync(path.join(brightDicomRoot, "/data/dicoms/" + name));
-
-}
+import { createDicomFixture, getFixtureBytes } from '../fixtures/dicom/SyntheticDicom.js';
 
 function toUint16LE(value) {
   const bytes = new Uint8Array(2);
@@ -315,7 +308,7 @@ test("Test: withTranscoding rewrites transfer syntax from explicit-vr-little-end
 
 test("Test: withTranscoding unsupported syntax pair fails when fallback is fail", async () => {
 
-  const sourceBytes = readDicomBytes("0002.DCM");
+  const sourceBytes = getFixtureBytes();
   const concerns = [];
 
   const pipeline = EASI.pipelineBuilder().
@@ -337,7 +330,7 @@ test("Test: withTranscoding unsupported syntax pair fails when fallback is fail"
 
 test("Test: withTranscoding unsupported syntax pair can passthrough source transfer syntax", async () => {
 
-  const sourceBytes = readDicomBytes("0002.DCM");
+  const sourceBytes = getFixtureBytes();
   const sourceInstance = await EASI.pipelineBuilder().
   fromByteStream().
   ofDicomData({ includePart10Header: true }).
@@ -618,17 +611,14 @@ test("Test: withBurnedInRedaction redacts configured pixel regions while preserv
 
 test("Test: withBurnedInRedaction preserves RLE source transfer syntax when RLE encoder is available", async () => {
 
-  const sourceBytes = readDicomBytes("US-PAL-8-10x-echo.dcm");
+  const sourceBytes = getFixtureBytes('rle-palette');
   const concerns = [];
 
   const redactedBytes = await EASI.pipelineBuilder().
   fromByteStream().
   ofDicomData({ includePart10Header: true }).
   withBurnedInRedaction({
-    regions: [
-    { x: 0, y: 100, width: 382, height: 204 },
-    { x: 0, y: 400, width: 276, height: 342 },
-    { x: 0, y: 732, width: 116, height: 94 }],
+    regions: [{ x: 0, y: 0, width: 2, height: 1 }],
 
     onConcern: (concern) => concerns.push(concern)
   }).
@@ -643,7 +633,7 @@ test("Test: withBurnedInRedaction preserves RLE source transfer syntax when RLE 
   build().
   process({ source: redactedBytes });
 
-  expect(redactedBytes.length).toBeGreaterThan(4096);
+  expect(redactedBytes.length).toBeGreaterThan(0);
   expect(redactedInstance.metaSet.transferSyntaxUID.ID).toBe(TransferSyntax.RLELossless.ID);
   expect(redactedInstance.dataSet.find(Tag.PixelData)).toBeDefined();
   expect(firstNumericValue(redactedInstance.dataSet.find(Tag.SamplesPerPixel)?.value, null)).toBe(3);
@@ -658,6 +648,14 @@ test("Test: withBurnedInRedaction preserves RLE source transfer syntax when RLE 
   expect(redactedInstance.dataSet.find(Tag.GreenPaletteColorLookupTableData)).toBeUndefined();
   expect(redactedInstance.dataSet.find(Tag.BluePaletteColorLookupTableData)).toBeUndefined();
 
+  const redactedFrames = await EASI.pipelineBuilder().
+  fromByteStream().ofDicomData().
+  toAssets({ payload: { frame: { frames: 'first', decode: 'rgba', encode: 'none' }, collect: true } }).
+  build().process({ source: redactedBytes });
+  expect(Array.from(redactedFrames.frames[0].bytes.slice(0, 16))).toEqual([
+    0, 0, 0, 255, 0, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255
+  ]);
+
   const fallbackConcern = concerns.find((concern) => concern.code == "PreserveTransferSyntaxUnavailable");
   expect(fallbackConcern).toBeUndefined();
 
@@ -665,7 +663,7 @@ test("Test: withBurnedInRedaction preserves RLE source transfer syntax when RLE 
 
 test("Test: withBurnedInRedaction falls back from RLE preserve target when no RLE encoder is configured", async () => {
 
-  const sourceBytes = readDicomBytes("US-PAL-8-10x-echo.dcm");
+  const sourceBytes = getFixtureBytes('rle-palette');
   const concerns = [];
 
   const codecRegistry = new CodecRegistry();
@@ -683,10 +681,7 @@ test("Test: withBurnedInRedaction falls back from RLE preserve target when no RL
   ofDicomData({ includePart10Header: true }).
   withCodecRegistry(codecRegistry).
   withBurnedInRedaction({
-    regions: [
-    { x: 0, y: 100, width: 382, height: 204 },
-    { x: 0, y: 400, width: 276, height: 342 },
-    { x: 0, y: 732, width: 116, height: 94 }],
+    regions: [{ x: 0, y: 0, width: 2, height: 1 }],
 
     onConcern: (concern) => concerns.push(concern)
   }).
@@ -701,8 +696,16 @@ test("Test: withBurnedInRedaction falls back from RLE preserve target when no RL
   build().
   process({ source: redactedBytes });
 
-  expect(redactedBytes.length).toBeGreaterThan(4096);
+  expect(redactedBytes.length).toBeGreaterThan(0);
   expect(redactedInstance.metaSet.transferSyntaxUID.ID).toBe(TransferSyntax.ExplicitVRLittleEndian.ID);
+
+  const redactedFrames = await EASI.pipelineBuilder().
+  fromByteStream().ofDicomData().
+  toAssets({ payload: { frame: { frames: 'first', decode: 'rgba', encode: 'none' }, collect: true } }).
+  build().process({ source: redactedBytes });
+  expect(Array.from(redactedFrames.frames[0].bytes.slice(0, 16))).toEqual([
+    0, 0, 0, 255, 0, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255
+  ]);
 
   const fallbackConcern = concerns.find((concern) => concern.code == "PreserveTransferSyntaxUnavailable");
   expect(fallbackConcern).toBeDefined();
@@ -833,7 +836,7 @@ test("Test: withTranscoding supports JPEG Baseline round-trip back to explicit-v
 
 test("Test: withTranscoding on dataset-only input emits synthetic Part-10 meta and parseable JPEG 2000 output", async () => {
 
-  const sourceBytes = readDicomBytes("CR-MONO1-10-chest.dcm");
+  const sourceBytes = getFixtureBytes('raw-implicit-monochrome1');
   const concerns = [];
 
   const transcodedBytes = await EASI.pipelineBuilder().
@@ -877,9 +880,9 @@ test("Test: withTranscoding on dataset-only input emits synthetic Part-10 meta a
 
 });
 
-test("Test: withTranscoding on MR-MONO2-8-16x-heart emits parseable JPEG 2000 output without duplicate trailing PixelData header", async () => {
+test("Test: withTranscoding on synthetic implicit multi-frame pixels emits parseable JPEG 2000 output without duplicate trailing PixelData header", async () => {
 
-  const sourceBytes = readDicomBytes("MR-MONO2-8-16x-heart.dcm");
+  const sourceBytes = getFixtureBytes('multiframe-implicit');
 
   const transcodedBytes = await EASI.pipelineBuilder().
   fromByteStream().
@@ -911,9 +914,9 @@ test("Test: withTranscoding on MR-MONO2-8-16x-heart emits parseable JPEG 2000 ou
 
 });
 
-test("Test: withTranscoding on MR-MONO2-8-16x-heart emits parseable JPEG 2000 lossless output without duplicate trailing PixelData header", async () => {
+test("Test: withTranscoding on synthetic implicit multi-frame pixels emits parseable JPEG 2000 lossless output without duplicate trailing PixelData header", async () => {
 
-  const sourceBytes = readDicomBytes("MR-MONO2-8-16x-heart.dcm");
+  const sourceBytes = getFixtureBytes('multiframe-implicit');
 
   const transcodedBytes = await EASI.pipelineBuilder().
   fromByteStream().
@@ -944,9 +947,9 @@ test("Test: withTranscoding on MR-MONO2-8-16x-heart emits parseable JPEG 2000 lo
 
 });
 
-test("Test: withTranscoding supports RLE Lossless source to JPEG 2000 lossless target for US-PAL-8-10x-echo", async () => {
+test("Test: withTranscoding supports RLE Lossless source to JPEG 2000 lossless target for independent RLE palette pixels", async () => {
 
-  const sourceBytes = readDicomBytes("US-PAL-8-10x-echo.dcm");
+  const sourceBytes = getFixtureBytes('rle-palette');
   const concerns = [];
 
   const transcodedBytes = await EASI.pipelineBuilder().
@@ -979,7 +982,7 @@ test("Test: withTranscoding supports RLE Lossless source to JPEG 2000 lossless t
 
 test("Test: withTranscoding accepts sourceTransferSyntax override to suppress dataset-only assumption warning", async () => {
 
-  const sourceBytes = readDicomBytes("CR-MONO1-10-chest.dcm");
+  const sourceBytes = getFixtureBytes('raw-implicit-monochrome1');
   const concerns = [];
 
   const transcodedBytes = await EASI.pipelineBuilder().
@@ -1005,9 +1008,9 @@ test("Test: withTranscoding accepts sourceTransferSyntax override to suppress da
 
 });
 
-test("Test: withTranscoding on MR-shoulder normalizes pixel metadata and rescales VOI window for 8-bit target", async () => {
+test("Test: withTranscoding on independent JPEG lossless 12-bit pixels normalizes pixel metadata and rescales VOI window for 8-bit target", async () => {
 
-  const sourceBytes = readDicomBytes("MR-shoulder.dcm");
+  const sourceBytes = getFixtureBytes('jpeg-lossless', { windowCenter: 1024, windowWidth: 2048, extraElements: [['00280106', 'US', 0], ['00280107', 'US', 4095]] });
   const concerns = [];
 
   const sourceInstance = await EASI.pipelineBuilder().
@@ -1056,29 +1059,18 @@ test("Test: withTranscoding on MR-shoulder normalizes pixel metadata and rescale
   const targetWindowCenter = firstNumericValue(transcodedInstance.dataSet.find(Tag.WindowCenter)?.value, null);
   const targetWindowWidth = firstNumericValue(transcodedInstance.dataSet.find(Tag.WindowWidth)?.value, null);
 
-  if (sourceWindowCenter != null && targetWindowCenter != null) {
-    expect(targetWindowCenter).toBeCloseTo(sourceWindowCenter * scale, 3);
-  }
-
-  if (sourceWindowWidth != null && targetWindowWidth != null) {
-    expect(targetWindowWidth).toBeCloseTo(Math.max(1, sourceWindowWidth * scale), 3);
-  }
-
-  const smallest = transcodedInstance.dataSet.find(Tag.SmallestImagePixelValue);
-  if (smallest != null) {
-    expect(Number(smallest.value)).toBe(0);
-  }
-
-  const largest = transcodedInstance.dataSet.find(Tag.LargestImagePixelValue);
-  if (largest != null) {
-    expect(Number(largest.value)).toBe(255);
-  }
+  expect(sourceWindowCenter).toBe(1024);
+  expect(sourceWindowWidth).toBe(2048);
+  expect(targetWindowCenter).toBeCloseTo(sourceWindowCenter * scale, 3);
+  expect(targetWindowWidth).toBeCloseTo(Math.max(1, sourceWindowWidth * scale), 3);
+  expect(Number(transcodedInstance.dataSet.find(Tag.SmallestImagePixelValue).value)).toBe(0);
+  expect(Number(transcodedInstance.dataSet.find(Tag.LargestImagePixelValue).value)).toBe(255);
 
 });
 
 test("Test: withTranscoding preserves monochrome metadata for dataset-only JPEG 2000 lossless native path", async () => {
 
-  const sourceBytes = readDicomBytes("CR-MONO1-10-chest.dcm");
+  const sourceBytes = getFixtureBytes('raw-implicit-monochrome1');
   const concerns = [];
 
   const transcodedBytes = await EASI.pipelineBuilder().
@@ -1119,7 +1111,7 @@ test("Test: withTranscoding preserves monochrome metadata for dataset-only JPEG 
 
 test("Test: withTranscoding preserves 16-bit monochrome metadata for dataset-only JPEG 2000 native lossy path", async () => {
 
-  const sourceBytes = readDicomBytes("CR-MONO1-10-chest.dcm");
+  const sourceBytes = getFixtureBytes('raw-implicit-monochrome1');
   const concerns = [];
 
   const transcodedBytes = await EASI.pipelineBuilder().
@@ -1158,4 +1150,32 @@ test("Test: withTranscoding preserves 16-bit monochrome metadata for dataset-onl
   expect(concerns.find((concern) => concern.code == "AssumedSourceTransferSyntax")).toBeUndefined();
   expect(concerns.find((concern) => concern.code == "NativeMonochromePathUnavailable")).toBeUndefined();
 
+});
+
+// Actual independently encoded compressed inputs complement backend adapter mocks.
+test.each(['jpeg-baseline', 'jpeg-lossless', 'jpeg2000'])('Test: withTranscoding converts independent %s pixels to valid native output', async (profile) => {
+  const fixture = createDicomFixture(profile);
+  if (profile === 'jpeg2000') {
+    const fs = require('fs');
+    const factory = require('@voxelmed/openjpegjs/dist/openjpegwasm.js');
+    const wasmBinary = fs.readFileSync(require.resolve('@voxelmed/openjpegjs/dist/openjpegwasm.wasm'));
+    OpenJpegRuntime.setModule(await factory({ wasmBinary, print() {}, printErr() {} }));
+  }
+  try {
+    const concerns = [];
+    const bytes = await EASI.pipelineBuilder().fromByteStream().ofDicomData({ includePart10Header: true }).
+      withTranscoding({ targetTransferSyntax: TransferSyntax.ExplicitVRLittleEndian.ID, onConcern: concern => concerns.push(concern) }).
+      toDicomData().build().process({ source: fixture.bytes });
+    const instance = await EASI.pipelineBuilder().fromByteStream().ofDicomData({ includePart10Header: true }).
+      toInstances().build().process({ source: bytes });
+    expect(concerns).toEqual([]);
+    expect(instance.metaSet.transferSyntaxUID.ID).toBe(TransferSyntax.ExplicitVRLittleEndian.ID);
+    expect(instance.dataSet.find(Tag.PixelData).valueLength).not.toBe(Constants.UndefinedLength);
+    expect(instance.dataSet.find(Tag.PatientID).value).toBe(fixture.expected.patientId);
+    const assets = await EASI.pipelineBuilder().fromByteStream().ofDicomData().
+      toAssets({ payload: { frame: { frames: 'first', decode: 'rgba', encode: 'none' }, collect: true } }).
+      build().process({ source: bytes });
+    expect(assets.frames[0].bytes).toEqual(fixture.expected.firstFrameRgba);
+  }
+  finally { OpenJpegRuntime.clear(); }
 });

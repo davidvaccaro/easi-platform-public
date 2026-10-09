@@ -1,4 +1,5 @@
 import EASI from '../../src/EASI.js';
+import { getFixtureBytes } from '../fixtures/dicom/SyntheticDicom.js';
 import Tag from '../../src/dicom/Tag.js';
 import DicomDataParser from '../../src/parsers/DicomDataParser.js';
 import DicomInstanceHandler from '../../src/handlers/terminals/DicomInstanceHandler.js';
@@ -10,23 +11,6 @@ const SHOULD_RUN_BENCHMARKS = process.env.RUN_STREAMING_BENCHMARKS === 'true';
 const BENCHMARK_ITERATIONS = Math.max(1, Number.parseInt(process.env.BENCH_ITERATIONS || '3', 10));
 const STREAM_CHUNK_SIZES = [8 * 1024, 64 * 1024, 256 * 1024];
 const BENCHMARK_TIMEOUT_MS = 300000;
-
-function resolveRepoRoot() {
-
-  const marker = `${path.sep}easi-js`;
-  const cwd = process.cwd();
-  const markerIndex = cwd.lastIndexOf(marker);
-
-  if (markerIndex > -1)
-  return cwd.substring(0, markerIndex);
-
-  return cwd;
-
-}
-
-function resolveFixturePath(relativePath) {
-  return path.join(resolveRepoRoot(), relativePath);
-}
 
 function bytesToMB(bytes) {
   return bytes / (1024 * 1024);
@@ -366,29 +350,14 @@ function benchmarkScenarios() {
 
 function buildFixtures() {
 
-  var fixtures = [
-  {
-    name: '0002.DCM',
-    path: resolveFixturePath('data/dicoms/0002.DCM'),
-    optional: false
-  },
-  {
-    name: '0009.DCM',
-    path: resolveFixturePath('data/dicoms/0009.DCM'),
-    optional: false
-  },
-  {
-    name: 'Lateral_View0.dcm',
-    path: resolveFixturePath('data/dicoms/local/Lateral_View0.dcm'),
-    optional: true
-  }];
-
-
-  return fixtures.filter((fixture) => {
-    if (fs.existsSync(fixture.path))
-    return true;
-    return fixture.optional !== true;
-  });
+  // Inputs are invented and deterministic; benchmark baselines identify this corpus.
+  return [
+    { name: 'synthetic-native-v1', bytes: getFixtureBytes('default') },
+    { name: 'synthetic-nested-v1', bytes: getFixtureBytes('nested-sequences') },
+    { name: 'synthetic-large-multiframe-v1', bytes: getFixtureBytes('multiframe', {
+      rows: 256, columns: 256, frames: 32
+    }) }
+  ];
 
 }
 
@@ -421,7 +390,7 @@ benchmarkTest('Benchmark: DICOM pipeline baseline (timing, buffering, materializ
   for (var fixtureIndex = 0; fixtureIndex < fixtures.length; fixtureIndex++) {
 
     var fixture = fixtures[fixtureIndex];
-    var fixtureBytes = new Uint8Array(fs.readFileSync(fixture.path));
+    var fixtureBytes = fixture.bytes;
 
     for (var scenarioIndex = 0; scenarioIndex < scenarios.length; scenarioIndex++) {
 

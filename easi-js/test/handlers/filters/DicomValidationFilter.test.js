@@ -6,16 +6,7 @@ ValidationConcernCodes,
 ValidationGoals } from
 '../../../src/handlers/filters/DicomValidationFilter.js';
 import { Status } from '../../../src/parsers/Status.js';
-
-const path = require('path');
-const fs = require('fs');
-
-function readDicomBytes(name = '0002.DCM') {
-
-  var brightDicomRoot = process.cwd().split('easi-js')[0];
-  return fs.readFileSync(path.join(brightDicomRoot, '/data/dicoms/' + name));
-
-}
+import { getFixtureBytes } from '../../fixtures/dicom/SyntheticDicom.js';
 
 async function parseInstanceWithHandler(handler, bytes) {
 
@@ -200,7 +191,7 @@ test('Test: DicomValidationFilter reports parser errors and forwards onError in 
 
 });
 
-test('Test: DicomValidationFilter passes through valid DICOM parse and accumulates no concerns for 0002.DCM', async () => {
+test('Test: DicomValidationFilter passes through valid DICOM parse and accumulates no concerns for a synthetic DICOM object', async () => {
 
   const concerns = [];
   const filter = new DicomValidationFilter(
@@ -208,7 +199,7 @@ test('Test: DicomValidationFilter passes through valid DICOM parse and accumulat
   { goal: ValidationGoals.PERMISSIVE, onConcern: (concern) => concerns.push(concern) });
 
 
-  const result = await parseInstanceWithHandler(filter, readDicomBytes('0002.DCM'));
+  const result = await parseInstanceWithHandler(filter, getFixtureBytes());
 
   expect(result).toBeDefined();
   expect(result.dataSet.find(Tag.PatientName)).toBeDefined();

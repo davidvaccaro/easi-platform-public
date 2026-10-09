@@ -1,5 +1,6 @@
 import EASI from '../../src/EASI.js';
 import { BlockedRunError } from '../../samples/kitchen-sink/run-feedback.js';
+import { getFixtureBytes } from '../fixtures/dicom/SyntheticDicom.js';
 
 const mockBindings = new Map();
 const mockControls = new Map();
@@ -102,6 +103,40 @@ describe('Kitchen Sink action recipes', () => {
         expect(() => mockBindings.get('jsonFromBox')()).toThrow(SyntaxError);
         expect(EASI.pipelineBuilder).not.toHaveBeenCalled();
         expect(objectUrl).not.toHaveBeenCalled();
+    });
+
+    test('selects genuinely synthetic DICOM for native, FHIR, and selection workflows without starting a parse', async () => {
+        const document = global.document;
+        const dataTransfer = global.DataTransfer;
+        const fileConstructor = global.File;
+        const eventConstructor = global.Event;
+        const controls = new Map(['dicomFile', 'dicomFileFHIR', 'dicomFileSelection'].map(id => [id, { dispatchEvent: jest.fn() }]));
+        global.document = { getElementById: id => controls.get(id) };
+        global.File = class extends Blob {
+            constructor(parts, name, options) { super(parts, options); this.name = name; }
+        };
+        global.Event = class { constructor(type) { this.type = type; } };
+        global.DataTransfer = class {
+            files = [];
+            items = { add: file => this.files.push(file) };
+        };
+        try {
+            const result = mockBindings.get('useSyntheticDicom')();
+            expect(result.synthetic).toBe(true);
+            expect(EASI.pipelineBuilder).not.toHaveBeenCalled();
+            const expected = getFixtureBytes('default');
+            for (const input of controls.values()) {
+                expect(input.files[0].name).toBe('easi-synthetic.dcm');
+                expect(new Uint8Array(await input.files[0].arrayBuffer())).toEqual(expected);
+                expect(input.dispatchEvent).toHaveBeenCalledWith(expect.objectContaining({ type: 'change' }));
+            }
+        }
+        finally {
+            global.document = document;
+            global.DataTransfer = dataTransfer;
+            global.File = fileConstructor;
+            global.Event = eventConstructor;
+        }
     });
 
     test('still exercises the EASI JSON parser for valid editor JSON and releases its input URL', async () => {

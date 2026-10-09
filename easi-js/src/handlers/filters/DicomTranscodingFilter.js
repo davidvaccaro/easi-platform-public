@@ -1499,6 +1499,31 @@ export default class DicomTranscodingFilter {
         if (state.isInDataSet != true)
             return;
 
+        if ((attribute instanceof Attribute)
+            && (attribute.transferSyntax?.IsLittleEndian != this.targetTransferSyntax?.IsLittleEndian)) {
+
+            // Attribute.value interprets raw bytes using the attribute syntax.
+            // Keep that syntax until parsing is complete, then convert the bytes
+            // before assigning the output syntax. PixelData has its own frame path.
+            if (attribute.isComplete != true)
+                return;
+
+            var vrID = (attribute.vr ?? attribute.valueRepresentation ?? attribute.tag?.VR)?.ID;
+            var bytesPerValue = {
+                AT: 2, SS: 2, US: 2, OW: 2,
+                FL: 4, SL: 4, UL: 4, OF: 4, OL: 4,
+                FD: 8, SV: 8, UV: 8, OD: 8, OV: 8
+            }[vrID] ?? 1;
+            if ((bytesPerValue > 1) && (this.isPixelDataAttribute(attribute) != true)) {
+                var valueBytes = attribute.access().slice(0);
+                for (var offset = 0; offset + bytesPerValue <= valueBytes.length; offset += bytesPerValue) {
+                    valueBytes.subarray(offset, offset + bytesPerValue).reverse();
+                }
+                attribute._setData(valueBytes);
+            }
+
+        }
+
         attribute.transferSyntax = this.targetTransferSyntax;
 
     }
@@ -3364,6 +3389,7 @@ export default class DicomTranscodingFilter {
 
         }
 
+        this.applyTransferSyntaxOverride(state, attribute);
         return await this.forward("onEndAttribute", context, attribute);
 
     }

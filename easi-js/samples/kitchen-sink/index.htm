@@ -185,6 +185,15 @@
 </div>
 <div class="action-row">
 <div class="action-description">
+<strong>Try synthetic DICOM</strong>
+<small>Invented pixels and identifiers. Also selects this file for FHIR and selection.</small>
+</div>
+<span class="action-status" id="useSyntheticDicomStatus" data-state="idle" role="status">Not run</span>
+<button type="button" class="run-button secondary" id="useSyntheticDicom" data-action data-action-label="Use synthetic DICOM">Use sample</button>
+</div>
+<p class="action-message" id="useSyntheticDicomMessage" role="status" hidden></p>
+<div class="action-row">
+<div class="action-description">
 <strong>Parse file</strong>
 <small>Instance, tags, and attributes in the console.</small>
 </div>
@@ -1288,7 +1297,7 @@
 <div class="card-heading">
 <div>
 <h2>Parse a text dump</h2>
-<p>The editor keeps the existing sample dump. Replace it with your own dump text to inspect the resulting model.</p>
+<p>The editor contains an invented sample dump. Replace it with your own dump text to inspect the resulting model.</p>
 </div>
 <span class="tag">Text input</span>
 </div>

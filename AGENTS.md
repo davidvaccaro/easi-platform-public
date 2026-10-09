@@ -21,8 +21,8 @@ Subsystems in this repository:
 Top-level:
 - `/easi-js` Primary runtime/library code.
 - `/easi-cs` Reserved placeholder for the future C# EASI implementation.
-- `/data` Sample DICOM&reg; files and dictionary source files used by tooling/tests.
-- `/ext/tools` External DICOM&reg; tooling binaries/scripts.
+- `/data` Dictionary source files and a local data guide. Original imaging corpora are ignored and optional.
+- `/ext/tools` Optional ignored local DICOM&reg; tooling binaries/scripts.
 
 `easi-js` structure:
 - `/src/EASI.js` Factory entry point (`EASI.pipelineBuilder()`).
@@ -39,6 +39,7 @@ Top-level:
 - `/src/fhir` FHIR&reg; model classes used by DICOM&reg;-to-FHIR&reg; mapping.
 - `/src/codecs` Pixel data decoding utilities.
 - `/test` Jest unit and integration tests (mirrors `src` structure).
+- `/test/fixtures/dicom` Independent in-memory synthetic fixtures; use these for public tests, not original local images.
 - `/doc` Markdown API and class docs.
 
 Agents should avoid modifying:
@@ -73,7 +74,7 @@ Run commands from repository root unless noted.
 
 Environment:
 1. `cd easi-js`
-2. `node -v` (expected major version `16` or `18` per `package.json`)
+2. `node -v` (supported major version `22` or `24` per `package.json`)
 
 Install dependencies:
 1. `cd easi-js`
@@ -160,6 +161,7 @@ Agents MUST:
 - Never modify environment files (`.env*`).
 - Avoid changing authentication/authorization or permission logic unless requested.
 - Treat all DICOM&reg; sample files as sensitive-style test assets; do not move or publish them outside repo context.
+- Keep original imaging data and local backups ignored. Run `npm run source:check` before a publication change. Public tests must work without the local corpus or `ext/tools` binaries.
 
 ---
 

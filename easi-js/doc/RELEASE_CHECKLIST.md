@@ -15,6 +15,7 @@ Use this checklist before publishing `@xinonix/easi-js` or creating its release 
   - `Core Tests (Node 22.x)`
   - `Core Tests (Node 24.x)`
 - [ ] No unresolved regressions in recently touched modules.
+- [ ] `npm run source:check` passes. A clean checkout runs unit and deterministic integration tests without original imaging data or `ext/tools` binaries; local ignored assets are excluded.
 
 ## 3) Package Gate
 
@@ -57,21 +58,24 @@ Use this checklist before publishing `@xinonix/easi-js` or creating its release 
 - [ ] Known limitations and mitigations noted.
 - [ ] npm organization/scope ownership and publishing rights for `@xinonix` are verified by the owner; local package creation does not reserve the name or establish registry access.
 - [ ] Companion documentation/API contracts are synchronized and accessible to readers and the CI checkout. Account credentials and repository visibility are configured separately.
+- [ ] Before making the source repository public, inspect every published branch and tag for historical original imaging assets and external binaries. Current-tree removal and the npm allowlist do not clear Git history. Keep any original corpus and pre-rewrite Git bundle local.
 - [ ] Final sign-off recorded (owner/date).
 
-Publication is a separate, explicitly authorized manual step. For a validated release candidate such as `1.0.0-rc.1`, use the `next` tag so the candidate does not become the default install:
+Publication is a separate, explicitly authorized manual step. For a validated release candidate, use the `next` tag. The first publication of `1.0.0-rc.1` also received npm's automatic `latest` tag; npm refused its removal. Until stable v1 replaces it, both `next` and `latest` point to that candidate. Document this behavior rather than claiming the default install is stable. Use the leading `./` when publishing a local archive:
 
 ```bash
-npm publish artifacts/xinonix-easi-js-1.0.0-rc.1.tgz --access public --tag next
+npm publish ./artifacts/xinonix-easi-js-VERSION.tgz --access public --tag next
 ```
 
 For a stable release, first update the package and lockfile version to `1.0.0`, change `publishConfig.tag` to `latest`, refresh its release notes, repeat the gates above, and create a new archive. Explicitly use `latest` for that validated stable archive; the current candidate metadata defaults to `next`:
 
 ```bash
-npm publish artifacts/xinonix-easi-js-1.0.0.tgz --access public --tag latest
+npm publish ./artifacts/xinonix-easi-js-1.0.0.tgz --access public --tag latest
 ```
 
 These future commands run from `easi-js` after ownership/access verification and publication authorization. The CI workflow uploads archives and never runs them.
+
+Published versions are immutable: changes after `1.0.0-rc.1` require a new version and a newly validated archive. A successful npm submission can still await registry scanning; verify registry availability, tags, integrity, and a clean installation before announcing a release.
 
 ## 8) Post-Release
 

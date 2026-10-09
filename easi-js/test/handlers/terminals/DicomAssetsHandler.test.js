@@ -3,6 +3,12 @@ import Tag from '../../../src/dicom/Tag.js';
 import Attribute from '../../../src/dicom/Attribute.js';
 import TransferSyntax from '../../../src/dicom/TransferSyntax.js';
 import Constants from '../../../src/dicom/Constants.js';
+import EASI from '../../../src/EASI.js';
+import Configuration from '../../../src/environment/Configuration.js';
+import OpenJpegRuntime from '../../../src/codecs/runtimes/OpenJpegRuntime.js';
+import Jpeg2000Decoder from '../../../src/codecs/decoders/Jpeg2000Decoder.js';
+import { readFileSync } from 'node:fs';
+import { createDicomFixture } from '../../fixtures/dicom/SyntheticDicom.js';
 
 function toUint32LE(value) {
     return new Uint8Array([
@@ -234,4 +240,85 @@ test('Test: DicomAssetsHandler avoids a duplicate completion marker for a frame 
     expect(chunks).toHaveLength(1);
     expect(chunks[0].isFinalChunk).toBe(true);
 
+});
+
+function sharedCodecState() {
+    const registry = Configuration.global.codecRegistry;
+    return {
+        registry,
+        decoderProviders: { ...registry.decoderProviders },
+        imageDecoderProviders: { ...registry.imageDecoderProviders },
+        encoderProviders: { ...registry.encoderProviders },
+        openjpegModule: OpenJpegRuntime.module,
+        openjpegFactory: OpenJpegRuntime.factory,
+        openjpegModulePromise: OpenJpegRuntime.modulePromise,
+        globalOpenjpegModule: globalThis.EASIOpenJPEGModule,
+        globalOpenjpegFactory: globalThis.EASIOpenJPEGFactory
+    };
+}
+
+test.each([
+    ['specific transfer-syntax registration', TransferSyntax.ExplicitVRLittleEndian],
+    ['configured registry default', TransferSyntax.NONE]
+])('Test: asset rendering uses the %s without changing global codecs', async (_name, registeredSyntax) => {
+    const globalState = sharedCodecState();
+    const fixture = createDicomFixture('default', { rows: 2, columns: 2, frames: 1, pixels: [9, 19, 29, 39] });
+    const expectedRgba = new Uint8Array([
+        17, 18, 19, 255, 27, 28, 29, 255,
+        37, 38, 39, 255, 47, 48, 49, 255
+    ]);
+    const contexts = [];
+    const decode = jest.fn((source, start, stop, destination, destinationStart) => {
+        expect(source.subarray(start, stop)).toEqual(fixture.expected.pixelBytes);
+        destination.set(expectedRgba, destinationStart * 4);
+        return true;
+    });
+    const registry = EASI.codecRegistryBuilder().withDefaultCodecs().build();
+    registry.setDecoderForTransferSyntax(registeredSyntax, image => {
+        if (image != null)
+            contexts.push(image);
+        return { decode };
+    });
+
+    const result = await EASI.pipelineBuilder().fromByteStream().ofDicomData().
+        withCodecRegistry(registry).
+        toAssets({ payload: { frame: { frames: 'first', decode: 'rgba', encode: 'none' }, collect: true } }).
+        build().process({ source: fixture.bytes });
+
+    expect(decode).toHaveBeenCalledTimes(1);
+    expect(contexts).toHaveLength(1);
+    expect(contexts[0].imagePixelModule.rows).toBe(2);
+    expect(contexts[0].imagePixelModule.columns).toBe(2);
+    expect(contexts[0].attributeSet.value(Tag.SOPInstanceUID)).toBe(fixture.expected.sopInstanceUid);
+    expect(result.frames).toHaveLength(1);
+    expect(result.frames[0]).toEqual(expect.objectContaining({ width: 2, height: 2, encoding: 'rgba', bytes: expectedRgba }));
+    expect(sharedCodecState()).toEqual(globalState);
+});
+
+test('Test: asset rendering decodes exact JPEG 2000 pixels through an isolated OpenJPEG registry', async () => {
+    const globalState = sharedCodecState();
+    const factory = require('@voxelmed/openjpegjs/dist/openjpegwasm.js');
+    const wasmBinary = readFileSync(require.resolve('@voxelmed/openjpegjs/dist/openjpegwasm.wasm'));
+    const openjpegModule = await factory({ wasmBinary, print() {}, printErr() {} });
+    const fixture = createDicomFixture('jpeg2000');
+    const registry = EASI.codecRegistryBuilder().withDefaultCodecs().build();
+    registry.setDecoderForTransferSyntax(fixture.expected.transferSyntaxUid, image => {
+        const decoder = new Jpeg2000Decoder(image);
+        decoder.openjpegModule = openjpegModule;
+        return decoder;
+    });
+
+    const result = await EASI.pipelineBuilder().fromByteStream().ofDicomData().
+        withCodecRegistry(registry).
+        toAssets({ payload: { frame: { frames: 'first', decode: 'rgba', encode: 'none' }, collect: true } }).
+        build().process({ source: fixture.bytes });
+
+    expect(result.frames).toHaveLength(1);
+    expect(result.frames[0]).toEqual(expect.objectContaining({
+        width: fixture.expected.columns,
+        height: fixture.expected.rows,
+        encoding: 'rgba',
+        bytes: fixture.expected.firstFrameRgba
+    }));
+    expect(sharedCodecState()).toEqual(globalState);
 });
