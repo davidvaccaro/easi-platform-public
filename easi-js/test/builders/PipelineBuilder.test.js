@@ -4,6 +4,7 @@ import ByteDataParser from "../../src/parsers/ByteDataParser.js";
 import JsonDataParser from "../../src/parsers/JsonDataParser.js";
 import XmlDataParser from "../../src/parsers/XmlDataParser.js";
 import HttpStreamReader from "../../src/readers/HttpStreamReader.js";
+import DicomwebStreamReader from "../../src/readers/DicomwebStreamReader.js";
 import ByteStreamReader from "../../src/readers/ByteStreamReader.js";
 import FileStreamReader from "../../src/readers/FileStreamReader.js";
 import FolderStreamReader from "../../src/readers/FolderStreamReader.js";
@@ -61,6 +62,7 @@ test("Test: staged interfaces expose only legal methods per stage", () => {
   expect(typeof source.fromPartStream).toBe("function");
   expect(typeof source.fromFolderStream).toBe("function");
   expect(typeof source.fromFolderWatchStream).toBe("function");
+  expect(typeof source.fromDicomweb).toBe("function");
   expect(typeof source.fromDimseAssociation).toBe("function");
   expect(typeof source.ofDicomData).toBe("undefined");
   expect(typeof source.toInstances).toBe("undefined");
@@ -871,6 +873,18 @@ test("Test: fromHttpStream builds with HttpStreamReader transport", () => {
   build();
 
   expect(pipeline.reader instanceof HttpStreamReader).toBe(true);
+  expect(pipeline.parser instanceof DicomDataParser).toBe(true);
+  expect(pipeline.parser.handler instanceof DicomInstanceHandler).toBe(true);
+});
+
+test("Test: fromDicomweb builds with DicomwebStreamReader transport", () => {
+  const pipeline = new PipelineBuilder().
+  fromDicomweb().
+  ofDicomData().
+  toInstances().
+  build();
+
+  expect(pipeline.reader instanceof DicomwebStreamReader).toBe(true);
   expect(pipeline.parser instanceof DicomDataParser).toBe(true);
   expect(pipeline.parser.handler instanceof DicomInstanceHandler).toBe(true);
 });

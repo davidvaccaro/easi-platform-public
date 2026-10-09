@@ -19,6 +19,7 @@
 
 import PartStreamReader from "../../readers/PartStreamReader.js";
 import HttpStreamReader from "../../readers/HttpStreamReader.js";
+import DicomwebStreamReader from "../../readers/DicomwebStreamReader.js";
 import ByteStreamReader from "../../readers/ByteStreamReader.js";
 import FileStreamReader from "../../readers/FileStreamReader.js";
 import FolderStreamReader from "../../readers/FolderStreamReader.js";
@@ -40,7 +41,7 @@ export default class PipelineSourceStage extends PipelineBuilderStage {
 
     /**
      * Set the current reader.
-     * @param {PartStreamReader | HttpStreamReader | ByteStreamReader | FileStreamReader | FolderStreamReader | FolderWatchReader | WebSocketStreamReader | NodeStreamAdapterReader | DimseAssociationReader | object} reader The reader used to process source input.
+     * @param {PartStreamReader | HttpStreamReader | DicomwebStreamReader | ByteStreamReader | FileStreamReader | FolderStreamReader | FolderWatchReader | WebSocketStreamReader | NodeStreamAdapterReader | DimseAssociationReader | object} reader The reader used to process source input.
      * @param {string | ReadableStream | ReadableStreamDefaultReader<Uint8Array> | Uint8Array | ArrayBuffer | DataView | Array<number> | object | null} source Optional default source bound at build-time.
      * @param {(RequestInit & { onEmit?: Function | null }) | { contentType?: Response | Headers | string | object, contentLength?: number | string | null, onEmit?: Function | null } | { recursive?: boolean, includeHidden?: boolean, extensions?: Array<string> | string | null, maxFiles?: number, sort?: "name" | "mtime" | "none", continueOnError?: boolean, processExistingOnStart?: boolean, settleMs?: number, stableChecks?: number, dedupeWindowMs?: number, reconcileIntervalMs?: number, maxQueue?: number, overflow?: "fail" | "drop-oldest" | "drop-newest" } | { transport?: object } | object | null} options Optional default source options bound at build-time.
      * @returns {PipelineFormatStage} A format stage reference.
@@ -70,6 +71,16 @@ export default class PipelineSourceStage extends PipelineBuilderStage {
      */
     fromHttpStream(source = null, options = null) {
         return this.withReader(new HttpStreamReader(new PartStreamReader()), source, options);
+    }
+
+    /**
+     * Use DICOMweb ingestion for WADO/QIDO URL sources and structured DICOMweb endpoint options.
+     * @param {string | object | null} source Optional default source URL or structured source object.
+     * @param {{ mode?: "wado-instance" | "wado-metadata" | "qido-search", accept?: string, request?: RequestInit, query?: object, dicomwebPathPrefix?: string, studyInstanceUid?: string, seriesInstanceUid?: string, sopInstanceUid?: string, level?: "study" | "series" | "instance", onEmit?: Function | null } | null} options Optional DICOMweb request options.
+     * @returns {PipelineFormatStage}
+     */
+    fromDicomweb(source = null, options = null) {
+        return this.withReader(new DicomwebStreamReader(new PartStreamReader()), source, options);
     }
 
     /**
