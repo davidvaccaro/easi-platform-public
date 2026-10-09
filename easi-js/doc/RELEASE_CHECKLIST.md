@@ -50,6 +50,7 @@ Use this checklist before publishing `@xinonix/easi-js` or creating its release 
 - [ ] CI changes are reflected in `easi-js/doc/CI.md`.
 - [ ] Public docs describe the license as source-available, with free community eligibility for qualifying individuals/research/nonprofits and organization groups strictly below USD 5 million in annual consolidated gross revenue. Other use requires commercial licensing subject to the evaluation/transition terms.
 - [ ] Operative Community License, ownership/contributor rights, and preserved third-party terms are reviewed for publication. The incomplete commercial agreement template remains outside the archive.
+- [ ] Repository-root `LICENSE` and npm package `easi-js/LICENSE` contain identical Community License terms; update both copies together when changing the license.
 - [ ] Commercial licensing contact `dvaccaro@xinonix.com` is confirmed and customer requests can receive an appropriate written agreement. No price, support commitment, or signed agreement is implied by installation.
 
 ## 7) Publication Readiness

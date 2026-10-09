@@ -2,6 +2,8 @@
 
 The [EASI platform public source repository](https://github.com/davidvaccaro/easi-platform-public) contains implementations and development tools for the **Expressive API Standard for Imaging**. The current release focus is **EASI JS**, a JavaScript library for fluent, streaming DICOM reading, selection, mapping, and writing, with FHIR R4 ImagingStudy mapping and Node.js DIMSE.
 
+**License:** [EASI JS Community License](LICENSE), with free community use for eligible users and separate paid commercial licensing. See [Licensing](#licensing) for eligibility and contact details.
+
 This source checkout uses filtered Git history and synthetic imaging fixtures. Original imaging assets and their history stay in the private development repository and local backup.
 
 ## Start with EASI JS
@@ -46,6 +48,6 @@ Source tests and API contract checks use the bundled JavaScript contract snapsho
 
 ## Licensing
 
-The EASI JS package is source-available under its [Community License](easi-js/LICENSE), with paid commercial licensing for organizations outside community eligibility. The community revenue threshold is strictly below USD 5 million in annual consolidated group revenue, with qualifying research/nonprofit exceptions. Third-party components retain their own [notices and licenses](easi-js/NOTICE). Other packages, datasets, and specifications are governed by their respective terms.
+The EASI JS package is source-available under its [Community License](LICENSE), with paid commercial licensing for organizations outside community eligibility. The same license is included in the npm package at [easi-js/LICENSE](easi-js/LICENSE). The community revenue threshold is strictly below USD 5 million in annual consolidated group revenue, with qualifying research/nonprofit exceptions. Third-party components retain their own [notices and licenses](easi-js/NOTICE). Other packages, datasets, and specifications are governed by their respective terms.
 
 Commercial licensing enquiries: [dvaccaro@xinonix.com](mailto:dvaccaro@xinonix.com).
