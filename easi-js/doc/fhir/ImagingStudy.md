@@ -1,6 +1,6 @@
 # `ImagingStudy` Class
 
-The `ImagingStudy` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
+The `ImagingStudy` class models the FHIR R4 4.0.1 resource used by the [DICOM mapping](../handlers/mappings/DicomToFHIRImagingStudyMapping.md). JSON includes its resource ID when set, a string `status`, Coding-array `modality`, Reference-array `endpoint`, and R4-shaped series/instances. A new model defaults to `status: 'unknown'`; the mapper uses its configured source status (default `'available'`). Legacy `ImagingStudyStatus` Symbols normalize to their string descriptions. Empty optional values are omitted.
 
 ---
 

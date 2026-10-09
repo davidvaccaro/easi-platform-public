@@ -289,12 +289,17 @@ export default class PipelineTargetStage extends PipelineBuilderStage {
 
     /**
      * Materialize parser output as FHIR ImagingStudy resources.
-     * @param {'full' | 'study-summary'} [profile='full'] ImagingStudy mapping profile.
+     * @param {'full' | 'study-summary' | object} [profileOrOptions='full'] Mapping profile or FHIR R4 mapping options.
      * @returns {PipelineOutputStage}
      */
-    toFHIRImagingStudy(profile = 'full') {
+    toFHIRImagingStudy(profileOrOptions = 'full') {
+        if ((typeof profileOrOptions != 'string') &&
+            ((profileOrOptions == null) || (typeof profileOrOptions != 'object') || Array.isArray(profileOrOptions))) {
+            throw new TypeError('toFHIRImagingStudy expects a profile name or mapping options object.');
+        }
+        const options = typeof profileOrOptions == 'string' ? { profile: profileOrOptions } : profileOrOptions;
         return this.withHandler(this.wrapDicomMetadataAdapterIfNeeded(
-            new DicomMappingHandler(new DicomToFHIRImagingStudyMapping({ profile }))
+            new DicomMappingHandler(new DicomToFHIRImagingStudyMapping(options))
         ));
     }
 

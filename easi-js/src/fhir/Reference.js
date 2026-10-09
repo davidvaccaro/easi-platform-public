@@ -18,6 +18,7 @@
 //
 
 import Element from "./Element.js"
+import { toFhirJSON } from "./FhirJson.js";
 
 export default class Reference extends Element {
 
@@ -82,12 +83,12 @@ export default class Reference extends Element {
      * @returns 
      */
     toJSON() {
-        return {
+        return toFhirJSON({
             reference: this.reference,
             type: this.type,
             identifier: this.identifier,
             display: this.display
-        }
+        });
     }
 
     /**
@@ -97,10 +98,10 @@ export default class Reference extends Element {
     constructor(reference) {
 
         // Call the super
-        super();
+        super((typeof reference === 'object') ? reference : null);
 
         // Set the reference value
-        if (reference != null) {
+        if ((reference != null) && (typeof reference !== 'object')) {
             this._reference = reference;
         }
 

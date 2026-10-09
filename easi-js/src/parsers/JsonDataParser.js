@@ -326,6 +326,9 @@ export default class JsonDataParser extends DataParser {
         // Init the current data-element stack
         this.dataElements = [];
 
+        // Discard buffered UTF-8 bytes when a parse completes or terminates early.
+        this.decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
+
     }
 
     /**
@@ -598,7 +601,8 @@ export default class JsonDataParser extends DataParser {
                 // Determine token content bounds.
                 var end = (isComplete == true) ? index : length;
                 var valueData = this.data.peek(start, (end - start));
-                var value = this.decoder.decode(valueData);
+                // Retain an incomplete UTF-8 code point until the next string fragment arrives.
+                var value = this.decoder.decode(valueData, { stream: (isComplete == false) });
 
                 // Include the closing quote in bytesPeeked when complete.
                 bytesPeeked = (isComplete == true) ? (index + 1) : length;
@@ -1467,7 +1471,7 @@ export default class JsonDataParser extends DataParser {
         super();
 
         // Create a text decoder
-        this.decoder = new TextDecoder();
+        this.decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
 
     }
     

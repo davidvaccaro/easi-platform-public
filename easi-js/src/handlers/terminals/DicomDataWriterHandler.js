@@ -401,6 +401,30 @@ export default class DicomDataWriterHandler {
 
         }
 
+        if (vrID == 'PN') {
+            // DICOM JSON PN values contain separate script representations.
+            // Preserve their positions, including an absent Alphabetic group.
+            var names = (Array.isArray(value) ? value : [value]).map((name) => {
+                if (name == null)
+                    return '';
+                if (typeof name === 'string')
+                    return name;
+                if ((typeof name !== 'object') || Array.isArray(name))
+                    throw new Error('Invalid DICOM PN representation; expected a string or object.');
+                if (['alphabetic', 'ideographic', 'phonetic'].includes(name.type)) {
+                    var legacyKey = name.type[0].toUpperCase() + name.type.substring(1);
+                    name = { [legacyKey]: name.value };
+                }
+                var groups = ['Alphabetic', 'Ideographic', 'Phonetic'].map((key) => name[key] ?? '');
+                if (groups.some((group) => typeof group !== 'string'))
+                    throw new Error('Invalid DICOM PN representation; expected strings.');
+                while ((groups.length > 0) && (groups[groups.length - 1] === ''))
+                    groups.pop();
+                return groups.join('=');
+            });
+            return this.padValueBytes((new TextEncoder()).encode(names.join('\\')), vrID);
+        }
+
         if (Array.isArray(value)) {
             if (value.length == 0)
                 return new Uint8Array(0);

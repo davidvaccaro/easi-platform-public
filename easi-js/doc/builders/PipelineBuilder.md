@@ -43,6 +43,8 @@ Use one of these before choosing format:
 - `fromDimseAssociation(association?, transport?)`
 - `withReader(reader)`
 
+DIMSE requests use `.build().process({ sourceOptions: request })`. See the [v1 DIMSE guide](../DIMSE_V1.md) for query keys, listener lifecycle, statuses, and buffering bounds.
+
 ## Format Stage Methods
 
 Use one of these after source:
@@ -62,7 +64,7 @@ Terminal target methods:
 - `toEntities()`
 - `toSelection(selection)`
 - `toMapping(mapping)`
-- `toFHIRImagingStudy(profile = "full")`
+- `toFHIRImagingStudy(profileOrOptions = "full")` — FHIR R4 ImagingStudy; accepts a profile string or [mapping options](../handlers/mappings/DicomToFHIRImagingStudyMapping.md) for subject references, identifier namespaces, status, and Endpoint references.
 - `toDicomData(options?)`
 - `toStructuredValue()`
 - `toAssets(options?)`

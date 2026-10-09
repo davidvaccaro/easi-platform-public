@@ -22,6 +22,6 @@
       "**/dist": true,
       "**/coverage": true
     },
-    "liveServer.settings.multiRootWorkspaceName": "easi"
+    "liveServer.settings.multiRootWorkspaceName": "easi-platform"
   }
 }

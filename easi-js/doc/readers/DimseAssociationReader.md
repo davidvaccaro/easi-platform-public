@@ -42,3 +42,9 @@ const pipeline = EASI
 
 - Build-time validation requires a DIMSE source transport when using `fromDimseAssociation(...)`.
 - DIMSE source currently requires native DICOM&reg; parser semantics (`ofDicomData()`).
+- `pipeline.reader.lastMetadata` exposes the last transport envelope's operation diagnostics, final status, and suboperation counts. It resets at the start of each read attempt.
+- A completed query with no matches returns an empty `PipelineResultCollection`; it does not manufacture an empty DICOM instance or FHIR study. Transports represent this explicitly as `{ empty: true, source: new Uint8Array(0), metadata: { count: 0 } }`.
+- Use `sourceOptions.signal` to abort one operation. `run.stop()` also aborts in-flight reads and closes source-bound listener transports.
+- An envelope's undefined `onEmit` preserves the caller's callback; explicit `null` disables emission.
+
+See the [DIMSE v1 guide](../DIMSE_V1.md) for examples and the supported operation matrix.

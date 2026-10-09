@@ -1,8 +1,8 @@
 # Image Decoders
 
-EASI DICOM&reg; includes several decoder classes that convert DICOM&reg; pixel data into usable image buffers.  
+EASI JS includes decoder classes that convert DICOM&reg; pixel data and supported image payloads into usable RGBA buffers.
 
-All decoders implement a common public interface with a `decode()` method and a constructor that accepts a DICOM&reg; object.
+Import decoder classes from `@xinonix/easi-js/codecs`. DICOM pixel decoders accept an optional DICOM image context; standalone image decoders such as `PngDecoder` can be constructed without one. The `decode()` interface writes into a caller-supplied destination buffer. Some implementations are asynchronous, so use `await` when calling a decoder generically.
 
 ---
 
@@ -17,7 +17,7 @@ new Decoder(dicomObject)
 
 | Parameter      | Type    | Description                              |
 |----------------|---------|------------------------------------------|
-| `dicomObject`  | `*`     | The DICOM&reg; object associated with the pixel data. |
+| `dicomObject`  | `object \| null` | Optional DICOM&reg; image context associated with the pixel data. |
 ### `decode(source, sourceStart, sourceStop, destination, destinationStart, windowCenter, windowWidth)`
 
 Decodes image pixel data from the source buffer to the destination buffer.
@@ -38,7 +38,7 @@ Decodes image pixel data from the source buffer to the destination buffer.
 
 | Type    | Description                         |
 |---------|-------------------------------------|
-| *(None)*| Writes output to the destination buffer. |
+| `boolean \| Promise<boolean>` | Indicates whether decoding succeeded; output is written to the destination buffer. Invalid or unsupported input can throw an error. |
 ## Implementations
 
 ### `JpegDecoder`
@@ -50,7 +50,7 @@ Supports transfer syntax: `TransferSyntax.JPEGBaseline8Bit`.
 
 ### `JpegLosslessDecoder`
 
-Decodes JPEG Lossless (14-bit) DICOM&reg; pixel data.  
+Decodes DICOM&reg; JPEG Lossless pixel data.
 Supports transfer syntaxes:
 
 - `TransferSyntax.JPEGLossless`
@@ -66,24 +66,60 @@ Supports transfer syntax: `TransferSyntax.NONE`.
 ## Usage Example
 
 ```js
-import Configuration from 'easi-dicom';
-import TransferSyntax from 'easi-dicom/dicom/TransferSyntax.js';
+import EASI, { TransferSyntax } from '@xinonix/easi-js';
 
-// Get a decoder for the specified transfer syntax
-const decoder = Configuration.global.getDecoderFor(TransferSyntax.JPEGBaseline8Bit, dicomObject);
+const registry = EASI.codecRegistryBuilder().withDefaultCodecs().build();
 
-// Prepare buffers
-const sourceBuffer = ...; // Uint8Array with compressed pixel data
-const destinationBuffer = new Uint8Array(decodedLength);
-
-// Perform decode
-decoder.decode(
-    sourceBuffer,
-    0,
-    sourceBuffer.length,
-    destinationBuffer,
-    0,
-    windowCenter,
-    windowWidth
-);
+// sourceBuffer contains one encoded JPEG Baseline frame. Supply its dimensions
+// and the DICOM image context when your decoder needs pixel metadata.
+async function decodeJpegFrame(sourceBuffer, width, height, dicomObject = null) {
+    const decoder = registry.getDecoderForTransferSyntax(
+        TransferSyntax.JPEGBaseline8Bit,
+        dicomObject
+    );
+    const destinationBuffer = new Uint8Array(width * height * 4);
+    const success = await decoder.decode(
+        sourceBuffer, 0, sourceBuffer.length, destinationBuffer, 0
+    );
+    if (success !== true) {
+        throw new Error('JPEG frame decoding did not succeed.');
+    }
+    return destinationBuffer;
+}
 ```
+
+For standalone supported PNG payloads, `PngDecoder.decodeImage()` returns the dimensions and RGBA bytes together:
+
+```js
+import { PngDecoder } from '@xinonix/easi-js/codecs';
+
+async function decodePng(sourceBytes) {
+    return await new PngDecoder().decodeImage(sourceBytes);
+    // { width, height, bytes: Uint8Array }
+}
+```
+
+## Optional OpenJPEG runtime
+
+The npm library does not load or bundle an OpenJPEG binary automatically. JPEG2000 decoding requires a compatible, initialized module with a `J2KDecoder` constructor. EASI calls the decoder's `getEncodedBuffer()`, `decode()`, `getFrameInfo()`, and `getDecodedBuffer()` methods. Encoding also requires the encoder methods used by `Jpeg2000RgbaEncoder`; an arbitrary JPEG2000 WebAssembly module may expose a different API.
+
+Initialize your selected provider in your application and register the resolved module before decoding:
+
+```js
+import { OpenJpegRuntime } from '@xinonix/easi-js/codecs';
+
+// createOpenJpegModule is supplied by your chosen compatible codec provider.
+// moduleOptions may include its WASM URL/locateFile or wasmBinary configuration.
+async function configureOpenJpeg(createOpenJpegModule, moduleOptions = {}) {
+    const module = await createOpenJpegModule(moduleOptions);
+    if (typeof module?.J2KDecoder !== 'function') {
+        throw new Error('The provider must expose a compatible J2KDecoder.');
+    }
+    OpenJpegRuntime.setModule(module);
+    return module;
+}
+```
+
+`Jpeg2000Decoder.decode()` is synchronous. Registering an unresolved asynchronous factory with `OpenJpegRuntime.setFactory()` alone does not make its module available to that decoder. Await initialization and call `setModule()` as shown above. A decoder can also receive a preloaded module through its `openjpegModule` property.
+
+The source checkout's Kitchen Sink demonstrates loading the optional OpenJPEG provider's script and WASM assets. Applications must install or serve their chosen provider and its assets separately and follow its license. JPEG-LS and HTJ2K require compatible backends for their respective profiles; an ordinary OpenJPEG module does not establish HTJ2K support.

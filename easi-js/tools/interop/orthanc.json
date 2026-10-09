@@ -1,0 +1,18 @@
+{
+  "Name": "EASI synthetic DIMSE interop",
+  "StorageDirectory": "/var/lib/orthanc/db",
+  "IndexDirectory": "/var/lib/orthanc/db",
+  "Plugins": [],
+  "DicomAet": "ORTHANC",
+  "DicomPort": 4242,
+  "HttpPort": 8042,
+  "RemoteAccessAllowed": false,
+  "AuthenticationEnabled": true,
+  "RegisteredUsers": {
+    "orthanc": "orthanc"
+  },
+  "DicomModalities": {
+    "EASI_JS": ["EASI_JS", "127.0.0.1", 11112],
+    "EASI_MOVE_DEST": ["EASI_MOVE_DEST", "127.0.0.1", 4104]
+  }
+}

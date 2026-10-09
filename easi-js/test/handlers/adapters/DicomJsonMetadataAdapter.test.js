@@ -222,6 +222,51 @@ test('Test: Metadata adapter parses chunk-split PN object string values without 
     const instance = parser.result;
     expect(instance.dataSet).toBeDefined();
     expect(instance.dataSet.find(Tag.PatientName)).toBeDefined();
+    expect(instance.dataSet.find(Tag.PatientName).value).toEqual({ Alphabetic: 'DOE^JOHN' });
+
+});
+
+test.each([false, true])('Test: PN groups and empty VM entries survive every two-chunk split (downstream=%s)', async (downstream) => {
+
+    const names = [
+        null,
+        { Alphabetic: 'DOE^JOHN', Ideographic: '山田^太郎', Phonetic: 'やまだ^たろう' },
+        { Alphabetic: '', Phonetic: 'SMITH^JANE' },
+        {},
+        null
+    ];
+    const json = JSON.stringify({ '00100010': { vr: 'PN', Value: names } });
+    const bytes = new TextEncoder().encode(json);
+
+    for (let splitAt = 1; splitAt < bytes.length; splitAt++) {
+        const parser = new JsonDataParser();
+        parser.reset();
+        parser.handler = new DicomJsonMetadataAdapter(downstream ? new DicomInstanceHandler() : null);
+
+        expect(await parser.parse(bytes.slice(0, splitAt), false, splitAt, bytes.length)).toBe(Status.CONTINUE);
+        expect(await parser.parse(bytes.slice(splitAt), true, bytes.length, bytes.length)).toBe(Status.SUCCESS);
+
+        const instance = downstream ? parser.result : parser.result[0];
+        expect(instance.dataSet.find(Tag.PatientName).value).toEqual(names);
+    }
+
+});
+
+test('Test: PN groups are preserved when Value precedes vr and each byte arrives separately', async () => {
+
+    const name = { Ideographic: '山田^太郎', Phonetic: '', Alphabetic: 'DOE^JOHN' };
+    const bytes = new TextEncoder().encode(JSON.stringify({ '00100010': { Value: [name], vr: 'PN' } }));
+    const parser = new JsonDataParser();
+    parser.reset();
+    parser.handler = new DicomJsonMetadataAdapter(new DicomInstanceHandler());
+
+    for (let i = 0; i < bytes.length; i++) {
+        const final = i === bytes.length - 1;
+        expect(await parser.parse(bytes.slice(i, i + 1), final, i + 1, bytes.length))
+            .toBe(final ? Status.SUCCESS : Status.CONTINUE);
+    }
+
+    expect(parser.result.dataSet.find(Tag.PatientName).value).toEqual(name);
 
 });
 

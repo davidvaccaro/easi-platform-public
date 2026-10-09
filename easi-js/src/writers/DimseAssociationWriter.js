@@ -151,14 +151,20 @@ export default class DimseAssociationWriter {
             }
 
             var last = (results.length > 0) ? results[results.length - 1] : null;
+            var warnings = results.filter((item) => (item?.ok === true) && ((Number(item?.dimseStatus) & 0xF000) === 0xB000));
+            var failed = last?.ok !== true;
             return {
                 ok: results.every((item) => (item?.ok === true)),
-                status: last?.status ?? 'Success',
-                dimseStatus: last?.dimseStatus ?? 0x0000,
+                status: failed ? (last?.status ?? 'Failure') : (warnings.length > 0 ? 'Warning' : (last?.status ?? 'Success')),
+                dimseStatus: failed ? (last?.dimseStatus ?? 0xC000) : (warnings[0]?.dimseStatus ?? last?.dimseStatus ?? 0x0000),
                 bytesWritten,
                 association: association ?? undefined,
                 metadata: {
                     count: source.length,
+                    attempted: results.length,
+                    completed: results.filter((item) => (item?.ok === true) && ((Number(item?.dimseStatus) & 0xF000) !== 0xB000)).length,
+                    failed: results.filter((item) => (item?.ok !== true)).length,
+                    warning: warnings.length,
                     results
                 }
             };

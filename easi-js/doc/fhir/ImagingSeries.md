@@ -1,6 +1,6 @@
 # `ImagingSeries` Class
 
-The `ImagingSeries` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
+The `ImagingSeries` class models the FHIR R4 ImagingStudy series backbone. JSON uses `instance` (singular) for the repeating instance list, one `Coding` for `modality`, and a repeating array of `Reference` values for `endpoint`. The JavaScript `.instances` property remains an alias for `.instance`. Empty optional values are omitted. See the [mapping guide](../handlers/mappings/DicomToFHIRImagingStudyMapping.md).
 
 ---
 
@@ -20,10 +20,10 @@ new ImagingSeries()
 
 | Property | Type    | Description |
 |----------|---------|-------------|
-| `_instances` | `*` | Instance property initialized in constructor. |
 | `description` | `*` | Accessor property. |
 | `endpoint` | `*` | Accessor property. |
-| `instances` | `*` | Accessor property. |
+| `instance` | `Array<ImagingInstance>` | Canonical instance list. |
+| `instances` | `Array<ImagingInstance>` | Compatibility alias for `instance`. |
 | `modality` | `*` | Accessor property. |
 | `number` | `*` | Accessor property. |
 | `numberOfInstances` | `*` | Accessor property. |

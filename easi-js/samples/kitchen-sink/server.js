@@ -47,6 +47,16 @@ const defaultPagePath = '/easi-js/samples/kitchen-sink/index.htm';
 const dimseCFindStudiesApiPath = '/easi-js/samples/kitchen-sink/api/dimse/cfind-studies';
 const dimseCGetApiPath = '/easi-js/samples/kitchen-sink/api/dimse/cget-instance';
 const dimseCMoveRelayApiPath = '/easi-js/samples/kitchen-sink/api/dimse/cmove-deidentify-relay';
+const dimseApiPaths = new Set([
+dimseCFindStudiesApiPath,
+dimseCGetApiPath,
+dimseCMoveRelayApiPath
+]);
+const trustedPreviewOrigins = new Set([
+'http://127.0.0.1:5500',
+'http://localhost:5500',
+'http://[::1]:5500'
+]);
 const defaultKitchenSinkStorageTransferSyntaxUids = [
 '1.2.840.10008.1.2', // Implicit VR Little Endian
 '1.2.840.10008.1.2.1', // Explicit VR Little Endian
@@ -231,6 +241,40 @@ function sendJson(response, statusCode, payload) {
     'Content-Length': Buffer.byteLength(json)
   });
   response.end(json);
+
+}
+
+function handleDimsePreviewCors(request, response) {
+
+  var origin = request.headers.origin;
+  var trustedOrigin = trustedPreviewOrigins.has(origin);
+
+  if (request.method === 'OPTIONS') {
+    var requestedHeaders = String(request.headers['access-control-request-headers'] ?? '').
+    split(',').map((header) => header.trim().toLowerCase()).filter(Boolean);
+    var supportedRequest = request.headers['access-control-request-method'] === 'POST' &&
+    requestedHeaders.every((header) => header === 'content-type');
+
+    if (trustedOrigin === false || supportedRequest === false) {
+      sendJson(response, 403, { success: false, message: 'Preview request is not permitted.' });
+      return true;
+    }
+
+    response.setHeader('Access-Control-Allow-Origin', origin);
+    response.setHeader('Vary', 'Origin');
+    response.setHeader('Access-Control-Allow-Methods', 'POST');
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    response.writeHead(204);
+    response.end();
+    return true;
+  }
+
+  if (request.method === 'POST' && trustedOrigin === true) {
+    response.setHeader('Access-Control-Allow-Origin', origin);
+    response.setHeader('Vary', 'Origin');
+  }
+
+  return false;
 
 }
 
@@ -1470,6 +1514,10 @@ async function serveRequest(request, response, runtime = null) {
   try {
 
     const pathname = normalizeRequestPath(request.url ?? '/', runtime);
+
+    if (dimseApiPaths.has(pathname) && handleDimsePreviewCors(request, response) === true) {
+      return;
+    }
 
     if (pathname === dimseCFindStudiesApiPath) {
       await handleDimseCFindStudiesApi(request, response, runtime?.dependencies ?? null);

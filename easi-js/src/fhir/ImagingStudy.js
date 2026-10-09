@@ -19,12 +19,16 @@
 
 import DomainResource from "./DomainResource.js"
 import Reference from "./Reference.js";
+import Coding from "./Coding.js";
+import CodingSystems from "./CodingSystems.js";
+import Identifier from "./Identifier.js";
+import { asArray, toFhirJSON, toUnsignedInteger } from "./FhirJson.js";
 
 export var ImagingStudyStatus = {
     Registered: Symbol('registered'),
     Available: Symbol('available'),
     Cancelled: Symbol('cancelled'),
-    EnteredInError: Symbol('entered-in-rrror'),
+    EnteredInError: Symbol('entered-in-error'),
     Unknown: Symbol('unknown')
 };
 
@@ -41,7 +45,9 @@ export default class ImagingStudy extends DomainResource {
      * Sets the identifier value.
      */
     set identifier(identifier) {
-        this._identifier = identifier;
+        this._identifier = asArray(identifier).filter((value) => value != null).map((value) =>
+            (typeof value === 'string') ? new Identifier({ value: value }) : value
+        );
     }
 
     /**
@@ -55,7 +61,7 @@ export default class ImagingStudy extends DomainResource {
      * Sets the status value.
      */
     set status(status) {
-        this._status = status;
+        this._status = (typeof status === 'symbol') ? status.description : status;
     }    
 
     /**
@@ -69,7 +75,9 @@ export default class ImagingStudy extends DomainResource {
      * Sets the modality value.
      */
     set modality(modality) {
-        this._modality = modality;
+        this._modality = asArray(modality).filter((value) => value != null).map((value) =>
+            (typeof value === 'string') ? Coding.create(CodingSystems.DICOM, value) : value
+        );
     }    
 
     /**
@@ -97,7 +105,9 @@ export default class ImagingStudy extends DomainResource {
      * Sets the endpoint value.
      */
     set endpoint(endpoint) {
-        this._endpoint = endpoint;
+        this._endpoint = asArray(endpoint).filter((value) => value != null).map((value) =>
+            (value instanceof Reference) ? value : new Reference(value)
+        );
     }
 
     /**
@@ -189,8 +199,9 @@ export default class ImagingStudy extends DomainResource {
      * @returns 
      */
     toJSON() {
-        return {
+        return toFhirJSON({
             resourceType: this.resourceType,
+            id: this.id,
             identifier: this.identifier,
             status: this.status,
             modality: this.modality,
@@ -198,12 +209,12 @@ export default class ImagingStudy extends DomainResource {
             endpoint: this.endpoint,
             encounter: this.encounter,
             started: this.started,
-            numberOfSeries: this.numberOfSeries,
-            numberOfInstances: this.numberOfInstances,
+            numberOfSeries: toUnsignedInteger(this.numberOfSeries),
+            numberOfInstances: toUnsignedInteger(this.numberOfInstances),
             description: this.description,
             series: this.series,
             contained: this.contained
-        }
+        });
     }
 
     constructor() {
@@ -212,7 +223,7 @@ export default class ImagingStudy extends DomainResource {
         super();
 
         // Set the defaults
-        this._status = ImagingStudyStatus.Unknown;
+        this._status = 'unknown';
         this._subject = new Reference();
         this._series = [];
 

@@ -178,7 +178,11 @@ function parseCommandElements(bytes) {
     var elements = new Map();
     var offset = 0;
 
-    while ((offset + 8) <= bytes.length) {
+    while (offset < bytes.length) {
+
+        if ((offset + 8) > bytes.length) {
+            throw new Exception("Truncated DIMSE command element header.", GeneralErrorCodes.GeneralError);
+        }
 
         var view = new DataView(bytes.buffer, bytes.byteOffset + offset, 8);
         var group = view.getUint16(0, true);
@@ -186,25 +190,34 @@ function parseCommandElements(bytes) {
         var length = view.getUint32(4, true);
         offset += 8;
 
-        if ((offset + length) > bytes.length) {
-            break;
+        if ((group != 0x0000) || ((length % 2) != 0) || ((offset + length) > bytes.length)) {
+            throw new Exception("Invalid DIMSE command element.", GeneralErrorCodes.GeneralError);
         }
 
         var tag = group.toString(16).padStart(4, "0").toUpperCase()
             + element.toString(16).padStart(4, "0").toUpperCase();
+        if (elements.has(tag)) {
+            throw new Exception("Duplicate DIMSE command element.", GeneralErrorCodes.GeneralError);
+        }
         elements.set(tag, bytes.subarray(offset, offset + length));
         offset += length;
 
+    }
+
+    var groupLength = elements.get("00000000");
+    if ((groupLength == null) || (groupLength.length != 4)
+        || ((new DataView(groupLength.buffer, groupLength.byteOffset, 4)).getUint32(0, true) != (bytes.length - 12))) {
+        throw new Exception("Invalid DIMSE command group length.", GeneralErrorCodes.GeneralError);
     }
 
     return elements;
 
 }
 
-function decodeCommandUS(elements, tag, defaultValue = 0) {
+function decodeCommandUS(elements, tag) {
     var value = elements.get(tag);
-    if ((value == null) || (value.length < 2)) {
-        return defaultValue;
+    if ((value == null) || (value.length != 2)) {
+        throw new Exception(`Missing or invalid DIMSE command field ${tag}.`, GeneralErrorCodes.GeneralError);
     }
     return (new DataView(value.buffer, value.byteOffset, value.byteLength)).getUint16(0, true);
 }
@@ -221,7 +234,8 @@ function readMetaElementHeader(bytes, offset) {
     var vr = String.fromCharCode(bytes[offset + 4]) + String.fromCharCode(bytes[offset + 5]);
 
     var longVr = (vr == "OB") || (vr == "OD") || (vr == "OF") || (vr == "OL") || (vr == "OV")
-        || (vr == "OW") || (vr == "SQ") || (vr == "UC") || (vr == "UR") || (vr == "UT") || (vr == "UN");
+        || (vr == "OW") || (vr == "SQ") || (vr == "SV") || (vr == "UV")
+        || (vr == "UC") || (vr == "UR") || (vr == "UT") || (vr == "UN");
 
     var headerLength = longVr ? 12 : 8;
     if ((offset + headerLength) > bytes.length) {
@@ -256,9 +270,15 @@ function parsePart10Meta(bytes) {
 
     while (offset < bytes.length) {
 
+        if (((offset + 2) <= bytes.length)
+            && ((new DataView(bytes.buffer, bytes.byteOffset + offset, 2)).getUint16(0, true) != 0x0002)) {
+            meta.dataSetOffset = offset;
+            return meta;
+        }
+
         var header = readMetaElementHeader(bytes, offset);
         if (header == null) {
-            break;
+            throw new Exception("Truncated C-STORE File Meta Information header.", GeneralErrorCodes.InvalidParameter);
         }
 
         if (header.group != 0x0002) {
@@ -268,8 +288,8 @@ function parsePart10Meta(bytes) {
 
         var valueStart = offset + header.headerLength;
         var valueStop = valueStart + header.length;
-        if (valueStop > bytes.length) {
-            break;
+        if ((valueStop > bytes.length) || ((header.length % 2) != 0)) {
+            throw new Exception("Invalid C-STORE File Meta Information value length.", GeneralErrorCodes.InvalidParameter);
         }
 
         var valueBytes = bytes.subarray(valueStart, valueStop);
@@ -305,7 +325,7 @@ function isLikelyUidText(value) {
         return false;
     }
 
-    return (/^[0-9]+(\.[0-9]+)+$/.test(trimmed) == true);
+    return (trimmed.length <= 64) && (/^[0-9]+(\.[0-9]+)+$/.test(trimmed) == true);
 
 }
 
@@ -371,36 +391,41 @@ function tryReadUidElementAt(dataSetBytes, offset, isLittleEndian, isExplicitVr,
 
 }
 
-function extractUidFromDataSet(dataSetBytes, group, element, maxScanBytes = 131072) {
+function extractUidFromDataSet(dataSetBytes, group, element, transferSyntaxUid) {
 
     if ((dataSetBytes == null) || (dataSetBytes.length < 8)) {
         return null;
     }
 
-    var scanLength = dataSetBytes.length;
-    if ((Number.isFinite(Number(maxScanBytes)) == true) && (Number(maxScanBytes) > 0)) {
-        scanLength = Math.min(scanLength, Number(maxScanBytes));
+    // Read only top-level elements in the declared transfer syntax. Byte scanning
+    // can mistake nested values or pixel bytes for the instance's SOP UIDs.
+    if (transferSyntaxUid == "1.2.840.10008.1.2.1.99") {
+        return null; // Deflated data sets require File Meta Information or explicit UIDs.
     }
-
-    var maxOffset = Math.max(0, scanLength - 8);
-
-    for (var offset = 0; offset <= maxOffset; offset++) {
-
-        var uid = tryReadUidElementAt(dataSetBytes, offset, true, true, group, element);
+    var isLittleEndian = (transferSyntaxUid != "1.2.840.10008.1.2.2");
+    var isExplicitVr = (transferSyntaxUid != "1.2.840.10008.1.2");
+    var offset = 0;
+    while ((offset + 8) <= dataSetBytes.length) {
+        var uid = tryReadUidElementAt(dataSetBytes, offset, isLittleEndian, isExplicitVr, group, element);
         if (uid != null) {
             return uid;
         }
-
-        uid = tryReadUidElementAt(dataSetBytes, offset, true, false, group, element);
-        if (uid != null) {
-            return uid;
+        var view = new DataView(dataSetBytes.buffer, dataSetBytes.byteOffset + offset, 8);
+        var vr = String.fromCharCode(dataSetBytes[offset + 4], dataSetBytes[offset + 5]);
+        var longVr = ["OB", "OD", "OF", "OL", "OV", "OW", "SQ", "SV", "UC", "UN", "UR", "UT", "UV"].includes(vr);
+        var headerLength = isExplicitVr && longVr ? 12 : 8;
+        if ((offset + headerLength) > dataSetBytes.length) {
+            return null;
         }
-
-        uid = tryReadUidElementAt(dataSetBytes, offset, false, true, group, element);
-        if (uid != null) {
-            return uid;
+        var length = isExplicitVr
+            ? (longVr
+                ? (new DataView(dataSetBytes.buffer, dataSetBytes.byteOffset + offset + 8, 4)).getUint32(0, isLittleEndian)
+                : view.getUint16(6, isLittleEndian))
+            : view.getUint32(4, isLittleEndian);
+        if ((length == 0xFFFFFFFF) || ((offset + headerLength + length) > dataSetBytes.length)) {
+            return null;
         }
-
+        offset += headerLength + length;
     }
 
     return null;
@@ -411,9 +436,13 @@ function createPromiseQueue() {
 
     var values = [];
     var waiters = [];
+    var failure = null;
 
     return {
         push(value) {
+            if (failure != null) {
+                return;
+            }
             if (waiters.length > 0) {
                 waiters.shift().resolve(value);
                 return;
@@ -421,6 +450,7 @@ function createPromiseQueue() {
             values.push(value);
         },
         fail(error) {
+            failure = error;
             while (waiters.length > 0) {
                 waiters.shift().reject(error);
             }
@@ -428,6 +458,9 @@ function createPromiseQueue() {
         async shift() {
             if (values.length > 0) {
                 return values.shift();
+            }
+            if (failure != null) {
+                throw failure;
             }
             return await new Promise((resolve, reject) => {
                 waiters.push({ resolve, reject });
@@ -479,16 +512,27 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
             throw new Exception("Invalid DIMSE association host.", GeneralErrorCodes.InvalidParameter);
         }
 
-        if ((Number.isFinite(Number(port)) == false) || (Number(port) <= 0)) {
+        if ((Number.isInteger(Number(port)) == false) || (Number(port) <= 0) || (Number(port) > 65535)) {
             throw new Exception("Invalid DIMSE association port.", GeneralErrorCodes.InvalidParameter);
         }
 
-        if ((typeof callingAeTitle !== "string") || (callingAeTitle.length == 0)) {
+        if ((typeof callingAeTitle !== "string") || (callingAeTitle.trim().length == 0)
+            || (callingAeTitle.length > 16) || /[^\x20-\x7e]|\\/.test(callingAeTitle)) {
             throw new Exception("Invalid DIMSE calling AE Title.", GeneralErrorCodes.InvalidParameter);
         }
 
-        if ((typeof calledAeTitle !== "string") || (calledAeTitle.length == 0)) {
+        if ((typeof calledAeTitle !== "string") || (calledAeTitle.trim().length == 0)
+            || (calledAeTitle.length > 16) || /[^\x20-\x7e]|\\/.test(calledAeTitle)) {
             throw new Exception("Invalid DIMSE called AE Title.", GeneralErrorCodes.InvalidParameter);
+        }
+
+        var timeoutMs = Number(this.resolveAssociationValue(association, "associationTimeoutMs", 15000));
+        var maxPduLength = Number(this.resolveAssociationValue(association, "maxPduLength", 16384));
+        if ((Number.isInteger(timeoutMs) == false) || (timeoutMs <= 0) || (timeoutMs > 2147483647)) {
+            throw new Exception("Invalid DIMSE association timeout.", GeneralErrorCodes.InvalidParameter);
+        }
+        if ((Number.isInteger(maxPduLength) == false) || (maxPduLength < 8) || (maxPduLength > 0xFFFFFFFF)) {
+            throw new Exception("Invalid DIMSE maximum PDU length.", GeneralErrorCodes.InvalidParameter);
         }
 
     }
@@ -517,7 +561,7 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
         if (dataSetOffset == null) {
             dataSetOffset = parsedMeta?.dataSetOffset ?? 0;
         }
-        if ((Number.isFinite(Number(dataSetOffset)) == false) || (Number(dataSetOffset) < 0) || (Number(dataSetOffset) > sourceBytes.length)) {
+        if ((Number.isInteger(Number(dataSetOffset)) == false) || (Number(dataSetOffset) < 0) || (Number(dataSetOffset) >= sourceBytes.length)) {
             throw new Exception("Invalid C-STORE data-set offset.", GeneralErrorCodes.InvalidParameter);
         }
 
@@ -529,10 +573,15 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
         var dataSetSopClassUid = null;
         var dataSetSopInstanceUid = null;
 
-        if (((typeof sopClassUid !== "string") || (sopClassUid.length == 0))
-            || ((typeof sopInstanceUid !== "string") || (sopInstanceUid.length == 0))) {
-            dataSetSopClassUid = extractUidFromDataSet(dataSetBytes, 0x0008, 0x0016);
-            dataSetSopInstanceUid = extractUidFromDataSet(dataSetBytes, 0x0008, 0x0018);
+        dataSetSopClassUid = extractUidFromDataSet(dataSetBytes, 0x0008, 0x0016, transferSyntaxUid);
+        dataSetSopInstanceUid = extractUidFromDataSet(dataSetBytes, 0x0008, 0x0018, transferSyntaxUid);
+
+        if (((sopClassUid != null) && (dataSetSopClassUid != null) && (sopClassUid != dataSetSopClassUid))
+            || ((sopInstanceUid != null) && (dataSetSopInstanceUid != null) && (sopInstanceUid != dataSetSopInstanceUid))) {
+            throw new Exception("C-STORE command UIDs conflict with the data set.", GeneralErrorCodes.InvalidParameter);
+        }
+        if ((parsedMeta?.transferSyntaxUid != null) && (parsedMeta.transferSyntaxUid != transferSyntaxUid)) {
+            throw new Exception("C-STORE does not transcode a conflicting File Meta Information transfer syntax.", GeneralErrorCodes.InvalidParameter);
         }
 
         if ((typeof sopClassUid !== "string") || (sopClassUid.length == 0)) {
@@ -547,15 +596,15 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
                 ?? null;
         }
 
-        if ((typeof sopClassUid !== "string") || (sopClassUid.length == 0)) {
+        if (isLikelyUidText(sopClassUid) == false) {
             throw new Exception("Unable to resolve SOP Class UID for C-STORE request.", GeneralErrorCodes.InvalidParameter);
         }
 
-        if ((typeof sopInstanceUid !== "string") || (sopInstanceUid.length == 0)) {
+        if (isLikelyUidText(sopInstanceUid) == false) {
             throw new Exception("Unable to resolve SOP Instance UID for C-STORE request.", GeneralErrorCodes.InvalidParameter);
         }
 
-        if ((typeof transferSyntaxUid !== "string") || (transferSyntaxUid.length == 0)) {
+        if (isLikelyUidText(transferSyntaxUid) == false) {
             throw new Exception("Unable to resolve Transfer Syntax UID for C-STORE request.", GeneralErrorCodes.InvalidParameter);
         }
 
@@ -572,9 +621,10 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
     /**
      * Create one socket for the specified association.
      * @param {object | null} association Association options.
+     * @param {AbortSignal | null} signal Optional cancellation signal.
      * @returns {Promise<object>} Connected socket.
      */
-    async connectSocket(association) {
+    async connectSocket(association, signal = null) {
 
         const host = this.resolveAssociationValue(association, "host");
         const port = Number(this.resolveAssociationValue(association, "port"));
@@ -591,6 +641,7 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
                     return;
                 }
                 completed = true;
+                signal?.removeEventListener("abort", onAbort);
                 reject(error);
             };
 
@@ -599,7 +650,13 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
                     return;
                 }
                 completed = true;
+                signal?.removeEventListener("abort", onAbort);
                 resolve(socket);
+            };
+
+            const onAbort = () => {
+                socket.destroy(signal.reason instanceof Error ? signal.reason
+                    : new Exception("DIMSE C-STORE write aborted.", GeneralErrorCodes.GeneralError));
             };
 
             if ((tlsOptions != null) && (tlsOptions !== false)) {
@@ -615,6 +672,10 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
                 socket.destroy(new Exception("DIMSE association timed out.", GeneralErrorCodes.GeneralError));
             });
             socket.once("error", onError);
+            signal?.addEventListener("abort", onAbort, { once: true });
+            if (signal?.aborted == true) {
+                onAbort();
+            }
 
         });
 
@@ -623,9 +684,10 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
     /**
      * Create one PDU reader queue for a socket.
      * @param {object} socket Socket instance.
+     * @param {number} maxPduLength Advertised maximum incoming P-DATA payload length.
      * @returns {{ queue: object, cleanup: Function }} Queue and cleanup callback.
      */
-    createPduReader(socket) {
+    createPduReader(socket, maxPduLength = 16384) {
 
         var buffer = new Uint8Array(0);
         var queue = createPromiseQueue();
@@ -641,6 +703,13 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
             while (buffer.length >= 6) {
                 var pduType = buffer[0];
                 var pduLength = (new DataView(buffer.buffer, buffer.byteOffset + 2, 4)).getUint32(0, false);
+                if ((pduType < 0x01) || (pduType > 0x07)
+                    || ((pduType == PDU_TYPES.P_DATA_TF) && ((pduLength < 6) || (pduLength > maxPduLength)))
+                    || ((pduType != PDU_TYPES.P_DATA_TF) && (pduLength > 1048576))
+                    || ((pduType >= PDU_TYPES.A_RELEASE_RQ) && (pduLength != 4))
+                    || ((pduType == PDU_TYPES.A_ASSOCIATE_RJ) && (pduLength != 4))) {
+                    throw new Exception("Invalid DIMSE PDU type or length.", GeneralErrorCodes.GeneralError);
+                }
                 var total = 6 + pduLength;
                 if (buffer.length < total) {
                     return;
@@ -660,8 +729,14 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
             if (incoming == null) {
                 incoming = new Uint8Array(0);
             }
-            buffer = append(buffer, incoming);
-            parse();
+            try {
+                buffer = append(buffer, incoming);
+                parse();
+            }
+            catch (error) {
+                queue.fail(error);
+                socket.destroy();
+            }
         };
 
         const onError = (error) => {
@@ -669,12 +744,16 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
         };
 
         const onClose = () => {
-            queue.fail(new Exception("DIMSE socket closed.", GeneralErrorCodes.GeneralError));
+            queue.fail(new Exception(buffer.length > 0 ? "DIMSE socket closed with a truncated PDU."
+                : "DIMSE socket closed.", GeneralErrorCodes.GeneralError));
         };
 
         socket.on("data", onData);
         socket.once("error", onError);
         socket.once("close", onClose);
+        if (socket.destroyed == true) {
+            onClose();
+        }
 
         return {
             queue,
@@ -765,63 +844,76 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
      */
     parseAssociateAc(payload) {
 
-        var offset = 68; // fixed fields
-        var accepted = false;
-        var maxPduLength = 16384;
-        var acceptedTransferSyntaxUid = null;
-
-        while ((offset + 4) <= payload.length) {
-            var type = payload[offset];
-            var length = (new DataView(payload.buffer, payload.byteOffset + offset + 2, 2)).getUint16(0, false);
-            var start = offset + 4;
-            var stop = start + length;
-            if (stop > payload.length) {
-                break;
-            }
-
-            var value = payload.subarray(start, stop);
-
-            if (type == 0x21) { // Presentation Context AC
-                var resultReason = value[2];
-                if (resultReason == 0x00) {
-                    accepted = true;
-                    // Sub-items
-                    var subOffset = 4;
-                    while ((subOffset + 4) <= value.length) {
-                        var subType = value[subOffset];
-                        var subLength = (new DataView(value.buffer, value.byteOffset + subOffset + 2, 2)).getUint16(0, false);
-                        var subStart = subOffset + 4;
-                        var subStop = subStart + subLength;
-                        if (subStop > value.length) {
-                            break;
-                        }
-                        if (subType == 0x40) {
-                            acceptedTransferSyntaxUid = (new TextDecoder()).decode(value.subarray(subStart, subStop));
-                        }
-                        subOffset = subStop;
-                    }
-                }
-            }
-            else if (type == 0x50) { // User Information
-                var sub = 0;
-                while ((sub + 4) <= value.length) {
-                    var subType = value[sub];
-                    var subLength = (new DataView(value.buffer, value.byteOffset + sub + 2, 2)).getUint16(0, false);
-                    var subStart = sub + 4;
-                    var subStop = subStart + subLength;
-                    if (subStop > value.length) {
-                        break;
-                    }
-                    if ((subType == 0x51) && (subLength >= 4)) {
-                        maxPduLength = (new DataView(value.buffer, value.byteOffset + subStart, 4)).getUint32(0, false);
-                    }
-                    sub = subStop;
-                }
-            }
-
-            offset = stop;
+        if ((payload.length < 68)
+            || (((new DataView(payload.buffer, payload.byteOffset, 2)).getUint16(0, false) & 0x0001) == 0)) {
+            throw new Exception("Invalid DIMSE association accept fixed fields.", GeneralErrorCodes.GeneralError);
         }
 
+        var accepted = false;
+        var acceptedTransferSyntaxUid = null;
+        var maxPduLength = null;
+        var applicationContextSeen = false;
+        var contextSeen = false;
+        var userInformationSeen = false;
+        const readItems = (bytes, start, visit) => {
+            var offset = start;
+            while (offset < bytes.length) {
+                if ((offset + 4) > bytes.length) {
+                    throw new Exception("Truncated DIMSE association item header.", GeneralErrorCodes.GeneralError);
+                }
+                var type = bytes[offset];
+                var length = (new DataView(bytes.buffer, bytes.byteOffset + offset + 2, 2)).getUint16(0, false);
+                var stop = offset + 4 + length;
+                if (stop > bytes.length) {
+                    throw new Exception("Truncated DIMSE association item value.", GeneralErrorCodes.GeneralError);
+                }
+                visit(type, bytes.subarray(offset + 4, stop));
+                offset = stop;
+            }
+        };
+
+        readItems(payload, 68, (type, value) => {
+            if (type == 0x10) {
+                if (applicationContextSeen || ((new TextDecoder()).decode(value) != APPLICATION_CONTEXT_UID)) {
+                    throw new Exception("Invalid DIMSE application context.", GeneralErrorCodes.GeneralError);
+                }
+                applicationContextSeen = true;
+            }
+            else if (type == 0x21) {
+                if (contextSeen || (value.length < 4) || (value[0] != 0x01) || (value[2] > 4)) {
+                    throw new Exception("Unexpected DIMSE presentation context acceptance.", GeneralErrorCodes.GeneralError);
+                }
+                contextSeen = true;
+                accepted = (value[2] == 0x00);
+                readItems(value, 4, (subType, subValue) => {
+                    if (subType == 0x40) {
+                        if (acceptedTransferSyntaxUid != null) {
+                            throw new Exception("Duplicate DIMSE accepted transfer syntax.", GeneralErrorCodes.GeneralError);
+                        }
+                        acceptedTransferSyntaxUid = (new TextDecoder()).decode(subValue);
+                    }
+                });
+            }
+            else if (type == 0x50) {
+                if (userInformationSeen) {
+                    throw new Exception("Duplicate DIMSE user information item.", GeneralErrorCodes.GeneralError);
+                }
+                userInformationSeen = true;
+                readItems(value, 0, (subType, subValue) => {
+                    if (subType == 0x51) {
+                        if ((maxPduLength != null) || (subValue.length != 4)) {
+                            throw new Exception("Invalid DIMSE maximum PDU length item.", GeneralErrorCodes.GeneralError);
+                        }
+                        maxPduLength = (new DataView(subValue.buffer, subValue.byteOffset, 4)).getUint32(0, false);
+                    }
+                });
+            }
+        });
+
+        if ((applicationContextSeen == false) || (contextSeen == false) || (maxPduLength == null)
+            || (accepted && (isLikelyUidText(acceptedTransferSyntaxUid) == false))) {
+            throw new Exception("Incomplete DIMSE association acceptance.", GeneralErrorCodes.GeneralError);
+        }
         return { accepted, maxPduLength, acceptedTransferSyntaxUid };
 
     }
@@ -861,53 +953,80 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
     /**
      * Receive C-STORE-RSP command from incoming P-DATA PDUs.
      * @param {object} queue PDU queue.
+     * @param {object | null} expected Expected presentation context, message ID, and SOP UIDs.
      * @returns {{ status: number, messageIdRespondedTo: number }} Response info.
      */
-    async receiveStoreResponse(queue) {
+    async receiveStoreResponse(queue, expected = null) {
 
         var commandChunks = [];
         var commandComplete = false;
+        var commandLength = 0;
+        var contextId = expected?.presentationContextId ?? 0x01;
+        var maxCommandBytes = expected?.maxCommandBytes ?? 1048576;
 
         while (commandComplete == false) {
             var pdu = await queue.shift();
+            if (pdu.type != PDU_TYPES.P_DATA_TF) {
+                throw new Exception(pdu.type == PDU_TYPES.A_ABORT
+                    ? "DIMSE association aborted by peer."
+                    : "Unexpected PDU before C-STORE response.", GeneralErrorCodes.GeneralError);
+            }
 
-            if (pdu.type == PDU_TYPES.P_DATA_TF) {
-                var offset = 0;
-                while ((offset + 4) <= pdu.payload.length) {
-                    var pdvLength = (new DataView(pdu.payload.buffer, pdu.payload.byteOffset + offset, 4)).getUint32(0, false);
-                    offset += 4;
-                    if ((offset + pdvLength) > pdu.payload.length) {
-                        break;
-                    }
-
-                    var pcid = pdu.payload[offset];
-                    var header = pdu.payload[offset + 1];
-                    var isCommand = ((header & 0x01) == 0x01);
-                    var isLast = ((header & 0x02) == 0x02);
-                    var data = pdu.payload.subarray(offset + 2, offset + pdvLength);
-                    offset += pdvLength;
-
-                    if (isCommand == true) {
-                        commandChunks.push(data);
-                        if (isLast == true) {
-                            commandComplete = true;
-                        }
-                    }
+            var offset = 0;
+            while (offset < pdu.payload.length) {
+                if ((offset + 4) > pdu.payload.length) {
+                    throw new Exception("Truncated DIMSE PDV header.", GeneralErrorCodes.GeneralError);
                 }
-            }
-            else if (pdu.type == PDU_TYPES.A_ABORT) {
-                throw new Exception("DIMSE association aborted by peer.", GeneralErrorCodes.GeneralError);
-            }
-            else if (pdu.type == PDU_TYPES.A_RELEASE_RQ) {
-                throw new Exception("Unexpected A-RELEASE-RQ before C-STORE response.", GeneralErrorCodes.GeneralError);
+                var pdvLength = (new DataView(pdu.payload.buffer, pdu.payload.byteOffset + offset, 4)).getUint32(0, false);
+                offset += 4;
+                if ((pdvLength < 2) || ((offset + pdvLength) > pdu.payload.length)) {
+                    throw new Exception("Invalid DIMSE PDV length.", GeneralErrorCodes.GeneralError);
+                }
+                var pcid = pdu.payload[offset];
+                var header = pdu.payload[offset + 1];
+                var isCommand = ((header & 0x01) == 0x01);
+                var isLast = ((header & 0x02) == 0x02);
+                var data = pdu.payload.subarray(offset + 2, offset + pdvLength);
+                offset += pdvLength;
+                if ((pcid != contextId) || (isCommand == false) || commandComplete || ((data.length % 2) != 0)) {
+                    throw new Exception("Unexpected C-STORE response presentation context or fragment.", GeneralErrorCodes.GeneralError);
+                }
+                commandLength += data.length;
+                if (commandLength > maxCommandBytes) {
+                    throw new Exception("DIMSE C-STORE response command exceeds the supported limit.", GeneralErrorCodes.GeneralError);
+                }
+                // Empty fragments carry only framing information. Keeping a
+                // view for each one would bypass the command byte budget.
+                if (data.length > 0) {
+                    commandChunks.push(data);
+                }
+                commandComplete = isLast;
             }
         }
 
-        var commandBytes = concatBytes(commandChunks);
-        var elements = parseCommandElements(commandBytes);
+        var elements = parseCommandElements(concatBytes(commandChunks));
+        var commandField = decodeCommandUS(elements, "00000100");
+        var dataSetType = decodeCommandUS(elements, "00000800");
+        var status = decodeCommandUS(elements, "00000900");
+        var messageIdRespondedTo = decodeCommandUS(elements, "00000120");
+        if ((commandField != 0x8001) || (dataSetType != 0x0101)
+            || ((expected?.messageId != null) && (messageIdRespondedTo != expected.messageId))) {
+            throw new Exception("C-STORE response does not match the request.", GeneralErrorCodes.GeneralError);
+        }
+        const optionalText = (tag) => elements.has(tag)
+            ? (new TextDecoder()).decode(elements.get(tag)).replace(/\0/g, "").trim() : null;
+        var sopClassUid = optionalText("00000002");
+        var sopInstanceUid = optionalText("00001000");
+        if (((sopClassUid != null) && (expected?.sopClassUid != null) && (sopClassUid != expected.sopClassUid))
+            || ((sopInstanceUid != null) && (expected?.sopInstanceUid != null) && (sopInstanceUid != expected.sopInstanceUid))) {
+            throw new Exception("C-STORE response SOP UIDs do not match the request.", GeneralErrorCodes.GeneralError);
+        }
         return {
-            status: decodeCommandUS(elements, "00000900", 0xFFFF),
-            messageIdRespondedTo: decodeCommandUS(elements, "00000120", 0)
+            status,
+            messageIdRespondedTo,
+            sopClassUid,
+            sopInstanceUid,
+            errorComment: optionalText("00000902")
         };
 
     }
@@ -921,19 +1040,22 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
      */
     async sendStoreRequest(socket, maxPduLength, commandBytes, dataSetBytes) {
 
-        var maxFragment = Math.max(1024, Number(maxPduLength || 16384) - 12);
-
-        await this.writePdu(socket, this.buildPDataPdu(0x01, commandBytes, true, true));
-
-        if ((dataSetBytes == null) || (dataSetBytes.length == 0)) {
-            return;
+        // The negotiated maximum applies to the PDU payload, excluding its
+        // six-byte header. Each single-PDV payload has six bytes of overhead.
+        var payloadLimit = Number(maxPduLength || 16384);
+        var maxFragment = Math.floor((payloadLimit - 6) / 2) * 2;
+        if ((Number.isInteger(payloadLimit) == false) || (maxFragment < 2)) {
+            throw new Exception("Peer maximum PDU length cannot carry a DIMSE fragment.", GeneralErrorCodes.GeneralError);
         }
-
-        for (var offset = 0; offset < dataSetBytes.length; offset += maxFragment) {
-            var stop = Math.min(dataSetBytes.length, offset + maxFragment);
-            var chunk = dataSetBytes.subarray(offset, stop);
-            var isLast = (stop >= dataSetBytes.length);
-            await this.writePdu(socket, this.buildPDataPdu(0x01, chunk, false, isLast));
+        if ((dataSetBytes == null) || (dataSetBytes.length == 0) || ((dataSetBytes.length % 2) != 0)) {
+            throw new Exception("C-STORE requires a nonempty, even-length data set.", GeneralErrorCodes.InvalidParameter);
+        }
+        for (var part of [{ bytes: commandBytes, isCommand: true }, { bytes: dataSetBytes, isCommand: false }]) {
+            for (var offset = 0; offset < part.bytes.length; offset += maxFragment) {
+                var stop = Math.min(part.bytes.length, offset + maxFragment);
+                await this.writePdu(socket, this.buildPDataPdu(0x01, part.bytes.subarray(offset, stop),
+                    part.isCommand, stop >= part.bytes.length));
+            }
         }
 
     }
@@ -950,11 +1072,21 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
         while (true) {
             var pdu = await queue.shift();
             if (pdu.type == PDU_TYPES.A_RELEASE_RP) {
+                if (pdu.payload.length != 4) {
+                    throw new Exception("Invalid DIMSE release response.", GeneralErrorCodes.GeneralError);
+                }
                 return;
             }
             if (pdu.type == PDU_TYPES.A_ABORT) {
                 throw new Exception("DIMSE association aborted while waiting for release response.", GeneralErrorCodes.GeneralError);
             }
+            if (pdu.type == PDU_TYPES.A_RELEASE_RQ) {
+                // A simultaneous release request is valid. Acknowledge the
+                // peer's request while still awaiting our release response.
+                await this.writePdu(socket, makePdu(PDU_TYPES.A_RELEASE_RP, new Uint8Array(4)));
+                continue;
+            }
+            throw new Exception("Unexpected DIMSE PDU while waiting for release response.", GeneralErrorCodes.GeneralError);
         }
 
     }
@@ -982,9 +1114,37 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
         var payload = this.resolveStorePayload(sourceBytes, options);
         var messageId = Number(options.messageId ?? this.resolveAssociationValue(association, "messageId", 1));
         var priority = Number(options.priority ?? this.resolveAssociationValue(association, "priority", 0));
+        if ((Number.isInteger(messageId) == false) || (messageId < 0) || (messageId > 65535)) {
+            throw new Exception("Invalid C-STORE message ID.", GeneralErrorCodes.InvalidParameter);
+        }
+        if ((Number.isInteger(priority) == false) || (priority < 0) || (priority > 2)) {
+            throw new Exception("Invalid C-STORE priority.", GeneralErrorCodes.InvalidParameter);
+        }
+        if ((payload.dataSetBytes.length % 2) != 0) {
+            throw new Exception("C-STORE requires an even-length data set.", GeneralErrorCodes.InvalidParameter);
+        }
+        var maxCommandBytes = Number(options.maxCommandBytes ?? this.resolveAssociationValue(association, "maxCommandBytes", 1048576));
+        if ((Number.isSafeInteger(maxCommandBytes) == false) || (maxCommandBytes <= 0)) {
+            throw new Exception("Invalid C-STORE maximum command byte limit.", GeneralErrorCodes.InvalidParameter);
+        }
+        var signal = options.signal ?? this.resolveAssociationValue(association, "signal", null);
+        if ((signal != null) && ((typeof signal.addEventListener != "function")
+            || (typeof signal.removeEventListener != "function"))) {
+            throw new Exception("Invalid C-STORE AbortSignal.", GeneralErrorCodes.InvalidParameter);
+        }
+        if (signal?.aborted == true) {
+            throw signal.reason instanceof Error ? signal.reason
+                : new Exception("DIMSE C-STORE write aborted.", GeneralErrorCodes.GeneralError);
+        }
 
-        var socket = await this.connectSocket(association);
-        var scope = this.createPduReader(socket);
+        var socket = await this.connectSocket(association, signal);
+        var scope = this.createPduReader(socket, Number(this.resolveAssociationValue(association, "maxPduLength", 16384)));
+        const onAbort = () => socket.destroy(signal.reason instanceof Error ? signal.reason
+            : new Exception("DIMSE C-STORE write aborted.", GeneralErrorCodes.GeneralError));
+        signal?.addEventListener("abort", onAbort, { once: true });
+        if (signal?.aborted == true) {
+            onAbort();
+        }
 
         try {
 
@@ -1003,6 +1163,9 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
             if (acInfo.accepted != true) {
                 throw new Exception("DIMSE presentation context rejected by peer.", GeneralErrorCodes.GeneralError);
             }
+            if (acInfo.acceptedTransferSyntaxUid != payload.transferSyntaxUid) {
+                throw new Exception("Peer selected a transfer syntax that was not offered; C-STORE does not transcode.", GeneralErrorCodes.GeneralError);
+            }
 
             var commandBytes = encodeCStoreRqCommand(
                 payload.sopClassUid,
@@ -1012,7 +1175,11 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
             );
 
             await this.sendStoreRequest(socket, acInfo.maxPduLength, commandBytes, payload.dataSetBytes);
-            var response = await this.receiveStoreResponse(scope.queue);
+            var response = await this.receiveStoreResponse(scope.queue, {
+                presentationContextId: 0x01, messageId, maxCommandBytes,
+                sopClassUid: payload.sopClassUid,
+                sopInstanceUid: payload.sopInstanceUid
+            });
             await this.releaseAssociation(socket, scope.queue);
 
             return DimseTransportContract.createWriteResult({
@@ -1027,12 +1194,16 @@ export default class NodeDimseCStoreScuTransport extends DimseDestinationTranspo
                     transferSyntaxUid: payload.transferSyntaxUid,
                     acceptedTransferSyntaxUid: acInfo.acceptedTransferSyntaxUid,
                     sourceMetaSopClassUid: payload?.parsedMeta?.sopClassUid ?? null,
-                    sourceMetaSopInstanceUid: payload?.parsedMeta?.sopInstanceUid ?? null
+                    sourceMetaSopInstanceUid: payload?.parsedMeta?.sopInstanceUid ?? null,
+                    messageIdRespondedTo: response.messageIdRespondedTo,
+                    warning: ((response.status & 0xF000) == 0xB000),
+                    errorComment: response.errorComment
                 }
             });
 
         }
         finally {
+            signal?.removeEventListener("abort", onAbort);
             scope.cleanup();
             if ((socket != null) && (typeof socket.destroy == "function")) {
                 socket.destroy();

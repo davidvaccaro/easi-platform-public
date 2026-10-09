@@ -18,6 +18,7 @@
 //
 
 import Element from "./Element.js"
+import { toFhirJSON } from "./FhirJson.js";
 
 export default class Coding extends Element {
   
@@ -102,11 +103,15 @@ export default class Coding extends Element {
         if (code == null) {
             return null;
         }
+
+        var normalized = String(code).trim();
+        if (normalized.length === 0)
+            return null;
         
         // Create the new codeable concept instance
         return new Coding({ 
             system: system, 
-            code: code.trim() 
+            code: normalized
         });
         
     }
@@ -116,13 +121,13 @@ export default class Coding extends Element {
      * @returns 
      */
     toJSON() {
-        return {
+        return toFhirJSON({
             system: this.system,
             version: this.version,
             code: this.code,
             display: this.display,
             userSelected: this.userSelected
-        }
+        });
     }
 
     constructor(data) {

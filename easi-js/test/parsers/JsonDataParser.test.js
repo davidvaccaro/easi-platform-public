@@ -148,3 +148,96 @@ test('Test: Parser auto-resets when parse is called without explicit reset', asy
     expect(parser.result.ok).toBe(1);
 
 });
+
+test('Test: Unicode keys and string values survive every two-chunk byte split', async () => {
+
+    const bytes = new TextEncoder().encode('{"\uFEFF患者":"\uFEFFFrançois 山田 🚀","escaped":"é\\u0041\\n𝄞","n":1.25,"next":"Ω"}');
+    const expected = { '\uFEFF患者': '\uFEFFFrançois 山田 🚀', escaped: 'é\\u0041\\n𝄞', n: 1.25, next: 'Ω' };
+
+    for (let splitAt = 1; splitAt < bytes.length; splitAt++) {
+        const parser = new JsonDataParser();
+        parser.handler = new JsonDataHandler();
+
+        expect(await parser.parse(bytes.slice(0, splitAt), false, splitAt, bytes.length)).toBe(Status.CONTINUE);
+        expect(await parser.parse(bytes.slice(splitAt), true, bytes.length, bytes.length)).toBe(Status.SUCCESS);
+        expect(parser.result).toEqual(expected);
+    }
+
+});
+
+test('Test: One-byte Unicode fragments retain one start/end lifecycle per string', async () => {
+
+    class StringLifecycleHandler extends JsonDataHandler {
+        onStartString(context, value) {
+            this.starts = (this.starts ?? 0) + 1;
+            super.onStartString(context, value);
+        }
+        onEndString() {
+            this.ends = (this.ends ?? 0) + 1;
+        }
+    }
+
+    const bytes = new TextEncoder().encode('{"a":"é山🚀","n":7,"b":"Ω"}');
+    const handler = new StringLifecycleHandler();
+    const parser = new JsonDataParser();
+    parser.handler = handler;
+
+    for (let i = 0; i < bytes.length; i++) {
+        const final = i === bytes.length - 1;
+        expect(await parser.parse(bytes.slice(i, i + 1), final, i + 1, bytes.length))
+            .toBe(final ? Status.SUCCESS : Status.CONTINUE);
+    }
+
+    expect(parser.result).toEqual({ a: 'é山🚀', n: 7, b: 'Ω' });
+    expect(handler.starts).toBe(2);
+    expect(handler.ends).toBe(2);
+
+});
+
+test('Test: STOP clears a pending UTF-8 code point before the next parse', async () => {
+
+    class StopStringHandler extends JsonDataHandler {
+        onStartString(context, value) {
+            super.onStartString(context, value);
+            return Status.STOP;
+        }
+    }
+
+    const parser = new JsonDataParser();
+    parser.handler = new StopStringHandler();
+    const prefix = new TextEncoder().encode('{"a":"');
+    const unfinished = new Uint8Array([...prefix, 0xF0]);
+    expect(await parser.parse(unfinished, false)).toBe(Status.STOP);
+
+    parser.handler = new JsonDataHandler();
+    parser.context = null;
+    const next = new TextEncoder().encode('{"b":"é"}');
+    expect(await parser.parse(next, true)).toBe(Status.SUCCESS);
+    expect(parser.result).toEqual({ b: 'é' });
+
+});
+
+test.each([false, true])('Test: Invalid UTF-8 rejects rather than replacing a broken string (fragmented=%s)', async (fragmented) => {
+
+    const parser = new JsonDataParser();
+    parser.handler = new JsonDataHandler();
+    const prefix = new TextEncoder().encode('{"a":"');
+    const suffix = new TextEncoder().encode('"}');
+    const bytes = new Uint8Array([...prefix, 0xC3, ...suffix]);
+
+    if (fragmented) {
+        expect(await parser.parse(bytes.slice(0, prefix.length + 1), false)).toBe(Status.CONTINUE);
+        expect(await parser.parse(bytes.slice(prefix.length + 1), true)).toBe(Status.FAIL);
+    }
+    else {
+        expect(await parser.parse(bytes, true)).toBe(Status.FAIL);
+    }
+    expect(parser.error).toBeDefined();
+
+    // The generic handler context is caller-owned; start a fresh document on the reused parser.
+    parser.context = null;
+    const valid = new TextEncoder().encode('{"a":"ok"}');
+    expect(await parser.parse(valid, true)).toBe(Status.SUCCESS);
+    expect(parser.result).toEqual({ a: 'ok' });
+
+});

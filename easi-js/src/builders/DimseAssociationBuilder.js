@@ -148,8 +148,8 @@ export default class DimseAssociationBuilder {
 
         if (normalized.messageId != null) {
             var messageId = Number(normalized.messageId);
-            if ((Number.isInteger(messageId) == false) || (messageId <= 0)) {
-                throw new Error("DIMSE verification messageId must be a positive integer.");
+            if ((Number.isInteger(messageId) == false) || (messageId <= 0) || (messageId > 65535)) {
+                throw new Error("DIMSE verification messageId must be an integer in range 1-65535.");
             }
             normalized.messageId = messageId;
         }
@@ -201,8 +201,8 @@ export default class DimseAssociationBuilder {
      */
     normalizeTimeout(timeoutMs, label) {
         var numeric = Number(timeoutMs);
-        if ((Number.isFinite(numeric) == false) || (numeric <= 0)) {
-            throw new Error(`${label} must be a positive number.`);
+        if ((Number.isInteger(numeric) == false) || (numeric <= 0) || (numeric > 2147483647)) {
+            throw new Error(`${label} must be an integer in range 1-2147483647.`);
         }
         return numeric;
     }
@@ -214,8 +214,8 @@ export default class DimseAssociationBuilder {
      */
     normalizeMaxPduLength(maxPduLength) {
         var numeric = Number(maxPduLength);
-        if ((Number.isFinite(numeric) == false) || (numeric <= 0)) {
-            throw new Error("DIMSE maxPduLength must be a positive number.");
+        if ((Number.isInteger(numeric) == false) || (numeric < 8) || (numeric > 0xFFFFFFFF)) {
+            throw new Error("DIMSE maxPduLength must be an integer in range 8-4294967295.");
         }
         return numeric;
     }
@@ -242,8 +242,8 @@ export default class DimseAssociationBuilder {
 
         if (normalized.maxActiveAssociations != null) {
             var maxActiveAssociations = Number(normalized.maxActiveAssociations);
-            if ((Number.isFinite(maxActiveAssociations) == false) || (maxActiveAssociations <= 0)) {
-                throw new Error("DIMSE moveStorePolicy.maxActiveAssociations must be a positive number.");
+            if ((Number.isSafeInteger(maxActiveAssociations) == false) || (maxActiveAssociations <= 0)) {
+                throw new Error("DIMSE moveStorePolicy.maxActiveAssociations must be a positive integer.");
             }
             normalized.maxActiveAssociations = maxActiveAssociations;
         }

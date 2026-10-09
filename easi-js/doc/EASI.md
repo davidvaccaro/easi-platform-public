@@ -74,9 +74,13 @@ Use `fromHttpStream()` for URL/fetch transport and `fromPartStream()` for direct
 | DIMSE C-GET / C-MOVE source | DICOM&reg; `Instance` / FHIR&reg; mapping / byte stream | `EASI.pipelineBuilder().fromDimseAssociation(assoc, srcTransport).ofDicomData().toInstances()` |
 | DICOM&reg; bytes or DIMSE source | DIMSE C-STORE destination | `EASI.pipelineBuilder().fromPartStream().ofDicomData().toDicomData().intoDimseAssociation(destAssoc, { transport: destTransport })` |
 
-> Pipeline-based scenarios are finalized with `.build().process({ source: source })`.
+> Byte/stream scenarios use `.build().process({ source: source })`; source-bound DIMSE requests use `.build().process({ sourceOptions: request })`.
 
 ## DIMSE Recipes
+
+See the [Node.js v1 DIMSE guide](./DIMSE_V1.md) for the validated operation matrix, receiver examples, result statuses, cancellation, and memory bounds.
+
+FHIR output targets R4 4.0.1. `toFHIRImagingStudy()` accepts a profile string or an options object with Patient references, identifier namespaces, status, and study/series Endpoint references. See the [FHIR mapping guide](./handlers/mappings/DicomToFHIRImagingStudyMapping.md) for a runnable metadata example, required fields, aggregation behavior, and summary counts.
 
 ### C-FIND -> FHIR&reg; Study Summaries
 
@@ -98,18 +102,19 @@ const pipeline = EASI
   .toFHIRImagingStudy("study-summary")
   .build();
 
-const studies = await pipeline.process({
-  operation: "cfind",
-  level: "STUDY",
-  keys: { Modality: "CT" }
-});
+const studies = await pipeline.process({ sourceOptions: {
+  operation: "c-find",
+  queryRetrieveLevel: "STUDY",
+  keys: { ModalitiesInStudy: "CT" },
+  returnKeys: ["StudyInstanceUID", "PatientID", "PatientName", "StudyDate",
+    "NumberOfStudyRelatedSeries", "NumberOfStudyRelatedInstances"]
+} });
 ```
 
-### C-MOVE source -> in-flight de-identification -> C-STORE destination
+### C-MOVE source -> C-STORE destination
 
 ```js
 import EASI from "easi-dicom";
-import Tag from "../src/dicom/Tag.js";
 import NodeDimseQueryRetrieveSourceTransport from "../src/transports/dimse/NodeDimseQueryRetrieveSourceTransport.js";
 import NodeDimseCStoreScuTransport from "../src/transports/dimse/NodeDimseCStoreScuTransport.js";
 
@@ -131,23 +136,26 @@ const pipeline = EASI
   .pipelineBuilder()
   .fromDimseAssociation(sourceAssociation, new NodeDimseQueryRetrieveSourceTransport())
   .ofDicomData()
-  .withDeIdentification(Tag.DefaultDeIdentificationMask)
-  .toDicomData({ collectOutput: false })
+  .toDicomData()
   .intoDimseAssociation(destinationAssociation, {
     transport: new NodeDimseCStoreScuTransport()
   })
   .build();
 
-await pipeline.process({
-  operation: "cmove",
-  level: "IMAGE",
-  destinationAeTitle: "EASI_MOVE_DEST",
+await pipeline.process({ sourceOptions: {
+  operation: "c-move",
+  performFind: false,
+  queryRetrieveLevel: "IMAGE",
+  moveDestinationAeTitle: "EASI_MOVE_DEST",
+  moveStoreHost: "127.0.0.1",
+  moveStorePort: 4104,
+  moveStoreCalledAeTitle: "EASI_MOVE_DEST",
   keys: {
     StudyInstanceUID: "<study-uid>",
     SeriesInstanceUID: "<series-uid>",
     SOPInstanceUID: "<instance-uid>"
   }
-});
+} });
 ```
 
 ### JSON document descriptor(s) -> wrapped DICOM&reg; bytes
@@ -301,6 +309,7 @@ Use this index to navigate all documentation markdown files in `easi-js/doc`.
 
 ### root
 - [EASI](./EASI.md)
+- [Node.js DIMSE v1](./DIMSE_V1.md)
 
 ### builders
 - [CodecRegistryBuilder](./builders/CodecRegistryBuilder.md)

@@ -1,21 +1,69 @@
 {
-    "name": "easi-js",
-    "version": "1.0.0",
+    "name": "@xinonix/easi-js",
+    "version": "1.0.0-rc.1",
     "type": "module",
-    "description": "A Modern Pure-Javascript DICOM implementation.",
+    "description": "Streaming DICOM parsing, writing, selection, FHIR R4 mapping, and Node.js DIMSE in JavaScript.",
+    "main": "./src/index.js",
+    "exports": {
+        ".": "./src/index.js",
+        "./dicom": "./src/dicom/index.js",
+        "./fhir": "./src/fhir/index.js",
+        "./mappings": "./src/handlers/mappings/index.js",
+        "./selections": "./src/handlers/selections/index.js",
+        "./codecs": "./src/codecs/index.js",
+        "./dimse/node": {
+            "node": "./src/dimse/node.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "src/**/*.js",
+        "README.md",
+        "LICENSE",
+        "NOTICE",
+        "licenses/*.txt",
+        "CHANGELOG.md"
+    ],
+    "author": "Xinonix Interactive Development, Inc.",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/davidvaccaro/easi-platform.git",
+        "directory": "easi-js"
+    },
+    "homepage": "https://github.com/davidvaccaro/easi-platform/tree/main/easi-js#readme",
+    "bugs": {
+        "url": "https://github.com/davidvaccaro/easi-platform/issues"
+    },
+    "publishConfig": {
+        "access": "public",
+        "tag": "next"
+    },
     "engines": {
-        "node": "18.x || 16.x"
+        "node": "22.x || 24.x"
     },
     "keywords": [
-        "DICOM"
+        "dicom",
+        "dicomweb",
+        "dimse",
+        "fhir",
+        "streaming",
+        "medical-imaging"
     ],
-    "license": "Xinonix Interactive Development, Inc.",
+    "license": "SEE LICENSE IN LICENSE",
     "devDependencies": {
         "@babel/plugin-transform-modules-commonjs": "^7.21.2",
-        "jest": "^29.5.0"
+        "@voxelmed/openjpegjs": "^0.0.2",
+        "ajv": "^8.20.0",
+        "esbuild": "0.28.2",
+        "jest": "^29.5.0",
+        "node-fetch": "^3.3.1"
     },
     "scripts": {
         "test": "jest",
+        "package:check": "node tools/packaging/checkPackage.js",
+        "package:pack": "node tools/packaging/packPackage.js",
+        "prepublishOnly": "npm run package:check && npm run docs:readme:check",
+        "docs:readme:check": "node tools/packaging/checkReadme.js",
         "bench:streaming": "RUN_STREAMING_BENCHMARKS=true jest test/benchmarks/StreamingPerformance.test.js --runInBand --coverage=false",
         "bench:bulk-policy": "node --expose-gc test/benchmarks/runDicomBulkPolicyProbe.js",
         "bench:compare": "node test/benchmarks/compareStreamingBenchmarks.js",
@@ -28,7 +76,7 @@
         "docs:api-contract:check": "node tools/contracts/generateApiContract.js --check",
         "docs:api-reference": "node tools/docs/generateApiReference.js",
         "docs:api-reference:all": "npm run docs:api-contract && npm run docs:api-reference",
-        "test:dimse-sockets": "RUN_DIMSE_SOCKET_TESTS=true jest --runInBand test/transports/dimse/NodeDimseCStoreScuTransport.test.js test/transports/dimse/NodeDimseCStoreScpSourceTransport.test.js test/transports/dimse/NodeDimseQueryRetrieveSourceTransport.test.js test/integration/KitchenSinkDimseRelayApi.test.js",
+        "test:dimse-sockets": "RUN_DIMSE_SOCKET_TESTS=true jest --runInBand test/transports/dimse test/clients/DimseClient.test.js test/integration/KitchenSinkDimseRelayApi.test.js",
         "test:orthanc-dimse": "RUN_ORTHANC_DIMSE=true jest test/integration/OrthancDimseInterop.test.js --runInBand",
         "test:orthanc-dimse-move": "RUN_ORTHANC_DIMSE_MOVE=true jest test/integration/OrthancDimseInterop.test.js --runInBand",
         "test:orthanc-dimse-all": "RUN_ORTHANC_DIMSE=true RUN_ORTHANC_DIMSE_MOVE=true jest test/integration/OrthancDimseInterop.test.js --runInBand",
@@ -43,9 +91,5 @@
         "collectCoverageFrom": [
             "src/**/*.js"
         ]
-    },
-    "dependencies": {
-        "@voxelmed/openjpegjs": "^0.0.2",
-        "node-fetch": "^3.3.1"
     }
 }

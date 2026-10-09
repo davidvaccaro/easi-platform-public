@@ -19,9 +19,8 @@
 
 import Element from "./Element.js"
 import { NameUse } from "./NameUse.js";
-import CodeableConcept from "./CodeableConcept.js";
 import StringUtils from "../utils/StringUtils.js";
-import SymbolUtils from "../utils/SymbolUtils.js";
+import { asArray, toFhirJSON } from "./FhirJson.js";
 
 export default class HumanName extends Element {
   
@@ -158,6 +157,10 @@ export default class HumanName extends Element {
             return value;
         }
 
+        if (typeof value === 'object') {
+            return new HumanName(value);
+        }
+
         // Create the resultant human name
         var result = new HumanName();
 
@@ -241,21 +244,21 @@ export default class HumanName extends Element {
      * @returns 
      */
     toJSON() {
-        return {
+        return toFhirJSON({
             use: NameUse.toJSON(this.use),
             text: this.text,
             family: this.family,
-            given: this.given,
-            prefix: this.prefix,
-            suffix: this.suffix,
+            given: asArray(this.given),
+            prefix: asArray(this.prefix),
+            suffix: asArray(this.suffix),
             period: this.period
-        }
+        });
     }
 
-    constructor() {
+    constructor(data = null) {
 
         // Call the super
-        super();
+        super(data);
 
     }
 

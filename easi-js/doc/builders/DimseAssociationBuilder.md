@@ -62,3 +62,5 @@ const sourceAssociation = EASI
 - AE-title fields (`callingAeTitle`, `calledAeTitle`, `moveDestinationAeTitle`, `moveStoreCalledAeTitle`) are trimmed, limited to 16 chars, and must contain printable ASCII only (no backslash).
 - Move-store settings are emitted under `query.moveStoreTls` and `query.moveStorePolicy` to match DIMSE transport contracts.
 - mTLS helpers require both `cert` and `key`.
+- Verification message IDs are integers 1–65535. Timeouts are positive integers within Node's timer range. `maxPduLength` is an unsigned 32-bit integer of at least 8 bytes; built-in receiving transports additionally apply their incoming PDU cap.
+- See the [v1 DIMSE guide](../DIMSE_V1.md) for query options, supported roles, and limits.

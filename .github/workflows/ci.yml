@@ -15,16 +15,6 @@ on:
       - ".github/workflows/**"
   workflow_dispatch:
     inputs:
-      run_dimse_sockets:
-        description: "Run DIMSE socket integration tests"
-        required: false
-        default: false
-        type: boolean
-      run_orthanc_interop:
-        description: "Run Orthanc DIMSE interop tests"
-        required: false
-        default: false
-        type: boolean
       run_benchmarks:
         description: "Run streaming benchmarks"
         required: false
@@ -41,14 +31,20 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: "18.x"
+  NODE_VERSION: "24.x"
   WORKDIR: easi-js
 
 jobs:
   core:
-    name: Core Tests
+    name: Core Tests (Node ${{ matrix.node }})
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["22.x", "24.x"]
+    env:
+      EASI_CONTRACTS_ROOT: ${{ github.workspace }}/easi-docs/easi-contracts
     defaults:
       run:
         working-directory: ${{ env.WORKDIR }}
@@ -56,10 +52,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Checkout Canonical API Contracts
+        uses: actions/checkout@v4
+        with:
+          repository: davidvaccaro/easi
+          ref: main
+          path: easi-docs
+          persist-credentials: false
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ matrix.node }}
           cache: npm
           cache-dependency-path: easi-js/package-lock.json
 
@@ -73,15 +77,55 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: easi-js-core-coverage
+          name: easi-js-core-coverage-node-${{ matrix.node }}
           path: easi-js/coverage/lcov-report
           if-no-files-found: warn
 
+  packaging:
+    name: Package Validation (Node ${{ matrix.node }})
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["22.x", "24.x"]
+    defaults:
+      run:
+        working-directory: ${{ env.WORKDIR }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: easi-js/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Validate Packed Consumers
+        run: npm run package:check
+
+      - name: Validate Packaged README Examples
+        run: npm run docs:readme:check
+
+      - name: Create Release Candidate Archive
+        run: npm run package:pack
+
+      - name: Upload Package and Inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: easi-js-package-node-${{ matrix.node }}
+          path: |
+            easi-js/artifacts/*.tgz
+            easi-js/artifacts/*.manifest.json
+          if-no-files-found: error
+
   dimse-sockets:
     name: DIMSE Socket Tests
-    if: >
-      github.event_name == 'schedule' ||
-      (github.event_name == 'workflow_dispatch' && inputs.run_dimse_sockets)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -105,34 +149,10 @@ jobs:
 
   orthanc-interop:
     name: Orthanc DIMSE Interop Tests
-    if: >
-      github.event_name == 'schedule' ||
-      (github.event_name == 'workflow_dispatch' && inputs.run_orthanc_interop)
     runs-on: ubuntu-latest
     env:
       ORTHANC_HTTP_USERNAME: "orthanc"
       ORTHANC_HTTP_PASSWORD: "orthanc"
-    services:
-      orthanc:
-        image: jodogne/orthanc-plugins:latest
-        ports:
-          - 8042:8042
-          - 4242:4242
-        env:
-          ORTHANC__AUTHENTICATION_ENABLED: "true"
-          ORTHANC__REMOTE_ACCESS_ALLOWED: "true"
-          ORTHANC__DICOM_AET: "ORTHANC"
-          ORTHANC__DICOM_PORT: "4242"
-          ORTHANC__HTTP_PORT: "8042"
-          ORTHANC__REGISTERED_USERS: '{"orthanc":"orthanc"}'
-          ORTHANC__AuthenticationEnabled: "true"
-          ORTHANC__RegisteredUsers: '{"orthanc":"orthanc"}'
-          # Explicit AE registrations used by DIMSE interop tests.
-          # EASI_MOVE_DEST points back to the GitHub runner host, where the local
-          # store SCP listener is created by the test transport.
-          ORTHANC__DICOM_MODALITIES: '{"EASI_JS":["EASI_JS","host.docker.internal",11112],"EASI_MOVE_DEST":["EASI_MOVE_DEST","host.docker.internal",4104]}'
-        options: >-
-          --add-host=host.docker.internal:host-gateway
     defaults:
       run:
         working-directory: ${{ env.WORKDIR }}
@@ -150,67 +170,37 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Start Pinned Orthanc Peer
+        run: |
+          docker run --detach --name easi-orthanc --network host \
+            --volume "$PWD/tools/interop/orthanc.json:/etc/orthanc/orthanc.json:ro" \
+            jodogne/orthanc:1.12.8
+
       - name: Wait For Orthanc Service
         run: |
-          auth_args=()
-          if [ -n "${ORTHANC_HTTP_USERNAME:-}" ] && [ -n "${ORTHANC_HTTP_PASSWORD:-}" ]; then
-            auth_args=(-u "${ORTHANC_HTTP_USERNAME}:${ORTHANC_HTTP_PASSWORD}")
-          fi
-          for i in {1..60}; do
-            if curl -fsS "${auth_args[@]}" http://127.0.0.1:8042/system >/dev/null 2>&1 && (echo > /dev/tcp/127.0.0.1/4242) >/dev/null 2>&1; then
+          for i in {1..30}; do
+            if curl -fsS -u "${ORTHANC_HTTP_USERNAME}:${ORTHANC_HTTP_PASSWORD}" \
+              http://127.0.0.1:8042/system >/dev/null 2>&1; then
               echo "Orthanc is ready."
               exit 0
             fi
-            sleep 2
+            sleep 1
           done
+          docker logs easi-orthanc
           echo "Orthanc did not become ready in time."
           exit 1
 
-      - name: Validate Orthanc Modality Configuration
+      - name: Validate Orthanc Modality Routing
         run: |
-          auth_args=()
-          if [ -n "${ORTHANC_HTTP_USERNAME:-}" ] && [ -n "${ORTHANC_HTTP_PASSWORD:-}" ]; then
-            auth_args=(-u "${ORTHANC_HTTP_USERNAME}:${ORTHANC_HTTP_PASSWORD}")
-          fi
-          curl -fsS "${auth_args[@]}" "http://127.0.0.1:8042/system" | tee /tmp/orthanc-system.json >/dev/null
-          curl -fsS "${auth_args[@]}" "http://127.0.0.1:8042/modalities" | tee /tmp/orthanc-modalities.json >/dev/null
-          if ! grep -q "EASI_MOVE_DEST" /tmp/orthanc-modalities.json; then
-            echo "Warning: Orthanc modalities are missing EASI_MOVE_DEST."
-            cat /tmp/orthanc-modalities.json
-          fi
-          if ! grep -q "EASI_JS" /tmp/orthanc-modalities.json; then
-            echo "Warning: Orthanc modalities are missing EASI_JS."
-            cat /tmp/orthanc-modalities.json
-          fi
-
-      - name: Seed Orthanc With Sample DICOMs
-        run: |
-          auth_args=()
-          if [ -n "${ORTHANC_HTTP_USERNAME:-}" ] && [ -n "${ORTHANC_HTTP_PASSWORD:-}" ]; then
-            auth_args=(-u "${ORTHANC_HTTP_USERNAME}:${ORTHANC_HTTP_PASSWORD}")
-          fi
-          count=0
-          while IFS= read -r file; do
-            response="$(curl -fsS \
-              "${auth_args[@]}" \
-              -X POST \
-              -H "Content-Type: application/dicom" \
-              --data-binary @"$file" \
-              "http://127.0.0.1:8042/instances")"
-            if [ -z "$response" ]; then
-              echo "Orthanc upload returned empty response for: $file"
-              exit 1
-            fi
-            count=$((count + 1))
-            if [ "$count" -ge 5 ]; then
-              break
-            fi
-          done < <(find ../data/dicoms -type f \( -name "*.dcm" -o -name "*.DCM" \) | sort)
-          if [ "$count" -eq 0 ]; then
-            echo "No sample DICOM files were found under data/dicoms."
-            exit 1
-          fi
-          echo "Uploaded $count DICOM file(s) to Orthanc."
+          curl -fsS -u "${ORTHANC_HTTP_USERNAME}:${ORTHANC_HTTP_PASSWORD}" \
+            http://127.0.0.1:8042/modalities > /tmp/easi-orthanc-modalities.json
+          node --input-type=module -e '
+            import fs from "node:fs";
+            const modalities = JSON.parse(fs.readFileSync("/tmp/easi-orthanc-modalities.json", "utf8"));
+            for (const ae of ["EASI_JS", "EASI_MOVE_DEST"]) {
+              if (!modalities.includes(ae)) throw new Error(`Missing peer modality ${ae}`);
+            }
+          '
 
       - name: Run Orthanc DIMSE Interop Tests
         env:
@@ -223,17 +213,21 @@ jobs:
           ORTHANC_DIMSE_PORT: "4242"
           ORTHANC_DIMSE_CALLED_AE: "ORTHANC"
           ORTHANC_DIMSE_CALLING_AE: "EASI_JS"
-          # Hosted CI DIMSE behavior can vary by Orthanc image/runner environment.
-          # Keep Orthanc interop lane informative without failing on transient C-GET aborts.
-          ORTHANC_DIMSE_REQUIRE_C_GET: "false"
-          # C-MOVE routing from the Orthanc service container back to the runner
-          # can be flaky in hosted CI networking. Treat C-MOVE as best-effort.
-          ORTHANC_DIMSE_REQUIRE_C_MOVE: "false"
+          # The peer shares the runner network; C-MOVE routes through loopback.
+          # All enabled operations fail the lane on protocol or routing errors.
           ORTHANC_MOVE_DEST_AE: "EASI_MOVE_DEST"
-          ORTHANC_MOVE_STORE_HOST: "0.0.0.0"
+          ORTHANC_MOVE_STORE_HOST: "127.0.0.1"
           ORTHANC_MOVE_STORE_PORT: "4104"
           ORTHANC_MOVE_STORE_CALLED_AE: "EASI_MOVE_DEST"
         run: npm run test:orthanc-dimse-all
+
+      - name: Orthanc Logs
+        if: always()
+        run: docker logs easi-orthanc
+
+      - name: Stop Disposable Orthanc Peer
+        if: always()
+        run: docker rm --force easi-orthanc
 
   benchmarks:
     name: Streaming Benchmarks

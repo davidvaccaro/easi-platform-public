@@ -16,6 +16,8 @@ read(association, options?)
 
 The transport is responsible for executing DIMSE source operations (for example C-FIND, C-GET, or C-MOVE retrieval orchestration) and returning streamable payloads to the reader path.
 
+An empty success must return an envelope with `empty: true`, zero-length byte `source`, and `metadata.count: 0` (and zero/absent `contentLength`). The reader returns no objects and skips parsing. Zero bytes without that explicit envelope are invalid. The reader exposes envelope metadata through `lastMetadata` and forwards an AbortSignal to transport reads. An undefined envelope `onEmit` preserves the caller's callback; `null` explicitly disables it.
+
 ## Destination Transport Contract
 
 Used by `intoDimseAssociation(...)` through `DimseAssociationWriter`.

@@ -17,10 +17,10 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import NumberUtils from "../utils/NumberUtils.js";
 import BackboneElement from "./BackboneElement.js"
 import Coding from "./Coding.js";
 import CodingSystems from "./CodingSystems.js";
+import { toFhirJSON, toUnsignedInteger } from "./FhirJson.js";
 
 export default class ImagingInstance extends BackboneElement {
   
@@ -54,8 +54,14 @@ export default class ImagingInstance extends BackboneElement {
         if (sopClass == null) {
             this._sopClass = null;
         }
+        else if (typeof sopClass === 'object') {
+            this._sopClass = sopClass;
+        }
         else {
-            this._sopClass = Coding.create(CodingSystems.URI, "urn:oid:" + sopClass);
+            var code = String(sopClass).trim();
+            this._sopClass = (code.length > 0)
+                ? Coding.create(CodingSystems.URI, code.startsWith('urn:oid:') ? code : ('urn:oid:' + code))
+                : null;
         }
         
     }
@@ -107,13 +113,12 @@ export default class ImagingInstance extends BackboneElement {
      * @returns 
      */
     toJSON() {
-        return {
+        return toFhirJSON({
             uid: this.uid,
             sopClass: this.sopClass,
-            number: NumberUtils.parseUnsignedInteger(this.number),
-            title: this.title,
-            endpoint: this.endpoint
-        }
+            number: toUnsignedInteger(this.number),
+            title: this.title
+        });
     }
 
     constructor() {

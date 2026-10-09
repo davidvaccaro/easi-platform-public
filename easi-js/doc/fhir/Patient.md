@@ -1,6 +1,6 @@
 # `Patient` Class
 
-The `Patient` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
+The `Patient` class supports contained FHIR R4 Patients in ImagingStudy mappings. Its JSON includes `id` and repeating `identifier`, `name`, and `telecom` arrays. The `.telcom` and `.addTelcom()` spellings remain JavaScript compatibility aliases for `.telecom` and `.addTelecom()`. Empty optional values are omitted; birth dates remain FHIR date strings. See the [mapping guide](../handlers/mappings/DicomToFHIRImagingStudyMapping.md).
 
 ---
 
@@ -25,7 +25,8 @@ new Patient()
 | `gender` | `*` | Accessor property. |
 | `identifier` | `*` | Accessor property. |
 | `name` | `*` | Accessor property. |
-| `telcom` | `*` | Accessor property. |
+| `telecom` | `Array<ContactPoint>` | Contact details. |
+| `telcom` | `Array<ContactPoint>` | Compatibility alias for `telecom`. |
 
 ## Methods
 

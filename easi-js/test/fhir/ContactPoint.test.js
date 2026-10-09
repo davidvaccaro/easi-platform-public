@@ -53,3 +53,18 @@ test('Test: ContactPoint.coerce maps object fields', () => {
 
 });
 
+test('Test: ContactPoint serializes public FHIR field names without private backing properties', () => {
+
+    const contact = ContactPoint.coerce({ system: 'phone', value: '555-1000', use: 'home', rank: 1 });
+    expect(contact.toJSON()).toEqual({ system: 'phone', value: '555-1000', use: 'home', rank: 1 });
+    expect(JSON.parse(JSON.stringify(contact))).not.toHaveProperty('_value');
+
+});
+
+test.each([null, '', 0, -1, 1.5])('Test: ContactPoint omits absent or invalid positive ranks (%s)', (rank) => {
+
+    const contact = ContactPoint.coerce({ system: 'phone', value: '555-1000', rank });
+    expect(contact.toJSON()).toEqual({ system: 'phone', value: '555-1000' });
+
+});
+

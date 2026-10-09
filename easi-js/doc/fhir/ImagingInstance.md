@@ -1,6 +1,6 @@
 # `ImagingInstance` Class
 
-The `ImagingInstance` class models a FHIR&reg; resource or element used by EASI DICOM&reg; mapping workflows.
+The `ImagingInstance` class models the FHIR R4 ImagingStudy instance backbone. Its JSON contains `uid`, Coding-valued `sopClass`, and optional `number`/`title`. SOP class UIDs serialize as `urn:oid:` codes in the `urn:ietf:rfc:3986` system. R4 defines no instance endpoint, so the legacy JavaScript endpoint property is omitted from JSON.
 
 ---
 

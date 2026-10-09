@@ -19,6 +19,7 @@
 
 import Element from "./Element.js"
 import StringUtils from "../utils/StringUtils.js";
+import { toFhirJSON, toUnsignedInteger } from "./FhirJson.js";
 
 export default class ContactPoint extends Element {
   
@@ -138,8 +139,9 @@ export default class ContactPoint extends Element {
                 result.value = String(value.value).trim();
             if (StringUtils.isValid(String(value.use ?? '')) == true)
                 result.use = String(value.use).trim();
-            if (Number.isFinite(Number(value.rank)) == true)
-                result.rank = Number(value.rank);
+            var rank = toUnsignedInteger(value.rank);
+            if (rank > 0)
+                result.rank = rank;
             if (value.period != null)
                 result.period = value.period;
 
@@ -171,10 +173,24 @@ export default class ContactPoint extends Element {
 
     }
 
-    constructor() {
+    /**
+     * Convert to FHIR ContactPoint JSON.
+     */
+    toJSON() {
+        var rank = toUnsignedInteger(this.rank);
+        return toFhirJSON({
+            system: this.system,
+            value: this.value,
+            use: this.use,
+            rank: (rank > 0) ? rank : undefined,
+            period: this.period
+        });
+    }
+
+    constructor(data = null) {
 
         // Call the super
-        super();
+        super(data);
 
     }
 

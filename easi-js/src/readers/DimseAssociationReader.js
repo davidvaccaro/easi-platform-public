@@ -20,6 +20,7 @@
 import Exception from '../environment/Exception.js';
 import { GeneralErrorCodes } from '../environment/Exception.js';
 import PartStreamReader from './PartStreamReader.js';
+import DimseTransportContract from '../transports/dimse/DimseTransportContract.js';
 
 export default class DimseAssociationReader {
 
@@ -69,7 +70,7 @@ export default class DimseAssociationReader {
                 readOptions.contentLength = payload.contentLength;
             }
 
-            if (Object.prototype.hasOwnProperty.call(payload, 'onEmit') == true) {
+            if (payload.onEmit !== undefined) {
                 readOptions.onEmit = payload.onEmit;
             }
 
@@ -111,20 +112,59 @@ export default class DimseAssociationReader {
      */
     async read(source = null, options = null) {
 
+        this._lastMetadata = null;
+
         const transport = this.resolveTransport(options);
         if ((transport == null) || (typeof transport.read !== 'function')) {
             throw new Exception('Invalid DIMSE source transport.', GeneralErrorCodes.InvalidParameter);
         }
 
         const association = (source != null) ? source : this._association;
-        const payload = await transport.read(association, options);
-        const normalized = this.normalizePayload(payload, options);
-
-        if (normalized.source == null) {
-            throw new Exception('Invalid DIMSE source payload. Missing data/stream source.', GeneralErrorCodes.GeneralError);
+        const controller = new AbortController();
+        const callerSignal = options?.signal;
+        if ((callerSignal != null) && ((typeof callerSignal.addEventListener !== 'function')
+            || (typeof callerSignal.removeEventListener !== 'function') || (typeof callerSignal.aborted !== 'boolean'))) {
+            throw new Exception('Invalid DIMSE AbortSignal.', GeneralErrorCodes.InvalidParameter);
         }
+        const abort = () => controller.abort(callerSignal.reason);
+        if (callerSignal?.aborted === true)
+            abort();
+        else
+            callerSignal?.addEventListener('abort', abort, { once: true });
 
-        return this._partReader.read(normalized.source, normalized.readOptions);
+        this._activeReads.add(controller);
+        try {
+            if (controller.signal.aborted === true)
+                throw controller.signal.reason;
+            const readOptions = Object.assign({}, options || {}, { signal: controller.signal });
+            const payload = await transport.read(association, readOptions);
+            const normalized = this.normalizePayload(payload, readOptions);
+            this._lastMetadata = payload?.metadata ?? null;
+
+            if (payload?.empty === true) {
+                const bytes = DimseTransportContract.toBytes(normalized.source);
+                if ((bytes == null) || (bytes.length !== 0) || (payload.metadata?.count !== 0)
+                    || ((payload.contentLength != null) && (Number(payload.contentLength) !== 0))) {
+                    throw new Exception('Invalid empty DIMSE source envelope.', GeneralErrorCodes.GeneralError);
+                }
+                this.parser?.resetSession?.();
+                return [];
+            }
+
+            if (normalized.source == null) {
+                throw new Exception('Invalid DIMSE source payload. Missing data/stream source.', GeneralErrorCodes.GeneralError);
+            }
+            const bytes = DimseTransportContract.toBytes(normalized.source);
+            if ((bytes != null) && (bytes.length === 0)) {
+                throw new Exception('Invalid DIMSE source payload. Empty data requires an explicit empty result envelope.', GeneralErrorCodes.GeneralError);
+            }
+
+            return await this._partReader.read(normalized.source, normalized.readOptions);
+        }
+        finally {
+            this._activeReads.delete(controller);
+            callerSignal?.removeEventListener('abort', abort);
+        }
 
     }
 
@@ -155,6 +195,9 @@ export default class DimseAssociationReader {
      * @param {object | null} options Optional read/stop options.
      */
     async stop(source = null, options = null) {
+
+        for (const controller of this._activeReads)
+            controller.abort();
 
         const transport = this.resolveTransport(options);
         if (transport == null)
@@ -188,6 +231,15 @@ export default class DimseAssociationReader {
     }
 
     /**
+     * Metadata from the most recently received transport envelope, including
+     * final DIMSE status and suboperation counts. Reset on each read attempt.
+     * @returns {object | null} Transport metadata.
+     */
+    get lastMetadata() {
+        return this._lastMetadata;
+    }
+
+    /**
      * Set the onPart callback.
      * @param {Function | null} onPart The onPart callback.
      */
@@ -213,6 +265,8 @@ export default class DimseAssociationReader {
         this._association = association;
         this._transport = transport;
         this._partReader = (partReader != null) ? partReader : new PartStreamReader();
+        this._activeReads = new Set();
+        this._lastMetadata = null;
     }
 
 }

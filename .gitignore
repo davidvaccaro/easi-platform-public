@@ -2,6 +2,9 @@ data/dicoms/local/*
 data/dicoms/test-library/*
 data/test-library/*
 easi-js/test/output/
+easi-js/artifacts/
+easi-js/coverage/
+easi-js/*.tgz
 **/tempCodeRunnerFile.js
 
 # Peer benchmark local toolchain/runtime artifacts

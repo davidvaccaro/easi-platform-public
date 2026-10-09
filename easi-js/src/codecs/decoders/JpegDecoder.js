@@ -14,6 +14,7 @@
 */
 
 // FROM: https://github.com/jpeg-js/jpeg-js
+// Modified for EASI JS: integrated as an ES module/class decoder wrapper.
 
 // - The JPEG specification can be found in the ITU CCITT Recommendation T.81
 //   (www.w3.org/Graphics/JPEG/itu-t81.pdf)

@@ -18,7 +18,8 @@
 //
 
 import DicomMapping from "./DicomMapping.js";
-import Tag from "../../dicom/Tag.js"
+import Tag from "../../dicom/Tag.js";
+import TransferSyntax from "../../dicom/TransferSyntax.js";
 
 import Reference from "../../fhir/Reference.js";
 import ImagingStudy from "../../fhir/ImagingStudy.js";
@@ -90,8 +91,11 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
             if (value.uid != null)
                 return `uid:${String(value.uid)}`;
 
-            if ((value.system != null) && (value.value != null))
-                return `system-value:${String(value.system)}:${String(value.value)}`;
+            if ((value.system != null) && (value.code != null))
+                return `system-code:${String(value.system)}:${String(value.code)}`;
+
+            if (value.value != null)
+                return `system-value:${String(value.system ?? '')}:${String(value.value)}`;
 
             var keys = Object.keys(value).sort();
             var fragments = [];
@@ -162,10 +166,10 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
             return targetInstance;
 
         targetInstance.uid = this.mergePreferredScalar(targetInstance.uid, sourceInstance.uid);
-        targetInstance.sopClass = this.mergePreferredScalar(targetInstance.sopClass, sourceInstance.sopClass);
+        if (this.isNullOrBlankValue(targetInstance.sopClass) == true)
+            targetInstance.sopClass = sourceInstance.sopClass;
         targetInstance.number = this.mergePreferredScalar(targetInstance.number, sourceInstance.number);
         targetInstance.title = this.mergePreferredScalar(targetInstance.title, sourceInstance.title);
-        targetInstance.endpoint = this.mergePreferredScalar(targetInstance.endpoint, sourceInstance.endpoint);
 
         return targetInstance;
 
@@ -178,9 +182,10 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
 
         targetSeries.uid = this.mergePreferredScalar(targetSeries.uid, sourceSeries.uid);
         targetSeries.number = this.mergePreferredScalar(targetSeries.number, sourceSeries.number);
-        targetSeries.modality = this.mergePreferredScalar(targetSeries.modality, sourceSeries.modality);
+        if (this.isNullOrBlankValue(targetSeries.modality) == true)
+            targetSeries.modality = sourceSeries.modality;
         targetSeries.description = this.mergePreferredScalar(targetSeries.description, sourceSeries.description);
-        targetSeries.endpoint = this.mergePreferredScalar(targetSeries.endpoint, sourceSeries.endpoint);
+        targetSeries.endpoint = this.mergeUniqueValues(targetSeries.endpoint, sourceSeries.endpoint);
         targetSeries.started = this.mergePreferredScalar(targetSeries.started, sourceSeries.started);
 
         if (Array.isArray(targetSeries.instances) == false)
@@ -212,10 +217,16 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
             return targetPatient;
 
         targetPatient.id = this.mergePreferredScalar(targetPatient.id, sourcePatient.id);
+        for (var incoming of sourcePatient.identifier) {
+            var existing = targetPatient.identifier.find(identifier =>
+                (identifier.value == incoming.value) && ((identifier.system ?? '') == (incoming.system ?? '')));
+            if ((existing != null) && (existing.assigner == null) && (incoming.assigner != null))
+                existing.assigner = incoming.assigner;
+        }
         targetPatient.identifier = this.mergeUniqueValues(targetPatient.identifier, sourcePatient.identifier);
         targetPatient.active = this.mergePreferredScalar(targetPatient.active, sourcePatient.active);
         targetPatient.name = this.mergeUniqueValues(targetPatient.name, sourcePatient.name);
-        targetPatient.telcom = this.mergeUniqueValues(targetPatient.telcom, sourcePatient.telcom);
+        targetPatient.telecom = this.mergeUniqueValues(targetPatient.telecom, sourcePatient.telecom);
         targetPatient.gender = this.mergePreferredScalar(targetPatient.gender, sourcePatient.gender);
         targetPatient.birthDate = this.mergePreferredScalar(targetPatient.birthDate, sourcePatient.birthDate);
 
@@ -232,7 +243,7 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         targetStudy.status = this.mergePreferredScalar(targetStudy.status, sourceStudy.status);
         targetStudy.modality = this.mergeUniqueValues(targetStudy.modality, sourceStudy.modality);
         targetStudy.subject = this.mergePreferredScalar(targetStudy.subject, sourceStudy.subject);
-        targetStudy.endpoint = this.mergePreferredScalar(targetStudy.endpoint, sourceStudy.endpoint);
+        targetStudy.endpoint = this.mergeUniqueValues(targetStudy.endpoint, sourceStudy.endpoint);
         targetStudy.encounter = this.mergePreferredScalar(targetStudy.encounter, sourceStudy.encounter);
         targetStudy.started = this.mergePreferredScalar(targetStudy.started, sourceStudy.started);
         targetStudy.description = this.mergePreferredScalar(targetStudy.description, sourceStudy.description);
@@ -313,177 +324,377 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
 
     resolveCurrentStudy(context) {
 
-        var incomingStudy = context.study;
-        if (incomingStudy == null)
-            return null;
-
-        if (context.final == null) {
-            context.final = incomingStudy;
-            return incomingStudy;
-        }
-
-        var studies = Array.isArray(context.final) ? context.final : [context.final];
-        var incomingIdentifiers = this.extractStudyIdentifierValues(incomingStudy);
-
-        var currentStudy = null;
-        for (var i = 0; i < studies.length; i++) {
-
-            var candidateStudy = studies[i];
-            var candidateIdentifiers = this.extractStudyIdentifierValues(candidateStudy);
-            if ((incomingIdentifiers.length == 0) || (candidateIdentifiers.length == 0))
-                continue;
-
-            var hasIntersection = candidateIdentifiers.some((identifier) => incomingIdentifiers.includes(identifier));
-            if (hasIntersection != true)
-                continue;
-
-            currentStudy = candidateStudy;
-            break;
-
-        }
-
-        if (currentStudy == null) {
-            studies.push(incomingStudy);
-            currentStudy = incomingStudy;
+        var uid = context.studyUID;
+        var study = context.studiesByUID.get(uid);
+        if (study == null) {
+            study = context.study;
+            context.studiesByUID.set(uid, study);
         }
         else {
-            this.mergeStudy(currentStudy, incomingStudy);
+            this.mergeStudy(study, context.study);
         }
 
+        var studies = Array.from(context.studiesByUID.values());
         context.final = (studies.length == 1) ? studies[0] : studies;
-        return currentStudy;
+        return study;
 
     }
 
     start(context) {
 
-        // Call the super
-        super.start(context);
-
-        // Handle setting up a new context
         context.study = new ImagingStudy();
         context.series = new ImagingSeries();
         context.instance = new ImagingInstance();
         context.patient = new Patient();
-        context.study.status = 'available';
+        context.study.status = this.status;
         context.currentStudy = null;
         context.currentSeries = null;
         context.currentInstance = null;
-
-        // Return the modified context
-        return context;
+        context.rawDicom = {};
+        context.nativeTextAttributes = new Map();
+        context.isNativeDicom = false;
+        context.studiesByUID ??= new Map();
+        context.patientIdentityByStudy ??= new Map();
+        context.seriesStudyUIDs ??= new Map();
+        context.instanceSeriesUIDs ??= new Map();
+        return super.start(context);
 
     }
 
-    end(context) {        
+    /**
+     * Defer native text decoding until the record's character-set declaration is
+     * known. Metadata adapters already supply decoded Unicode values.
+     */
+    mapAttribute(context, attribute) {
+        if ((attribute?.tag == null) || (this.shouldCaptureTag(attribute.tag) != true))
+            return;
+        var isNative = (attribute.transferSyntax != TransferSyntax.NONE) && (attribute._value == null);
+        var vr = attribute.vr?.ID ?? attribute.tag.VR?.ID;
+        if (isNative) {
+            context.isNativeDicom = true;
+            if (['AE', 'SH', 'UI', 'LO', 'IS', 'DS', 'CS', 'PN', 'LT', 'ST', 'UC', 'UT', 'UR', 'DA', 'TM', 'DT'].includes(vr)) {
+                context.nativeTextAttributes.set(attribute.tag.ID, { attribute: attribute, vr: vr, bytes: attribute.access() });
+                return;
+            }
+        }
+        context.rawDicom[attribute.tag.ID] = attribute.value;
+        super.mapAttribute(context, attribute);
+    }
 
-        // Resolve the current study merge target.
+    decodeNativeText(bytes, characterSet, tag) {
+        var text;
+        try {
+            if (characterSet == 'ISO_IR 192') {
+                text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+            }
+            else {
+                // The Encoding Standard aliases TextDecoder's Latin-1 label to
+                // Windows-1252. Decode exact ISO-8859-1 code points instead.
+                var parts = [];
+                for (var offset = 0; offset < bytes.length; offset += 8192) {
+                    var chunk = bytes.subarray(offset, offset + 8192);
+                    if ((characterSet == 'ISO_IR 6') && chunk.some(byte => byte > 127))
+                        throw new Error('non-ASCII byte');
+                    parts.push(String.fromCharCode(...chunk));
+                }
+                text = parts.join('');
+            }
+        }
+        catch {
+            throw new Error(`Cannot map FHIR R4: invalid ${characterSet} text in DICOM ${tag.Keyword ?? tag.ID}.`);
+        }
+        if (text.includes('\u001b'))
+            throw new Error('Cannot map FHIR R4: ISO 2022 escape sequences are not supported in native DICOM text.');
+        return text.replace(/\0/g, '').trim();
+    }
+
+    decodeNativeAttributes(context) {
+        if (context.isNativeDicom != true)
+            return;
+        var declaration = context.nativeTextAttributes.get(Tag.SpecificCharacterSet.ID);
+        var characterSet = declaration == null ? this.scalarText(context.rawDicom[Tag.SpecificCharacterSet.ID])
+            : this.decodeNativeText(declaration.bytes, 'ISO_IR 6', declaration.attribute.tag);
+        characterSet = characterSet || 'ISO_IR 6';
+        if (!['ISO_IR 6', 'ISO_IR 100', 'ISO_IR 192'].includes(characterSet))
+            throw new Error(`Cannot map FHIR R4: unsupported native DICOM SpecificCharacterSet "${characterSet}"; use ASCII, ISO_IR 100 or ISO_IR 192.`);
+        for (var { attribute, vr, bytes } of context.nativeTextAttributes.values()) {
+            var encoding = ['SH', 'LO', 'PN', 'LT', 'ST', 'UC', 'UT'].includes(vr) ? characterSet : 'ISO_IR 6';
+            var value = this.decodeNativeText(bytes, encoding, attribute.tag);
+            attribute.value = value;
+            context.rawDicom[attribute.tag.ID] = value;
+            super.mapAttribute(context, attribute);
+        }
+    }
+
+    end(context) {
+
+        this.prepareRecord(context);
+        this.validateRecord(context);
+        this.validateMerge(context);
         var study = this.resolveCurrentStudy(context);
+        var series = null;
+        var instance = null;
 
-        if (this.profile === 'study-summary') {
+        if (this.profile == 'full') {
+            series = study.series.find(candidate => candidate.uid == context.series.uid);
+            if (series == null) {
+                series = context.series;
+                study.series.push(series);
+            }
+            else {
+                this.mergeSeries(series, context.series);
+            }
 
-            // Resolve subject output (contained patient / reference / none).
-            this.applySubject(study, context);
+            instance = series.instances.find(candidate => candidate.uid == context.instance.uid);
+            if (instance == null) {
+                instance = context.instance;
+                series.instances.push(instance);
+            }
+            else {
+                this.mergeInstance(instance, context.instance);
+            }
 
-            // Normalize top-level FHIR values for study-summary output.
-            this.normalizeStudy(study);
-            study.series = [];
-
-            context.currentStudy = study;
-            context.currentSeries = null;
-            context.currentInstance = null;
-
-            // Apply computed mappings (for example reference templates).
-            super.end(context);
-
-            // Clear temporary references from context.
-            context.currentStudy = null;
-            context.currentSeries = null;
-            context.currentInstance = null;
-
-            // Install serialization pruning on final study output.
-            this.installPrunedSerializationForFinalResult(context.final);
-
-            return context.final;
-
-        }
-
-        if (study == null) {
-            this.installPrunedSerializationForFinalResult(context.final);
-            return context.final;
-        }
-
-        // Find the series within the study series
-        var series = study.series.find(element => element.uid == context.series.uid);
-
-        // If the series was NOT found,
-        if (series == null) {
-
-            // Establish the current series
-            series = context.series;
-
-            // Add the series to the study
-            study.series.push(series);
-
-            // Set the number of series
+            series.numberOfInstances = series.instances.length;
             study.numberOfSeries = study.series.length;
-
+            study.numberOfInstances = this.calculateStudyInstanceCount(study);
+            // A full result represents the mapped subset, including its modalities.
+            study.modality = this.normalizeStudyModalities(study.series.map(candidate => candidate.modality));
         }
         else {
-
-            this.mergeSeries(series, context.series);
-
+            study.series = [];
+            study.numberOfSeries = this.mergePreferredScalar(study.numberOfSeries, context.study.numberOfSeries);
+            study.numberOfInstances = this.mergePreferredScalar(study.numberOfInstances, context.study.numberOfInstances);
         }
 
-        // Find the instance
-        var instance = series.instances.find(element => element.uid == context.instance.uid);
-
-        // If the instance was NOT found,
-        if (instance == null) {
-
-            // Establish the current instance
-            instance = context.instance;
-
-            // Add the instance to the series
-            series.instances.push(instance);
-
-            // Set the number of instances
-            series.numberOfInstances = series.instances.length; 
-
-        }
-        else {
-
-            this.mergeInstance(instance, context.instance);
-
-        }
-
-        // Resolve subject output (contained patient / reference / none).
         this.applySubject(study, context);
         this.normalizeStudy(study);
-
-        // Refresh aggregate counts
-        study.numberOfSeries = study.series.length;
-        study.numberOfInstances = this.calculateStudyInstanceCount(study);
-
-        // Expose normalized current merge targets for computed mappings.
         context.currentStudy = study;
         context.currentSeries = series;
         context.currentInstance = instance;
-
-        // Apply computed mappings (for example reference templates).
         super.end(context);
-
-        // Clear temporary references from context.
         context.currentStudy = null;
         context.currentSeries = null;
         context.currentInstance = null;
-
-        // Install serialization pruning on final study output.
         this.installPrunedSerializationForFinalResult(context.final);
-
-        // Return the current final value
         return context.final;
 
+    }
+
+    scalarText(value) {
+        if (Array.isArray(value)) {
+            if (value.length > 1)
+                throw new Error('FHIR mapping expected a single DICOM value.');
+            value = value[0];
+        }
+        if (value == null)
+            return null;
+        if ((typeof value != 'string') && (typeof value != 'number'))
+            throw new Error('FHIR mapping expected a textual DICOM value.');
+        var text = String(value).replace(/\0/g, '').trim();
+        return text.length > 0 ? text : null;
+    }
+
+    requireUID(value, label) {
+        var text = this.scalarText(value);
+        if ((text == null) || (text.length > 64) || !/^[0-2](?:\.[0-9]+)+$/.test(text)
+            || text.split('.').some(component => (component.length > 1) && component.startsWith('0')))
+            throw new Error(`Cannot map FHIR R4 ImagingStudy: missing or invalid ${label}.`);
+        return text;
+    }
+
+    prepareRecord(context) {
+        this.decodeNativeAttributes(context);
+        var raw = context.rawDicom;
+        context.studyUID = this.requireUID(raw[Tag.StudyInstanceUID.ID], 'StudyInstanceUID');
+        context.study.identifier = [{ system: 'urn:dicom:uid', value: `urn:oid:${context.studyUID}` }];
+        for (var entry of [[Tag.StudyID, 'study'], [Tag.AccessionNumber, 'accession']]) {
+            var text = this.scalarText(raw[entry[0].ID]);
+            if (text != null) {
+                var identifier = { value: text };
+                if (this.identifierSystems[entry[1]] != null)
+                    identifier.system = this.identifierSystems[entry[1]];
+                context.study.identifier.push(identifier);
+            }
+        }
+
+        var patientID = this.scalarText(raw[Tag.PatientID.ID]);
+        var issuer = this.scalarText(raw[Tag.IssuerOfPatientID.ID]);
+        context.patient.identifier = [];
+        if (patientID != null) {
+            var patientIdentifier = { value: patientID };
+            if (this.identifierSystems.patient != null)
+                patientIdentifier.system = this.identifierSystems.patient;
+            if (issuer != null)
+                patientIdentifier.assigner = { display: issuer };
+            context.patient.identifier = [patientIdentifier];
+        }
+        context.patientIdentity = { value: patientID, issuer: issuer };
+        context.patient.name = this.normalizePatientNames(raw[Tag.PatientName.ID]);
+        context.patient.telecom = [Tag.PatientTelephoneNumbers, Tag.PatientTelecomInformation]
+            .flatMap(tag => this.multipleTextValues(raw[tag.ID]));
+        context.patient.birthDate = this.normalizeDate(raw[Tag.PatientBirthDate.ID]);
+        context.study.started = this.normalizeStarted(raw[Tag.StudyDate.ID], raw[Tag.StudyTime.ID], raw[Tag.TimezoneOffsetFromUTC.ID]);
+        context.series.started = this.normalizeStarted(raw[Tag.SeriesDate.ID], raw[Tag.SeriesTime.ID], raw[Tag.TimezoneOffsetFromUTC.ID]);
+        context.study.modality = this.normalizeStudyModalities(context.study.modality);
+        for (var count of ['numberOfSeries', 'numberOfInstances']) {
+            var value = context.study[count];
+            context.study[count] = this.isNullOrBlankValue(value) ? null : this.parseUnsignedInteger(value, count);
+        }
+
+        if (this.profile == 'full') {
+            context.series.uid = this.requireUID(raw[Tag.SeriesInstanceUID.ID], 'SeriesInstanceUID');
+            context.instance.uid = this.requireUID(raw[Tag.SOPInstanceUID.ID], 'SOPInstanceUID');
+            var sopClass = this.requireUID(raw[Tag.SOPClassUID.ID], 'SOPClassUID');
+            context.instance.sopClass = sopClass;
+            var modalities = this.normalizeStudyModalities(raw[Tag.Modality.ID]);
+            if (modalities.length != 1)
+                throw new Error('Cannot map FHIR R4 ImagingStudy: missing or invalid Modality.');
+            context.series.modality = modalities[0];
+            context.series.number = this.isNullOrBlankValue(context.series.number) ? null : this.parseUnsignedInteger(context.series.number, 'SeriesNumber');
+            context.instance.number = this.isNullOrBlankValue(context.instance.number) ? null : this.parseUnsignedInteger(context.instance.number, 'InstanceNumber');
+        }
+    }
+
+    validateRecord(context) {
+        context.preparedEndpoints = { study: this.prepareEndpoints(context, 'study'),
+            series: this.profile == 'full' ? this.prepareEndpoints(context, 'series') : [] };
+        if (this.subjectMode == 'none')
+            throw new Error('FHIR R4 ImagingStudy.subject is required; subjectMode "none" cannot produce a valid resource.');
+        if (this.subjectMode == 'reference') {
+            var subject = this.subject ?? this.resolveSubjectTemplate(context);
+            if ((subject == null) || (subject === this.omitValue))
+                throw new Error('FHIR R4 ImagingStudy.subject is required; configure a subject Reference or resolvable subject template.');
+            context.preparedSubject = this.normalizeReference(subject, 'subject');
+        }
+    }
+
+    validateMerge(context) {
+        var previousIdentity = context.patientIdentityByStudy.get(context.studyUID);
+        var identity = context.patientIdentity;
+        if ((previousIdentity?.value != null) && (identity.value != null)
+            && ((previousIdentity.value != identity.value)
+                || ((previousIdentity.issuer != null) && (identity.issuer != null) && (previousIdentity.issuer != identity.issuer))))
+            throw new Error('Conflicting Patient identity for one StudyInstanceUID.');
+        if (this.profile == 'full') {
+            var seriesStudyUID = context.seriesStudyUIDs.get(context.series.uid);
+            if ((seriesStudyUID != null) && (seriesStudyUID != context.studyUID))
+                throw new Error('One SeriesInstanceUID cannot belong to different studies.');
+            var instanceSeriesUID = context.instanceSeriesUIDs.get(context.instance.uid);
+            if ((instanceSeriesUID != null) && (instanceSeriesUID != context.series.uid))
+                throw new Error('One SOPInstanceUID cannot belong to different series or studies.');
+        }
+        var study = context.studiesByUID.get(context.studyUID);
+        if (study != null) {
+            if ((this.subjectMode == 'reference') && (study.subject != null)
+                && (this.subjectIdentityKey(study.subject) != this.subjectIdentityKey(context.preparedSubject)))
+                throw new Error('Conflicting subject Reference for one StudyInstanceUID.');
+            if (this.profile == 'study-summary') {
+                for (var count of ['numberOfSeries', 'numberOfInstances']) {
+                    if ((study[count] != null) && (context.study[count] != null) && (study[count] != context.study[count]))
+                        throw new Error(`Conflicting study-summary ${count} for one StudyInstanceUID.`);
+                }
+            }
+            else {
+                for (var series of study.series) {
+                    if ((series.uid == context.series.uid) && (series.modality?.code != context.series.modality?.code))
+                        throw new Error('Conflicting Modality for one SeriesInstanceUID.');
+                    var instance = series.instances.find(candidate => candidate.uid == context.instance.uid);
+                    if (instance == null)
+                        continue;
+                    if (series.uid != context.series.uid)
+                        throw new Error('One SOPInstanceUID cannot belong to different series in a study.');
+                    if (instance.sopClass?.code != context.instance.sopClass?.code)
+                        throw new Error('Conflicting SOPClassUID for one SOPInstanceUID.');
+                }
+            }
+        }
+        if (this.profile == 'full') {
+            context.seriesStudyUIDs.set(context.series.uid, context.studyUID);
+            context.instanceSeriesUIDs.set(context.instance.uid, context.series.uid);
+        }
+        if (identity.value != null)
+            context.patientIdentityByStudy.set(context.studyUID, {
+                value: identity.value, issuer: identity.issuer ?? previousIdentity?.issuer ?? null
+            });
+    }
+
+    subjectIdentityKey(subject) {
+        // Display text is descriptive. Literal and logical references determine
+        // identity, including the namespace of a logical identifier.
+        return JSON.stringify([subject?.reference ?? null, subject?.identifier?.system ?? null,
+            subject?.identifier?.value ?? null]);
+    }
+
+    parseUnsignedInteger(value, label) {
+        var text = this.scalarText(value);
+        if ((text == null) || !/^\+?\d+$/.test(text) || !Number.isSafeInteger(Number(text)) || (Number(text) > 2147483647))
+            throw new Error(`Cannot map FHIR R4 ImagingStudy: invalid unsigned ${label}.`);
+        return Number(text);
+    }
+
+    multipleTextValues(value) {
+        var values = Array.isArray(value) ? value : [value];
+        return values.filter(item => item != null).flatMap(item => String(item).split('\\'))
+            .map(item => item.trim()).filter(item => item.length > 0);
+    }
+
+    normalizePatientNames(value) {
+        var values = Array.isArray(value) ? value : [value];
+        var names = [];
+        for (var item of values) {
+            if (item == null)
+                continue;
+            if (typeof item == 'object') {
+                // The metadata adapter may expose legacy PN objects as { value }.
+                // Prefer the first nonblank DICOM script representation.
+                item = [item.Alphabetic, item.Ideographic, item.Phonetic, item.value]
+                    .find(part => (typeof part == 'string') && (part.trim().length > 0));
+            }
+            if (typeof item != 'string')
+                continue;
+            // Each PN representation is separate; do not mix script groups into
+            // one set of human-name components.
+            var representation = item.split('=').find(part => part.trim().length > 0);
+            if (representation?.trim().length > 0)
+                names.push(representation.trim());
+        }
+        return names;
+    }
+
+    normalizeDate(value) {
+        var text = this.scalarText(value);
+        if (text == null)
+            return null;
+        if (!/^\d{4}(?:\d{2})?(?:\d{2})?$/.test(text) || (Number(text.substring(0, 4)) == 0))
+            throw new Error('Cannot map FHIR R4: invalid DICOM date.');
+        var year = Number(text.substring(0, 4));
+        var month = text.length >= 6 ? Number(text.substring(4, 6)) : null;
+        var day = text.length == 8 ? Number(text.substring(6, 8)) : null;
+        if ((month != null) && ((month < 1) || (month > 12)))
+            throw new Error('Cannot map FHIR R4: invalid DICOM date month.');
+        var leap = ((year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0)));
+        var days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        if ((day != null) && ((day < 1) || (day > days[month - 1])))
+            throw new Error('Cannot map FHIR R4: invalid DICOM date day.');
+        return text.substring(0, 4) + (month == null ? '' : '-' + text.substring(4, 6))
+            + (day == null ? '' : '-' + text.substring(6, 8));
+    }
+
+    normalizeStarted(dateValue, timeValue, offsetValue) {
+        var date = this.normalizeDate(dateValue);
+        var time = this.scalarText(timeValue);
+        var offset = this.scalarText(offsetValue);
+        var match = time == null ? null : /^(\d{2})(?:(\d{2})(?:(\d{2})(\.\d{1,6})?)?)?$/.exec(time);
+        if (((time != null) && ((match == null) || (Number(match[1]) > 23)
+            || (Number(match[2] ?? 0) > 59) || (Number(match[3] ?? 0) > 60)))
+            || ((offset != null) && (!/^(?:\+(?:0\d|1[0-4])|-(?:0\d|1[0-2]))[0-5]\d$/.test(offset)
+                || (/^(?:\+14|-12)/.test(offset) && !offset.endsWith('00')) || (offset == '-0000'))))
+            throw new Error('Cannot map FHIR R4: invalid DICOM time or timezone offset.');
+        // Missing timezone or partial time cannot be expanded into an instant.
+        if ((date == null) || (date.length != 10) || (match?.[3] == null) || (offset == null))
+            return date;
+        return date + 'T' + match[1] + ':' + match[2] + ':' + match[3] + (match[4] ?? '')
+            + offset.substring(0, 3) + ':' + offset.substring(3);
     }
 
     /**
@@ -549,16 +760,18 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
                 var currentValue = (current.value != null)
                     ? current.value
                     : current.identifier;
-                var normalizedValue = this.normalizeStudyIdentifierValue(currentValue);
+                var normalizedValue = (current.system == 'urn:dicom:uid')
+                    ? this.normalizeStudyIdentifierValue(currentValue) : this.scalarText(currentValue);
                 if (normalizedValue == null)
                     continue;
 
-                if (seen.has(normalizedValue) == true)
+                var identifierKey = `${current.system ?? ''}:${normalizedValue}`;
+                if (seen.has(identifierKey) == true)
                     continue;
 
-                seen.add(normalizedValue);
+                seen.add(identifierKey);
                 normalized.push({
-                    system: current.system ?? 'urn:dicom:uid',
+                    ...(current.system == null ? {} : { system: current.system }),
                     value: normalizedValue
                 });
                 continue;
@@ -589,38 +802,26 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
      * @returns {Array<object>} The modality coding array.
      */
     normalizeStudyModalities(modality) {
-
         var values = Array.isArray(modality) ? modality : [modality];
         var modalities = [];
         var seen = new Set();
-
-        for (var i = 0; i < values.length; i++) {
-
-            if (values[i] == null)
+        for (var value of values) {
+            if (value == null)
                 continue;
-
-            var parts = String(values[i]).split('\\');
-            for (var p = 0; p < parts.length; p++) {
-
-                var code = String(parts[p]).trim();
-                if (code.length == 0)
-                    continue;
-
-                if (seen.has(code) == true)
+            if (typeof value == 'object') {
+                var coding = value.code != null ? value : value.coding?.[0];
+                if (coding?.code == null)
+                    throw new Error('Invalid FHIR modality Coding.');
+                value = coding.code;
+            }
+            for (var code of String(value).split('\\').map(part => part.trim()).filter(Boolean)) {
+                if (seen.has(code))
                     continue;
                 seen.add(code);
-
-                modalities.push({
-                    system: 'http://dicom.nema.org/resources/ontology/DCM',
-                    code: code
-                });
-
+                modalities.push({ system: 'http://dicom.nema.org/resources/ontology/DCM', code: code });
             }
-
         }
-
         return modalities;
-
     }
 
     /**
@@ -705,7 +906,7 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
             return undefined;
 
         if (typeof value !== 'object')
-            return value;
+            return ((typeof value == 'string') && (value.trim().length == 0)) ? undefined : value;
 
         var snapshot = this.resolveSerializationSnapshot(value);
         if (snapshot == null)
@@ -721,7 +922,7 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
                 if (arrayValue !== undefined)
                     arrayResult.push(arrayValue);
             }
-            return arrayResult;
+            return arrayResult.length == 0 ? undefined : arrayResult;
         }
 
         if (seen == null)
@@ -810,6 +1011,87 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
     }
 
     /**
+     * Configure identifier namespaces for PatientID, AccessionNumber and StudyID.
+     * The canonical DICOM StudyInstanceUID identifier always uses urn:dicom:uid.
+     */
+    setIdentifierSystems(systems = {}) {
+        if ((systems == null) || (typeof systems != 'object') || Array.isArray(systems))
+            throw new Error('identifierSystems must be an object.');
+        for (var key of Object.keys(systems)) {
+            if (!['study', 'patient', 'accession'].includes(key))
+                throw new Error(`Unknown identifier system "${key}".`);
+            var value = systems[key];
+            if ((value != null) && ((typeof value != 'string') || !/^[a-z][a-z0-9+.-]*:\S+$/i.test(value)))
+                throw new Error(`Identifier system "${key}" must be an absolute URI or null.`);
+            this.identifierSystems[key] = value;
+        }
+        return this;
+    }
+
+    setStatus(status) {
+        if (!['registered', 'available', 'cancelled', 'entered-in-error', 'unknown'].includes(status))
+            throw new Error('Invalid FHIR R4 ImagingStudy status.');
+        this.status = status;
+        return this;
+    }
+
+    setSubject(subject) {
+        this.subject = subject == null ? null : this.normalizeReference(subject, 'subject');
+        if (subject != null)
+            this.subjectMode = 'reference';
+        return this;
+    }
+
+    normalizeReference(value, target) {
+        var data = (typeof value == 'string') ? { reference: value.trim() } : value;
+        if ((data == null) || (typeof data != 'object') || Array.isArray(data)
+            || ((this.isNullOrBlankValue(data.reference) == true) && (this.isNullOrBlankValue(data.identifier?.value) == true)))
+            throw new Error(`Invalid FHIR ${target} Reference; provide reference or identifier.value.`);
+        if ((data.reference != null) && ((typeof data.reference != 'string') || /\s/.test(data.reference)))
+            throw new Error(`Invalid FHIR ${target} Reference string.`);
+        if ((data.type != null) && ((typeof data.type != 'string') || data.type.trim().length == 0))
+            throw new Error(`Invalid FHIR ${target} Reference type.`);
+        if ((data.display != null) && (typeof data.display != 'string'))
+            throw new Error(`Invalid FHIR ${target} Reference display.`);
+        if (data.identifier != null) {
+            if ((typeof data.identifier != 'object') || Array.isArray(data.identifier)
+                || (typeof data.identifier.value != 'string') || data.identifier.value.trim().length == 0
+                || ((data.identifier.system != null) && ((typeof data.identifier.system != 'string')
+                    || !/^[a-z][a-z0-9+.-]*:\S+$/i.test(data.identifier.system))))
+                throw new Error(`Invalid FHIR ${target} Reference identifier value or system.`);
+        }
+        var allowedTypes = target == 'Endpoint' ? ['Endpoint'] : ['Patient', 'Device', 'Group'];
+        if ((data.type != null) && !allowedTypes.includes(data.type.split('/').pop()))
+            throw new Error(`Invalid FHIR ${target} Reference type.`);
+        var reference = data.reference ?? '';
+        if (reference.startsWith('#'))
+            throw new Error(`Contained ${target} References require a matching resource and are not supported in reference mode.`);
+        // Resource names in ordinary relative/absolute FHIR paths identify known
+        // wrong targets. URN references remain available for logical identities.
+        var pathTarget = /(?:^|\/)([A-Z][A-Za-z]+)\/[^/]+(?:\/_history\/[^/]+)?$/.exec(reference);
+        if ((pathTarget != null) && !allowedTypes.includes(pathTarget[1]))
+            throw new Error(`Invalid FHIR ${target} Reference target ${pathTarget[1]}.`);
+        return new Reference({
+            reference: data.reference,
+            identifier: data.identifier,
+            display: data.display,
+            type: data.type
+        });
+    }
+
+    setEndpoints(endpoints = {}) {
+        if ((endpoints == null) || (typeof endpoints != 'object') || Array.isArray(endpoints))
+            throw new Error('endpoints must be an object.');
+        for (var level of Object.keys(endpoints)) {
+            if (!['study', 'series'].includes(level))
+                throw new Error('FHIR R4 supports study and series endpoints only.');
+            var values = endpoints[level] == null ? [] : (Array.isArray(endpoints[level]) ? endpoints[level] : [endpoints[level]]);
+            this.endpoints[level] = values.map(value => this.normalizeReference(value, 'Endpoint'));
+        }
+        return this;
+    }
+
+    /**
      * Configure one reference template.
      * @param {'study' | 'series' | 'instance' | 'subject'} level The hierarchy level.
      * @param {string | null} template The template string.
@@ -818,6 +1100,8 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
     setReferenceTemplate(level, template) {
 
         var key = this.normalizeReferenceLevel(level);
+        if ((key == 'instance') && (template != null))
+            throw new Error('FHIR R4 ImagingStudy has no instance endpoint; configure study or series Endpoint references.');
         if ((template != null) && (typeof template !== 'string'))
             throw new Error(`Invalid reference template for "${key}". Expected string or null.`);
 
@@ -866,18 +1150,24 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
      * @param {'study' | 'series' | 'instance'} level The hierarchy level.
      * @returns {*} The resolved value or omit sentinel.
      */
+    prepareEndpoints(context, level) {
+        var values = this.endpoints[level] ?? [];
+        var template = this.referenceTemplates[level];
+        if ((template != null) && (template.length > 0)) {
+            var reference = this.applyTemplate(template, { context: context }, this.endpointTemplatePolicy);
+            if (reference !== this.omitValue)
+                values = this.mergeUniqueValues(values, [this.normalizeReference(reference, 'Endpoint')]);
+        }
+        return values;
+    }
+
     resolveEndpointTemplate(context, level) {
-
-        var template = this.referenceTemplates[this.normalizeReferenceLevel(level)];
-        if ((template == null) || (template.length == 0))
+        var key = this.normalizeReferenceLevel(level);
+        var target = key == 'study' ? context.currentStudy : context.currentSeries;
+        if (target == null)
             return this.omitValue;
-
-        return this.applyTemplate(
-            template,
-            { context: context },
-            this.endpointTemplatePolicy
-        );
-
+        var values = this.mergeUniqueValues(target.endpoint ?? [], context.preparedEndpoints[key]);
+        return values.length > 0 ? values : this.omitValue;
     }
 
     /**
@@ -905,53 +1195,22 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
      * @param {object} context The mapping context.
      */
     applySubject(study, context) {
-
-        if (this.subjectMode === 'contained') {
-
-            // Find the patient
-            var patient = study.contained.find(element => element.resourceType == "Patient");
-
+        if (this.subjectMode == 'contained') {
+            var patient = study.contained.find(resource => resource.resourceType == 'Patient');
             if (patient == null) {
-
-                // Establish the current patient
                 patient = context.patient;
-
-                // Ensure stable contained resource ID/reference format.
-                if ((patient.id == null) || (String(patient.id).length == 0))
-                    patient.id = 'Patient';
-
-                // Add the patient to contained resources
+                patient.id = 'patient';
                 study.contained.push(patient);
-
             }
             else {
-
                 this.mergePatient(patient, context.patient);
-
             }
-
-            // Set the subject reference to the contained patient.
-            study.subject = new Reference('#' + patient.id.replace(/^#/, ''));
+            study.subject = new Reference('#' + patient.id);
             return;
-
         }
 
-        // Remove embedded patient when not in contained mode.
-        study.contained = study.contained.filter(element => element.resourceType !== 'Patient');
-
-        if (this.subjectMode === 'reference') {
-
-            var subjectReference = this.resolveSubjectTemplate(context);
-            study.subject = (subjectReference === this.omitValue)
-                ? null
-                : new Reference(subjectReference);
-            return;
-
-        }
-
-        // subjectMode === 'none'
-        study.subject = null;
-
+        study.contained = study.contained.filter(resource => resource.resourceType != 'Patient');
+        study.subject = context.preparedSubject;
     }
 
     /**
@@ -1032,6 +1291,10 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
         this.endpointTemplatePolicy = 'omit';
         this.subjectMode = 'contained';
         this.profile = 'full';
+        this.status = 'available';
+        this.subject = null;
+        this.identifierSystems = { study: null, patient: null, accession: null };
+        this.endpoints = { study: [], series: [] };
 
         // Add computed hierarchy references.
         this.addComputed("currentStudy.endpoint", {
@@ -1044,18 +1307,21 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
             when: "end",
             resolve: ({ context }) => this.resolveEndpointTemplate(context, 'series')
         });
-        this.addComputed("currentInstance.endpoint", {
-            id: "fhir.reference.instance",
-            when: "end",
-            resolve: ({ context }) => this.resolveEndpointTemplate(context, 'instance')
-        });
-
         // Setup the Study-level Mappings
+        this.addTag(Tag.SpecificCharacterSet, "specificCharacterSet");
         this.addTag(Tag.StudyInstanceUID, "study.identifier");
         this.addTag(Tag.StudyDescription, "study.description");
         this.addTag(Tag.ModalitiesInStudy, "study.modality");
         this.addTag(Tag.NumberOfStudyRelatedSeries, "study.numberOfSeries");
         this.addTag(Tag.NumberOfStudyRelatedInstances, "study.numberOfInstances");
+        this.addTag(Tag.StudyID, "studyLocalID");
+        this.addTag(Tag.AccessionNumber, "accessionNumber");
+        this.addTag(Tag.IssuerOfPatientID, "patientIssuer");
+        this.addTag(Tag.StudyDate, "study.started");
+        this.addTag(Tag.StudyTime, "studyTime");
+        this.addTag(Tag.SeriesDate, "series.started");
+        this.addTag(Tag.SeriesTime, "seriesTime");
+        this.addTag(Tag.TimezoneOffsetFromUTC, "timezoneOffset");
 
         // Setup the Series-level Mappings
         this.addTag(Tag.SeriesInstanceUID, "series.uid");
@@ -1070,13 +1336,23 @@ export default class DicomToFHIRImagingStudyMapping extends DicomMapping {
        
         // Setup the Patient-level Mappings
         this.addTag(Tag.PatientID, "patient.identifier");
-        this.addTag(Tag.PatientName, "patient.name");
+        this.addTag(Tag.PatientName, "patient.name", { transform: value => this.normalizePatientNames(value) });
         this.addTag(Tag.PatientTelecomInformation, "patient.addTelcom");
         this.addTag(Tag.PatientTelephoneNumbers, "patient.addTelcom");
         this.addTag(Tag.PatientSex, "patient.gender");
         this.addTag(Tag.PatientBirthDate, "patient.birthDate");
 
         // Apply optional constructor configuration.
+        if (options?.identifierSystems != null)
+            this.setIdentifierSystems(options.identifierSystems);
+        if (options?.endpoints != null)
+            this.setEndpoints(options.endpoints);
+        if (options?.status != null)
+            this.setStatus(options.status);
+        if (options?.subject != null) {
+            this.setSubject(options.subject);
+            this.subjectMode = 'reference';
+        }
         if (options?.properties != null)
             this.setProperties(options.properties);
         if (options?.endpointTemplatePolicy != null)

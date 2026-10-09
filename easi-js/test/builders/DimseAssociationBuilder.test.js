@@ -195,3 +195,20 @@ test("Test: DimseAssociationBuilder throws when verification messageId is invali
             .build();
     }).toThrow("messageId");
 });
+
+test.each([1.5, 65536, Infinity])('Test: verification message IDs cannot be fractional or overflow the wire field (%p)', (messageId) => {
+    expect(() => new DimseAssociationBuilder().withVerificationMessageId(messageId).build()).toThrow('messageId');
+});
+
+test.each([1, 7, 8.5, 4294967296])('Test: max PDU must fit an even-fragment-capable unsigned wire length (%p)', (length) => {
+    expect(() => new DimseAssociationBuilder().withMaxPdu(length).build()).toThrow('maxPduLength');
+});
+
+test.each([1.5, 2147483648])('Test: timeouts must fit a Node timer (%p)', (timeoutMs) => {
+    expect(() => new DimseAssociationBuilder().withAssociationTimeoutMs(timeoutMs).build()).toThrow('associationTimeoutMs');
+});
+
+test('Test: active association counts cannot be fractional', () => {
+    expect(() => new DimseAssociationBuilder().withMoveStorePolicyOption('maxActiveAssociations', 1.5).build()).
+    toThrow('maxActiveAssociations');
+});

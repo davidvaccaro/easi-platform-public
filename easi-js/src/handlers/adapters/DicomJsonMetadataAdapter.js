@@ -758,6 +758,7 @@ export default class DicomJsonMetadataAdapter {
                 tag: null,
                 item: null,
                 value: null,
+                personNameProperty: null,
                 stack: [],
                 results: [],
                 nextContext: null,
@@ -830,7 +831,7 @@ export default class DicomJsonMetadataAdapter {
                     // This condition happens when the value is an object
                     // EXAMPLE: "Value": [{ "Alphabetic": "ACRIN-NSCLC-FDG-PET-042" }]
 
-                    // Crreat the object value
+                    // Keep all representation groups in one object per PN Value entry.
                     context.value = {};
 
                     // Push the value onto the stack
@@ -907,14 +908,11 @@ export default class DicomJsonMetadataAdapter {
                 }
             break;
 
-            // Handle skipped/ignored key types
+            // Capture the current PN representation without splitting it into a new value.
             case 'alphabetic':
             case 'ideographic':
             case 'phonetic':
-                if (context.value == null) {
-                    context.value = {};
-                }
-                context.value.type = name.toLowerCase();
+                context.personNameProperty = name[0].toUpperCase() + name.slice(1).toLowerCase();
                 break;
 
             // Handle the tag-identifier of the current DICOM attribute
@@ -938,29 +936,40 @@ export default class DicomJsonMetadataAdapter {
 
     onStartString(context, value) {
 
-        // Capture the current value
-        if (context.value == null) {
-            context.value = value;
-        }
-        else {
-            context.value.value = value;
-        }
+        // Strings are accumulated separately from the containing PN object.
+        context.value = value;
 
     }
 
     onAppendString(context, value) {
 
-        // Append to the current scalar string or object-string field.
-        if (typeof context.value === 'string') {
-            context.value += value;
-        }
-        else {
-            context.value.value += value;
-        }
+        context.value += value;
+
+    }
+
+    /**
+     * Store a completed PN representation in its current Value object.
+     * @param {object} context The adapter context.
+     * @param {*} value The completed representation value.
+     * @returns {boolean} True when the value belongs to a PN representation.
+     */
+    completePersonNameProperty(context, value) {
+
+        if (context.personNameProperty == null)
+            return false;
+
+        var personName = context.stack[context.stack.length - 1];
+        personName[context.personNameProperty] = value;
+        context.personNameProperty = null;
+        context.value = null;
+        return true;
 
     }
 
     async onEndString(context) {
+
+        if (this.completePersonNameProperty(context, context.value) == true)
+            return Status.CONTINUE;
 
         var attribute = this.getCurrentAttributeState(context);
         if (attribute == null) {
@@ -1039,8 +1048,11 @@ export default class DicomJsonMetadataAdapter {
             }
             else if (current.tag == null) {
 
-                // Nothing to do here as the attribute value array should already be populated the object value
-                var xxx = 100;
+                // Emit one PN value only when all of its representation groups have closed.
+                if (top.value == null)
+                    top.value = [];
+                top.value.push(current);
+                context.value = null;
 
             }
             else {
@@ -1199,6 +1211,9 @@ export default class DicomJsonMetadataAdapter {
 
     onEndNumber(context, value) {
 
+        if (this.completePersonNameProperty(context, value) == true)
+            return;
+
         var attribute = this.getCurrentAttributeState(context);
         if (attribute == null) {
             context.value = null;
@@ -1220,6 +1235,9 @@ export default class DicomJsonMetadataAdapter {
 
     onEndBoolean(context, value) {
 
+        if (this.completePersonNameProperty(context, value) == true)
+            return;
+
         var attribute = this.getCurrentAttributeState(context);
         if (attribute == null) {
             context.value = null;
@@ -1240,6 +1258,9 @@ export default class DicomJsonMetadataAdapter {
     }
 
     onEndNull(context) {
+
+        if (this.completePersonNameProperty(context, null) == true)
+            return;
 
         var attribute = this.getCurrentAttributeState(context);
         if (attribute == null) {

@@ -19,6 +19,7 @@
 
 import Element from './Element.js'
 import Coding from './Coding.js'
+import { asArray, toFhirJSON } from './FhirJson.js';
 
 export default class CodeableConcept extends Element {
   
@@ -76,10 +77,10 @@ export default class CodeableConcept extends Element {
      * @returns 
      */
     toJSON() {
-        return {
-            coding: this.coding,
+        return toFhirJSON({
+            coding: asArray(this.coding),
             text: this.text
-        }
+        });
     }
 
     constructor(data) {

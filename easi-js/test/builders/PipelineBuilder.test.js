@@ -623,6 +623,29 @@ test("Test: toFHIRImagingStudy supports study-summary profile", () => {
   expect(pipeline.parser.handler.mapping.profile).toBe("study-summary");
 });
 
+test("Test: toFHIRImagingStudy forwards FHIR mapping options through the metadata adapter", () => {
+  const pipeline = new PipelineBuilder().
+  fromPartStream().ofDicomMetadata().
+  toFHIRImagingStudy({
+    profile: "study-summary",
+    subjectMode: "reference",
+    subject: "Patient/example",
+    status: "registered",
+    identifierSystems: { patient: "https://example.org/patients" }
+  }).build();
+
+  expect(pipeline.parser.handler instanceof DicomJsonMetadataAdapter).toBe(true);
+  const mapping = pipeline.parser.handler.nextHandler.mapping;
+  expect(mapping.profile).toBe("study-summary");
+  expect(mapping.subjectMode).toBe("reference");
+  expect(mapping.identifierSystems.patient).toBe("https://example.org/patients");
+});
+
+test.each([null, [], 5, true])("Test: toFHIRImagingStudy rejects invalid options %p", (options) => {
+  expect(() => new PipelineBuilder().fromPartStream().ofDicomMetadata().toFHIRImagingStudy(options)).
+  toThrow("profile name or mapping options object");
+});
+
 test("Test: build composes metadata adapter -> deid -> writer when masking JSON metadata", () => {
   const pipeline = new PipelineBuilder().
   fromPartStream().ofDicomMetadata().

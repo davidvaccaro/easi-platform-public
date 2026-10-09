@@ -107,9 +107,13 @@ export default class PngDecoder {
      */
     async inflate(bytes) {
 
+        // Runtime-selected imports keep native zlib out of browser dependency graphs.
+        var isNodeRuntime = (typeof process != "undefined") && (process.versions?.node != null);
+        var zlibSpecifier = "node:zlib";
+
         try {
-            if (typeof require == "function") {
-                var zlib = require("node:zlib");
+            if (isNodeRuntime && (typeof require == "function")) {
+                var zlib = require(zlibSpecifier);
                 var inflated = zlib.inflateSync(Buffer.from(bytes));
                 return new Uint8Array(inflated.buffer, inflated.byteOffset, inflated.byteLength);
             }
@@ -119,8 +123,8 @@ export default class PngDecoder {
 
         try {
             // ESM/node runtimes without require(...) still benefit from native zlib.
-            if (typeof process != "undefined") {
-                var zlibModule = await import("node:zlib");
+            if (isNodeRuntime) {
+                var zlibModule = await import(zlibSpecifier);
                 var zlibInflated = zlibModule.inflateSync(Buffer.from(bytes));
                 return new Uint8Array(zlibInflated.buffer, zlibInflated.byteOffset, zlibInflated.byteLength);
             }

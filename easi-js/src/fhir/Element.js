@@ -59,7 +59,7 @@ export default class Element extends Base {
         else {
 
             // Establish the collection of values
-            var values = (typeof current == 'array') ? current : [current];
+            var values = Array.isArray(current) ? current : [current];
 
             // Append the new value to the value collection
             if (Array.isArray(value)) {

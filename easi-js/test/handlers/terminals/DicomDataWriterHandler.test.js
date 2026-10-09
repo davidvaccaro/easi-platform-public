@@ -31,3 +31,16 @@ test("Test: DicomDataWriterHandler writes explicit VR UN for private attributes 
 
 });
 
+test.each([
+    [{ Alphabetic: 'Example^Jane', Ideographic: 'Script^Name', Phonetic: 'Phonetic^Name' }, 'Example^Jane=Script^Name=Phonetic^Name'],
+    [{ Ideographic: 'Script^Name' }, '=Script^Name'],
+    [{ type: 'phonetic', value: 'Other^Name' }, '==Other^Name'],
+    [[{ Alphabetic: 'Example^Jane' }, null, { Phonetic: 'Other^Name' }], 'Example^Jane\\\\==Other^Name']
+])('Test: writer preserves DICOM JSON PN representations and empty values', (value, expected) => {
+    const attribute = new Attribute(Tag.PatientName, 0, new Uint8Array(0), TransferSyntax.ExplicitVRLittleEndian);
+    attribute.value = value;
+    const bytes = new DicomDataWriterHandler().resolveAttributeValueBytes(attribute);
+    expect(new TextDecoder().decode(bytes).trimEnd()).toBe(expected);
+    expect(bytes.length % 2).toBe(0);
+});
+

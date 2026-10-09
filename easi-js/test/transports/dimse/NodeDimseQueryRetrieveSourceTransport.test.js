@@ -285,12 +285,16 @@ function buildPDataCommandPdu(contextId, commandBytes) {
 }
 
 function buildPDataDataSetPdu(contextId, dataSetBytes, isLast = true) {
-  var pdvBody = concatBytes([
-  new Uint8Array([contextId, isLast ? 0x02 : 0x00]),
-  dataSetBytes]);
-
-  var pdv = concatBytes([toUint32BE(pdvBody.length), pdvBody]);
-  return makePdu(0x04, pdv);
+  var pdus = [];
+  for (var offset = 0; offset < dataSetBytes.length; offset += 16378) {
+    var stop = Math.min(dataSetBytes.length, offset + 16378);
+    var pdvBody = concatBytes([
+      new Uint8Array([contextId, (isLast && stop == dataSetBytes.length) ? 0x02 : 0x00]),
+      dataSetBytes.subarray(offset, stop)
+    ]);
+    pdus.push(makePdu(0x04, concatBytes([toUint32BE(pdvBody.length), pdvBody])));
+  }
+  return concatBytes(pdus);
 }
 
 function parseCommandElements(bytes) {
@@ -464,7 +468,11 @@ function buildAssociateAcPdu(requestDetails, storeSopClassUid) {
   }
 
   var maxLengthItem = makeItem(0x51, toUint32BE(16384));
-  var userInfoItem = makeItem(0x50, maxLengthItem);
+  var roleUid = toTextBytes(storeSopClassUid);
+  var roleItem = requestDetails.contexts.some((context) => context.abstractSyntaxUid == storeSopClassUid)
+    ? makeItem(0x54, concatBytes([toUint16BE(roleUid.length), roleUid, new Uint8Array([0, 1])]))
+    : new Uint8Array(0);
+  var userInfoItem = makeItem(0x50, concatBytes([maxLengthItem, roleItem]));
 
   var fixed = concatBytes([
   toUint16BE(0x0001),
@@ -753,11 +761,6 @@ function createMockDimseQueryRetrieveScp(storePayload, findResultDataSets = null
 
                 socket.write(Buffer.from(buildPDataCommandPdu(
                 findContextId,
-                encodeFindRspCommand(STUDY_ROOT_FIND_UID, findMessageId, 0xFF00))));
-
-
-                socket.write(Buffer.from(buildPDataCommandPdu(
-                findContextId,
                 encodeFindRspCommand(STUDY_ROOT_FIND_UID, findMessageId, 0x0000))));
 
 
@@ -980,11 +983,6 @@ function createMockDimseQueryRetrieveMoveScp(storePayload, moveRoute) {
 
               sawFind = true;
               var findMessageId = decodeCommandUS(elements, "00000110", 1);
-
-              socket.write(Buffer.from(buildPDataCommandPdu(
-              findContextId,
-              encodeFindRspCommand(STUDY_ROOT_FIND_UID, findMessageId, 0xFF00))));
-
 
               socket.write(Buffer.from(buildPDataCommandPdu(
               findContextId,

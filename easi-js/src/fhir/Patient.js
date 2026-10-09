@@ -20,8 +20,10 @@
 import DomainResource from "./DomainResource.js"
 import HumanName from "./HumanName.js";
 import ContactPoint from "./ContactPoint.js";
+import Identifier from "./Identifier.js";
 import { AdministrativeGender } from "./AdministrativeGender.js";
 import DateUtils from "../utils/DateUtils.js";
+import { asArray, toFhirJSON } from "./FhirJson.js";
 
 export default class Patient extends DomainResource {
   
@@ -36,7 +38,9 @@ export default class Patient extends DomainResource {
      * Sets the identifier value.
      */
     set identifier(identifier) {
-        this._identifier = identifier;
+        this._identifier = asArray(identifier).filter((value) => value != null).map((value) =>
+            (typeof value === 'string') ? new Identifier({ value: value }) : value
+        );
     }
 
     /**
@@ -64,13 +68,7 @@ export default class Patient extends DomainResource {
      * Sets the name value.
      */
     set name(name) {
-        if (Array.isArray(name) == true) {
-            this._name = name
-                .map(element => HumanName.coerce(element))
-                .filter(element => element != null);
-            return;
-        }
-        this._name = HumanName.coerce(name);
+        this._name = asArray(name).map(element => HumanName.coerce(element)).filter(element => element != null);
     }
 
     /**
@@ -82,23 +80,38 @@ export default class Patient extends DomainResource {
     }
 
     /**
-     * Gets the telcom value.
+     * Gets the telecom value.
+     */
+    get telecom() {
+        return this._telecom;
+    }
+
+    /**
+     * Sets the telecom value.
+     */
+    set telecom(telecom) {
+        this._telecom = asArray(telecom).map(element => ContactPoint.coerce(element)).filter(element => element != null);
+    }
+
+    /**
+     * Adds a telecom value.
+     */
+    addTelecom(telecom) {
+        this.appendMultiValue('telecom', ContactPoint.coerce(telecom));
+    }
+
+    /**
+     * Gets the telcom compatibility alias.
      */
     get telcom() {
-        return this._telcom;
+        return this.telecom;
     }
 
     /**
      * Sets the telcom value.
      */
     set telcom(telcom) {
-        if (Array.isArray(telcom) == true) {
-            this._telcom = telcom
-                .map(element => ContactPoint.coerce(element))
-                .filter(element => element != null);
-            return;
-        }
-        this._telcom = ContactPoint.coerce(telcom);
+        this.telecom = telcom;
     }
 
     /**
@@ -106,7 +119,7 @@ export default class Patient extends DomainResource {
      * @param {ContactPoint | object | string} telcom The telcom value to add.
      */
     addTelcom(telcom) {
-        this.appendMultiValue('telcom', ContactPoint.coerce(telcom));
+        this.addTelecom(telcom);
     }
 
     /**
@@ -172,21 +185,31 @@ export default class Patient extends DomainResource {
      * @returns 
      */
     toJSON() {
-        return {
+        var birthDate = this.birthDate;
+        if (birthDate instanceof Date) {
+            birthDate = Number.isFinite(birthDate.getTime()) ? DateUtils.formatToYYYYMMDD(birthDate) : undefined;
+        }
+
+        return toFhirJSON({
             resourceType: this.resourceType,
+            id: this.id,
             identifier: this.identifier,
             active: this.active,
             name: this.name,
-            telcom: this.telcom,
+            telecom: this.telecom,
             gender: AdministrativeGender.toJSON(this.gender),
-            birthDate: DateUtils.formatToYYYYMMDD(this.birthDate)
-        }
+            birthDate: birthDate
+        });
     }
 
     constructor() {
 
         // Call the super
         super();
+
+        this._identifier = [];
+        this._name = [];
+        this._telecom = [];
 
     }
 

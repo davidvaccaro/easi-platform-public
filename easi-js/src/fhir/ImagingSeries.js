@@ -17,10 +17,11 @@
 // would render it a fixture under applicable law within the jurisdiction in which the Lease Equipment is located.
 //
 
-import NumberUtils from "../utils/NumberUtils.js";
 import BackboneElement from "./BackboneElement.js"
-import CodeableConcept from "./CodeableConcept.js";
+import Coding from "./Coding.js";
 import CodingSystems from "./CodingSystems.js";
+import Reference from "./Reference.js";
+import { asArray, toFhirJSON, toUnsignedInteger } from "./FhirJson.js";
 
 export default class ImagingSeries extends BackboneElement {
   
@@ -63,7 +64,7 @@ export default class ImagingSeries extends BackboneElement {
      * Sets the modality value.
      */
     set modality(modality) {
-        this._modality = CodeableConcept.create(CodingSystems.DICOM, modality);
+        this._modality = (typeof modality === 'string') ? Coding.create(CodingSystems.DICOM, modality) : modality;
     }    
 
     /**
@@ -105,7 +106,9 @@ export default class ImagingSeries extends BackboneElement {
      * Sets the endpoint value.
      */
     set endpoint(endpoint) {
-        this._endpoint = endpoint;
+        this._endpoint = asArray(endpoint).filter((value) => value != null).map((value) =>
+            (value instanceof Reference) ? value : new Reference(value)
+        );
     }    
 
     /**
@@ -123,7 +126,21 @@ export default class ImagingSeries extends BackboneElement {
     }    
 
     /**
-     * Gets the instances value.
+     * Gets the R4 instance collection.
+     */
+    get instance() {
+        return this._instances;
+    }
+
+    /**
+     * Sets the R4 instance collection.
+     */
+    set instance(instance) {
+        this._instances = asArray(instance);
+    }
+
+    /**
+     * Gets the instances compatibility alias.
      */
     get instances() {
         return this._instances;
@@ -133,7 +150,7 @@ export default class ImagingSeries extends BackboneElement {
      * Sets the instances value.
      */
     set instances(instances) {
-        this._instances = instances;
+        this.instance = instances;
     }    
 
     /**
@@ -141,16 +158,16 @@ export default class ImagingSeries extends BackboneElement {
      * @returns 
      */
     toJSON() {
-        return {
+        return toFhirJSON({
             uid: this.uid,
-            number: NumberUtils.parseUnsignedInteger(this.number),
+            number: toUnsignedInteger(this.number),
             modality: this.modality,
             description: this.description,
-            numberOfInstances: this.numberOfInstances,
+            numberOfInstances: toUnsignedInteger(this.numberOfInstances),
             endpoint: this.endpoint,
             started: this.started,
-            instances: this.instances
-        }
+            instance: this.instance
+        });
     }
 
     constructor() {

@@ -18,7 +18,7 @@
 //
 
 import Element from "./Element.js"
-import CodeableConcept from "./CodeableConcept.js";
+import { toFhirJSON } from "./FhirJson.js";
 
 export default class Identifier extends Element {
   
@@ -92,10 +92,24 @@ export default class Identifier extends Element {
         this._period = period;
     }
 
-    constructor() {
+    /**
+     * Convert to FHIR Identifier JSON.
+     */
+    toJSON() {
+        return toFhirJSON({
+            use: this.use,
+            type: this.type,
+            system: this.system,
+            value: this.value,
+            period: this.period,
+            assigner: this.assigner
+        });
+    }
+
+    constructor(data = null) {
 
         // Call the super
-        super();
+        super(data);
 
     }
 

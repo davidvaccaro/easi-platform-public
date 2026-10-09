@@ -18,6 +18,7 @@
 //
 
 import Element from "./Element.js"
+import { toFhirJSON } from "./FhirJson.js";
 
 export default class Period extends Element {
   
@@ -49,10 +50,14 @@ export default class Period extends Element {
         this._end = end;
     }
 
-    constructor() {
+    toJSON() {
+        return toFhirJSON({ start: this.start, end: this.end });
+    }
+
+    constructor(data = null) {
 
         // Call the super
-        super();
+        super(data);
 
     }
 
