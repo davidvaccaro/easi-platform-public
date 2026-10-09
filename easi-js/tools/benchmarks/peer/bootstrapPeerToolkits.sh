@@ -6,6 +6,7 @@ VENDOR_DIR="$ROOT_DIR/vendors"
 SRC_DIR="$VENDOR_DIR/src"
 VENV_DIR="$ROOT_DIR/.venv"
 FODICOM_PROJECT="$ROOT_DIR/runners/fodicom/FoDicomBench/FoDicomBench.csproj"
+DCM4CHE_VERSION="5.34.3" # Keep aligned with runners/dcm4che/pom.xml.
 
 mkdir -p "$VENDOR_DIR" "$SRC_DIR"
 
@@ -16,22 +17,35 @@ log() {
 clone_if_missing() {
   local name="$1"
   local url="$2"
+  local release="${3:-}"
   local target="$SRC_DIR/$name"
 
   if [[ -d "$target/.git" ]]; then
+    if [[ -n "$release" ]]; then
+      local current_release
+      current_release="$(git -C "$target" describe --tags --exact-match HEAD 2>/dev/null || true)"
+      if [[ "$current_release" != "$release" ]] || [[ -n "$(git -C "$target" status --porcelain)" ]]; then
+        log "error: $name source must be an unmodified release $release checkout. Move $target aside and rerun bootstrap; local work has not been changed."
+        return 1
+      fi
+    fi
     log "source already present: $name"
     return 0
   fi
 
   log "cloning $name from $url"
-  git clone --depth 1 "$url" "$target"
+  if [[ -n "$release" ]]; then
+    git clone --depth 1 --branch "$release" "$url" "$target"
+  else
+    git clone --depth 1 "$url" "$target"
+  fi
 }
 
 bootstrap_sources() {
   clone_if_missing "dcmtk" "https://github.com/DCMTK/dcmtk.git"
   clone_if_missing "pydicom" "https://github.com/pydicom/pydicom.git"
   clone_if_missing "fo-dicom" "https://github.com/fo-dicom/fo-dicom.git"
-  clone_if_missing "dcm4che" "https://github.com/dcm4che/dcm4che.git"
+  clone_if_missing "dcm4che" "https://github.com/dcm4che/dcm4che.git" "$DCM4CHE_VERSION"
   clone_if_missing "gdcm" "https://github.com/malaterre/GDCM.git"
 }
 
@@ -56,8 +70,8 @@ bootstrap_dcm4che_runner() {
   local runner_pom="$ROOT_DIR/runners/dcm4che/pom.xml"
 
   if [[ ! -f "$dcm4che_root/mvnw" ]]; then
-    log "warning: dcm4che source was not found; skipping in-process dcm4che runner build"
-    return 0
+    log "error: dcm4che Maven wrapper was not found at $dcm4che_root/mvnw"
+    return 1
   fi
 
   log "installing dcm4che-core into local Maven cache"
@@ -125,4 +139,6 @@ main() {
   log "dcmtk/gdcm source cloned under: $SRC_DIR"
 }
 
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi

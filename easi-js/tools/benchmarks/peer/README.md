@@ -71,4 +71,5 @@ It currently:
 - Creates a Python venv and installs `pydicom`.
 - Restores the fo-dicom benchmark project.
 - Builds an in-process dcm4che benchmark runner jar via dcm4che's Maven wrapper.
+- Pins dcm4che source to release `5.34.3`, matching the runner's Maven dependency. Existing mismatched or modified source checkouts fail without being changed; move `vendors/src/dcm4che` aside and rerun bootstrap to clone the matching release. The source build requires JDK 17 or newer.
 - Attempts to download a dcm4che binary distribution that includes `dcmdump`.
