@@ -7,6 +7,7 @@
 - Generate default benchmark inputs and provide an offline synthetic sample in the Kitchen Sink and a fresh-checkout ImageBridge demo.
 - Add an offline synthetic corpus harness with exact output checks across all six pipeline scenarios; keep private corpus runs optional.
 - Add a source publication check for accidentally tracked imaging assets.
+- Bundle the required API and codec/plugin contract snapshot so source tests and CI run without the private documentation repo; keep explicit overrides strict and refresh the snapshot during maintainer generation.
 - Fix native dump execution, promise error reporting, and argument handling; allow a local tool override or a tool installed on PATH.
 - Correct signed RLE sample rendering, including stored-bit masking and 8-bit signed input.
 - Honor the pipeline's codec registry when rendering RGBA assets, including isolated JPEG 2000 providers.

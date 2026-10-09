@@ -2,61 +2,25 @@ import fs from "node:fs";
 import path from "node:path";
 import CodecRegistry from "../../src/codecs/CodecRegistry.js";
 import TransferSyntax from "../../src/dicom/TransferSyntax.js";
+import { resolveContractsRoot } from "../../tools/contracts/resolveContractsRoot.js";
 
 function loadCodecPluginContract() {
-    const projectRoot = path.resolve(process.cwd());
-    const candidates = [
-        path.resolve(projectRoot, "..", "..", "easi", "easi-contracts", "fixtures", "neutral", "valid", "codec-plugin-contract", "basic.json"),
-        path.resolve(projectRoot, "..", "easi-contracts", "fixtures", "neutral", "valid", "codec-plugin-contract", "basic.json"),
-        path.resolve(projectRoot, "fixtures", "neutral", "valid", "codec-plugin-contract", "basic.json")
-    ];
-
-    for (let i = 0; i < candidates.length; i++) {
-        const candidate = candidates[i];
-        if (fs.existsSync(candidate) == true) {
-            return JSON.parse(fs.readFileSync(candidate, "utf8"));
-        }
-    }
-
-    return {
-        kind: "EASI.CodecPluginContract",
-        version: "1.0.0",
-        pluginFamily: "codec",
-        interfaces: {
-            decoder: {
-                kind: "decoder",
-                requiredMethods: [{ name: "decode" }]
-            },
-            imageDecoder: {
-                kind: "image-decoder",
-                requiredMethods: [{ name: "decodeImage" }]
-            },
-            encoder: {
-                kind: "encoder",
-                requiredMethods: [{ name: "encode" }]
-            }
-        },
-        registrationForms: ["constructor", "instance", "provider", "factory"],
-        conformance: {
-            providersMustBeSynchronous: true,
-            promiseProvidersRejected: true,
-            requiredMethodsValidated: true
-        }
-    };
+    const contractsRoot = resolveContractsRoot(path.resolve(process.cwd()));
+    const fixture = path.join(contractsRoot, "fixtures", "neutral", "valid", "codec-plugin-contract", "basic.json");
+    return JSON.parse(fs.readFileSync(fixture, "utf8"));
 }
 
-function getRequiredMethodName(contract, interfaceKey, fallbackName) {
+function getRequiredMethodName(contract, interfaceKey) {
     const requiredMethods = contract?.interfaces?.[interfaceKey]?.requiredMethods;
-    if (Array.isArray(requiredMethods) != true) {
-        return fallbackName;
-    }
-
-    if (requiredMethods.length == 0) {
-        return fallbackName;
+    if (Array.isArray(requiredMethods) != true || requiredMethods.length == 0) {
+        throw new Error(`Codec contract is missing required methods for ${interfaceKey}.`);
     }
 
     const methodName = String(requiredMethods[0]?.name ?? "").trim();
-    return (methodName.length > 0) ? methodName : fallbackName;
+    if (methodName.length == 0) {
+        throw new Error(`Codec contract is missing a required method name for ${interfaceKey}.`);
+    }
+    return methodName;
 }
 
 function createCodecInstance(interfaceKind, marker, context = null) {
@@ -165,9 +129,14 @@ test("Codec plugin contract fixture exposes expected interface declarations", ()
     expect(contract.pluginFamily).toBe("codec");
     expect(Array.isArray(contract.registrationForms)).toBe(true);
     expect(contract.registrationForms.length).toBeGreaterThan(0);
-    expect(getRequiredMethodName(contract, "decoder", "decode")).toBe("decode");
-    expect(getRequiredMethodName(contract, "imageDecoder", "decodeImage")).toBe("decodeImage");
-    expect(getRequiredMethodName(contract, "encoder", "encode")).toBe("encode");
+    expect(contract.conformance).toEqual({
+        providersMustBeSynchronous: true,
+        promiseProvidersRejected: true,
+        requiredMethodsValidated: true
+    });
+    expect(getRequiredMethodName(contract, "decoder")).toBe("decode");
+    expect(getRequiredMethodName(contract, "imageDecoder")).toBe("decodeImage");
+    expect(getRequiredMethodName(contract, "encoder")).toBe("encode");
 });
 
 test("Codec plugin registration forms declared by contract are runtime-compatible with CodecRegistry", () => {
@@ -179,9 +148,9 @@ test("Codec plugin registration forms declared by contract are runtime-compatibl
     const requiredImageDecoders = [];
     const requiredEncoders = [];
 
-    const decoderMethodName = getRequiredMethodName(contract, "decoder", "decode");
-    const imageDecoderMethodName = getRequiredMethodName(contract, "imageDecoder", "decodeImage");
-    const encoderMethodName = getRequiredMethodName(contract, "encoder", "encode");
+    const decoderMethodName = getRequiredMethodName(contract, "decoder");
+    const imageDecoderMethodName = getRequiredMethodName(contract, "imageDecoder");
+    const encoderMethodName = getRequiredMethodName(contract, "encoder");
 
     for (let i = 0; i < forms.length; i++) {
         const form = String(forms[i] ?? "").trim().toLowerCase();

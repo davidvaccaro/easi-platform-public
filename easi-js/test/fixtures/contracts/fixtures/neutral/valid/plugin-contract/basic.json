@@ -1,0 +1,58 @@
+{
+  "kind": "EASI.PluginContract",
+  "version": "1.0.0",
+  "pluginType": "codec",
+  "metadata": {
+    "name": "Codec Plugins",
+    "description": "Umbrella plugin contract entry for EASI codec extensibility.",
+    "status": "official"
+  },
+  "contract": {
+    "kind": "EASI.CodecPluginContract",
+    "version": "1.0.0",
+    "pluginFamily": "codec",
+    "interfaces": {
+      "decoder": {
+        "kind": "decoder",
+        "requiredMethods": [
+          {
+            "name": "decode"
+          }
+        ]
+      },
+      "imageDecoder": {
+        "kind": "image-decoder",
+        "requiredMethods": [
+          {
+            "name": "decodeImage"
+          }
+        ]
+      },
+      "encoder": {
+        "kind": "encoder",
+        "requiredMethods": [
+          {
+            "name": "encode"
+          }
+        ]
+      }
+    },
+    "registrationForms": [
+      "constructor",
+      "instance",
+      "provider",
+      "factory"
+    ],
+    "conformance": {
+      "providersMustBeSynchronous": true,
+      "promiseProvidersRejected": true,
+      "requiredMethodsValidated": true
+    },
+    "languageProfiles": [
+      {
+        "language": "javascript",
+        "status": "official"
+      }
+    ]
+  }
+}

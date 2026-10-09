@@ -37,22 +37,12 @@ jobs:
       fail-fast: false
       matrix:
         node: ["22.x", "24.x"]
-    env:
-      EASI_CONTRACTS_ROOT: ${{ github.workspace }}/easi-docs/easi-contracts
     defaults:
       run:
         working-directory: ${{ env.WORKDIR }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Checkout Canonical API Contracts
-        uses: actions/checkout@v4
-        with:
-          repository: davidvaccaro/easi
-          ref: main
-          path: easi-docs
-          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v4

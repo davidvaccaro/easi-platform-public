@@ -57,7 +57,7 @@ Use this checklist before publishing `@xinonix/easi-js` or creating its release 
 - [ ] Changelog/release notes drafted.
 - [ ] Known limitations and mitigations noted.
 - [ ] npm organization/scope ownership and publishing rights for `@xinonix` are verified by the owner; local package creation does not reserve the name or establish registry access.
-- [ ] Companion documentation/API contracts are synchronized and accessible to readers and the CI checkout. Account credentials and repository visibility are configured separately.
+- [ ] Bundled API contracts match the runtime, and source tests pass in a checkout without the private documentation companion. Synchronize canonical documentation/contracts when maintained; publish reader-facing documentation separately.
 - [ ] Before making the source repository public, inspect every published branch and tag for historical original imaging assets and external binaries. Current-tree removal and the npm allowlist do not clear Git history. Keep any original corpus and pre-rewrite Git bundle local.
 - [ ] Final sign-off recorded (owner/date).
 

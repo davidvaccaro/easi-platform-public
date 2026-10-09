@@ -1,0 +1,82 @@
+{
+  "kind": "EASI.CodecPluginContract",
+  "version": "1.0.0",
+  "pluginFamily": "codec",
+  "summary": "Codec plugin contract for decoder and encoder extensibility.",
+  "interfaces": {
+    "decoder": {
+      "kind": "decoder",
+      "requiredMethods": [
+        {
+          "name": "decode",
+          "parameters": [
+            "source",
+            "sourceStart",
+            "sourceStop",
+            "destination",
+            "destinationStart"
+          ],
+          "returns": "boolean"
+        }
+      ],
+      "contextSummary": "May receive DICOM object context at registration resolution time."
+    },
+    "imageDecoder": {
+      "kind": "image-decoder",
+      "requiredMethods": [
+        {
+          "name": "decodeImage",
+          "parameters": [
+            "payload",
+            "options"
+          ],
+          "returns": "object"
+        }
+      ]
+    },
+    "encoder": {
+      "kind": "encoder",
+      "requiredMethods": [
+        {
+          "name": "encode",
+          "parameters": [
+            "imageData",
+            "options"
+          ],
+          "returns": "object"
+        }
+      ],
+      "outputSummary": "Must return an encoded payload envelope understood by downstream policy stages."
+    }
+  },
+  "registrationForms": [
+    "constructor",
+    "instance",
+    "provider",
+    "factory"
+  ],
+  "conformance": {
+    "providersMustBeSynchronous": true,
+    "promiseProvidersRejected": true,
+    "requiredMethodsValidated": true
+  },
+  "languageProfiles": [
+    {
+      "language": "javascript",
+      "status": "official",
+      "signature": "class | instance | provider({create(context)}) | factory(context)"
+    },
+    {
+      "language": "csharp",
+      "status": "draft"
+    },
+    {
+      "language": "java",
+      "status": "draft"
+    },
+    {
+      "language": "python",
+      "status": "planned"
+    }
+  ]
+}

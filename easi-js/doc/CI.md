@@ -26,7 +26,7 @@ Pushes and pull requests targeting `main` run these checks regardless of the cha
   - Rejects accidentally tracked original imaging files, private corpus directories, external native tools, and renamed Part-10 binaries. Ignored local assets are permitted.
   - Generates independent synthetic inputs for native/endian/signed-pixel, nested-sequence, multiframe, streaming, and genuine compressed-format coverage. No original corpus or local native dump executable is required.
   - Runs eight generated profiles through all six corpus-harness scenarios and verifies exact transcoded pixels and real thumbnails, without external peers or optional codec setup.
-  - Includes API contract synchronization coverage via `test/contracts/ApiContractSync.test.js`.
+  - Includes API contract synchronization and codec/plugin conformance coverage against the bundled contract snapshot. Missing fixtures or an invalid explicit contracts directory fail the checks.
 
 ### 2) Package Validation
 
@@ -55,7 +55,7 @@ The default check validates browser bundling. The release checklist also calls f
   - `npm run test:dimse-sockets`
 - Purpose:
   - Runs network/socket DIMSE integration tests.
-  - Includes all DIMSE transport test files, client tests, and relay integration tests.
+  - Includes all DIMSE transport test files, client tests, relay integration tests, and the fresh-checkout ImageBridge CLI test with exact synthetic Store and image output checks.
 
 ### 4) Orthanc DIMSE Interop Tests
 
@@ -122,7 +122,7 @@ The workflow uploads artifacts for inspection:
   - `npm run docs:api-contract:check`
 - Local checks validate the current checkout; editing this workflow does not establish that a remote GitHub Actions run has passed. Require results for the actual release commit before publication.
 
-The core job checks out `davidvaccaro/easi` at `main` into `easi-docs` and points `EASI_CONTRACTS_ROOT` to its contracts. Publish synchronized runtime and contract changes together. While that companion repository remains private, a standard repository-scoped GitHub token cannot read it; publication or separately configured read access is a prerequisite for that CI checkout. This change does not configure account credentials or repository visibility.
+Core CI and a fresh source checkout use the [bundled contract snapshot](../test/fixtures/contracts/README.md), with no private companion checkout or extra repository credentials. Maintainer generation uses the canonical companion when available and refreshes the snapshot automatically. `EASI_CONTRACTS_ROOT=/path/to/easi-contracts` explicitly selects another complete directory for generation or checks; incomplete overrides fail. Keep runtime changes, generated canonical contracts, and the snapshot synchronized.
 
 ## Governance
 

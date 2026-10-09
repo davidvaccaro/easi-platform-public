@@ -5,31 +5,19 @@ import path from 'node:path';
 import process from 'node:process';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { resolveContractsRoot, refreshContractSnapshot } from './resolveContractsRoot.js';
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(scriptDirectory, '..', '..');
-const repositoryRoot = path.resolve(projectRoot, '..');
-const workspaceRoot = path.resolve(repositoryRoot, '..');
 const sourceRoot = path.join(projectRoot, 'src');
-const explicitContractsRoot = process.env.EASI_CONTRACTS_ROOT
-    ? path.resolve(process.env.EASI_CONTRACTS_ROOT)
-    : null;
-const contractsRootCandidates = [
-    explicitContractsRoot,
-    path.join(workspaceRoot, 'easi', 'easi-contracts'),
-    path.join(workspaceRoot, 'easi-contracts'),
-    path.join(repositoryRoot, 'easi-contracts')
-].filter(Boolean);
-const contractsRoot = contractsRootCandidates.find((candidate) => fs.existsSync(candidate));
-
-if (!contractsRoot) {
-    throw new Error(`Unable to resolve EASI contracts root. Checked: ${contractsRootCandidates.join(', ')}`);
-}
+const args = new Set(process.argv.slice(2));
+const checkMode = args.has('--check');
+const writeMode = args.has('--stdout') === false;
+const contractsRoot = resolveContractsRoot(projectRoot, { mode: checkMode || !writeMode ? 'check' : 'write' });
 
 const outputDirectory = path.join(contractsRoot, 'schemas', 'implementation', 'javascript');
 const outputFilePath = path.join(outputDirectory, 'easi-api.contract.json');
 const schemaFileName = 'easi-api.contract.schema.json';
-const schemaFilePath = path.join(outputDirectory, schemaFileName);
 const neutralValidFixturesRoot = path.join(contractsRoot, 'fixtures', 'neutral', 'valid');
 const codecPluginContractFixturePath = path.join(
     neutralValidFixturesRoot,
@@ -41,10 +29,6 @@ const pluginContractFixturePath = path.join(
     'plugin-contract',
     'basic.json'
 );
-
-const args = new Set(process.argv.slice(2));
-const checkMode = args.has('--check');
-const writeMode = args.has('--stdout') === false;
 
 function readJsonIfExists(filePath) {
     if (!filePath || fs.existsSync(filePath) === false) {
@@ -1640,6 +1624,8 @@ function main() {
     if (writeMode) {
         fs.writeFileSync(outputFilePath, contract.serialized, 'utf8');
         console.log(`Wrote API contract to ${outputFilePath}`);
+        const snapshotRoot = refreshContractSnapshot(projectRoot, contractsRoot);
+        console.log(`Refreshed public contract snapshot at ${snapshotRoot}`);
     }
 }
 

@@ -912,7 +912,9 @@ npm run package:pack
 
 `docs:readme:check` installs the exact archive into a clean consumer, verifies that its README matches this file and its local links resolve, and executes the marked offline examples with synthetic data. `package:check` verifies public imports and DICOM/read/write/selection/FHIR workflows, builds a browser consumer, and checks that the Node-only entry is excluded in browsers. `--browser` also executes it in isolated Chrome; set `EASI_BROWSER_BIN` for a nonstandard executable path.
 
-`package:pack` writes the archive and integrity/inventory manifest under `artifacts/`. The allowlist includes JavaScript runtime files, this README, changelog, and license/notices. Sample/patient data, tests, tools, the Kitchen Sink, coverage, and codec binaries are excluded. Packing and these validation commands do not publish to npm. Optional socket/Orthanc checks are described in CI; API-contract tests additionally need the companion canonical contracts checkout.
+`package:pack` writes the archive and integrity/inventory manifest under `artifacts/`. The allowlist includes JavaScript runtime files, this README, changelog, and license/notices. Sample/patient data, tests, tools, the Kitchen Sink, coverage, and codec binaries are excluded. Packing and these validation commands do not publish to npm. Optional socket/Orthanc checks are described in CI.
+
+Source tests and `npm run docs:api-contract:check` use the bundled contract snapshot and require no companion repository. Maintainers can run `npm run docs:api-contract` to regenerate the API contract; this also refreshes the bundled snapshot from the canonical documentation checkout when available. An explicit `EASI_CONTRACTS_ROOT` selects another complete contracts directory and fails if it is missing required files. See the [snapshot guide](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/test/fixtures/contracts/README.md) for provenance and synchronization details.
 
 ## License and commercial enquiries
 

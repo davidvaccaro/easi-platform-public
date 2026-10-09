@@ -23,8 +23,8 @@ EASI empowers developers to build scalable, high-performance imaging workflows a
 
 EASI now includes a generated machine-readable master interface contract:
 
-- `../../../easi/easi-contracts/schemas/implementation/javascript/easi-api.contract.json`
-- `../../../easi/easi-contracts/schemas/implementation/javascript/easi-api.contract.schema.json`
+- [Bundled API contract](../test/fixtures/contracts/schemas/implementation/javascript/easi-api.contract.json)
+- [Bundled API contract schema](../test/fixtures/contracts/schemas/implementation/javascript/easi-api.contract.schema.json)
 
 Generate and validate sync from `easi-js`:
 
@@ -33,7 +33,7 @@ npm run docs:api-contract
 npm run docs:api-contract:check
 ```
 
-The contract captures exported classes, methods, parameters, return metadata, properties, and constants so it can be used for human docs, AI tooling, and code-generation workflows.
+The contract captures exported classes, methods, parameters, return metadata, properties, and constants so it can be used for human docs, AI tooling, and code-generation workflows. Checks use the bundled snapshot. Generation updates the canonical companion when available and refreshes the snapshot; without a companion it updates the snapshot directly. See the [snapshot guide](../test/fixtures/contracts/README.md) for explicit overrides and provenance.
 
 # `EASI` Class
 
