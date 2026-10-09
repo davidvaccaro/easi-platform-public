@@ -27,12 +27,12 @@
     "author": "Xinonix Interactive Development, Inc.",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/davidvaccaro/easi-platform.git",
+        "url": "git+https://github.com/davidvaccaro/easi-platform-public.git",
         "directory": "easi-js"
     },
-    "homepage": "https://github.com/davidvaccaro/easi-platform/tree/main/easi-js#readme",
+    "homepage": "https://github.com/davidvaccaro/easi-platform-public/tree/main/easi-js#readme",
     "bugs": {
-        "url": "https://github.com/davidvaccaro/easi-platform/issues"
+        "url": "https://github.com/davidvaccaro/easi-platform-public/issues"
     },
     "publishConfig": {
         "access": "public",

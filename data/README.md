@@ -39,4 +39,6 @@ The tracked `dictionaries/` directory contains dictionary source material used b
 
 `npm run source:check` rejects accidentally tracked imaging files, the private asset directories, and Part-10 binaries renamed without a DICOM extension. It allows ignored local assets. The npm package has its own runtime allowlist and includes no fixtures or test data.
 
-Removing files from the current tree does not remove their older Git objects. Repository history must be cleaned, or a new clean repository published, before the existing repository becomes public. Preserve the local bundle before rewriting history; commit and tag IDs change when their contents change.
+Public source publication to [davidvaccaro/easi-platform-public](https://github.com/davidvaccaro/easi-platform-public) uses a copy of filtered Git history, with the original imaging assets and their older Git objects removed. The existing development repository and its original history remain private, as do the local asset backup and Git bundle. Filtering changes affected commit and tag IDs.
+
+In the local developer kit, `origin` points to the clean public repository and `private-archive` retains the original private remote. Main, `v1x-routing`, and `pre-v1-finalization` use the filtered history. Other private local refs and tags remain local; publish the intended refs explicitly rather than using `--mirror`, `--all`, or `--tags` from this kit.

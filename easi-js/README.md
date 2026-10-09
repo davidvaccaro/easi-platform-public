@@ -459,7 +459,7 @@ Both profiles require a subject. Contained mode can produce a Patient with only 
 
 To map study-level search results, replace the target with `.toFHIRImagingStudy('study-summary')`. To extend the mapping, import `DicomToFHIRImagingStudyMapping` from `@xinonix/easi-js/fhir`, construct it with options, and pass it to `.toMapping(mapping)`.
 
-Native-text FHIR mapping supports ASCII, UTF-8, and Latin-1 with explicit errors for unsupported character-set declarations. The mapper checks required fields and documented semantics; tests validate serialized resources against the pinned official R4 schema. It is not a general profile or terminology validator, and receiving servers can impose additional requirements. The [FHIR mapping guide](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/doc/handlers/mappings/DicomToFHIRImagingStudyMapping.md) details fields, templates, and conflict handling.
+Native-text FHIR mapping supports ASCII, UTF-8, and Latin-1 with explicit errors for unsupported character-set declarations. The mapper checks required fields and documented semantics; tests validate serialized resources against the pinned official R4 schema. It is not a general profile or terminology validator, and receiving servers can impose additional requirements. The [FHIR mapping guide](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/handlers/mappings/DicomToFHIRImagingStudyMapping.md) details fields, templates, and conflict handling.
 
 ## Create a custom mapping
 
@@ -610,7 +610,7 @@ try {
 }
 ```
 
-Consume each chunk before resolving the callback to apply backpressure. With `collectOutput: false`, `.first()` is an operation result with `bytesWritten` and a null payload; it cannot supply a later materialized Store payload. For custom parser/handler extensions, the builder also exposes `withReader`, `withParser`, and `withHandler`; see the [pipeline reference](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/doc/builders/PipelineBuilder.md) for their lifecycle contracts.
+Consume each chunk before resolving the callback to apply backpressure. With `collectOutput: false`, `.first()` is an operation result with `bytesWritten` and a null payload; it cannot supply a later materialized Store payload. For custom parser/handler extensions, the builder also exposes `withReader`, `withParser`, and `withHandler`; see the [pipeline reference](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/builders/PipelineBuilder.md) for their lifecycle contracts.
 
 ## Use Node.js DIMSE
 
@@ -724,7 +724,7 @@ const moved = await get.process({
 console.log(moved.count, get.reader.lastMetadata.dimse.finalResponse);
 ```
 
-Replace the UID and route/listener settings with your deployment's values. See the [DIMSE guide](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/doc/DIMSE_V1.md) for further MOVE options.
+Replace the UID and route/listener settings with your deployment's values. See the [DIMSE guide](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/DIMSE_V1.md) for further MOVE options.
 
 ### C-STORE a complete Part 10 file
 
@@ -822,7 +822,7 @@ async function configureOpenJpeg(createOpenJpegModule, options = {}) {
 }
 ```
 
-The factory and its JavaScript/WASM assets come from your chosen compatible provider; they are not bundled with EASI JS. An unresolved asynchronous factory alone cannot satisfy `Jpeg2000Decoder.decode()`. Providers retain their own licenses. The [decoder guide](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/doc/codecs/Decoders.md) describes the required interface and registry usage. Transcoding, OCR/redaction, and advanced format utilities require their own supported-profile review; this guide does not promise universal or lossless conversion.
+The factory and its JavaScript/WASM assets come from your chosen compatible provider; they are not bundled with EASI JS. An unresolved asynchronous factory alone cannot satisfy `Jpeg2000Decoder.decode()`. Providers retain their own licenses. The [decoder guide](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/codecs/Decoders.md) describes the required interface and registry usage. Transcoding, OCR/redaction, and advanced format utilities require their own supported-profile review; this guide does not promise universal or lossless conversion.
 
 ## Public imports and environment support
 
@@ -876,7 +876,7 @@ Use `try/catch` around `await pipeline.process(...)` to report transport and mal
 
 ## Source checkout, documentation, and validation
 
-The implementation lives in the `easi-js` directory of the [EASI platform repository](https://github.com/davidvaccaro/easi-platform). From a checkout:
+The implementation lives in the `easi-js` directory of the [EASI platform repository](https://github.com/davidvaccaro/easi-platform-public). From a checkout:
 
 ```bash
 cd easi-js
@@ -884,19 +884,19 @@ npm ci
 npm run kitchen-sink
 ```
 
-Open **http://127.0.0.1:8080** for the Kitchen Sink, then open the browser console to exercise and inspect the actions. Use the [Kitchen Sink guide](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/samples/kitchen-sink/README.md) for archive/Orthanc configuration and preview-server details. Stop the development server with Ctrl+C. The workbench and its optional demo dependencies stay in the source checkout; they are not shipped in the npm library.
+Open **http://127.0.0.1:8080** for the Kitchen Sink, then open the browser console to exercise and inspect the actions. Use the [Kitchen Sink guide](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/samples/kitchen-sink/README.md) for archive/Orthanc configuration and preview-server details. Stop the development server with Ctrl+C. The workbench and its optional demo dependencies stay in the source checkout; they are not shipped in the npm library.
 
-Click **Use sample** in **Read DICOM** to generate an invented three-frame DICOM file for parsing, preview, FHIR mapping, and attribute selection. The XML metadata example also uses invented values. Public tests and default benchmarks generate their inputs independently, including real compressed-format test vectors; no original medical images are included in the source tree or required to run them. Your own files remain usable through file pickers and the optional local corpus harness. See the [local data guide](https://github.com/davidvaccaro/easi-platform/blob/main/data/README.md) and [synthetic fixture documentation](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/test/fixtures/dicom/README.md).
+Click **Use sample** in **Read DICOM** to generate an invented three-frame DICOM file for parsing, preview, FHIR mapping, and attribute selection. The XML metadata example also uses invented values. Public tests and default benchmarks generate their inputs independently, including real compressed-format test vectors; no original medical images are included in the source tree or required to run them. Your own files remain usable through file pickers and the optional local corpus harness. See the [local data guide](https://github.com/davidvaccaro/easi-platform-public/blob/main/data/README.md) and [synthetic fixture documentation](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/test/fixtures/dicom/README.md).
 
 For an offline functional run, use `npm run harness:synthetic`. It generates eight formats, checks all six pipeline scenarios and exact transcoded pixels, and writes its report under ignored `test/output/`. The separate `harness:test-library` command remains available for an explicitly chosen local corpus.
 
 Further reading:
 
-- [Pipeline builder and extension contracts](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/doc/builders/PipelineBuilder.md)
-- [FHIR ImagingStudy mapping options](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/doc/handlers/mappings/DicomToFHIRImagingStudyMapping.md)
-- [DIMSE operations, routing, status, and limits](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/doc/DIMSE_V1.md)
-- [Decoder/provider setup](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/doc/codecs/Decoders.md)
-- [CI workflow](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/doc/CI.md) and [release checklist](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/doc/RELEASE_CHECKLIST.md)
+- [Pipeline builder and extension contracts](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/builders/PipelineBuilder.md)
+- [FHIR ImagingStudy mapping options](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/handlers/mappings/DicomToFHIRImagingStudyMapping.md)
+- [DIMSE operations, routing, status, and limits](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/DIMSE_V1.md)
+- [Decoder/provider setup](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/codecs/Decoders.md)
+- [CI workflow](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/CI.md) and [release checklist](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/RELEASE_CHECKLIST.md)
 - [Changelog](CHANGELOG.md)
 
 From `easi-js`, validate and regenerate the candidate:
@@ -914,7 +914,7 @@ npm run package:pack
 
 `package:pack` writes the archive and integrity/inventory manifest under `artifacts/`. The allowlist includes JavaScript runtime files, this README, changelog, and license/notices. Sample/patient data, tests, tools, the Kitchen Sink, coverage, and codec binaries are excluded. Packing and these validation commands do not publish to npm. Optional socket/Orthanc checks are described in CI.
 
-Source tests and `npm run docs:api-contract:check` use the bundled contract snapshot and require no companion repository. Maintainers can run `npm run docs:api-contract` to regenerate the API contract; this also refreshes the bundled snapshot from the canonical documentation checkout when available. An explicit `EASI_CONTRACTS_ROOT` selects another complete contracts directory and fails if it is missing required files. See the [snapshot guide](https://github.com/davidvaccaro/easi-platform/blob/main/easi-js/test/fixtures/contracts/README.md) for provenance and synchronization details.
+Source tests and `npm run docs:api-contract:check` use the bundled contract snapshot and require no companion repository. Maintainers can run `npm run docs:api-contract` to regenerate the API contract; this also refreshes the bundled snapshot from the canonical documentation checkout when available. An explicit `EASI_CONTRACTS_ROOT` selects another complete contracts directory and fails if it is missing required files. See the [snapshot guide](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/test/fixtures/contracts/README.md) for provenance and synchronization details.
 
 ## License and commercial enquiries
 

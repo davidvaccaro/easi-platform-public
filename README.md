@@ -1,6 +1,8 @@
 # EASI Platform
 
-The EASI platform repository contains implementations and development tools for the **Expressive API Standard for Imaging**. The current release focus is **EASI JS**, a JavaScript library for fluent, streaming DICOM reading, selection, mapping, and writing, with FHIR R4 ImagingStudy mapping and Node.js DIMSE.
+The [EASI platform public source repository](https://github.com/davidvaccaro/easi-platform-public) contains implementations and development tools for the **Expressive API Standard for Imaging**. The current release focus is **EASI JS**, a JavaScript library for fluent, streaming DICOM reading, selection, mapping, and writing, with FHIR R4 ImagingStudy mapping and Node.js DIMSE.
+
+This source checkout uses filtered Git history and synthetic imaging fixtures. Original imaging assets and their history stay in the private development repository and local backup.
 
 ## Start with EASI JS
 
@@ -40,7 +42,7 @@ Archives and their integrity/inventory manifests are generated under `easi-js/ar
 | `data/` | Dictionary sources and [local developer data guide](data/README.md); original images are ignored and stay local |
 | `ext/tools/` | Optional local external tools; ignored and excluded from public source and npm |
 
-Language-neutral specification, conformance material, and canonical API contracts live in the separate [EASI specification repository](https://github.com/davidvaccaro/easi). EASI Studio is a separate project. Availability of those projects does not establish their first-release status.
+Source tests and API contract checks use the bundled JavaScript contract snapshot and require no companion repository. The language-neutral specification and canonical documentation are maintained in an optional companion repository. EASI Studio is a separate project; its availability does not establish its first-release status.
 
 ## Licensing
 
