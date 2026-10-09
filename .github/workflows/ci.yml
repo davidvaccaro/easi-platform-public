@@ -66,6 +66,7 @@ jobs:
       - name: Upload Coverage Report
         if: always()
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
           name: easi-js-core-coverage-node-${{ matrix.node }}
           path: easi-js/coverage/lcov-report
@@ -110,6 +111,7 @@ jobs:
 
       - name: Upload Package and Inventory
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
           name: easi-js-package-node-${{ matrix.node }}
           path: |
@@ -253,6 +255,7 @@ jobs:
       - name: Upload Benchmark Artifacts
         if: always()
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
           name: easi-js-benchmarks
           path: easi-js/test/output/benchmarks

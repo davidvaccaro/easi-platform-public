@@ -2,15 +2,17 @@
 
 This project uses GitHub Actions to run automated quality checks for `easi-js`.
 
-Workflow file:
+Workflow files:
 
 - `.github/workflows/ci.yml`
+- `.github/workflows/perf-smoke.yml`
+- `.github/workflows/perf-peer-nightly.yml`
 
 ## Lanes
 
-Core, packaging, DIMSE socket, and independent-peer checks run on normal development changes. Core and packaging each test supported Node.js versions 22 and 24. Socket, peer, and benchmark jobs use Node.js 24. Benchmarks remain scheduled or manually enabled.
+Core, packaging, DIMSE socket, and Orthanc checks run on normal development changes. Core and packaging each test supported Node.js versions 22 and 24. Socket, Orthanc, and all benchmark jobs use Node.js 24. Performance smoke also runs on EASI JS and workflow changes; streaming and full peer benchmarks remain scheduled or manually enabled.
 
-Pushes and pull requests targeting `main` run these checks regardless of the changed paths, so an accidentally added imaging asset outside `easi-js` also receives the source publication check.
+The main CI workflow runs on pushes and pull requests targeting `main` regardless of the changed paths, so an accidentally added imaging asset outside `easi-js` also receives the source publication check. The separate performance smoke workflow filters changes to `easi-js/**` and `.github/workflows/**`.
 
 ### 1) Core Tests
 
@@ -79,6 +81,30 @@ The default check validates browser bundling. The release checklist also calls f
   - Performance trend visibility.
   - Not a correctness gate.
 
+### 6) Performance Smoke
+
+- Workflow: `EASI JS Performance Smoke`; job: `Perf Smoke (EASI JS)`
+- Trigger: EASI JS/workflow changes on `push` or `pull_request` to `main`, plus `workflow_dispatch`
+- Command:
+  - `npm run bench:peers -- --include easi-js --iterations 5 --warmup 1 --output tools/benchmarks/peer/output/perf-smoke.json`
+- Purpose:
+  - Runs the EASI-only default synthetic workload on Node.js 24, without installing external toolkits or requiring original imaging files.
+  - Exercises native, nested-sequence, multiframe, RLE palette, and RGB profiles generated in an owned temporary directory and removed after the run.
+  - Fails if any result row is not `ok`; successful results are summarized in the job summary.
+
+### 7) Peer Performance Benchmark
+
+- Workflow: `EASI JS Peer Performance Benchmark`; job: `Perf Peer (Nightly/Manual)`
+- Trigger: nightly schedule, `workflow_dispatch`, or changes to its workflow on `main`
+- Command:
+  - `node tools/benchmarks/peer/runPeerBenchmarks.js --include easi-js,pydicom,fo-dicom,dcm4che,dcmtk,gdcm --iterations 8 --warmup 2 --output tools/benchmarks/peer/output/perf-peer-nightly.json`
+- Purpose:
+  - Uses Node.js 24 and the same five synthetic profiles as smoke; manual runs can override iteration and warmup counts.
+  - Bootstraps the external Python, .NET, Java, DCMTK, and GDCM tools, then reports their parse timings alongside EASI JS.
+  - Requires bootstrap, builds, and benchmark execution to succeed. The summary displays any unavailable or non-OK toolkit rows for inspection; this lane is performance reporting rather than a correctness gate.
+
+Both peer benchmark workflows use the `synthetic-v1` workload revision. Establish performance baselines against this corpus; its results are not directly comparable to the original image corpus.
+
 ## Required vs Optional Checks
 
 Recommended branch protection for `main`:
@@ -92,6 +118,8 @@ Recommended branch protection for `main`:
   - `Orthanc DIMSE Interop Tests`
 - Optional (non-blocking):
   - `Streaming Benchmarks`
+  - `Perf Smoke (EASI JS)`
+  - `Perf Peer (Nightly/Manual)`
 
 These are recommended branch protection settings; the workflow file does not configure GitHub branch protection itself.
 
@@ -111,6 +139,10 @@ The workflow uploads artifacts for inspection:
 - `easi-js-core-coverage-node-22.x` and `easi-js-core-coverage-node-24.x` from `easi-js/coverage/lcov-report`
 - `easi-js-package-node-22.x` and `easi-js-package-node-24.x` containing `easi-js/artifacts/*.tgz` and `*.manifest.json`
 - `easi-js-benchmarks` from `easi-js/test/output/benchmarks`
+- `easi-js-perf-smoke` containing `easi-js/tools/benchmarks/peer/output/perf-smoke.json` and `.md`
+- `easi-js-perf-peer-nightly` containing `easi-js/tools/benchmarks/peer/output/perf-peer-nightly.json` and `.md`
+
+Artifact uploads are best effort. An account storage quota or upload service failure can leave coverage, candidate archives, or performance reports unavailable in GitHub without failing otherwise successful checks. Tests, benchmark execution and summaries, and packaging validation retain their existing failure behavior; only upload steps use `continue-on-error`. Candidate archives and inventory manifests can still be generated locally with `npm run package:pack`, and benchmark commands retain their local JSON/Markdown reports.
 
 ## Notes
 

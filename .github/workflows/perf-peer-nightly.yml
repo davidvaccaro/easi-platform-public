@@ -30,7 +30,7 @@ concurrency:
 
 env:
   WORKDIR: easi-js
-  NODE_VERSION: "18.x"
+  NODE_VERSION: "24.x"
   PYTHON_VERSION: "3.11"
   DOTNET_VERSION: "8.0.x"
   JAVA_VERSION: "17"
@@ -166,6 +166,7 @@ jobs:
       - name: Upload Peer Benchmark Artifacts
         if: always()
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
           name: easi-js-perf-peer-nightly
           path: |
