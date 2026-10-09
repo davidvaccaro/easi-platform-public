@@ -4,7 +4,7 @@
 
 EASI JS is the JavaScript implementation of the Expressive API Standard for Imaging. It accepts native DICOM bytes, DICOM JSON/XML metadata, files, and streams. Its main outputs are DICOM instance objects, selected attributes, custom objects, serialized DICOM bytes, and FHIR R4 `ImagingStudy` resources. Node.js transports add DIMSE Verification, Store, and Study Root Query/Retrieve.
 
-This guide is used both in the source repository and in the npm package. The published version is **`@xinonix/easi-js@1.0.0-rc.1`**, a release candidate available under `next`. Later source changes remain unreleased until a new package version is published. It uses native ES modules, supports **Node.js 22 and 24**, and has **no required npm runtime dependencies**. Browser applications can use the core pipeline and browser-compatible sources; DIMSE and filesystem paths require Node.js.
+This guide is used both in the source repository and in the npm package and covers **`@xinonix/easi-js@1.0.0`**. It uses native ES modules, supports **Node.js 22 and 24**, and has **no required npm runtime dependencies**. Browser applications can use the core pipeline and browser-compatible sources; DIMSE and filesystem paths require Node.js.
 
 ## Contents
 
@@ -28,13 +28,13 @@ This guide is used both in the source repository and in the npm package. The pub
 
 ## Install and import
 
-Install the published release candidate:
+Install the stable release:
 
 ```bash
-npm install @xinonix/easi-js@next
+npm install @xinonix/easi-js
 ```
 
-To test a separately prepared local candidate, replace the archive path:
+To test a separately prepared local package, replace the archive path:
 
 ```bash
 npm install /path/to/artifacts/xinonix-easi-js-VERSION.tgz
@@ -42,13 +42,13 @@ npm install /path/to/artifacts/xinonix-easi-js-VERSION.tgz
 
 Use an ES module: save Node.js examples as `.mjs`, or set `"type": "module"` in your application's `package.json` and use `.js`. Top-level `await` in this guide assumes an ES module.
 
-The first npm publication also received the automatic `latest` tag. Both tags currently select `1.0.0-rc.1`; this does not establish a stable v1 release. Pin `1.0.0-rc.1` if you need that exact candidate.
+Stable releases use npm's `latest` tag; `next` is reserved for prerelease candidates. To install this exact version, use `npm install @xinonix/easi-js@1.0.0`.
 
 ```js
 import EASI, { Tag } from '@xinonix/easi-js';
 ```
 
-For a browser application, resolve package imports with your bundler or an import map. Opening a script that contains a bare npm import directly in a browser does not configure package resolution. The package contains native JavaScript modules; a CommonJS build and TypeScript declarations are not included in this candidate.
+For a browser application, resolve package imports with your bundler or an import map. Opening a script that contains a bare npm import directly in a browser does not configure package resolution. The package contains native JavaScript modules; a CommonJS build and TypeScript declarations are not included in version 1.0.0.
 
 ## Runnable quick start
 
@@ -899,7 +899,7 @@ Further reading:
 - [CI workflow](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/CI.md) and [release checklist](https://github.com/davidvaccaro/easi-platform-public/blob/main/easi-js/doc/RELEASE_CHECKLIST.md)
 - [Changelog](CHANGELOG.md)
 
-From `easi-js`, validate and regenerate the candidate:
+From `easi-js`, validate and package a release:
 
 ```bash
 npm test -- --runInBand

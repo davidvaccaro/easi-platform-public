@@ -2,6 +2,8 @@
 
 Use this checklist before publishing `@xinonix/easi-js` or creating its release tag. Packaging and validation do not publish the package.
 
+Current release target: **`1.0.0`**, dated October 9, 2026. Publish the validated stable archive under `latest`; the existing `1.0.0-rc.1` remains the historical `next` candidate. Checkboxes describe checks to record for the actual release commit and archive, rather than a claim that publication is already complete.
+
 ## 1) Code State
 
 - [ ] Release commit is on `main`.
@@ -39,8 +41,11 @@ Use this checklist before publishing `@xinonix/easi-js` or creating its release 
 
 ## 5) Performance Gate
 
-- [ ] Streaming benchmark lane ran:
-  - `Streaming Benchmarks`
+- [ ] Performance smoke passed for the release commit:
+  - `EASI JS Performance Smoke`
+- [ ] Streaming benchmark lane passed for the release commit:
+  - `Streaming Benchmarks` (dispatch `EASI JS CI` with `run_benchmarks=true` when an ordinary push skips this lane).
+- [ ] Review any separate peer comparison results used as release evidence. The scheduled/manual peer comparison lane is optional; record its baseline or run rather than treating an ordinary push skip as a failure.
 - [ ] No material unexplained regressions versus prior baseline.
 
 ## 6) Documentation and Licensing
@@ -62,25 +67,30 @@ Use this checklist before publishing `@xinonix/easi-js` or creating its release 
 - [ ] Before making the source repository public, inspect every published branch and tag for historical original imaging assets and external binaries. Current-tree removal and the npm allowlist do not clear Git history. Keep any original corpus and pre-rewrite Git bundle local.
 - [ ] Final sign-off recorded (owner/date).
 
-Publication is a separate, explicitly authorized manual step. For a validated release candidate, use the `next` tag. The first publication of `1.0.0-rc.1` also received npm's automatic `latest` tag; npm refused its removal. Until stable v1 replaces it, both `next` and `latest` point to that candidate. Document this behavior rather than claiming the default install is stable. Use the leading `./` when publishing a local archive:
+Publication is a separate, explicitly authorized manual step. The owner authorized the `1.0.0` launch on October 9, 2026. Use `latest` for the stable release and `next` for future prereleases. The first publication of `1.0.0-rc.1` also received npm's automatic `latest` tag; npm refused its removal. Publishing stable `1.0.0` under `latest` replaces that default while leaving `next` on the historical candidate unless explicitly moved later. Verify the actual registry tags after publication.
+
+Run these commands from `easi-js` after completing the gates for the stable version, including `publishConfig.tag: "latest"` and matching lockfile metadata. Use the leading `./` when publishing the exact validated archive:
 
 ```bash
-npm publish ./artifacts/xinonix-easi-js-VERSION.tgz --access public --tag next
-```
-
-For a stable release, first update the package and lockfile version to `1.0.0`, change `publishConfig.tag` to `latest`, refresh its release notes, repeat the gates above, and create a new archive. Explicitly use `latest` for that validated stable archive; the current candidate metadata defaults to `next`:
-
-```bash
+npm run package:pack
 npm publish ./artifacts/xinonix-easi-js-1.0.0.tgz --access public --tag latest
+npm view @xinonix/easi-js@1.0.0 version dist.integrity dist.tarball
+npm dist-tag ls @xinonix/easi-js
 ```
 
-These future commands run from `easi-js` after ownership/access verification and publication authorization. The CI workflow uploads archives and never runs them.
+Compare registry integrity with the `.manifest.json` produced alongside the archive. In a fresh consumer directory, install the published stable version and execute its documented offline imports/examples:
 
-Published versions are immutable: changes after `1.0.0-rc.1` require a new version and a newly validated archive. A successful npm submission can still await registry scanning; verify registry availability, tags, integrity, and a clean installation before announcing a release.
+```bash
+npm install @xinonix/easi-js@1.0.0
+```
+
+Future prereleases use an incremented prerelease version, a newly validated archive, and an explicit `--tag next`. CI uploads validation archives and never publishes to npm.
+
+Published versions are immutable: changes after `1.0.0` require a new version and a newly validated archive. A successful npm submission can still await registry scanning; verify registry availability, tags, integrity, and a clean installation before announcing a release.
 
 ## 8) Post-Release
 
-- [ ] Create release tag and publish notes.
+- [ ] Create the matching `v1.0.0` Git tag on the release commit and publish GitHub release notes in `davidvaccaro/easi-platform-public`.
 - [ ] Verify GitHub Actions completed for release commit.
 - [ ] Verify registry version, distribution tag, and integrity match the approved archive.
 - [ ] Install the published version into a clean consumer and confirm the documented imports and examples.

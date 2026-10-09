@@ -1,6 +1,6 @@
 {
     "name": "@xinonix/easi-js",
-    "version": "1.0.0-rc.1",
+    "version": "1.0.0",
     "type": "module",
     "description": "Streaming DICOM parsing, writing, selection, FHIR R4 mapping, and Node.js DIMSE in JavaScript.",
     "main": "./src/index.js",
@@ -36,7 +36,7 @@
     },
     "publishConfig": {
         "access": "public",
-        "tag": "next"
+        "tag": "latest"
     },
     "engines": {
         "node": "22.x || 24.x"

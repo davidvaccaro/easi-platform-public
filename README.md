@@ -10,7 +10,7 @@ This source checkout uses filtered Git history and synthetic imaging fixtures. O
 
 **[Read the EASI JS usage guide](easi-js/README.md)** for installation, a runnable synthetic quick start, Node/browser examples, HTTP/DICOMweb, FHIR, DIMSE, pixel data, custom mappings, and troubleshooting. That same guide is included in the npm archive.
 
-The published package is `@xinonix/easi-js@1.0.0-rc.1`, available with `npm install @xinonix/easi-js@next`. It uses native ES modules and supports Node.js 22/24 plus compatible browser workflows. Changes made after that release require a new package version.
+EASI JS version **1.0.0** uses native ES modules and supports Node.js 22/24 plus compatible browser workflows. Install the stable npm package with `npm install @xinonix/easi-js`. Use `npm install @xinonix/easi-js@1.0.0` to pin this release; `next` is reserved for prerelease candidates.
 
 From this checkout:
 

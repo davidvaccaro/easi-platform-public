@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 1.0.0 - 2026-10-09
+
+First stable EASI JS release, incorporating the release candidate's streaming DICOM, selection, custom mapping, writing, FHIR R4 ImagingStudy, and bounded Node.js DIMSE APIs. Published as `@xinonix/easi-js` under npm's `latest` tag, with native ES modules, Node.js 22/24 support, and browser-compatible core workflows.
+
+- Include the comprehensive installation and usage guide, Community License, and complete third-party notices in the runtime-only package, with no required npm runtime dependencies.
+- Link npm package metadata and documentation to the clean public source repository. Make the EASI JS license visible at the repository root as well as in the package.
 - Keep original DICOM, derived image/metadata samples, and external native tools in the ignored local developer kit; replace public test dependencies with independently generated synthetic DICOM.
 - Preserve native endian, signed/unsigned pixel, multiframe, nested sequence, malformed fragment, RLE, JPEG, lossless JPEG, and genuine JPEG 2000 regression coverage. Large streaming checks now use mandatory generated inputs.
 - Generate default benchmark inputs and provide an offline synthetic sample in the Kitchen Sink and a fresh-checkout ImageBridge demo.
@@ -13,6 +19,9 @@
 - Honor the pipeline's codec registry when rendering RGBA assets, including isolated JPEG 2000 providers.
 - Preserve source byte order while reading numeric metadata during native big-endian to little-endian transcoding; verify exact 16-bit pixel output through fragmented and streamed inputs.
 - Read Part-10 transfer syntax information in the corpus harness's transcode scenario and use a valid default AE title in ImageBridge.
+- Pin the optional dcm4che comparison benchmark's source release to its Maven dependency and preserve mismatched or modified local checkouts.
+
+The Community License permits eligible community use, including organization groups strictly below USD 5 million in annual consolidated gross revenue and qualifying research/nonprofit exceptions. Other use requires commercial licensing. The license is source-available, and optional codec providers keep their own terms. Examples, the Kitchen Sink, fixtures, and development tools remain in the source checkout rather than the npm archive.
 
 ## 1.0.0-rc.1
 
