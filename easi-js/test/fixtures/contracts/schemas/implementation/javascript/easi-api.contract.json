@@ -1,14 +1,14 @@
 {
   "$schema": "./easi-api.contract.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-10-09T22:49:02.080Z",
+  "generatedAt": "2026-10-10T00:02:26.812Z",
   "generator": {
     "name": "easi-js/tools/contracts/generateApiContract.js",
     "mode": "write"
   },
   "package": {
     "name": "@xinonix/easi-js",
-    "version": "1.0.0-rc.1",
+    "version": "1.0.0",
     "description": "Streaming DICOM parsing, writing, selection, FHIR R4 mapping, and Node.js DIMSE in JavaScript."
   },
   "source": {
