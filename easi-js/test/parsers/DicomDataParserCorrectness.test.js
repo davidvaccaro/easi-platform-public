@@ -2,6 +2,9 @@ import DicomDataParser from '../../src/parsers/DicomDataParser.js';
 import DicomInstanceHandler from '../../src/handlers/terminals/DicomInstanceHandler.js';
 import Tag from '../../src/dicom/Tag.js';
 import TransferSyntax from '../../src/dicom/TransferSyntax.js';
+import AttributeSequence from '../../src/dicom/AttributeSequence.js';
+import DicomDataWriterHandler from '../../src/handlers/terminals/DicomDataWriterHandler.js';
+import { deflateRawSync } from 'node:zlib';
 import { Status } from '../../src/parsers/Status.js';
 
 const UNDEFINED_LENGTH = 0xFFFFFFFF;
@@ -110,7 +113,7 @@ class CaptureHandler extends DicomInstanceHandler {
 }
 
 async function parseChunks(bytes, sizes = [bytes.length], options = {}) {
-  const parser = new DicomDataParser(options);
+  const parser = options.parser ?? new DicomDataParser(options);
   const handler = options.handler ?? new CaptureHandler();
   parser.handler = handler;
   parser.bulkDataPolicy = options.policy ?? 'materialize';
@@ -441,17 +444,248 @@ test('EOF supplied with the final data chunk validates before emitting completio
 });
 
 
-test('unsupported undefined-length UN nested datasets fail explicitly without fabricated completion', async () => {
+test('undefined-length UN parses nested implicit datasets without scanning delimiter-like opaque values', async () => {
   const nestedData = element('7FE00010', 'OW', sequenceEnd(), { implicit: true });
   for (const value of [
     Buffer.concat([item(nestedData), sequenceEnd()]),
     Buffer.concat([item(nestedData, UNDEFINED_LENGTH), itemEnd(), sequenceEnd()])
   ]) {
     const bytes = part10(element('0072006D', 'UN', value, { length: UNDEFINED_LENGTH }));
+    await expectAllSplits(bytes, ({ instance, handler }) => {
+      const unknown = instance.dataSet.find(Tag.find('0072006D'));
+      expect(unknown).toBeInstanceOf(AttributeSequence);
+      expect(unknown.vr.ID).toBe('UN');
+      expect(unknown.items.length).toBe(1);
+      expect(Buffer.from(unknown.items[0].find(Tag.PixelData).access())).toEqual(sequenceEnd());
+      expect(handler.events).not.toContain('attribute:0072006D');
+      expect(handler.events.filter(event => event === 'sequence:0072006D')).toHaveLength(1);
+    });
+  }
+});
+
+function unknownSequence(value, options = {}) {
+  return element(options.id ?? '77771001', 'UN', value, { length: UNDEFINED_LENGTH, ...options });
+}
+
+function unknownValue(body, undefinedItem = false) {
+  return Buffer.concat([item(body, undefinedItem ? UNDEFINED_LENGTH : body.length),
+    ...(undefinedItem ? [itemEnd()] : []), sequenceEnd()]);
+}
+
+test.each([true, false])('UN item scopes use implicit little-endian and restore the enclosing endian (%s)', async littleEndian => {
+  const syntax = littleEndian ? TransferSyntax.ExplicitVRLittleEndian : TransferSyntax.ExplicitVRBigEndian;
+  const nested = Buffer.concat([
+    element('00100010', 'PN', Buffer.from('AB'), { implicit: true }),
+    element('00280010', 'US', uint(0x1234, 2), { implicit: true }),
+    element('7FE00010', 'OW', sequenceEnd(), { implicit: true })
+  ]);
+  const pixels = Buffer.concat([uint(258, 2, littleEndian), uint(772, 2, littleEndian)]);
+  for (const undefinedItem of [true, false]) {
+    const bytes = part10(Buffer.concat([
+      unknownSequence(unknownValue(nested, undefinedItem), { littleEndian }),
+      element('00280010', 'US', uint(0x4321, 2, littleEndian), { littleEndian }),
+      element('7FE00010', 'OW', pixels, { littleEndian })
+    ]), syntax.ID);
+    const before = Buffer.from(bytes);
+    await expectAllSplits(bytes, ({ instance }) => {
+      const unknown = instance.dataSet.find(Tag.find('77771001'));
+      expect(unknown.vr.ID).toBe('UN');
+      expect(unknown.transferSyntax).toBe(syntax);
+      expect(unknown.isComplete).toBe(true);
+      expect(unknown.isBulkStreamed).toBe(false);
+      expect(unknown.items[0].find(Tag.Rows).transferSyntax).toBe(TransferSyntax.ImplicitVRLittleEndian);
+      expect(unknown.items[0].find(Tag.Rows).value).toBe(0x1234);
+      expect(Buffer.from(unknown.items[0].find(Tag.PixelData).access())).toEqual(sequenceEnd());
+      expect(instance.dataSet.find(Tag.Rows).value).toBe(0x4321);
+      expect(instance.dataSet.find(Tag.PixelData).transferSyntax).toBe(syntax);
+      expect(Buffer.from(instance.dataSet.find(Tag.PixelData).access())).toEqual(pixels);
+    });
+    expect(bytes).toEqual(before);
+  }
+});
+
+test('nested implicit private UN and ordinary SQ restore each enclosing scope and parent length', async () => {
+  const innermost = element('00280010', 'US', uint(0x3456, 2), { implicit: true });
+  const privateUnknown = unknownSequence(unknownValue(innermost, true), { id: '77771002', implicit: true });
+  const implicitSequence = element('00400275', 'SQ', item(privateUnknown), { implicit: true });
+  const outerUnknown = unknownSequence(unknownValue(implicitSequence), { littleEndian: false });
+  const trailing = element('00280011', 'US', uint(0x4567, 2, false), { littleEndian: false });
+  const outerItemBody = Buffer.concat([outerUnknown, trailing]);
+  const outerSequence = element('00081115', 'SQ', control('FFFEE000', outerItemBody, outerItemBody.length, false), { littleEndian: false });
+  const bytes = part10(Buffer.concat([outerSequence, trailing]), TransferSyntax.ExplicitVRBigEndian.ID);
+  await expectAllSplits(bytes, ({ instance, handler }) => {
+    const item = instance.dataSet.find(Tag.find('00081115')).items[0];
+    const unknown = item.find(Tag.find('77771001'));
+    const inner = unknown.items[0].find(Tag.RequestAttributesSequence).items[0].find(Tag.find('77771002'));
+    expect(inner).toBeInstanceOf(AttributeSequence);
+    expect(inner.vr.ID).toBe('UN');
+    expect(inner.transferSyntax).toBe(TransferSyntax.ImplicitVRLittleEndian);
+    expect(inner.items[0].find(Tag.Rows).value).toBe(0x3456);
+    expect(item.find(Tag.Columns).value).toBe(0x4567);
+    expect(instance.dataSet.find(Tag.Columns).value).toBe(0x4567);
+    expect(handler.events.filter(event => event === 'item')).toHaveLength(4);
+  });
+});
+
+test('empty UN scopes and unknown implicit sequences complete without changing a following attribute', async () => {
+  for (const syntax of [TransferSyntax.ExplicitVRLittleEndian, TransferSyntax.ExplicitVRBigEndian, TransferSyntax.ImplicitVRLittleEndian]) {
+    const options = { littleEndian: syntax.IsLittleEndian, implicit: !syntax.IsExplicit };
+    const bytes = part10(Buffer.concat([unknownSequence(sequenceEnd(), options),
+      element('00280010', 'US', uint(513, 2, syntax.IsLittleEndian), options)]), syntax.ID);
+    await expectAllSplits(bytes, ({ instance }) => {
+      const unknown = instance.dataSet.find(Tag.find('77771001'));
+      expect(unknown.vr.ID).toBe('UN');
+      expect(unknown.items).toEqual([]);
+      expect(unknown.isComplete).toBe(true);
+      expect(instance.dataSet.find(Tag.Rows).value).toBe(513);
+    });
+  }
+});
+
+test('defined-length UN remains opaque even when its bytes look like sequence items', async () => {
+  const value = unknownValue(element('00280010', 'US', uint(513, 2), { implicit: true }));
+  const bytes = part10(element('77771001', 'UN', value));
+  await expectAllSplits(bytes, ({ instance }) => {
+    const unknown = instance.dataSet.find(Tag.find('77771001'));
+    expect(unknown).not.toBeInstanceOf(AttributeSequence);
+    expect(unknown.items).toBeUndefined();
+    expect(Buffer.from(unknown.access())).toEqual(value);
+  });
+});
+
+test('UN sequences honor bulk streaming for nested values while retaining their structure', async () => {
+  const nested = element('7FE00010', 'OW', sequenceEnd(), { implicit: true });
+  const bytes = part10(Buffer.concat([unknownSequence(unknownValue(nested)),
+    element('7FE00010', 'OW', Buffer.from([1, 2, 3, 4]))]));
+  await expectAllSplits(bytes, ({ instance, handler }) => {
+    const unknown = instance.dataSet.find(Tag.find('77771001'));
+    expect(unknown.isBulkStreamed).toBe(false);
+    expect(unknown.items).toHaveLength(1);
+    expect(unknown.items[0].find(Tag.PixelData).isBulkStreamed).toBe(true);
+    expect(unknown.items[0].find(Tag.PixelData).access().length).toBe(0);
+    expect(Buffer.concat(handler.pixelChunks.map(chunk => chunk.bytes))).toEqual(sequenceEnd());
+    expect(Buffer.from(instance.dataSet.find(Tag.PixelData).access())).toEqual(Buffer.from([1, 2, 3, 4]));
+  }, { policy: { mode: 'auto', knownLengthThreshold: 8, hardSafetyCap: 16 } });
+});
+
+test('malformed UN containers reject before instance completion, including skipped containers', async () => {
+  const attribute = element('00280010', 'US', uint(513, 2), { implicit: true });
+  const value = unknownValue(attribute, true);
+  for (const body of [
+    value.subarray(0, -1), value.subarray(0, -8),
+    Buffer.concat([item(attribute, UNDEFINED_LENGTH), sequenceEnd()]),
+    Buffer.concat([item(attribute, UNDEFINED_LENGTH), itemEnd(2), sequenceEnd()]),
+    Buffer.concat([item(attribute), sequenceEnd(2)]),
+    Buffer.concat([item(attribute, attribute.length - 2), sequenceEnd()]),
+    Buffer.concat([item(attribute, attribute.length + 2), sequenceEnd()]),
+    unknownValue(element('00100010', 'PN', Buffer.from('A'), { implicit: true })),
+    unknownValue(element('00400275', 'SQ', Buffer.alloc(0), { implicit: true, length: 1 })),
+    unknownValue(element('00100010', 'PN', Buffer.from('AB'))),
+    control('FFFEE000', attribute, attribute.length, false),
+    Buffer.concat([attribute, sequenceEnd()])
+  ]) {
+    const bytes = part10(unknownSequence(body));
     await expectIncomplete(bytes);
-    const parsed = await parseChunks(bytes);
-    expect(parsed.parser.error.message).toContain('Unsupported undefined-length UN');
-    expect(parsed.handler.events).not.toContain('attribute:0072006D');
+    const handler = new CaptureHandler();
+    handler.onStartSequence = () => Status.SKIP;
+    await expectIncomplete(bytes, { handler });
+  }
+  const opaque = element('7FE00010', 'OW', sequenceEnd(), { implicit: true });
+  await expectIncomplete(part10(unknownSequence(item(opaque))));
+  const tooShort = element('00400275', 'SQ', item(unknownSequence(value)), { length: 10 });
+  await expectIncomplete(part10(tooShort));
+});
+
+test('EOF in the final UN value chunk completes only structurally closed scopes', async () => {
+  for (const value of [sequenceEnd(), unknownValue(element('00280010', 'US', uint(513, 2), { implicit: true }), true)]) {
+    const bytes = part10(unknownSequence(value, { littleEndian: false }), TransferSyntax.ExplicitVRBigEndian.ID);
+    await expectAllSplits(bytes, ({ instance, handler }) => {
+      expect(instance.dataSet.find(Tag.find('77771001')).isComplete).toBe(true);
+      expect(handler.events.filter(event => event === 'instance')).toHaveLength(1);
+    }, { finishWithLastChunk: true });
+  }
+});
+
+test('undefined-length UN in File Meta remains invalid and cannot enter dataset parsing', async () => {
+  const bytes = Buffer.concat([Buffer.alloc(128), Buffer.from('DICM'),
+    element('00020012', 'UN', sequenceEnd(), { length: UNDEFINED_LENGTH }),
+    element('00280010', 'US', uint(513, 2))]);
+  await expectIncomplete(bytes, { includePart10Header: true });
+});
+
+test.each([Status.STOP, Status.JUMP, Status.FAIL])('UN terminal lifecycle status remains scoped and reusable (%s)', async terminal => {
+  const nested = element('00100010', 'PN', Buffer.from('AB'), { implicit: true });
+  const bytes = part10(Buffer.concat([unknownSequence(unknownValue(nested, true), { littleEndian: false }),
+    element('00280010', 'US', uint(513, 2, false), { littleEndian: false })]), TransferSyntax.ExplicitVRBigEndian.ID);
+  for (const event of ['onStartSequence', 'onStartItem', 'onEndAttribute', 'onEndItem', 'onEndSequence']) {
+    const handler = new CaptureHandler(), parser = new DicomDataParser();
+    const original = handler[event].bind(handler);
+    handler[event] = (context, attribute) => { original(context, attribute); return terminal; };
+    const parsed = await parseChunks(bytes, undefined, { handler, parser });
+    expect(parsed.status).toBe(terminal);
+    expect(handler.events).not.toContain('attribute:00280010');
+    expect(handler.events).not.toContain('dataset');
+    if (terminal === Status.FAIL) expect(handler.events).not.toContain('instance');
+    else expect(handler.events).toContain('instance');
+    parser.reset();
+    const next = await parseChunks(part10(element('00280010', 'US', uint(1025, 2))), undefined, { parser });
+    expect(next.status).toBe(Status.SUCCESS);
+    const nextInstance = Array.isArray(next.instance) ? next.instance[next.instance.length - 1] : next.instance;
+    expect(nextInstance.dataSet.find(Tag.Rows).value).toBe(1025);
+  }
+});
+
+test('UN SKIP is confined to its sequence or item and does not leak implicit syntax', async () => {
+  const nested = element('00100010', 'PN', Buffer.from('AB'), { implicit: true });
+  const value = Buffer.concat([item(nested), item(nested), sequenceEnd()]);
+  const bytes = part10(Buffer.concat([unknownSequence(value, { littleEndian: false }),
+    element('00280010', 'US', uint(513, 2, false), { littleEndian: false })]), TransferSyntax.ExplicitVRBigEndian.ID);
+  for (const event of ['onStartSequence', 'onStartItem']) {
+    const handler = new CaptureHandler(), original = handler[event].bind(handler);
+    let calls = 0;
+    handler[event] = (context, attribute) => calls++ === 0 ? Status.SKIP : original(context, attribute);
+    const parsed = await parseChunks(bytes, Array(bytes.length).fill(1), { handler });
+    expect(parsed.status).toBe(Status.SUCCESS);
+    expect(parsed.instance.dataSet.find(Tag.Rows).value).toBe(513);
+    const unknown = parsed.instance.dataSet.find(Tag.find('77771001'));
+    if (event === 'onStartSequence') expect(unknown).toBeUndefined();
+    else expect(unknown.items).toHaveLength(1);
+  }
+});
+
+test.each([true, false])('native writer preserves UN header provenance and implicit item encoding (%s)', async littleEndian => {
+  const syntax = littleEndian ? TransferSyntax.ExplicitVRLittleEndian : TransferSyntax.ExplicitVRBigEndian;
+  const nested = element('00280010', 'US', uint(0x1234, 2), { implicit: true });
+  const bytes = part10(Buffer.concat([unknownSequence(unknownValue(nested), { littleEndian }),
+    element('00280011', 'US', uint(0x3456, 2, littleEndian), { littleEndian })]), syntax.ID);
+  const writer = new DicomDataWriterHandler(), parser = new DicomDataParser({ includePart10Header: true });
+  parser.handler = writer;
+  expect(await parser.parse(bytes, true, bytes.length, bytes.length)).toBe(Status.SUCCESS);
+  const parsed = await parseChunks(Buffer.from(parser.result));
+  expect(parsed.status).toBe(Status.SUCCESS);
+  const unknown = parsed.instance.dataSet.find(Tag.find('77771001'));
+  expect(unknown.vr.ID).toBe('UN');
+  expect(unknown.transferSyntax).toBe(syntax);
+  expect(unknown.items[0].find(Tag.Rows).value).toBe(0x1234);
+  expect(parsed.instance.dataSet.find(Tag.Columns).value).toBe(0x3456);
+});
+
+test.each([true, false])('deflated dataset syntax fails explicitly after File Meta, without treating compressed bytes as attributes (header=%s)', async includePart10Header => {
+  const plain = element('00100010', 'PN', Buffer.from('AB'));
+  const compressed = deflateRawSync(plain);
+  const bodies = [compressed, compressed.subarray(0, Math.max(1, compressed.length - 2)), plain];
+  for (const body of bodies) {
+    const bytes = part10(body, TransferSyntax.DeflatedExplicitVRLittleEndian.ID);
+    for (let split = 0; split <= bytes.length; split++) {
+      const parsed = await parseChunks(bytes, [split, bytes.length - split], { includePart10Header });
+      expect(parsed.status).toBe(Status.FAIL);
+      expect(parsed.parser.error.code).toBe('NotImplemented');
+      expect(parsed.parser.error.message).toBe('Deflated Explicit VR Little Endian datasets are not supported.');
+      expect(parsed.handler.events).not.toContain('attribute:00100010');
+      expect(parsed.handler.events).not.toContain('dataset');
+      expect(parsed.handler.events).not.toContain('instance');
+      expect(parsed.instance).toBeUndefined();
+    }
   }
 });
 

@@ -10,7 +10,9 @@ Undefined-length encapsulated PixelData is consumed through item headers and dec
 
 For streamed undefined-length values, completion can arrive as an empty chunk with `isFinalChunk: true`. Chunk consumers must process that completion flag even when the chunk contains no bytes.
 
-Undefined-length `UN` values currently fail with an explicit unsupported-encoding error. Supporting them requires parsing their nested datasets with implicit VR while retaining the surrounding transfer syntax and raw-copy behavior; see [DICOM PS3.5 section 6.2.2](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.2.html). Defined-length `UN` values remain opaque bytes.
+Undefined-length `UN` values are parsed as sequence containers whose item datasets use Implicit VR Little Endian, irrespective of the enclosing transfer syntax; see [DICOM PS3.5 section 6.2.2](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.2.html). The resulting `AttributeSequence` retains its declared `vr` of `UN` and the enclosing header's `transferSyntax`. Nested attributes retain their own implicit little-endian encoding. The parser restores the surrounding syntax after the UN value without modifying source bytes. These scopes validate item/sequence lengths and delimiters even when skipped. Defined-length `UN` values remain opaque bytes.
+
+Deflated Explicit VR Little Endian (`1.2.840.10008.1.2.1.99`) compresses the entire dataset and currently fails explicitly with `NotImplemented` after File Meta Information is parsed. Its compressed bytes are not interpreted as ordinary dataset headers, and no dataset/instance completion is emitted. This boundary does not establish that the input is malformed.
 
 ---
 

@@ -20,7 +20,7 @@
 import Constants from '../dicom/Constants.js';
 import Utilities from '../dicom/Utilities.js';
 import Exception from '../environment/Exception.js';
-import { DicomErrorCodes } from '../environment/Exception.js';
+import { DicomErrorCodes, GeneralErrorCodes } from '../environment/Exception.js';
 
 import DataParser from './DataParser.js';
 import { Status } from './Status.js';
@@ -505,6 +505,20 @@ export default class DicomDataParser extends DataParser {
 
         return this.dataElements[this.dataElements.length - 1];
 
+    }
+
+    /**
+     * Leave a container and restore the enclosing encoding after a UN value.
+     * Assign the syntax only: converting the shared buffer would corrupt bytes
+     * belonging to the following enclosing data elements.
+     */
+    popSequenceContext() {
+        var context = this.dataElements.pop();
+        if (context?.enclosingTransferSyntax != null) {
+            this.data.transferSyntax = context.enclosingTransferSyntax;
+            this.endSequenceMarker = Utilities.getEndSequence(this.isLittleEndianTransferSyntax);
+        }
+        return context;
     }
 
     /**
@@ -1323,6 +1337,13 @@ export default class DicomDataParser extends DataParser {
 
             }
 
+            // PS3.5 A.5 compresses the entire dataset, rather than just pixels.
+            // Parsing those bytes as ordinary explicit-VR headers would report
+            // misleading truncation errors or fabricate a dataset from noise.
+            if (activeDataSetTransferSyntax == TransferSyntax.DeflatedExplicitVRLittleEndian) {
+                return await this.failParsing('Deflated Explicit VR Little Endian datasets are not supported.', GeneralErrorCodes.NotImplemented);
+            }
+
             // Indicate that the current part is "started"
             this.partStarted = true;
 
@@ -1446,7 +1467,7 @@ export default class DicomDataParser extends DataParser {
                 element.isComplete = true;
                 await this.fireParsingEvent((element instanceof Item) ? "onEndItem" : "onEndSequence",
                     (element instanceof Item) ? null : element, context.status);
-                this.dataElements.pop();
+                this.popSequenceContext();
                 continue;
             }
 
@@ -1469,6 +1490,11 @@ export default class DicomDataParser extends DataParser {
 
             if (element instanceof AttributeSequence) {
                 if (details.tag == Tag.Item) {
+                    if ((details.valueLength != Constants.UndefinedLength) && ((details.valueLength % 2) != 0)
+                        && this.dataElements.some(container => container.enclosingTransferSyntax != null)) {
+                        await this.failParsing('Invalid Sequence. Item length must be even.', DicomErrorCodes.InvalidSequence);
+                        return false;
+                    }
                     if ((details.valueLength != Constants.UndefinedLength)
                         && ((await this.fitsSequenceContext(details.bytesPeeked + details.valueLength)) != true))
                         return false;
@@ -1490,7 +1516,7 @@ export default class DicomDataParser extends DataParser {
                     this.data.consume(details.bytesPeeked);
                     this.totalBytesConsumed += details.bytesPeeked;
                     element.isComplete = true;
-                    this.dataElements.pop();
+                    this.popSequenceContext();
                     await this.fireParsingEvent("onEndSequence", element, context.status);
                     continue;
                 }
@@ -1500,16 +1526,17 @@ export default class DicomDataParser extends DataParser {
                     this.data.consume(details.bytesPeeked);
                     this.totalBytesConsumed += details.bytesPeeked;
                     element.isComplete = true;
-                    this.dataElements.pop();
+                    this.popSequenceContext();
                     await this.fireParsingEvent("onEndItem", null, context.status);
                     continue;
                 }
 
                 // Preserve the existing permissive recovery for a sequence marker
                 // that immediately replaces an omitted undefined-item delimiter.
-                if ((details.tag == Tag.SequenceDelimitationItem) && (this._strictParsing != true)) {
+                if ((details.tag == Tag.SequenceDelimitationItem) && (this._strictParsing != true)
+                    && (this.dataElements.some(container => container.enclosingTransferSyntax != null) != true)) {
                     element.isComplete = true;
-                    this.dataElements.pop();
+                    this.popSequenceContext();
                     await this.fireParsingEvent("onEndItem", null, context.status);
                     continue;
                 }
@@ -1609,12 +1636,16 @@ export default class DicomDataParser extends DataParser {
                 return false;
             }
 
-            // Undefined-length UN contains nested implicit-VR datasets, not opaque
-            // binary fragments. Reject this unsupported form rather than scanning
-            // its nested values or reporting an incorrectly delimited result.
-            if ((details.valueRepresentation == ValueRepresentations.UN)
-                && (details.valueLength == Constants.UndefinedLength)) {
-                await this.failParsing('Unsupported undefined-length UN sequence value.', DicomErrorCodes.InvalidSequence);
+            var isUnknownSequence = ((details.valueRepresentation == ValueRepresentations.UN)
+                && (details.valueLength == Constants.UndefinedLength));
+            if ((isUnknownSequence == true) && (this.partType != DicomPartType.DataSet)) {
+                await this.failParsing('Invalid Sequence. Undefined-length UN is not permitted in File Meta Information.', DicomErrorCodes.InvalidSequence);
+                return false;
+            }
+            if ((details.valueRepresentation == ValueRepresentations.SQ)
+                && (details.valueLength != Constants.UndefinedLength) && ((details.valueLength % 2) != 0)
+                && this.dataElements.some(container => container.enclosingTransferSyntax != null)) {
+                await this.failParsing('Invalid Sequence. Sequence length must be even.', DicomErrorCodes.InvalidSequence);
                 return false;
             }
 
@@ -1626,7 +1657,7 @@ export default class DicomDataParser extends DataParser {
 
             this.data.consume(details.bytesPeeked);
             bytesConsumed += details.bytesPeeked;
-            this.dataElement = (details.valueRepresentation == ValueRepresentations.SQ)
+            this.dataElement = ((details.valueRepresentation == ValueRepresentations.SQ) || (isUnknownSequence == true))
                 ? new AttributeSequence(details.tag, details.valueLength, null, this.data.transferSyntax)
                 : new Attribute(details.tag, details.valueLength, null, this.data.transferSyntax);
             this.dataElement.vr = details.valueRepresentation;
@@ -1658,11 +1689,22 @@ export default class DicomDataParser extends DataParser {
             if (this.dataElement instanceof AttributeSequence) {
                 // Commit the sequence header immediately, even when its first item
                 // header is split across chunks or the sequence has zero length.
-                this.dataElements.push({
+                var sequenceContext = {
                     start: this.totalBytesConsumed + bytesConsumed,
                     element: this.dataElement,
                     status: this.dataElementStatus
-                });
+                };
+                if ((this.dataElement.vr == ValueRepresentations.UN)
+                    && (this.dataElement.valueLength == Constants.UndefinedLength)) {
+                    // PS3.5 6.2.2 / CP-246: UN value contents remain implicit-VR
+                    // little-endian, irrespective of the enclosing transfer syntax.
+                    // Keep the declared UN VR and header syntax on the sequence.
+                    // https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.2.html
+                    sequenceContext.enclosingTransferSyntax = this.data.transferSyntax;
+                    this.data.transferSyntax = TransferSyntax.ImplicitVRLittleEndian;
+                    this.endSequenceMarker = Utilities.getEndSequence(true);
+                }
+                this.dataElements.push(sequenceContext);
                 this.dataElement = null;
                 this.dataElementStatus = Status.CONTINUE;
             }

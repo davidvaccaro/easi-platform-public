@@ -611,7 +611,8 @@ export default class DicomDataWriterHandler {
 
     async onStartSequence(context, sequence) {
 
-        this.currentTransferSyntax = sequence.transferSyntax;
+        this.currentTransferSyntax = (this.resolveValueRepresentation(sequence) == ValueRepresentations.UN)
+            ? TransferSyntax.ImplicitVRLittleEndian : sequence.transferSyntax;
         this.sequenceSyntaxStack.push(this.currentTransferSyntax);
 
         // Always write undefined-length sequences so nested length recalculation is unnecessary.
@@ -723,7 +724,7 @@ export default class DicomDataWriterHandler {
             Tag.SequenceDelimitationItem,
             Tag.SequenceDelimitationItem.VR,
             0,
-            sequence.transferSyntax
+            this.currentTransferSyntax
         ));
 
         if (this.sequenceSyntaxStack.length > 0) {
@@ -732,6 +733,9 @@ export default class DicomDataWriterHandler {
 
         if (this.sequenceSyntaxStack.length > 0) {
             this.currentTransferSyntax = this.sequenceSyntaxStack[this.sequenceSyntaxStack.length - 1];
+        }
+        else {
+            this.currentTransferSyntax = sequence.transferSyntax;
         }
 
     }
