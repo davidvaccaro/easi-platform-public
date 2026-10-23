@@ -11,6 +11,10 @@
     {
       "name": "easi-studio",
       "path": "../easi-studio"
+    },
+    {
+      "name": "easi-view",
+      "path": "../easi-view"
     }
   ],
   "settings": {
