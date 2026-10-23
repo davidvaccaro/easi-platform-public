@@ -1,14 +1,14 @@
 {
   "$schema": "./easi-api.contract.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-10-10T00:02:26.812Z",
+  "generatedAt": "2026-10-23T02:24:28.836Z",
   "generator": {
     "name": "easi-js/tools/contracts/generateApiContract.js",
     "mode": "write"
   },
   "package": {
     "name": "@xinonix/easi-js",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Streaming DICOM parsing, writing, selection, FHIR R4 mapping, and Node.js DIMSE in JavaScript."
   },
   "source": {
@@ -18,7 +18,7 @@
   "metrics": {
     "exportCount": 221,
     "classCount": 192,
-    "methodCount": 7926,
+    "methodCount": 7927,
     "functionCount": 3,
     "constantCount": 27
   },
@@ -173775,7 +173775,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 627,
+              "line": 628,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -173800,7 +173800,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 643,
+              "line": 644,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -173836,7 +173836,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 661,
+              "line": 662,
               "description": "Stream raw value chunks for bulk-streamed attributes.",
               "deprecated": null,
               "parameters": [
@@ -173872,7 +173872,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 688,
+              "line": 689,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -173908,7 +173908,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 692,
+              "line": 693,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -173944,7 +173944,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 696,
+              "line": 697,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -173980,7 +173980,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 720,
+              "line": 721,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -174016,7 +174016,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 739,
+              "line": 743,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -174041,7 +174041,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 755,
+              "line": 759,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -174066,7 +174066,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 758,
+              "line": 762,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -174091,7 +174091,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 761,
+              "line": 765,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -174116,7 +174116,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 782,
+              "line": 786,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -174152,7 +174152,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 785,
+              "line": 789,
               "description": null,
               "deprecated": null,
               "parameters": [
@@ -174188,7 +174188,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 792,
+              "line": 796,
               "description": "Create a DICOM native data writer handler.",
               "deprecated": null,
               "parameters": [
@@ -179177,12 +179177,25 @@
               "examples": []
             },
             {
-              "name": "normalizeBulkDataPolicyMode",
+              "name": "popSequenceContext",
               "kind": "method",
               "static": false,
               "async": false,
               "accessor": null,
               "line": 515,
+              "description": "Leave a container and restore the enclosing encoding after a UN value.\nAssign the syntax only: converting the shared buffer would corrupt bytes\nbelonging to the following enclosing data elements.",
+              "deprecated": null,
+              "parameters": [],
+              "returns": null,
+              "examples": []
+            },
+            {
+              "name": "normalizeBulkDataPolicyMode",
+              "kind": "method",
+              "static": false,
+              "async": false,
+              "accessor": null,
+              "line": 529,
               "description": "Normalize one bulk-data policy mode value.",
               "deprecated": null,
               "parameters": [
@@ -179210,7 +179223,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 537,
+              "line": 551,
               "description": "Determine if a tag is a structural tag that should never be bulk-streamed.",
               "deprecated": null,
               "parameters": [
@@ -179238,7 +179251,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 558,
+              "line": 572,
               "description": "Determine if the current attribute is a candidate for bulk streaming based on tag/VR.",
               "deprecated": null,
               "parameters": [
@@ -179266,7 +179279,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 601,
+              "line": 615,
               "description": "Determine whether one data element detail belongs to File Meta Information group (0002,eeee).",
               "deprecated": null,
               "parameters": [
@@ -179294,7 +179307,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 618,
+              "line": 632,
               "description": "Determine whether the declared File Meta Information Group Length has been reached.",
               "deprecated": null,
               "parameters": [],
@@ -179310,7 +179323,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 634,
+              "line": 648,
               "description": "Score one explicit-VR transfer-syntax candidate for first data-set element routing.",
               "deprecated": null,
               "parameters": [
@@ -179360,7 +179373,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 666,
+              "line": 680,
               "description": "Detect likely transfer-syntax for raw data-set-only input (no Part-10 file meta).",
               "deprecated": null,
               "parameters": [],
@@ -179376,7 +179389,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 714,
+              "line": 728,
               "description": "Complete current meta-set parsing and transition to data-set parsing.",
               "deprecated": null,
               "parameters": [
@@ -179404,7 +179417,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 748,
+              "line": 762,
               "description": "Resolve whether the current data element should be bulk-streamed or materialized.\nDecision flow:\n1. Structural tags are never chunked.\n2. Policy mode is applied.\n3. Payload candidate check (VR/tag) is evaluated.\n4. Known-length decision is applied.\n5. Undefined-length decision is applied.\n6. Hard safety cap is enforced independently of VR/tag.",
               "deprecated": null,
               "parameters": [
@@ -179432,7 +179445,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 833,
+              "line": 847,
               "description": "Fire one attribute chunk event for streamed attributes.",
               "deprecated": null,
               "parameters": [
@@ -179479,7 +179492,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 856,
+              "line": 870,
               "description": "Apply one consumed value chunk to the current attribute according to the active bulk-data decision.",
               "deprecated": null,
               "parameters": [
@@ -179515,7 +179528,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 903,
+              "line": 917,
               "description": "Parse the specified chunk of DICOM data.",
               "deprecated": null,
               "parameters": [
@@ -179576,7 +179589,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1091,
+              "line": 1105,
               "description": "Parse the next DICOM Preamble from the next chunk of data.",
               "deprecated": null,
               "parameters": [],
@@ -179592,7 +179605,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1169,
+              "line": 1183,
               "description": "Parse the next DICOM Prefix from the next chunk of data.",
               "deprecated": null,
               "parameters": [],
@@ -179608,7 +179621,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1247,
+              "line": 1261,
               "description": "Parse the next DICOM MetaSet from the next chunk of data.",
               "deprecated": null,
               "parameters": [
@@ -179636,7 +179649,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1301,
+              "line": 1315,
               "description": "Parse the next DICOM DataSet from the next chunk of data.",
               "deprecated": null,
               "parameters": [
@@ -179664,7 +179677,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1399,
+              "line": 1420,
               "description": "Preserve terminal flow control returned by lifecycle handlers. SKIP applies\nto a particular attribute/container and must not escape into parser status.",
               "deprecated": null,
               "parameters": [
@@ -179711,7 +179724,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1409,
+              "line": 1430,
               "description": "Report a structural parse error without emitting completion lifecycle events.",
               "deprecated": null,
               "parameters": [
@@ -179747,7 +179760,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1419,
+              "line": 1440,
               "description": "Check a pending field against every defined-length enclosing container.",
               "deprecated": null,
               "parameters": [
@@ -179783,7 +179796,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1434,
+              "line": 1455,
               "description": "Close finished containers and consume item headers/delimiters before reading\nthe next attribute. This runs even when a chunk ends at a container boundary.",
               "deprecated": null,
               "parameters": [],
@@ -179796,7 +179809,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1531,
+              "line": 1558,
               "description": "Consume an undefined-length binary value by its item lengths, retaining raw\nitem headers in the output. Opaque fragment bytes must never be scanned for\nsequence delimiter signatures (DICOM PS3.5, 7.1.2 and A.4).",
               "deprecated": null,
               "parameters": [],
@@ -179809,7 +179822,7 @@
               "static": false,
               "async": true,
               "accessor": null,
-              "line": 1595,
+              "line": 1622,
               "description": "Parse the next DICOM Data Element from the next chunk of data.",
               "deprecated": null,
               "parameters": [
@@ -179837,7 +179850,7 @@
               "static": false,
               "async": false,
               "accessor": "set",
-              "line": 1712,
+              "line": 1754,
               "description": "Configure bulk data behavior.",
               "deprecated": null,
               "parameters": [
@@ -179862,7 +179875,7 @@
               "static": false,
               "async": false,
               "accessor": "get",
-              "line": 1737,
+              "line": 1779,
               "description": "Get the current bulk data policy configuration.",
               "deprecated": null,
               "parameters": [],
@@ -179878,7 +179891,7 @@
               "static": false,
               "async": false,
               "accessor": null,
-              "line": 1748,
+              "line": 1790,
               "description": "Constructos a new DICOM Parser with the associated DICOM Stream Handler.",
               "deprecated": null,
               "parameters": [

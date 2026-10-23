@@ -1,6 +1,15 @@
 # Changelog
 
-## Unreleased
+## 1.0.1 - 2026-10-22
+
+- Read undefined-length UN sequences as nested implicit-VR little-endian datasets,
+  retaining the declared UN VR and restoring each enclosing encoding scope.
+- Preserve those scopes in native writing, including explicit big-endian outer
+  datasets. Generated streaming boundary and lifecycle tests cover both paths.
+- Reject dataset-level Deflated Explicit VR Little Endian with an explicit
+  unsupported-operation diagnostic after File Meta; compressed bytes are not
+  interpreted as ordinary dataset headers.
+
 
 ## 1.0.0 - 2026-10-09
 

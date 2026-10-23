@@ -383,6 +383,16 @@ test("Test: build throws IncompatibleParserAndHandler for toStructuredValue with
   expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
 });
 
+test.each([
+  () => new DicomJsonMetadataAdapter(new DicomInstanceHandler()),
+  () => new DicomXmlMetadataAdapter(new DicomInstanceHandler()),
+  () => new JsonDataHandler(),
+  () => new XmlDataHandler()
+])("native DICOM, including UN sequence scopes, cannot target JSON/XML input or syntax handlers (%#)", createHandler => {
+  const error = captureBuildError(new PipelineBuilder().fromByteStream().ofDicomData().withHandler(createHandler()));
+  expect(error.code).toBe(BuilderErrorCodes.IncompatibleParserAndHandler);
+});
+
 test("Test: build throws IncompatibleParserAndHandler for toAssets with DICOM metadata parser", () => {
   const error = captureBuildError(
   new PipelineBuilder().

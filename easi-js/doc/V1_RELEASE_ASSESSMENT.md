@@ -1,3 +1,5 @@
+> The original stable-launch assessment below records the 1.0.0 preparation. The subsequent parser/writer patch release is documented in [EASI JS 1.0.1](RELEASE_1_0_1.md).
+
 # EASI JS version 1 release assessment
 
 The stable release target is **`@xinonix/easi-js@1.0.0`**: a streaming DICOM library containing parsing, writing, selection, custom mapping, finite stream processing, Node.js DIMSE, and FHIR R4 ImagingStudy mapping. DIMSE and FHIR are retained following the release-scope decision; the implementation and bounded validation profiles are described below. Other language implementations and EASI Studio remain outside this release.
@@ -81,7 +83,7 @@ The [DICOM encoding rules](https://dicom.nema.org/medical/dicom/current/output/c
 
 The first core implementation pass replaces EOF auto-completion and binary marker scanning, aligns explicit-VR parsing/writing, fixes small raw datasets and fragmented container handling, and preserves handler terminal statuses. Buffer compaction now copies retained tails into fresh storage so it cannot overwrite previously parsed attributes or caller input. Reader changes enforce source ownership, HTTP failure handling, MIME boundary case, and complete multipart envelopes. Regression coverage includes exhaustive split positions, opaque delimiter bytes inside fragments, native writer round trips, cleanup failures, and actual EASI HTTP/DICOMweb pipelines.
 
-Undefined-length `UN` values fail explicitly rather than being scanned or interpreted as opaque encapsulated fragments. Nested implicit-VR parsing and raw-copy representation for that case remain unsupported; see [DICOM PS3.5 section 6.2.2](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.2.html). This pass also preserves the existing permissive recovery for a missing item delimiter when an actual valid sequence delimiter follows; it never creates a delimiter at EOF.
+Undefined-length `UN` values now use structural sequence parsing with scoped Implicit VR Little Endian item datasets, while retaining the declared `UN` representation and surrounding header syntax; see [DICOM PS3.5 section 6.2.2](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.2.html). Defined-length `UN` remains opaque. UN scopes require complete items and valid delimiters, including when skipped; the existing permissive missing-item-delimiter recovery remains confined to other sequences. The native writer emits UN item contents with the required implicit little-endian syntax. Deflated whole datasets remain unsupported and now fail explicitly after File Meta rather than producing misleading truncation errors.
 
 Two behavior choices from the original assessment are retained and documented for v1:
 
